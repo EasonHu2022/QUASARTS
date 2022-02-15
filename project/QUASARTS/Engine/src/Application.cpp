@@ -41,6 +41,8 @@ void Application::start_Application()
 		}
 	}
 
+
+
 	//the engine runtime loop
 	while (true)
 	{
