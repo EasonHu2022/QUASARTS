@@ -1,6 +1,6 @@
 project "Engine"
 	language "C++"
-	kind "WindowedApp" --what if linux//todo
+	kind "ConsoleApp" 
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
@@ -32,7 +32,7 @@ project "Engine"
 		{
 			"_UNICODE",
             "UNICODE",
-			"_WINDOWS",
+			"_CONSOLE",
 		}
 		
 	

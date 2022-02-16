@@ -4,7 +4,10 @@
 /// put it in the engine layer
 /// </summary>
 /// <returns></returns>
-int WinMain()
+
+
+
+int main()
 {
 	//Create a singleton of the application
 	Application* appInst = Application::Instance();

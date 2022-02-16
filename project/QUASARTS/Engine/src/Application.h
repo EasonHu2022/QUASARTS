@@ -3,6 +3,7 @@
 #include "MemoryModule.h"
 #include <vector>
 #include <iostream>
+#include "glfw3.h"
 class Application
 {
 private:
