@@ -15,12 +15,14 @@ project "Engine"
 	links
 	{
 		"Base",
+		"Editor",
 		"GLFW",
 	}
 	
 	includedirs
 	{
 		"../Base/src",
+		"../Editor/src",
 		"../ThirdParty/GLFW/include/GLFW",
 	}
 

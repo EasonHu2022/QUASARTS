@@ -18,10 +18,14 @@ Application* Application::Instance()
 /// </summary>
 void Application::init_Application()
 {
+	//init window
+	main_window = new MainWindow();
+	main_window->Init();
 	//init the memory module as the very first module
 	MemoryModule* mem = MemoryModule::Instance();
 	mem->init();
 	modules.push_back(mem);
+	
 }
 
 /// <summary>
@@ -46,6 +50,11 @@ void Application::start_Application()
 	//the engine runtime loop
 	while (true)
 	{
+		//the order of each loop is very important
+		//now I just put window and ui loop on the first
+		if (!main_window->Update())
+			break;
+
 		for (auto module : modules)
 		{
 			if (module->NeedUpdate)
@@ -55,6 +64,8 @@ void Application::start_Application()
 		}
 	}
 
+	stop_Application();
+
 }
 
 /// <summary>
@@ -62,5 +73,12 @@ void Application::start_Application()
 /// </summary>
 void Application::stop_Application()
 {
+	for (auto module : modules)
+	{
+
+		module->release();
+
+	}
+	main_window->Release();
 
 }

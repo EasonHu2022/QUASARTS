@@ -12,6 +12,17 @@ project "Editor"
 		"**.lua",
 	}
 	
+	links
+	{
+		"Base",
+		"GLFW",
+	}
+
+	includedirs
+	{
+		"../Base/src",
+		"../ThirdParty/GLFW/include/GLFW",
+	}
 
 	filter "system:windows"
 		systemversion "latest"

@@ -3,7 +3,9 @@
 #include "MemoryModule.h"
 #include <vector>
 #include <iostream>
-#include "glfw3.h"
+#include "MainWindow.h"
+
+
 class Application
 {
 private:
@@ -39,5 +41,7 @@ public:
 public:
 	//hold the pointer of 3 very basic module
 	std::vector <IModule*> modules;
+	//ptr of mainwindow
+	MainWindow* main_window = nullptr;
 
 };
