@@ -17,6 +17,7 @@ project "Engine"
 		"Base",
 		"Editor",
 		"GLFW",
+		"spdlog",
 	}
 	
 	includedirs
@@ -24,6 +25,7 @@ project "Engine"
 		"../Base/src",
 		"../Editor/src",
 		"../ThirdParty/GLFW/include/GLFW",
+		"../ThirdParty/spdlog/include",
 	}
 
 	filter "system:windows"

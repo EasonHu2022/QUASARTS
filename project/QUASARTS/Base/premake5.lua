@@ -12,7 +12,16 @@ project "Base"
 		"**.lua",
 	}
 	
+	links
+	{
+		"spdlog",
+	}
 
+	includedirs
+	{
+		"../ThirdParty/spdlog/include",
+	}
+	
 	filter "system:windows"
 		systemversion "latest"
 		staticruntime "On"

@@ -1,4 +1,7 @@
 #include "Application.h"
+#include "MemoryModule.h"
+#include "LogModule.h"
+
 //singleton
 Application* Application::instance = nullptr;
 /// <summary>
@@ -18,6 +21,11 @@ Application* Application::Instance()
 /// </summary>
 void Application::init_Application()
 {
+	//init the log module
+	LogModule* log = LogModule::Instance();
+	log->init();
+	modules.push_back(log);
+
 	//init window
 	main_window = new MainWindow();
 	main_window->Init();
@@ -25,6 +33,16 @@ void Application::init_Application()
 	MemoryModule* mem = MemoryModule::Instance();
 	mem->init();
 	modules.push_back(mem);
+	
+	//test log
+	QTRACE("Test for QTRACE");
+	TRACE("Test for TRACE");
+	QDEBUG("Test for QDEBUG");
+	DEBUG("Test for DEBUG");
+	QERROR("Test for QERROR");
+	ERROR("Test for ERROR");
+	QWARN("Test for QWARN");
+	WARN("Test for WARN");
 	
 }
 

@@ -15,4 +15,6 @@ include "Editor"
 include "Engine"
 include "Base"
 include "ThirdParty/GLFW"
+include "ThirdParty/spdlog"
+
 

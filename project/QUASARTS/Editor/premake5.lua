@@ -16,12 +16,14 @@ project "Editor"
 	{
 		"Base",
 		"GLFW",
+		"spdlog",
 	}
 
 	includedirs
 	{
 		"../Base/src",
 		"../ThirdParty/GLFW/include/GLFW",
+		"../ThirdParty/spdlog/include",
 	}
 
 	filter "system:windows"

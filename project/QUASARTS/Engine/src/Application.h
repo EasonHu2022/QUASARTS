@@ -1,6 +1,6 @@
 #pragma once
 #include "IModule.h"
-#include "MemoryModule.h"
+
 #include <vector>
 #include <iostream>
 #include "MainWindow.h"

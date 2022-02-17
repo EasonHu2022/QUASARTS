@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include <stdio.h>
+#include "LogModule.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -26,7 +27,7 @@ int MainWindow::Init()
 		return 1;
 	glfwMakeContextCurrent(context);
 	glfwSwapInterval(1);
-
+	
 
 	return 0;
 }
