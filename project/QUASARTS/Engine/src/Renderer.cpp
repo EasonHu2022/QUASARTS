@@ -1,15 +1,35 @@
-#include "MainWindow.h"
-#include <stdio.h>
+#include "Renderer.h"
 #include "LogModule.h"
+//singleton
+Renderer* Renderer::instance = nullptr;
+/// <summary>
+/// return an instance
+/// </summary>
+/// <returns></returns>
+Renderer* Renderer::Instance()
+{
+	if (nullptr == instance)
+		return new Renderer();
+	else
+	{
+		return instance;
+	}
+}
 
 static void glfw_error_callback(int error, const char* description)
 {
 	//later change it into log system
-	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+	QERROR("Glfw Error %d: %s\n", error, description);
 }
 
-int MainWindow::Init()
+/// <summary>
+/// init
+/// </summary>
+int Renderer::init()
 {
+	/*according to the config
+	init opengl correct version 
+	or vulkan*/
 	// Setup window
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit())
@@ -27,15 +47,25 @@ int MainWindow::Init()
 		return 1;
 	glfwMakeContextCurrent(context);
 	glfwSwapInterval(1);
-	
-
 	return 0;
 }
 
-bool MainWindow::Update()
+/// <summary>
+/// start
+/// </summary>
+/// <returns>res</returns>
+int Renderer::start()
+{
+	return 0;
+}
+
+/// <summary>
+/// update
+/// </summary>
+int Renderer::render_loop()
 {
 	if (glfwWindowShouldClose(context))
-		return false;
+		return 1;
 	// Poll and handle events (inputs, window resize, etc.)
 	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
 	// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -45,22 +75,53 @@ bool MainWindow::Update()
 	int display_w, display_h;
 	glfwGetFramebufferSize(context, &display_w, &display_h);
 	//glViewport(0, 0, display_w, display_h);
-	////give a clear color of the mainwindow
+	//give a clear color of the mainwindow
 	//glClearColor(0.45f, 0.55f, 0.6f, 1.0f);
 	//glClear(GL_COLOR_BUFFER_BIT);
 
+	//loop for render scene
+	scene_loop();
+
+
+
+
+	//loop for Editor UI
+	editor_loop();
+
+
+
 
 	glfwSwapBuffers(context);
-	return true;
+	return 0;
 }
 
-void MainWindow::Release()
+/// <summary>
+/// stop
+/// </summary>
+/// <returns>res</returns>
+int Renderer::stop()
+{
+	return 0;
+}
+
+/// <summary>
+/// release
+/// </summary>
+void Renderer::release()
 {
 	glfwDestroyWindow(context);
 	glfwTerminate();
 }
 
-const GLFWwindow* MainWindow::get_window_context()
+const GLFWwindow* Renderer::get_window_context()
 {
 	return context;
+}
+
+void Renderer::scene_loop()
+{
+}
+
+void Renderer::editor_loop()
+{
 }

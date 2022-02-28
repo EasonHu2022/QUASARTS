@@ -18,13 +18,28 @@
 #endif 
 
 //QUASARTS Trace 
+//Trace Macro for Engine Trace
 #define QTRACE(msg,...)		LogModule::Instance()->get_engine_logger()->trace(SUFFIX(msg),__VA_ARGS__)
+
+//Trace Macro for Game Trace
 #define TRACE(msg,...)		LogModule::Instance()->get_game_logger()->trace(SUFFIX(msg),__VA_ARGS__)
+
+//Log Macro for Engine Degbug
 #define QDEBUG(...)			LogModule::Instance()->get_engine_logger()->debug(__VA_ARGS__);
+
+//Log Macro for Game Degbug
 #define DEBUG(...)			LogModule::Instance()->get_game_logger()->debug(__VA_ARGS__);
+
+//Log Macro for Engine Error
 #define QERROR(msg,...)		LogModule::Instance()->get_engine_logger()->error(SUFFIX(msg),__VA_ARGS__);
+
+//Log Macro for Game Error
 #define ERROR(msg,...)		LogModule::Instance()->get_game_logger()->error(SUFFIX(msg),__VA_ARGS__);
+
+//Log Macro for Engine Warn
 #define QWARN(...)			LogModule::Instance()->get_engine_logger()->warn(__VA_ARGS__);
+
+//Log Macro for Game Warn
 #define WARN(...)			LogModule::Instance()->get_game_logger()->warn(__VA_ARGS__);
 
 

@@ -26,23 +26,27 @@ void Application::init_Application()
 	log->init();
 	modules.push_back(log);
 
-	//init window
-	main_window = new MainWindow();
-	main_window->Init();
+	
+
 	//init the memory module as the very first module
 	MemoryModule* mem = MemoryModule::Instance();
 	mem->init();
 	modules.push_back(mem);
+
+	//init window
+	renderer = new Renderer();
+	renderer->init();
+
 	
 	//test log
-	QTRACE("Test for QTRACE");
-	TRACE("Test for TRACE");
-	QDEBUG("Test for QDEBUG");
-	DEBUG("Test for DEBUG");
-	QERROR("Test for QERROR");
-	ERROR("Test for ERROR");
-	QWARN("Test for QWARN");
-	WARN("Test for WARN");
+	//QTRACE("Test for QTRACE");
+	//TRACE("Test for TRACE");
+	//QDEBUG("Test for QDEBUG");
+	//DEBUG("Test for DEBUG");
+	//QERROR("Test for QERROR");
+	//ERROR("Test for ERROR");
+	//QWARN("Test for QWARN");
+	//WARN("Test for WARN");
 	
 }
 
@@ -58,7 +62,7 @@ void Application::start_Application()
 		if (res != 0)
 		{
 			//log the error by res 
-			std::cout << "start error fatal!!" << std::endl;
+			QERROR("start error fatal!!!");
 			return;
 		}
 	}
@@ -69,10 +73,27 @@ void Application::start_Application()
 	while (true)
 	{
 		//the order of each loop is very important
-		//now I just put window and ui loop on the first
-		if (!main_window->Update())
-			break;
+		for (auto manager : managers)
+		{
+			manager->update();
+		}
 
+
+
+		//render loop
+		if (renderer->render_loop() == 1)
+		{
+			break;
+		}		
+
+
+
+		//if we have post process, put it here
+
+
+
+
+		//they are not involved in render frame
 		for (auto module : modules)
 		{
 			if (module->NeedUpdate)
@@ -97,6 +118,6 @@ void Application::stop_Application()
 		module->release();
 
 	}
-	main_window->Release();
+	renderer->release();
 
 }

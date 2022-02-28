@@ -1,9 +1,10 @@
 #pragma once
 #include "IModule.h"
+#include "IManager.h"
 
 #include <vector>
 #include <iostream>
-#include "MainWindow.h"
+#include "Renderer.h"
 
 
 class Application
@@ -41,7 +42,9 @@ public:
 public:
 	//hold the pointer of 3 very basic module
 	std::vector <IModule*> modules;
-	//ptr of mainwindow
-	MainWindow* main_window = nullptr;
+	//hold managers
+	std::vector <IManager*> managers;
+	//ptr of renderer
+	Renderer* renderer = nullptr;
 
 };

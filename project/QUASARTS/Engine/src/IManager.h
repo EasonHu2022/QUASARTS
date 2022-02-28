@@ -1,31 +1,31 @@
 #pragma once
-class ManagerCtrl
+class IManager
 {
 public:
 	/// <summary>
-	/// initialize the manager controller
+	/// initialize the manager 
 	/// </summary>
-	void init();
+	virtual void init() = 0;
 
 	/// <summary>
 	/// start the managers
 	/// </summary>
 	/// <returns></returns>
-	int start();
+	virtual int start() = 0;
 
 	/// <summary>
 	/// push update to each manager
 	/// </summary>
-	void update();
+	virtual void update() = 0;
 
 	/// <summary>
 	/// stop the managers
 	/// </summary>
 	/// <returns></returns>
-	int stop();
+	virtual int stop() = 0;
 
 	/// <summary>
 	/// release the manager controller
 	/// </summary>
-	void release();
+	virtual void release() = 0;
 };
