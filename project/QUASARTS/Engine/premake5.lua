@@ -42,6 +42,15 @@ project "Engine"
 			"_CONSOLE",
 			"GLFW_INCLUDE_NONE",
 		}
+
+	filter "system:linux"
+		system "Linux"
+		systemversion "latest"
+		staticruntime "On"
+		defines
+		{
+			"GLFW_INCLUDE_NONE"
+		}
 		
 	
 	filter "configurations:Debug"
