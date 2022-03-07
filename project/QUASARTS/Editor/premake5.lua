@@ -5,6 +5,7 @@ project "Editor"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
 	
+	
 	files
 	{
 		"src/**.h",
