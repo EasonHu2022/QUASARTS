@@ -48,7 +48,7 @@ int Renderer::init()
 		return 1;
 	glfwMakeContextCurrent(context);
 	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-	assert(status, "failed to init");
+	//assert(status, "failed to init");
 	glfwSwapInterval(1);
 	return 0;
 }
