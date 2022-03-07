@@ -20,7 +20,7 @@ private:
 	int width = 1280;
 	int height = 720;
 
-	char* title = "QUASARTS Editor";
+	const char* title = "QUASARTS Editor";
 
 
 public:

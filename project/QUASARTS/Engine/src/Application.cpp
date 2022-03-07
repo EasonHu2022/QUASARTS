@@ -39,14 +39,14 @@ void Application::init_Application()
 
 	
 	//test log
-	//QTRACE("Test for QTRACE");
-	//TRACE("Test for TRACE");
-	//QDEBUG("Test for QDEBUG");
-	//DEBUG("Test for DEBUG");
-	//QERROR("Test for QERROR");
-	//ERROR("Test for ERROR");
-	//QWARN("Test for QWARN");
-	//WARN("Test for WARN");
+	QTRACE("Test for QTRACE");
+	TRACE("Test for TRACE");
+	QDEBUG("Test for QDEBUG");
+	DEBUG("Test for DEBUG");
+	QERROR("Test for QERROR");
+	ERROR("Test for ERROR");
+	QWARN("Test for QWARN");
+	WARN("Test for WARN");
 	
 }
 

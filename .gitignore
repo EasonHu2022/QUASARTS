@@ -33,6 +33,7 @@ bld/
 *.vcxproj.user
 *.sln
 *.ini
+*.bak
 
 
 # ignore directories
