@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "LogModule.h"
+
 //singleton
 Renderer* Renderer::instance = nullptr;
 /// <summary>
@@ -46,6 +47,8 @@ int Renderer::init()
 	if (context == NULL)
 		return 1;
 	glfwMakeContextCurrent(context);
+	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	assert(status, "failed to init");
 	glfwSwapInterval(1);
 	return 0;
 }

@@ -18,6 +18,7 @@ project "Engine"
 		"Editor",
 		"GLFW",
 		"spdlog",
+		"Glad",
 	}
 	
 	includedirs
@@ -26,6 +27,8 @@ project "Engine"
 		"../Editor/src",
 		"../ThirdParty/GLFW/include/GLFW",
 		"../ThirdParty/spdlog/include",
+		"../ThirdParty/GLAD/include/glad",
+		"../ThirdParty/GLAD/include",
 	}
 
 	filter "system:windows"
@@ -37,6 +40,7 @@ project "Engine"
 			"_UNICODE",
             "UNICODE",
 			"_CONSOLE",
+			"GLFW_INCLUDE_NONE",
 		}
 		
 	
