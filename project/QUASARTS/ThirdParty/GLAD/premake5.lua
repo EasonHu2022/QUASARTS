@@ -5,7 +5,7 @@ project "Glad"
     staticruntime "off"
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
 
     files
     {
