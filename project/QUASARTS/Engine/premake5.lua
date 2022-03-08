@@ -57,7 +57,12 @@ project "Engine"
 		{
 			"GLFW_INCLUDE_NONE"
 		}
-		
+		links
+		{
+			"dl",
+			"pthread",
+			"X11"
+		}
 	
 	filter "configurations:Debug"
 		runtime "Debug"

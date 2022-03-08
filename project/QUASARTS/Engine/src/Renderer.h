@@ -4,10 +4,16 @@
 
 
 
-
+struct RenderContext
+{
+	int shader_program;
+	GLuint VAO_handle;
+};
 
 class  Renderer 
 {
+
+
 
 private:
 	static Renderer* instance;
@@ -17,6 +23,7 @@ public:
 	const GLFWwindow* get_window_context();
 private:
 	GLFWwindow* context;
+	RenderContext render_context;
 	int width = 1280;
 	int height = 720;
 
@@ -60,4 +67,6 @@ private:
 
 
 	void editor_loop();
+
+	void TestDrawDemo();
 };
