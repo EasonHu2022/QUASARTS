@@ -1,4 +1,4 @@
-project "sol2-develop"
+project "sol2"
 	kind "StaticLib"
 	language "C++"
 
