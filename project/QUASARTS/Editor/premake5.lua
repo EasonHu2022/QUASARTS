@@ -18,6 +18,7 @@ project "Editor"
 		"Base",
 		"GLFW",
 		"spdlog",
+		"ImGui",
 	}
 
 	includedirs
@@ -25,6 +26,7 @@ project "Editor"
 		"../Base/src",
 		"../ThirdParty/GLFW/include/GLFW",
 		"../ThirdParty/spdlog/include",
+		"../ThirdParty/ImGui",
 	}
 
 	filter "system:windows"

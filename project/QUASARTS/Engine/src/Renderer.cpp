@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "LogModule.h"
+#include "imgui.h"
 
 //singleton
 Renderer* Renderer::instance = nullptr;

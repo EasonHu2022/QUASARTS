@@ -19,6 +19,7 @@ project "Engine"
 		"GLFW",
 		"spdlog",
 		"Glad",
+		"ImGui",
 	}
 	
 	includedirs
@@ -29,6 +30,7 @@ project "Engine"
 		"../ThirdParty/spdlog/include",
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
+		"../ThirdParty/ImGui",
 	}
 
 	filter "system:windows"
