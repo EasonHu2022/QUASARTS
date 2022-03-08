@@ -17,4 +17,6 @@ include "Base"
 include "ThirdParty/GLFW"
 include "ThirdParty/spdlog"
 include "ThirdParty/GLAD"
-
+include "ThirdParty/Bullet3/Bullet3Collision"
+include "ThirdParty/Bullet3/Bullet3Common"
+include "ThirdParty/Bullet3/Bullet3Geometry"

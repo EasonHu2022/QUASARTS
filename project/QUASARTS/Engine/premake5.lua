@@ -19,6 +19,9 @@ project "Engine"
 		"GLFW",
 		"spdlog",
 		"Glad",
+		"Bullet3Collision",
+		"Bullet3Common",
+		"Bullet3Geometry",
 	}
 	
 	includedirs
@@ -29,6 +32,9 @@ project "Engine"
 		"../ThirdParty/spdlog/include",
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
+		"../ThirdParty/Bullet3/Bullet3Collision",
+		"../ThirdParty/Bullet3/Bullet3Common",
+		"../ThirdParty/Bullet3/Bullet3Geometry",
 	}
 
 	filter "system:windows"
