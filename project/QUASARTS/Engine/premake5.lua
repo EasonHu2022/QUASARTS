@@ -51,7 +51,12 @@ project "Engine"
 		{
 			"GLFW_INCLUDE_NONE"
 		}
-		
+		linkoptions
+		{
+			"-ldl",
+			"-lpthread",
+			"-lX11"
+		}
 	
 	filter "configurations:Debug"
 		runtime "Debug"
