@@ -51,11 +51,11 @@ project "Engine"
 		{
 			"GLFW_INCLUDE_NONE"
 		}
-		linkoptions
+		links
 		{
-			"-ldl",
-			"-lpthread",
-			"-lX11"
+			"dl",
+			"pthread",
+			"X11"
 		}
 	
 	filter "configurations:Debug"
