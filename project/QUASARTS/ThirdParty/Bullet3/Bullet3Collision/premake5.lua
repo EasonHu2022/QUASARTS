@@ -11,7 +11,7 @@ project "Bullet3Collision"
 		"**.cpp",
 		"**.h",
 
-		"**.lua"
+		"**.lua",
 	}
 	
 	includedirs

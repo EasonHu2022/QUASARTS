@@ -1,4 +1,5 @@
 #include "IManager.h"
+#include "btBulletCollisionCommon.h"
 
 
 class PhysicsManager : public IManager
@@ -22,6 +23,12 @@ public:
 
 
 private:
-	
+	btDefaultCollisionConfiguration*		collisionConfiguration;
+	btCollisionDispatcher*					dispatcher;
+	btBroadphaseInterface*					overlappingPairCache;
+	btCollisionWorld*						collisionWorld;
+	// Store collision shapes.
+	// Re-use collision shapes as often as possible, release them in PhysicsManager::release().
+	btAlignedObjectArray<btCollisionShape*> collisionShapes;
 
 };
