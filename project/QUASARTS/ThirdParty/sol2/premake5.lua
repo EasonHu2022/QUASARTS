@@ -24,7 +24,7 @@ project "sol2"
 		cppdialect "C++17"
 		staticruntime "On"
 
-	filter "system:windows"
+	filter "system:linux"
 		systemversion "latest"
 		cppdialect "C++17"
 		staticruntime "On"
