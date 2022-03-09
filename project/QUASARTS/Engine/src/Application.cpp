@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "MemoryModule.h"
 #include "LogModule.h"
+#include "PhysicsManager.h"
 
 //singleton
 Application* Application::instance = nullptr;
@@ -48,6 +49,13 @@ void Application::init_Application()
 	QWARN("Test for QWARN");
 	WARN("Test for WARN");
 	
+
+
+	//init physics manager
+	PhysicsManager* phys = PhysicsManager::Instance();
+	phys->init();
+	managers.push_back(phys);
+
 }
 
 /// <summary>
@@ -59,6 +67,18 @@ void Application::start_Application()
 	for (auto module : modules)
 	{
 		int res = module->start();
+		if (res != 0)
+		{
+			//log the error by res 
+			QERROR("start error fatal!!!");
+			return;
+		}
+	}
+
+	//call manager start in a certain order
+	for (auto manager : managers)
+	{
+		int res = manager->start();
 		if (res != 0)
 		{
 			//log the error by res 
