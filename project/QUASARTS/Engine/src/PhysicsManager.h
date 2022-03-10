@@ -31,4 +31,9 @@ private:
 	// Re-use collision shapes as often as possible, release them in PhysicsManager::release().
 	btAlignedObjectArray<btCollisionShape*> collisionShapes;
 
+
+private:
+	void runTests_init();
+	void runTests_start();
+
 };
