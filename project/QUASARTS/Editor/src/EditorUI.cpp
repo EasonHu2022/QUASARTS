@@ -109,7 +109,7 @@ std::string OpenFileDialogue() {
 #else
 std::string OpenFileDialogue() {
     char filename[1024];
-    FILE* f = popen("zenity --file - selection --file - filter = *.cpp", "r");
+    FILE* f = popen("zenity --file-selection --file-filter=*.cpp","r");
     fgets(filename, 1024, f);
     std::string fileNameStr;
     fileNameStr = filename;
