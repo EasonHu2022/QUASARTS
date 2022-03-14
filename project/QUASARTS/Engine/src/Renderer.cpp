@@ -252,6 +252,8 @@ void Renderer::editor_loop(GLFWwindow* window)
 	ImGui::NewFrame();
 
 	file_input();
+	menubar();
+	
 
 	// Rendering
 	ImGui::Render();
