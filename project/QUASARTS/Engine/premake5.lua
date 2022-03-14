@@ -20,6 +20,11 @@ project "Engine"
 		"spdlog",
 		"Glad",
 		"ImGui",
+		"Bullet3Collision",
+		"Bullet3Common",
+		"Bullet3Geometry",
+		"BulletCollision",
+		"LinearMath",
 	}
 	
 	includedirs
@@ -31,6 +36,10 @@ project "Engine"
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
 		"../ThirdParty/ImGui",
+		"../ThirdParty/Bullet3/Bullet3Collision",
+		"../ThirdParty/Bullet3/Bullet3Common",
+		"../ThirdParty/Bullet3/Bullet3Geometry",
+		"../ThirdParty/Bullet3",
 	}
 
 	filter "system:windows"
@@ -53,7 +62,12 @@ project "Engine"
 		{
 			"GLFW_INCLUDE_NONE"
 		}
-		
+		links
+		{
+			"dl",
+			"pthread",
+			"X11"
+		}
 	
 	filter "configurations:Debug"
 		runtime "Debug"
