@@ -7,10 +7,6 @@
 // Decide OS
 #if defined(_WIN32)
 #include <windows.h>
-#elif defined(__linux__)
-#include "LinuxFilePrompt.cpp"
-#else
-std::cout<<"error"
 #endif
 
 void init_GUI(GLFWwindow*);
