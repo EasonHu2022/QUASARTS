@@ -1,6 +1,5 @@
 #include "Renderer.h"
 #include "LogModule.h"
-#include "imgui.h"
 
 //singleton
 Renderer* Renderer::instance = nullptr;
@@ -150,6 +149,7 @@ int Renderer::init()
 	//for test something(draw something on the screen)
 	TestDrawDemo();
 
+	init_GUI(context);
 
 	glfwSwapInterval(1);
 	return 0;
@@ -194,7 +194,7 @@ int Renderer::render_loop()
 
 
 	//loop for Editor UI
-	editor_loop();
+	editor_loop(context);
 
 
 
@@ -217,6 +217,11 @@ int Renderer::stop()
 /// </summary>
 void Renderer::release()
 {
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	
 	glfwDestroyWindow(context);
 	glfwTerminate();
 }
@@ -239,6 +244,20 @@ void Renderer::scene_loop()
 	glBindVertexArray(0);//unbind
 }
 
-void Renderer::editor_loop()
+void Renderer::editor_loop(GLFWwindow* window)
 {
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	file_input();
+
+	// Rendering
+	ImGui::Render();
+	int display_w, display_h;
+	glfwGetFramebufferSize(window, &display_w, &display_h);
+	
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "glfw3.h"
 #include "glad.h"
-
+#include "EditorUI.h"
 
 
 struct RenderContext
@@ -66,7 +66,7 @@ private:
 	void scene_loop();
 
 
-	void editor_loop();
+	void editor_loop(GLFWwindow*);
 
 	void TestDrawDemo();
 };
