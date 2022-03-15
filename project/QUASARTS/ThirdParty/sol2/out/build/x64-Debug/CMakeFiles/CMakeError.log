@@ -1,0 +1,187 @@
+Performing C++ SOURCE FILE Test CXX_CHECK_FLAG_TEMPLATE_DEBUGGING_MODE failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_8ad66 && [1/2] Building CXX object CMakeFiles\cmTC_8ad66.dir\src.cxx.obj
+cl : Command line warning D9002 : ignoring unknown option '/template-debugging-mode'
+[2/2] Linking CXX executable cmTC_8ad66.exe
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_CHECK_FLAG_TEMPLATE_DEBUGGING_MODE failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_c4612 && [1/2] Building C object CMakeFiles\cmTC_c4612.dir\src.c.obj
+cl : Command line warning D9002 : ignoring unknown option '/template-debugging-mode'
+[2/2] Linking C executable cmTC_c4612.exe
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_CHECK_FLAG_PEDANTIC failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_38434 && [1/2] Building CXX object CMakeFiles\cmTC_38434.dir\src.cxx.obj
+cl : Command line warning D9002 : ignoring unknown option '/pedantic'
+[2/2] Linking CXX executable cmTC_38434.exe
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_CHECK_FLAG_PEDANTIC failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_31525 && [1/2] Building C object CMakeFiles\cmTC_31525.dir\src.c.obj
+cl : Command line warning D9002 : ignoring unknown option '/pedantic'
+[2/2] Linking C executable cmTC_31525.exe
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_CHECK_FLAG_WARN_PEDANTIC failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_9c4e3 && [1/2] Building CXX object CMakeFiles\cmTC_9c4e3.dir\src.cxx.obj
+cl : Command line warning D9002 : ignoring unknown option '/warn-pedantic'
+[2/2] Linking CXX executable cmTC_9c4e3.exe
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_CHECK_FLAG_WARN_PEDANTIC failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_845f4 && [1/2] Building C object CMakeFiles\cmTC_845f4.dir\src.c.obj
+cl : Command line warning D9002 : ignoring unknown option '/warn-pedantic'
+[2/2] Linking C executable cmTC_845f4.exe
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_CHECK_FLAG_WARN_EXTRA failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_4a818 && [1/2] Building CXX object CMakeFiles\cmTC_4a818.dir\src.cxx.obj
+cl : Command line warning D9002 : ignoring unknown option '/warn-extra'
+[2/2] Linking CXX executable cmTC_4a818.exe
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_CHECK_FLAG_WARN_EXTRA failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_63be2 && [1/2] Building C object CMakeFiles\cmTC_63be2.dir\src.c.obj
+cl : Command line warning D9002 : ignoring unknown option '/warn-extra'
+[2/2] Linking C executable cmTC_63be2.exe
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_DIAGNOSTIC_UNKNOWN_WARNING failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_667e8 && [1/2] Building CXX object CMakeFiles\cmTC_667e8.dir\src.cxx.obj
+FAILED: CMakeFiles/cmTC_667e8.dir/src.cxx.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo /TP -DCXX_DIAGNOSTIC_UNKNOWN_WARNING  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd   -wounknown-warning -std:c++17 /showIncludes /FoCMakeFiles\cmTC_667e8.dir\src.cxx.obj /FdCMakeFiles\cmTC_667e8.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.cxx
+cl : Command line error D8021 : invalid numeric argument '/wounknown-warning'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_DIAGNOSTIC_UNKNOWN_WARNING failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_94e8f && [1/2] Building C object CMakeFiles\cmTC_94e8f.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_94e8f.dir/src.c.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo -DC_DIAGNOSTIC_UNKNOWN_WARNING  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -wounknown-warning -std:c11 /showIncludes /FoCMakeFiles\cmTC_94e8f.dir\src.c.obj /FdCMakeFiles\cmTC_94e8f.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c
+cl : Command line error D8021 : invalid numeric argument '/wounknown-warning'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_DIAGNOSTIC_UNKNOWN_WARNING_OPTION failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_7e835 && [1/2] Building CXX object CMakeFiles\cmTC_7e835.dir\src.cxx.obj
+FAILED: CMakeFiles/cmTC_7e835.dir/src.cxx.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo /TP -DCXX_DIAGNOSTIC_UNKNOWN_WARNING_OPTION  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd   -wounknown-warning-option -std:c++17 /showIncludes /FoCMakeFiles\cmTC_7e835.dir\src.cxx.obj /FdCMakeFiles\cmTC_7e835.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.cxx
+cl : Command line error D8021 : invalid numeric argument '/wounknown-warning-option'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_DIAGNOSTIC_UNKNOWN_WARNING_OPTION failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_424f0 && [1/2] Building C object CMakeFiles\cmTC_424f0.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_424f0.dir/src.c.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo -DC_DIAGNOSTIC_UNKNOWN_WARNING_OPTION  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -wounknown-warning-option -std:c11 /showIncludes /FoCMakeFiles\cmTC_424f0.dir\src.c.obj /FdCMakeFiles\cmTC_424f0.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c
+cl : Command line error D8021 : invalid numeric argument '/wounknown-warning-option'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_DIAGNOSTIC_MICROSOFT_CAST failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_42051 && [1/2] Building CXX object CMakeFiles\cmTC_42051.dir\src.cxx.obj
+FAILED: CMakeFiles/cmTC_42051.dir/src.cxx.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo /TP -DCXX_DIAGNOSTIC_MICROSOFT_CAST  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd   -womicrosoft-cast -std:c++17 /showIncludes /FoCMakeFiles\cmTC_42051.dir\src.cxx.obj /FdCMakeFiles\cmTC_42051.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.cxx
+cl : Command line error D8021 : invalid numeric argument '/womicrosoft-cast'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_DIAGNOSTIC_MICROSOFT_CAST failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_169fb && [1/2] Building C object CMakeFiles\cmTC_169fb.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_169fb.dir/src.c.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo -DC_DIAGNOSTIC_MICROSOFT_CAST  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -womicrosoft-cast -std:c11 /showIncludes /FoCMakeFiles\cmTC_169fb.dir\src.c.obj /FdCMakeFiles\cmTC_169fb.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c
+cl : Command line error D8021 : invalid numeric argument '/womicrosoft-cast'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_DIAGNOSTIC_NOEXCEPT_TYPE failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_bc297 && [1/2] Building CXX object CMakeFiles\cmTC_bc297.dir\src.cxx.obj
+FAILED: CMakeFiles/cmTC_bc297.dir/src.cxx.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo /TP -DCXX_DIAGNOSTIC_NOEXCEPT_TYPE  /DWIN32 /D_WINDOWS /GR /EHsc  /Zi /Ob0 /Od /RTC1 -MDd   -wonoexcept-type -std:c++17 /showIncludes /FoCMakeFiles\cmTC_bc297.dir\src.cxx.obj /FdCMakeFiles\cmTC_bc297.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.cxx
+cl : Command line error D8021 : invalid numeric argument '/wonoexcept-type'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_DIAGNOSTIC_NOEXCEPT_TYPE failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_3417f && [1/2] Building C object CMakeFiles\cmTC_3417f.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_3417f.dir/src.c.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo -DC_DIAGNOSTIC_NOEXCEPT_TYPE  /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd   -wonoexcept-type -std:c11 /showIncludes /FoCMakeFiles\cmTC_3417f.dir\src.c.obj /FdCMakeFiles\cmTC_3417f.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c
+cl : Command line error D8021 : invalid numeric argument '/wonoexcept-type'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+Determining if the include file pthread.h exists failed with the following output:
+Change Dir: C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/sol2/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files (x86)/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_3a934 && [1/2] Building C object CMakeFiles\cmTC_3a934.dir\CheckIncludeFile.c.obj
+FAILED: CMakeFiles/cmTC_3a934.dir/CheckIncludeFile.c.obj 
+C:\PROGRA~2\MICROS~3\2022\COMMUN~1\VC\Tools\MSVC\1430~1.307\bin\Hostx64\x64\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Zi /Ob0 /Od /RTC1 -MDd -std:c11 /showIncludes /FoCMakeFiles\cmTC_3a934.dir\CheckIncludeFile.c.obj /FdCMakeFiles\cmTC_3a934.dir\ /FS -c C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\CheckIncludeFile.c
+C:\Users\Computer\source\repos\EasonHu2022\QUASARTS\project\QUASARTS\ThirdParty\sol2\out\build\x64-Debug\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'pthread.h': No such file or directory
+ninja: build stopped: subcommand failed.
+
+
+

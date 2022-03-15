@@ -15,11 +15,11 @@ private:
 
 
 public:
-	virtual void init();
-	virtual int start();
-	virtual void update();
-	virtual int stop();
-	virtual void release();
+	void init();
+	int start();
+	void update();
+	int stop();
+	void release();
 
 
 private:

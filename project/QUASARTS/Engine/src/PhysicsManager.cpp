@@ -1,5 +1,6 @@
 #include "PhysicsManager.h"
 #include "LogModule.h"
+#include "EventManager.h"
 
 
 // singleton
@@ -12,17 +13,13 @@ PhysicsManager* PhysicsManager::instance = nullptr;
 PhysicsManager* PhysicsManager::Instance()
 {
 	if (nullptr == instance)
-		return new PhysicsManager();
-	else
-		return instance;
+		instance = new PhysicsManager();
+	return instance;
 }
 
 
 void PhysicsManager::init()
 {
-	QDEBUG( "Test for PhysicsManager init()" );
-
-
 	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
 	collisionConfiguration = new btDefaultCollisionConfiguration();
 
@@ -91,6 +88,7 @@ void PhysicsManager::release()
 
 void PhysicsManager::runTests_init()
 {
+	
 	// Test collision detection //
 
 	btCollisionObject* testCollisionObject = new btCollisionObject();
@@ -117,10 +115,29 @@ void PhysicsManager::runTests_init()
 
 void PhysicsManager::runTests_start()
 {
-	QDEBUG("Tests in PhysicsManager start():");
+
+	// Test event submission.
+	{
+		// Events submitted in reverse order of priority to demonstrate the queue's ability to sort by priority level.
+
+		// Event 0
+		Event newEvent(Event::EventType::KeyPressed, Event::EventPriority::High);
+		EventManager::Instance()->submit_event(newEvent);
+
+		// Event 1
+		newEvent.set_type(Event::EventType::KeyReleased);
+		newEvent.set_priority(Event::EventPriority::Medium);
+		EventManager::Instance()->submit_event( newEvent );
+
+		// Event 2
+		newEvent.set_type(Event::EventType::KeyPressed);
+		newEvent.set_priority(Event::EventPriority::Low);
+		EventManager::Instance()->submit_event(newEvent);
+	}
+	EventManager::Instance()->log_queue();
+
 
 	char msg[128];
-
 	QDEBUG("------------------------------");
 	snprintf(msg, 128, "Number of collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
 	QDEBUG(msg);
