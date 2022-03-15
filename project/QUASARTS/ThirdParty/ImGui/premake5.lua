@@ -3,7 +3,7 @@ project "ImGui"
     language "C++"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-obj/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
 
 	includedirs
 	{

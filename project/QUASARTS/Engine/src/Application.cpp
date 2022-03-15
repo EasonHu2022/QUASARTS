@@ -2,6 +2,7 @@
 #include "MemoryModule.h"
 #include "LogModule.h"
 #include "PhysicsManager.h"
+#include "FileModule.h"
 
 //singleton
 Application* Application::instance = nullptr;
@@ -17,6 +18,8 @@ Application* Application::Instance()
 		return instance;
 }
 
+//todo change mode to register
+
 /// <summary>
 /// initialize the application
 /// </summary>
@@ -27,7 +30,10 @@ void Application::init_Application()
 	log->init();
 	modules.push_back(log);
 
-	
+	//init the File module
+	FileModule* file = FileModule::Instance();
+	file->init();
+	modules.push_back(file);
 
 	//init the memory module as the very first module
 	MemoryModule* mem = MemoryModule::Instance();
@@ -40,14 +46,14 @@ void Application::init_Application()
 
 	
 	//test log
-	QTRACE("Test for QTRACE");
-	TRACE("Test for TRACE");
-	QDEBUG("Test for QDEBUG");
-	DEBUG("Test for DEBUG");
-	QERROR("Test for QERROR");
-	ERROR("Test for ERROR");
-	QWARN("Test for QWARN");
-	WARN("Test for WARN");
+	//QTRACE("Test for QTRACE");
+	//TRACE("Test for TRACE");
+	//QDEBUG("Test for QDEBUG");
+	//DEBUG("Test for DEBUG");
+	//QERROR("Test for QERROR");
+	//ERROR("Test for ERROR");
+	//QWARN("Test for QWARN");
+	//WARN("Test for WARN");
 	
 
 
