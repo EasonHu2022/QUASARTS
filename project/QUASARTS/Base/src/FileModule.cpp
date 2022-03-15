@@ -36,8 +36,9 @@ int FileModule::start()
 {
 	//test
 	//test here
-	//const char* workdir = "F:\\WorkSpace\\TestProject";
-	//create_workdir(workdir);
+	const char* wdir = "F:\\WorkSpace";
+	const char* projName = "TestProject";
+	create_workdir(wdir, projName);
 	return 0;
 }
 
@@ -139,12 +140,14 @@ int FileModule::update_resource_node()
 
 }
 
-int FileModule::create_workdir(const char* p)
+int FileModule::create_workdir(const char* p, const char* projectName)
 {
-	cur_workdir = p;
-	if (0 == access(p, 0))
+	const char* sig = "\\";
+	cur_workdir = char_merge(p, sig);
+	cur_workdir = char_merge(cur_workdir, projectName);
+	if (0 == access(cur_workdir, 0))
 	{
-		QERROR("Directory exists in {0}", p);
+		QERROR("Directory exists in {0}", cur_workdir);
 		update_resource_node();
 		return 0;
 		//return 1;
@@ -152,7 +155,7 @@ int FileModule::create_workdir(const char* p)
 
 
 
-	char* mkCmd = char_merge(cmd,p);
+	char* mkCmd = char_merge(cmd, cur_workdir);
 
 	QDEBUG("create dir at {0}", mkCmd);
 	system(mkCmd);

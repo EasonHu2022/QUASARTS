@@ -90,7 +90,7 @@ public:
 	/// </summary>
 	/// <param name="p"> path </param>
 	/// <returns></returns>
-	int create_workdir(const char* p);
+	int create_workdir(const char* p, const char* projectName);
 
 	/// <summary>
 	/// create resouce node from cur work dir
