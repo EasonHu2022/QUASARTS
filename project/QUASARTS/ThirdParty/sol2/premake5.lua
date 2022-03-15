@@ -3,7 +3,7 @@ project "sol2"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
 
 	files
 	{
