@@ -36,9 +36,9 @@ int FileModule::start()
 {
 	//test
 	//test here
-	const char* wdir = "F:\\WorkSpace";
-	const char* projName = "TestProject";
-	create_workdir(wdir, projName);
+	//const char* wdir = "F:\\WorkSpace";
+	//const char* projName = "TestProject";
+	//create_workdir(wdir, projName);
 	return 0;
 }
 
