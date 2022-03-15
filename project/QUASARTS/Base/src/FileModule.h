@@ -61,7 +61,7 @@ public:
 	struct QFileNode
 	{
 		char* name;
-		//path relative to root
+		//abs path
 		char* path;
 		//type
 		//todo
@@ -69,7 +69,7 @@ public:
 	struct QDirectoriesNode
 	{
 		char* name;
-		//path relative to root
+		//abs path
 		char* path;
 		//list of children
 		std::vector<QDirectoriesNode*> children;
@@ -88,7 +88,8 @@ public:
 	/// <summary>
 	/// Create the whole working dir
 	/// </summary>
-	/// <param name="p"> path </param>
+	/// <param name="p">path</param>
+	/// <param name="projectName">project folder's name</param>
 	/// <returns></returns>
 	int create_workdir(const char* p, const char* projectName);
 
