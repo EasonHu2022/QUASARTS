@@ -110,10 +110,15 @@ std::string OpenFileDialogue() {
 std::string OpenFileDialogue() {
     char filename[1024];
     FILE* f = popen("zenity --file-selection --file-filter=*.cpp","r");
-    fgets(filename, 1024, f);
-    std::string fileNameStr;
-    fileNameStr = filename;
-    return fileNameStr;
+    if (f == NULL)
+        return "N/A";
+    else{
+        fgets(filename, 1024, f);
+        std::string fileNameStr;
+        fileNameStr = filename;
+        return fileNameStr;
+    }
+    
 }
 #endif
 
@@ -123,9 +128,35 @@ void menubar() {
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Open File")) {
+            if (ImGui::MenuItem("New Project")) {
+
+                
+
+            }
+            if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 std::cout << OpenFileDialogue().c_str() << std::endl;
+
+            }
+            if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
+
+                
+
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("New Scene", "Ctrl+N")) {
+
+                
+
+            }
+            if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
+
+                
+
+            }
+            if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
+
+               
 
             }
             ImGui::EndMenu();
@@ -133,11 +164,55 @@ void menubar() {
 
         if (ImGui::BeginMenu("Edit"))
         {
+            if (ImGui::MenuItem("Select All", "Ctrl+A")) {
+
+            }
+            if (ImGui::MenuItem("Deselect All", "Ctrl+D")) {
+
+            }
+            if (ImGui::MenuItem("Select Children", "Shift+C")) {
+
+            }
+            if (ImGui::MenuItem("Invert Selection", "Ctrl+I")) {
+
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("Cut", "Ctrl+X")) {
+
+            }
+            if (ImGui::MenuItem("Copy", "Ctrl+C")) {
+
+            }
+            if (ImGui::MenuItem("Paste", "Ctrl+V")) {
+
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("Play", "Ctrl+P")) {
+
+            }
+            if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
+
+            }
             ImGui::EndMenu();
         }
 
         if (ImGui::BeginMenu("Assets"))
         {
+            if (ImGui::MenuItem("Add Path")) {
+
+            }
+            if (ImGui::MenuItem("Add Script")) {
+
+            }
+            if (ImGui::MenuItem("Delete Script")) {
+
+            }
+            if (ImGui::MenuItem("Add Attribute")) {
+
+            }
+            if (ImGui::MenuItem("Delete Attribute")) {
+
+            }
             ImGui::EndMenu();
         }
 
