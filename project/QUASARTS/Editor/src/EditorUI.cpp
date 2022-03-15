@@ -83,3 +83,74 @@ void file_input() {
 
     ImGui::End();
 }
+#if defined(_WIN32)
+std::string OpenFileDialogue() {
+    OPENFILENAME ofn;
+    wchar_t fileName[MAX_PATH] = L"";
+    ZeroMemory(&ofn, sizeof(ofn));
+
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFilter = L"All Files (*.*)\0*.cpp\0";
+    ofn.lpstrFile = fileName;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+    ofn.lpstrDefExt = L"";
+
+    if (GetOpenFileName(&ofn)) {
+        std::wstring ws(fileName);
+        // your new String
+        std::string fileNameStr(ws.begin(), ws.end());
+        return fileNameStr;
+    }
+    else
+        return "N/A";
+}
+#else
+std::string OpenFileDialogue() {
+    char filename[1024];
+    FILE* f = popen("zenity --file-selection --file-filter=*.cpp","r");
+    fgets(filename, 1024, f);
+    std::string fileNameStr;
+    fileNameStr = filename;
+    return fileNameStr;
+}
+#endif
+
+void menubar() {
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open File")) {
+
+                std::cout << OpenFileDialogue().c_str() << std::endl;
+
+            }
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Edit"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Assets"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Object"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Help"))
+        {
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+
+}
