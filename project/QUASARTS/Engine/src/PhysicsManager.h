@@ -1,5 +1,8 @@
+#pragma once
+
 #include "IManager.h"
 #include "btBulletCollisionCommon.h"
+#include "EventModule.h"
 
 
 class PhysicsManager : public IManager
@@ -7,10 +10,9 @@ class PhysicsManager : public IManager
 // singleton
 private:
 	static PhysicsManager* instance;
+	PhysicsManager() {};
 public:
 	static PhysicsManager* Instance();
-private:
-	PhysicsManager() {};
 	~PhysicsManager() {};
 
 
@@ -35,5 +37,9 @@ private:
 private:
 	void runTests_init();
 	void runTests_start();
+
+public:
+	void handler( const EventModule::Event& evt );
+	void handler2( const EventModule::Event& evt );
 
 };

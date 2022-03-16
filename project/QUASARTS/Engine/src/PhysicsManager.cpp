@@ -1,6 +1,5 @@
 #include "PhysicsManager.h"
 #include "LogModule.h"
-#include "EventManager.h"
 
 
 // singleton
@@ -121,20 +120,26 @@ void PhysicsManager::runTests_start()
 		// Events submitted in reverse order of priority to demonstrate the queue's ability to sort by priority level.
 
 		// Event 0
-		Event newEvent(Event::EventType::KeyPressed, Event::EventPriority::High);
-		EventManager::Instance()->submit_event(newEvent);
+		EventModule::Instance()->submit_event( "KeyPressed", EventModule::EventPriority::High );
 
 		// Event 1
-		newEvent.set_type(Event::EventType::KeyReleased);
-		newEvent.set_priority(Event::EventPriority::Medium);
-		EventManager::Instance()->submit_event( newEvent );
+		EventModule::Instance()->submit_event( "KeyReleased", EventModule::EventPriority::Medium );
 
 		// Event 2
-		newEvent.set_type(Event::EventType::KeyPressed);
-		newEvent.set_priority(Event::EventPriority::Low);
-		EventManager::Instance()->submit_event(newEvent);
+		EventModule::Instance()->submit_event("KeyPressed", EventModule::EventPriority::Low);
 	}
-	EventManager::Instance()->log_queue();
+	EventModule::Instance()->log_queue();
+
+	// Test event handler registration.
+	EventModule::Instance()->register_handler(
+		"KeyPressed",
+		EVENT_CALLBACK(handler)
+	);
+	EventModule::Instance()->register_handler(
+		"KeyReleased",
+		EVENT_CALLBACK(handler2)
+	);
+
 
 
 	char msg[128];
@@ -219,3 +224,21 @@ void PhysicsManager::runTests_start()
 	}
 
 } // runTests_start()
+
+void PhysicsManager::handler( const EventModule::Event& evt )
+{
+
+	char msg[128];
+	snprintf(msg, 128, "PhysicsManager::handler() called, received Event: %s", evt.to_string().c_str() );
+	QDEBUG(msg);
+
+}
+
+void PhysicsManager::handler2(const EventModule::Event& evt )
+{
+
+	char msg[128];
+	snprintf(msg, 128, "PhysicsManager::handler2() called, received Event: %s", evt.to_string().c_str());
+	QDEBUG(msg);
+
+}
