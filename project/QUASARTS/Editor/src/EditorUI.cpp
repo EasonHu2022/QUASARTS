@@ -1,6 +1,12 @@
 #include "EditorUI.h"
 
-void init_GUI(GLFWwindow* window) {
+Editor::Editor()
+{
+    new_project = false;
+    folder_path = "";
+}
+
+void Editor::init_GUI(GLFWwindow* window) {
 
 
     // GL 3.0 + GLSL 130
@@ -20,9 +26,10 @@ void init_GUI(GLFWwindow* window) {
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
 }
 
-void file_input() {
+void Editor::file_input() {
 
     ImGui::Begin("New Window");
 
@@ -84,7 +91,7 @@ void file_input() {
     ImGui::End();
 }
 #if defined(_WIN32)
-std::string OpenFileDialogue() {
+std::string Editor::OpenFileDialogue() {
     OPENFILENAME ofn;
     wchar_t fileName[MAX_PATH] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
@@ -97,7 +104,7 @@ std::string OpenFileDialogue() {
     ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = L"";
 
-    if (GetOpenFileName(&ofn)) {
+    if (GetSaveFileName(&ofn)) {
         std::wstring ws(fileName);
         // your new String
         std::string fileNameStr(ws.begin(), ws.end());
@@ -106,8 +113,30 @@ std::string OpenFileDialogue() {
     else
         return "N/A";
 }
+
+std::string Editor::OpenFolderDialogue() {
+    wchar_t path[MAX_PATH] = L"";
+    BROWSEINFO bi;
+
+    bi.hwndOwner = NULL;
+    bi.pidlRoot = NULL;
+    bi.pszDisplayName = path;	// This is just for display: not useful
+    bi.lpszTitle = L"Choose Client Directory";
+    bi.ulFlags = BIF_RETURNONLYFSDIRS;
+    bi.lpfn = NULL;
+    bi.lParam = 0;
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (SHGetPathFromIDList(pidl, path)) {
+        std::wstring ws(path);
+        std::string pathstr(ws.begin(), ws.end());
+        return pathstr;
+    }
+    else
+        return "N/A";
+    
+}
 #else
-std::string OpenFileDialogue() {
+std::string Editor::OpenFileDialogue() {
     char filename[1024];
     FILE* f = popen("zenity --file-selection --file-filter=*.cpp","r");
     if (f == NULL)
@@ -120,19 +149,73 @@ std::string OpenFileDialogue() {
     }
     
 }
+
+std::string Editor::OpenFolderDialogue() {
+    char foldername[1024];
+    FILE* f = popen("zenity  --file-selection --directory", "r");
+    if (f == NULL)
+        return "N/A";
+    else {
+        fgets(foldername, 1024, f);
+        std::string folderNameStr;
+        folderNameStr = foldername;
+        return folderNameStr;
+    }
+
+}
 #endif
 
-void menubar() {
+void Editor::newProject() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = ""; 
+    static char buf2[MAX_PATH] = "";
+    for (int i = 0; i < folder_path.length(); i++) {
+        buf2[i] = folder_path[i];
+    }
+    std::string check = "pokemon";
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
+    ImGui::PopItemWidth();
+    if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 64)) {
+        folder_path = buf2;
+    }
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2);
+    if (ImGui::Button("  Browse  ")) {
+        std::string temp_path = OpenFolderDialogue();
+        if (temp_path.compare("N/A")!=0)
+            folder_path = temp_path;
+            
+    }
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0 && strlen(buf2) != 0) {
+            FileModule newModule;
+            newModule.create_workdir(buf2, buf1);
+            new_project = false;
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+            new_project = false;
+    }
+    
+
+    ImGui::End();
+
+}
+
+void Editor::menubar() {
 
     if (ImGui::BeginMainMenuBar())
     {
+        
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New Project")) {
-
-                
-
-            }
+            ImGui::MenuItem("New Project", NULL, &new_project);
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 std::cout << OpenFileDialogue().c_str() << std::endl;
@@ -227,5 +310,5 @@ void menubar() {
         }
         ImGui::EndMainMenuBar();
     }
-
+    
 }
