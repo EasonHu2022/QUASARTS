@@ -17,6 +17,8 @@ Renderer* Renderer::Instance()
 	}
 }
 
+Editor editor;
+
 static void glfw_error_callback(int error, const char* description)
 {
 	//later change it into log system
@@ -148,8 +150,7 @@ int Renderer::init()
 
 	//for test something(draw something on the screen)
 	TestDrawDemo();
-
-	init_GUI(context);
+	editor.init_GUI(context);
 
 	glfwSwapInterval(1);
 	return 0;
@@ -251,8 +252,10 @@ void Renderer::editor_loop(GLFWwindow* window)
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	file_input();
-	menubar();
+	editor.file_input();
+	editor.menubar();
+	if (editor.new_project)
+		editor.newProject();
 	
 
 	// Rendering
