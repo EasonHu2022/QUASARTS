@@ -8,7 +8,7 @@ workspace "QUASARTS" --solution name
 		"Debug",
 		"Release"
 	}
-	startproject "Engine"
+	startproject "Editor"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 	

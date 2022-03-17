@@ -1,6 +1,6 @@
 project "Editor"
 	language "C++"
-	kind "StaticLib"
+	kind "ConsoleApp"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
@@ -15,15 +15,13 @@ project "Editor"
 	
 	links
 	{
-		"Base",
-		"GLFW",
-		"spdlog",
-		"ImGui",
+		"Engine",
 	}
 
 	includedirs
 	{
 		"../Base/src",
+		"../Engine/src",
 		"../ThirdParty/GLFW/include/GLFW",
 		"../ThirdParty/spdlog/include",
 		"../ThirdParty/ImGui",
