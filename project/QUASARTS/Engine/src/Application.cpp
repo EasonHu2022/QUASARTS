@@ -1,167 +1,63 @@
 #include "Application.h"
-#include "MemoryModule.h"
-#include "LogModule.h"
-#include "PhysicsManager.h"
-#include "FileModule.h"
-#include "EventModule.h"
-
-//singleton
-Application* Application::instance = nullptr;
-/// <summary>
-/// Create a singleton of the application
-/// </summary>
-/// <returns>The unique instance of the application</returns>
-Application* Application::Instance()
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+namespace Engine
 {
-	if (nullptr == instance)
-		return new Application();
-	else
-		return instance;
-}
-
-//todo change mode to register
-
-/// <summary>
-/// initialize the application
-/// </summary>
-void Application::init_Application()
-{
-	//init the log module
-	LogModule* log = LogModule::Instance();
-	log->init();
-	modules.push_back(log);
-
-	//init the File module
-	FileModule* file = FileModule::Instance();
-	file->init();
-	modules.push_back(file);
-
-	//init the memory module as the very first module
-	MemoryModule* mem = MemoryModule::Instance();
-	mem->init();
-	modules.push_back(mem);
-
-	//init window
-	renderer = new Renderer();
-	renderer->init();
-
 	
-	//test log
-	//QTRACE("Test for QTRACE");
-	//TRACE("Test for TRACE");
-	//QDEBUG("Test for QDEBUG");
-	//DEBUG("Test for DEBUG");
-	//QERROR("Test for QERROR");
-	//ERROR("Test for ERROR");
-	//QWARN("Test for QWARN");
-	//WARN("Test for WARN");
-	
-
-
-	//init event module
-	EventModule* eve = EventModule::Instance();
-	eve->init();
-	modules.push_back(eve);
-
-	//init physics manager
-	PhysicsManager* phys = PhysicsManager::Instance();
-	phys->init();
-	managers.push_back(phys);
-
-
-}
-
-/// <summary>
-/// start the application
-/// </summary>
-void Application::start_Application()
-{
-	//call module start in a certain order
-	for (auto module : modules)
+	Application::Application()
 	{
-		int res = module->start();
-		if (res != 0)
-		{
-			//log the error by res 
-			QERROR("start error fatal!!!");
-			return;
-		}
 	}
-
-	//call manager start in a certain order
-	for (auto manager : managers)
+	Application:: ~Application()
 	{
-		int res = manager->start();
-		if (res != 0)
-		{
-			//log the error by res 
-			QERROR("start error fatal!!!");
-			return;
-		}
+
 	}
-
-
-
-	//the engine runtime loop
-	while (true)
+	void Application::init()
 	{
-		//the order of each loop is very important
-		for (auto manager : managers)
+		//create window for app
+		m_window = Window::Create(WindowProps(name));
+	}
+	void Application::start()
+	{
+		//do sth later
+	}
+	void Application::update()
+	{
+		for (auto rt : runtimes)
 		{
-			manager->update();
+			//it's for logic and render
+			rt->on_update();
+		}
+
+		//haven't decided how ot call render sys
+		//rendersys::OnUpdate();
+
+		for (auto rt : runtimes)
+		{
+			//it's for logic and render
+			rt->on_imgui();
 		}
 
 
-
-		//render loop
-		if (renderer->render_loop() == 1)
+		m_window->OnUpdate();
+	}
+	void Application::stop()
+	{
+		for (auto rt : runtimes)
 		{
-			break;
-		}		
-
-
-
-		//if we have post process, put it here
-
-
-
-
-		//they are not involved in render frame
-		for (auto module : modules)
-		{
-			if (module->NeedUpdate)
-			{
-				module->update();
-			}
+			rt->on_quit();
 		}
 	}
 
-
-	//call all stop() functions
-	for (auto manager : managers)
+	void Application::push_runtime(RunTime* runtime)
 	{
-		manager->stop();
+		runtimes.push_back(runtime);
+		//do sth maybe event
 	}
-	for (auto module : modules)
+	void Application::pop_runtime()
 	{
-		module->stop();
+		runtimes.pop_back();
+		//do sth
 	}
-
-	stop_Application();
-
-}
-
-/// <summary>
-/// stop the application
-/// </summary>
-void Application::stop_Application()
-{
-	for (auto module : modules)
-	{
-
-		module->release();
-
-	}
-	renderer->release();
 
 }

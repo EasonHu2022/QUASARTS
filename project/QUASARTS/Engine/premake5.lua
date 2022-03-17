@@ -1,6 +1,6 @@
 project "Engine"
 	language "C++"
-	kind "ConsoleApp" 
+	kind "SharedLib" 
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
@@ -15,7 +15,6 @@ project "Engine"
 	links
 	{
 		"Base",
-		"Editor",
 		"GLFW",
 		"spdlog",
 		"Glad",
@@ -30,7 +29,6 @@ project "Engine"
 	includedirs
 	{
 		"../Base/src",
-		"../Editor/src",
 		"../ThirdParty/GLFW/include/GLFW",
 		"../ThirdParty/spdlog/include",
 		"../ThirdParty/GLAD/include/glad",
@@ -52,6 +50,11 @@ project "Engine"
             "UNICODE",
 			"_CONSOLE",
 			"GLFW_INCLUDE_NONE",
+			"QS_BUILD_DLL",
+		}
+		postbuildcommands
+		{
+			("{COPY} %{cfg.buildtarget.relpath} ../Editor/bin/" .. outputdir .. "/Editor")
 		}
 
 	filter "system:linux"
@@ -60,7 +63,8 @@ project "Engine"
 		staticruntime "On"
 		defines
 		{
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"QS_BUILD_DLL",
 		}
 		links
 		{

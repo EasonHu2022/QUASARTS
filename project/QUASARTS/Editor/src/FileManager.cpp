@@ -1,19 +1,19 @@
-#include "FileModule.h"
+#include "FileManager.h"
 #include "LogModule.h"
 #include <stdlib.h>
 #include <iostream>
 #include <io.h>
 #include "QUtil.h"
 
-FileModule* FileModule::instance = nullptr;
+FileManager* FileManager::instance = nullptr;
 /// <summary>
 /// return an instance
 /// </summary>
 /// <returns></returns>
-FileModule* FileModule::Instance()
+FileManager* FileManager::Instance()
 {
 	if (nullptr == instance)
-		return new FileModule();
+		return new FileManager();
 	else
 	{
 		return instance;
@@ -22,59 +22,59 @@ FileModule* FileModule::Instance()
 
 
 #pragma region LifeSpan
-void FileModule::init()
-{
-
-}
-
-
-/// <summary>
-/// start the FileModule
-/// </summary>
-/// <returns></returns>
-int FileModule::start()
-{
-	//test
-	//test here
-	//const char* wdir = "F:\\WorkSpace";
-	//const char* projName = "TestProject";
-	//create_workdir(wdir, projName);
-	return 0;
-}
-
-/// <summary>
-/// update
-/// </summary>
-void FileModule::update()
-{
-}
-
-/// <summary>
-/// stop the FileModule 
-/// </summary>
-/// <returns></returns>
-int FileModule::stop()
-{
-	return 0;
-}
-
-/// <summary>
-/// release theFileModule
-/// </summary>
-void FileModule::release()
-{
-}
+//void FileManager::init()
+//{
+//
+//}
+//
+//
+///// <summary>
+///// start the FileModule
+///// </summary>
+///// <returns></returns>
+//int FileManager::start()
+//{
+//	//test
+//	//test here
+//	//const char* wdir = "F:\\WorkSpace";
+//	//const char* projName = "TestProject";
+//	//create_workdir(wdir, projName);
+//	return 0;
+//}
+//
+///// <summary>
+///// update
+///// </summary>
+//void FileManager::update()
+//{
+//}
+//
+///// <summary>
+///// stop the FileModule 
+///// </summary>
+///// <returns></returns>
+//int FileManager::stop()
+//{
+//	return 0;
+//}
+//
+///// <summary>
+///// release theFileModule
+///// </summary>
+//void FileManager::release()
+//{
+//}
 #pragma endregion
 
 
 
-const FileModule::QDirectoriesNode* FileModule::get_root()
+const FileManager::QDirectoriesNode* FileManager::get_root()
 {
 	return cur_root;
 }
 
 
-int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
+int FileManager::recursively_build_dirnode(QDirectoriesNode* node)
 {
 	intptr_t  handle = 0;
 	struct _finddata_t fileinfo;
@@ -82,7 +82,7 @@ int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 	const char* suffDir = "\\";
 	char* path = char_merge(node->path, suffix);
 	char* next = char_merge(node->path, suffDir);
-	
+
 	handle = _findfirst(path, &fileinfo);
 	if (handle != -1)
 	{
@@ -99,7 +99,7 @@ int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 					char* node_path = char_merge(next, fileinfo.name);
 					dir_node->path = node_path;
 					node->children.push_back(dir_node);
-					QDEBUG("create a dirnode under {0}. path is {1}",node->path, dir_node->path);
+					QDEBUG("create a dirnode under {0}. path is {1}", node->path, dir_node->path);
 					recursively_build_dirnode(dir_node);
 				}
 			}
@@ -121,16 +121,16 @@ int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 	return 0;
 }
 
-int FileModule::create_resource_node()
-{	
+int FileManager::create_resource_node()
+{
 	cur_root = new QDirectoriesNode();
-	char* asset_dir = char_merge(cur_workdir,folders[0]);
+	char* asset_dir = char_merge(cur_workdir, folders[0]);
 	cur_root->path = asset_dir;
 	cur_root->name = "Assets";
 	return recursively_build_dirnode(cur_root);
 }
 
-int FileModule::update_resource_node()
+int FileManager::update_resource_node()
 {
 	if (NULL == cur_root)
 	{
@@ -141,7 +141,7 @@ int FileModule::update_resource_node()
 
 }
 
-int FileModule::create_workdir(const char* p, const char* projectName)
+int FileManager::create_workdir(const char* p, const char* projectName)
 {
 	const char* sig = "\\";
 	cur_workdir = char_merge(p, sig);
@@ -163,7 +163,7 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 
 	for (const char* f : folders)
 	{
-		
+
 		char* fcmd = char_merge(mkCmd, f);
 		QDEBUG("create folders at {0}", fcmd);
 		system(fcmd);

@@ -1,50 +1,35 @@
 #pragma once
-#include "IModule.h"
-#include "IManager.h"
-
+#include "core.h"
 #include <vector>
-#include <iostream>
-#include "Renderer.h"
-
-
-class Application
+#include "RunTime.h"
+#include "Window.h"
+namespace Engine
 {
-private:
-	static Application* instance;
-private:
-	Application() {};
-	~Application() {};
-public:
 
-	/// <summary>
-	/// return an instance of the application
-	/// </summary>
-	/// <returns></returns>
-	static Application* Instance();
+	class QS_API Application
+	{
+	private:
+		std::string name = "Quarsart Editor V1.0";
+		Window* m_window = NULL;
 
-	/// <summary>
-	/// initialize the application
-	/// </summary>
-	void init_Application();
-
-	/// <summary>
-	/// start the application
-	/// </summary>
-	void start_Application();
+	public:
+		Window* get_window() { return m_window; }
+		Application();
+		virtual ~Application();
+		void init();
+		void start();
+		void update();
+		void stop();
+		std::vector<RunTime*> runtimes;
+		//generally it's ordered;
+		void push_runtime(RunTime* runtime);
+		void pop_runtime();
+		//to be defined in the inst of application
 
 
-	/// <summary>
-	/// stop the application
-	/// </summary>
-	void stop_Application();
+
+	};
+	
+}
 
 
-public:
-	//hold the pointer of 3 very basic module
-	std::vector <IModule*> modules;
-	//hold managers
-	std::vector <IManager*> managers;
-	//ptr of renderer
-	Renderer* renderer = nullptr;
-
-};
