@@ -1,5 +1,4 @@
 #include "EventModule.h"
-#include "LogModule.h"
 
 
 // singleton

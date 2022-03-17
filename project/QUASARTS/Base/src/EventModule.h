@@ -1,13 +1,14 @@
 #pragma once
 #include "IModule.h"
+#include "LogModule.h"
 
-#include "Event.h"
 #include <forward_list>
 #include <functional>
 #include <unordered_map>
 #include <vector>
 #include <set>
 #include <array>
+#include <sstream>
 
 
 #define CALLBACK_SIGNATURE(type) handler_##type( const EventModule::Event& evt )
@@ -166,23 +167,77 @@ public:
 
 		// Usage functions //
 	public:
-		void set_type(std::string type) { this->type = type; }
-		void set_priority(EventPriority priority) { this->priority = priority; }
-		//void set_timestamp( int timestamp )			{ this->type = type; }
-
 		std::string get_type() const { return type; }
 		EventPriority get_priority() const { return priority; }
 		//int get_timestamp() const						{ return timestamp; }
+
+		template<class T>
+		void find_argument( T ref, std::string argName ) const
+		{
+			char msg[256];
+
+			for (size_t i = 0; i < numArgs; ++i)
+			{
+				if ( arguments[i].first.compare( argName ) == 0 )
+				{
+					try {
+						switch (arguments[i].second.argType)
+						{
+						case VarArg::ArgType::Bool:
+							*ref = arguments[i].second.argValue.vBool;
+						case VarArg::ArgType::Integer:
+							*ref = arguments[i].second.argValue.vInt;
+						case VarArg::ArgType::Float:
+							*ref = arguments[i].second.argValue.vFloat;
+						}
+					}
+					catch (const std::exception& e)
+					{
+						snprintf( msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what() );
+						QDEBUG( msg );
+					}
+				}
+			}
+			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: %s", argName.c_str());
+			QDEBUG(msg);
+		}
+
+		template<>
+		void find_argument(std::string* ref, std::string argName) const
+		{
+			char msg[256];
+
+			for (size_t i = 0; i < numArgs; ++i)
+			{
+				if (arguments[i].first.compare(argName) == 0)
+				{
+					try {
+						*ref = std::string(arguments[i].second.argValue.vCStr);
+					}
+					catch (const std::exception& e)
+					{
+						snprintf(msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what());
+						QDEBUG(msg);
+					}
+				}
+			}
+			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: %s", argName.c_str());
+			QDEBUG(msg);
+		}
+
+
 
 		// debug
 		std::string to_string() const
 		{
 			// TODO: print args
+			std::ostringstream ostr;
+			ostr << "Event '" << type << "', Priority level: " << priority_to_string(priority) << '\n';
+			for (size_t i = 0; i < numArgs; ++i)
+			{
 
-			std::string str = "Event '";
-			str += type;
-			str += "', Priority: " + priority_to_string(priority);
-			return str;
+			}
+			return ostr.str();
 		}
 	};
 
