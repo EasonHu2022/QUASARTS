@@ -123,22 +123,18 @@ void PhysicsManager::runTests_start()
 		EventModule::Instance()->submit_event( "KeyPressed", EventModule::EventPriority::High );
 
 		// Event 1
-		EventModule::Instance()->submit_event( "KeyReleased", EventModule::EventPriority::Medium );
+		EventModule::Instance()->submit_event( "KeyReleased", EventModule::EventPriority::Medium, {{"code", 0}});
 
 		// Event 2
-		EventModule::Instance()->submit_event("KeyPressed", EventModule::EventPriority::Low);
+		EventModule::Instance()->submit_event("KeyPressed", EventModule::EventPriority::Low, {{"code", 37}, {"repeat", true}});
 	}
 	EventModule::Instance()->log_queue();
 
 	// Test event handler registration.
-	EventModule::Instance()->register_handler(
-		"KeyPressed",
-		EVENT_CALLBACK(handler)
-	);
-	EventModule::Instance()->register_handler(
-		"KeyReleased",
-		EVENT_CALLBACK(handler2)
-	);
+	CALLBACK_REGISTRATION( KeyPressed );
+	CALLBACK_REGISTRATION( KeyReleased );
+
+
 
 
 
@@ -225,20 +221,17 @@ void PhysicsManager::runTests_start()
 
 } // runTests_start()
 
-void PhysicsManager::handler( const EventModule::Event& evt )
+
+void PhysicsManager::CALLBACK_SIGNATURE( KeyPressed )
 {
-
 	char msg[128];
-	snprintf(msg, 128, "PhysicsManager::handler() called, received Event: %s", evt.to_string().c_str() );
+	snprintf(msg, 128, "PhysicsManager handler for type 'KeyPressed' called, received Event : % s", evt.to_string().c_str());
 	QDEBUG(msg);
-
 }
 
-void PhysicsManager::handler2(const EventModule::Event& evt )
+void PhysicsManager::CALLBACK_SIGNATURE( KeyReleased )
 {
-
 	char msg[128];
-	snprintf(msg, 128, "PhysicsManager::handler2() called, received Event: %s", evt.to_string().c_str());
+	snprintf(msg, 128, "PhysicsManager handler for type 'KeyReleased' called, received Event : % s", evt.to_string().c_str());
 	QDEBUG(msg);
-
 }
