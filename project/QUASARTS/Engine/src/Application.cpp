@@ -3,7 +3,7 @@
 #include "LogModule.h"
 #include "PhysicsManager.h"
 #include "FileModule.h"
-#include "EventManager.h"
+#include "EventModule.h"
 
 //singleton
 Application* Application::instance = nullptr;
@@ -58,10 +58,10 @@ void Application::init_Application()
 	
 
 
-	//init event manager
-	EventManager* eve = EventManager::Instance();
+	//init event module
+	EventModule* eve = EventModule::Instance();
 	eve->init();
-	managers.push_back(eve);
+	modules.push_back(eve);
 
 	//init physics manager
 	PhysicsManager* phys = PhysicsManager::Instance();
