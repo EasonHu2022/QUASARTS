@@ -2,23 +2,26 @@ project "Engine"
 	language "C++"
 	kind "SharedLib" 
 	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
 	files
 	{
+		"src/*/**.h",
+		"src/*/**.cpp",
 		"src/**.h",
 		"src/**.cpp",
 		"**.lua",
+		"../ThirdParty/ImGui/*.cpp",
+		"../ThirdParty/ImGui/*.h",
 	}
 	
 	links
 	{
-		"Base",
+		
 		"GLFW",
 		"spdlog",
 		"Glad",
-		"ImGui",
 		"Bullet3Collision",
 		"Bullet3Common",
 		"Bullet3Geometry",
@@ -28,8 +31,9 @@ project "Engine"
 	
 	includedirs
 	{
-		"../Base/src",
+		"./src",
 		"../ThirdParty/GLFW/include/GLFW",
+		"../ThirdParty/GLFW/include",
 		"../ThirdParty/spdlog/include",
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
@@ -54,7 +58,7 @@ project "Engine"
 		}
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../Editor/bin/" .. outputdir .. "/Editor")
+			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Editor")
 		}
 
 	filter "system:linux"

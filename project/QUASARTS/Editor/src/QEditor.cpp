@@ -1,14 +1,23 @@
 #include "QuasartsEngine.h"
-#include "EditorRuntime.h"
+#include "GuiViews/MenuBarView.h"
+#include "GuiViews/FileInputView.h"
+
+/*
+	Entry point
+*/
+#include "Core/EntryPoint.h"
+
 class QEditor : public Engine::Application
 {
 public:
 	QEditor()
 	{
-		//push a editor runtime into  application
-		auto runtime = new EditorRuntime();
-		push_runtime(runtime);
-	
+		QDEBUG("create");
+		//push views into app
+		auto menuBar = new MenuBarView();
+		auto fileInput = new FileInputView();
+		Engine::GuiWrapper::Instance->add_gui_view(menuBar);
+		Engine::GuiWrapper::Instance->add_gui_view(fileInput);
 	};
 	~QEditor() {};
 

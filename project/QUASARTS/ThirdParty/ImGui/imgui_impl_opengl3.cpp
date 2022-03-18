@@ -108,7 +108,11 @@
 
 // GL includes
 #if defined(IMGUI_IMPL_OPENGL_ES2)
-#include <GLES2/gl2.h>
+#if (defined(__APPLE__) && (TARGET_OS_IOS || TARGET_OS_TV))
+#include <OpenGLES/ES2/gl.h>    // Use GL ES 2
+#else
+#include <GLES2/gl2.h>          // Use GL ES 2
+#endif
 #if defined(__EMSCRIPTEN__)
 #ifndef GL_GLEXT_PROTOTYPES
 #define GL_GLEXT_PROTOTYPES
@@ -132,9 +136,14 @@
 // - You may need to regenerate imgui_impl_opengl3_loader.h to add new symbols. See https://github.com/dearimgui/gl3w_stripped
 // - You can temporarily use an unstripped version. See https://github.com/dearimgui/gl3w_stripped/releases
 // Changes to this backend using new APIs should be accompanied by a regenerated stripped loader version.
-#define IMGL3W_IMPL
-#include "imgui_impl_opengl3_loader.h"
+//#define IMGL3W_IMPL
+//#include "imgui_impl_opengl3_loader.h"
+//#endif
+
+#include <glad/glad.h>
+
 #endif
+
 
 // Vertex arrays are not supported on ES2/WebGL1 unless Emscripten which uses an extension
 #ifndef IMGUI_IMPL_OPENGL_ES2
@@ -189,7 +198,7 @@ struct ImGui_ImplOpenGL3_Data
     GLsizeiptr      IndexBufferSize;
     bool            HasClipOrigin;
 
-    ImGui_ImplOpenGL3_Data() { memset(this, 0, sizeof(*this)); }
+    ImGui_ImplOpenGL3_Data() { memset((void*)this, 0, sizeof(*this)); }
 };
 
 // Backend data stored in io.BackendRendererUserData to allow support for multiple Dear ImGui contexts
@@ -206,13 +215,13 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
     IM_ASSERT(io.BackendRendererUserData == NULL && "Already initialized a renderer backend!");
 
     // Initialize our loader
-#if !defined(IMGUI_IMPL_OPENGL_ES2) && !defined(IMGUI_IMPL_OPENGL_ES3) && !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
-    if (imgl3wInit() != 0)
-    {
-        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return false;
-    }
-#endif
+//#if !defined(IMGUI_IMPL_OPENGL_ES2) && !defined(IMGUI_IMPL_OPENGL_ES3) && !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
+//    if (imgl3wInit() != 0)
+//    {
+//        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
+//        return false;
+//    }
+//#endif
 
     // Setup backend capabilities flags
     ImGui_ImplOpenGL3_Data* bd = IM_NEW(ImGui_ImplOpenGL3_Data)();

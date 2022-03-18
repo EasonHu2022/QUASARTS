@@ -2,29 +2,38 @@ project "Editor"
 	language "C++"
 	kind "ConsoleApp"
 	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
 	
 	files
 	{
 		"src/**.h",
 		"src/**.cpp",
+		"src/*/**.h",
+		"src/*/**.cpp",
 		"**.lua",
 	}
 	
 	links
 	{
-		"Engine",
+		"Engine"
 	}
 
 	includedirs
 	{
-		"../Base/src",
 		"../Engine/src",
-		"../ThirdParty/GLFW/include/GLFW",
-		"../ThirdParty/spdlog/include",
 		"../ThirdParty/ImGui",
+		"./src",
+		"../ThirdParty/GLFW/include/GLFW",
+		"../ThirdParty/GLFW/include",
+		"../ThirdParty/spdlog/include",
+		"../ThirdParty/GLAD/include/glad",
+		"../ThirdParty/GLAD/include",
+		"../ThirdParty/Bullet3/Bullet3Collision",
+		"../ThirdParty/Bullet3/Bullet3Common",
+		"../ThirdParty/Bullet3/Bullet3Geometry",
+		"../ThirdParty/Bullet3",
 	}
 
 	filter "system:windows"
