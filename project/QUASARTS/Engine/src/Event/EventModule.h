@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/IModule.h"
-#include "LogModule.h"
-
+#include "Logger/LogModule.h"
 #include <forward_list>
 #include <functional>
 #include <unordered_map>
