@@ -16,8 +16,8 @@ public:
 		//push views into app
 		auto menuBar = new MenuBarView();
 		auto fileInput = new FileInputView();
-		Engine::GuiWrapper::Instance->add_gui_view(menuBar);
-		Engine::GuiWrapper::Instance->add_gui_view(fileInput);
+		add_gui_view(menuBar);
+		add_gui_view(fileInput);
 	};
 	~QEditor() {};
 
