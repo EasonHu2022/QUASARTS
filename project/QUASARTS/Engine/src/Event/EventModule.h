@@ -14,17 +14,17 @@
 // Usage:
 // For handler declaration: void CALLBACK_SIGNATURE( EventType )
 // For handler defintion:	void MyClass::CALLBACK_SIGNATURE( EventType )
-#define CALLBACK_SIGNATURE(eventType) handler_##eventType( const EventModule::Event& evt )
+#define EV_CALLBACK_SIGNATURE(eventType) handler_##eventType( const EventModule::Event& evt )
 
 // Parameter 'eventType' does NOT expect a string.
 // Usage: 
 // event_module_instance->register_handler( CALLBACK_REGISTRATION( EventType ) );
-#define CALLBACK_REGISTRATION(eventType) #eventType, [this](const EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
+#define EV_CALLBACK_REGISTRATION(eventType) #eventType, [this](const EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
 
-#define ARG_BOOL	0
-#define ARG_INT		1
-#define ARG_FLOAT	2
-#define ARG_STRING	3
+#define EV_ARG_BOOL(aBool)				EventModule::VarArg::boolArg( aBool )
+#define EV_ARG_INT(aInt)				EventModule::VarArg::intArg( aInt )
+#define EV_ARG_FLOAT(aFloat)			EventModule::VarArg::floatArg( aFloat )
+#define EV_ARG_CSTRING64(aCString64)	EventModule::VarArg::cstringArg( aCString64 )
 
 
 class EventModule : public IModule
@@ -52,17 +52,6 @@ public:
 	struct VarArg;
 	struct Event;
 
-	// Event argument information structure for creating event arguments.
-	template< class T >
-	struct VarArgInfo
-	{
-		unsigned int eArgType;
-		T argValue;
-		std::string argName;
-
-		VarArgInfo(unsigned int eArgType, T argValue, std::string argName)
-			: eArgType(eArgType), argValue(argValue), argName(argName) {}
-	};
 
 	// Enums //
 public:
@@ -91,7 +80,8 @@ public:
 
 	// Usage functions //
 public:
-	int submit_event( std::string eventType, EventPriority priority, std::initializer_list< VarArgInfo > argInfo = {} );
+	// Create an event and add it to the queue.
+	int create_event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
 
 	// Currently, registering interest in an event type requires the user-object to pass two arguments:
 	// 1. the event type they are interested in.
@@ -117,8 +107,6 @@ private:
 
 	// Util functions //
 private:
-	// Create an event and add it to the queue.
-	Event create_event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo = {} );
 	// Check that the given event type is in the set of known event types.
 	bool valid_event_type( std::string eventType );
 	// Dispatch all events in the queue to registered handlers.
@@ -127,7 +115,7 @@ private:
 
 
 	// Structs //
-private:
+public:
 	struct VarArg
 	{
 	public:
@@ -155,13 +143,13 @@ private:
 		VarArg() {}
 		~VarArg() {}
 
-		VarArg( const bool aBool )		{ argType = Bool;		argValue.vBool		= aBool;	}
-		VarArg( const int aInt )		{ argType = Integer;	argValue.vInt		= aInt;		}
-		VarArg( const float aFloat )	{ argType = Float;		argValue.vFloat		= aFloat;	}
-		VarArg( const char* aCStr )		{ argType = CString;
-			argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
-			strncpy_s( argValue.vCStr, sizeof(argValue.vCStr), aCStr, sizeof(argValue.vCStr) - 1 );
-		}
+
+		// Static functions for explicitly creating VarArg with different types.
+		static VarArg boolArg(const bool aBool);
+		static VarArg intArg(const int aInt);
+		static VarArg floatArg(const float aFloat);
+		static VarArg cstringArg(const char* aCStr);
+
 
 		std::string to_string() const
 		{
@@ -179,7 +167,7 @@ private:
 				ostr << "Float, Value: " << argValue.vFloat;
 				break;
 			case VarArg::ArgType::CString:
-				ostr << "CString, Value: " << argValue.vCStr;
+				ostr << "CString, Value: '" << argValue.vCStr << "'";
 				break;
 			}
 			return ostr.str();
@@ -199,13 +187,13 @@ public:
 
 	private:
 		// Private constructor prevents other modules from creating their own Event instances.
-		Event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo = {} );
+		Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
 	public:
 		~Event() { };
 
 
 		// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
-		friend Event EventModule::create_event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo );
+		friend int EventModule::create_event(std::string type, EventPriority priority, std::initializer_list < std::pair<std::string, VarArg> > args );
 
 
 		// Usage functions //

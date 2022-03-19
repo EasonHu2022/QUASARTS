@@ -42,7 +42,7 @@ public:
 	void handler( const EventModule::Event& evt );
 	void handler2( const EventModule::Event& evt );
 
-	void CALLBACK_SIGNATURE( KeyPressed );
-	void CALLBACK_SIGNATURE( KeyReleased );
+	void EV_CALLBACK_SIGNATURE( KeyPressed );
+	void EV_CALLBACK_SIGNATURE( KeyReleased );
 
 };

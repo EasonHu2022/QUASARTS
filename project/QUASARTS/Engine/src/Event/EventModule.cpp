@@ -73,7 +73,7 @@ void EventModule::release()
 
 // Usage functions //
 
-int EventModule::submit_event( std::string eventType, EventPriority priority, std::initializer_list< VarArgInfo > argInfo )
+int EventModule::create_event( std::string eventType, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
 {
 	// Check type is valid.
 	if ( ! valid_event_type( eventType ) )
@@ -83,7 +83,7 @@ int EventModule::submit_event( std::string eventType, EventPriority priority, st
 	}
 
 	// Create event and push to queue.
-	queue.push_front( create_event( eventType, priority, args ) );
+	queue.push_front( Event( eventType, priority, args ) );
 
 	return 0;
 } // submit_event()
@@ -160,11 +160,6 @@ void EventModule::log_handlers()
 
 // Util functions //
 
-EventModule::Event EventModule::create_event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo)
-{
-	return Event( type, priority, args );
-} // create_event()
-
 
 bool EventModule::valid_event_type(std::string eventType)
 {
@@ -203,9 +198,47 @@ void EventModule::dispatch_all()
 } // dispatch_all()
 
 
+
+// VarArg functions //
+
+EventModule::VarArg EventModule::VarArg::boolArg(const bool aBool)
+{
+	VarArg arg = VarArg();
+	arg.argType = Bool;
+	arg.argValue.vBool = aBool;
+	return arg;
+}
+
+EventModule::VarArg EventModule::VarArg::intArg(const int aInt)
+{
+	VarArg arg = VarArg();
+	arg.argType = Integer;
+	arg.argValue.vInt = aInt;
+	return arg;
+}
+
+EventModule::VarArg EventModule::VarArg::floatArg(const float aFloat)
+{
+	VarArg arg = VarArg();
+	arg.argType = Float;
+	arg.argValue.vFloat = aFloat;
+	return arg;
+}
+
+EventModule::VarArg EventModule::VarArg::cstringArg(const char* aCStr)
+{
+	VarArg arg = VarArg();
+	arg.argType = CString;
+	arg.argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
+	strncpy_s(arg.argValue.vCStr, sizeof(arg.argValue.vCStr), aCStr, sizeof(arg.argValue.vCStr) - 1);
+	return arg;
+}
+
+
+
 // Event constructor //
 
-EventModule::Event::Event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo )
+EventModule::Event::Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
 	:
 	type(type), 
 	priority(priority)
@@ -215,7 +248,6 @@ EventModule::Event::Event( std::string type, EventPriority priority, std::initia
 	QDEBUG(msg);
 
 	// Iterate over the length of the arguments array and assign values from the args list.
-	/*
 	numArgs = (args.size() < arguments.max_size()) ? args.size() : arguments.max_size();
 	if ( numArgs > 0 )
 	{
@@ -229,5 +261,4 @@ EventModule::Event::Event( std::string type, EventPriority priority, std::initia
 		QDEBUG(msg);
 	}
 	QDEBUG("Event constructor complete");
-	*/
 };
