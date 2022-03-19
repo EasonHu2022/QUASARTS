@@ -73,7 +73,7 @@ void EventModule::release()
 
 // Usage functions //
 
-int EventModule::submit_event( std::string eventType, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
+int EventModule::submit_event( std::string eventType, EventPriority priority, std::initializer_list< VarArgInfo > argInfo )
 {
 	// Check type is valid.
 	if ( ! valid_event_type( eventType ) )
@@ -160,7 +160,7 @@ void EventModule::log_handlers()
 
 // Util functions //
 
-EventModule::Event EventModule::create_event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
+EventModule::Event EventModule::create_event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo)
 {
 	return Event( type, priority, args );
 } // create_event()
@@ -205,7 +205,7 @@ void EventModule::dispatch_all()
 
 // Event constructor //
 
-EventModule::Event::Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
+EventModule::Event::Event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo )
 	:
 	type(type), 
 	priority(priority)
@@ -215,6 +215,7 @@ EventModule::Event::Event( std::string type, EventPriority priority, std::initia
 	QDEBUG(msg);
 
 	// Iterate over the length of the arguments array and assign values from the args list.
+	/*
 	numArgs = (args.size() < arguments.max_size()) ? args.size() : arguments.max_size();
 	if ( numArgs > 0 )
 	{
@@ -224,7 +225,9 @@ EventModule::Event::Event( std::string type, EventPriority priority, std::initia
 			arguments[i] = *it;
 			++it;
 		}
-		QDEBUG("Args assigned");
+		snprintf(msg, 128, "Args assigned: %d", numArgs);
+		QDEBUG(msg);
 	}
 	QDEBUG("Event constructor complete");
+	*/
 };
