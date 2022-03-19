@@ -3,7 +3,7 @@
 #include "Core/IManager.h"
 #include "btBulletCollisionCommon.h"
 #include "Event/EventModule.h"
-#include "Core/core.h"
+#include "Core/Core.h"
 
 class QS_API PhysicsManager : public IManager
 {

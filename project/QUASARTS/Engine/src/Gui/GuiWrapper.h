@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/core.h"
+#include "Core/Core.h"
 #include <vector>
-#include "Gui/Guiview.h"
+#include "Gui/GuiView.h"
 namespace Engine
 {
 	class QS_API GuiWrapper
