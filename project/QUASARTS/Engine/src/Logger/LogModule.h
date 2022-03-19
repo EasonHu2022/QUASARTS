@@ -1,7 +1,8 @@
 #pragma once
-#include "IModule.h"
+#include "../Core/IModule.h"
 #include "spdlog/spdlog.h"
 #include <memory>
+#include "Core/Core.h"
 
 
 #ifdef _WIN32
@@ -43,7 +44,7 @@
 #define WARN(...)			LogModule::Instance()->get_game_logger()->warn(__VA_ARGS__);
 
 
-class  LogModule : public IModule
+class  QS_API LogModule : public IModule
 {
 
 private:

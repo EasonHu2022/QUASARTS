@@ -1,25 +1,27 @@
 project "Engine"
 	language "C++"
-	kind "ConsoleApp" 
+	kind "SharedLib" 
 	
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin_obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
 	files
 	{
+		"src/*/**.h",
+		"src/*/**.cpp",
 		"src/**.h",
 		"src/**.cpp",
 		"**.lua",
+		"../ThirdParty/ImGui/*.cpp",
+		"../ThirdParty/ImGui/*.h",
 	}
 	
 	links
 	{
-		"Base",
-		"Editor",
+		
 		"GLFW",
 		"spdlog",
 		"Glad",
-		"ImGui",
 		"Bullet3Collision",
 		"Bullet3Common",
 		"Bullet3Geometry",
@@ -29,9 +31,9 @@ project "Engine"
 	
 	includedirs
 	{
-		"../Base/src",
-		"../Editor/src",
+		"./src",
 		"../ThirdParty/GLFW/include/GLFW",
+		"../ThirdParty/GLFW/include",
 		"../ThirdParty/spdlog/include",
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
@@ -52,6 +54,11 @@ project "Engine"
             "UNICODE",
 			"_CONSOLE",
 			"GLFW_INCLUDE_NONE",
+			"QS_BUILD_DLL",
+		}
+		postbuildcommands
+		{
+			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Editor")
 		}
 
 	filter "system:linux"
@@ -60,7 +67,8 @@ project "Engine"
 		staticruntime "On"
 		defines
 		{
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"QS_BUILD_DLL",
 		}
 		links
 		{

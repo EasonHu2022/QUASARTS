@@ -1,5 +1,5 @@
 project "ImGui"
-    kind "StaticLib"
+    kind "SharedLib"
     language "C++"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -7,7 +7,8 @@ project "ImGui"
 
 	includedirs
 	{
-		"../GLFW/include/"
+		"../GLFW/include/",
+		"../GLAD/include"
 	}
 	
 	files
@@ -24,7 +25,6 @@ project "ImGui"
 		"imstb_truetype.h",
 		"imgui_demo.cpp",
 		"imgui_impl_opengl3.cpp",
-		"imgui_impl_opengl3_loader.h",
 		"imgui_impl_opengl3.h",
 		"imgui_impl_glfw.cpp",
 		"imgui_impl_glfw.h",
@@ -32,10 +32,15 @@ project "ImGui"
 		"**.lua",
 	}
 
+
 	filter "system:windows"
         systemversion "latest"
         cppdialect "C++17"
         staticruntime "On"
+		defines
+		{
+		"QS_BUILD_DLL",
+		}
 
     filter "system:linux"
         pic "On"

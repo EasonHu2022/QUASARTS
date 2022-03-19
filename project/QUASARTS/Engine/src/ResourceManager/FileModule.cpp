@@ -1,9 +1,9 @@
 #include "FileModule.h"
-#include "LogModule.h"
+#include "Logger/LogModule.h"
 #include <stdlib.h>
 #include <iostream>
 #include <io.h>
-#include "QUtil.h"
+#include "Core/QUtil.h"
 
 FileModule* FileModule::instance = nullptr;
 /// <summary>
@@ -91,7 +91,7 @@ int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 			if (fileinfo.attrib & _A_SUBDIR)
 			{
 				//it's a subfolder
-				if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)//this if is for linux
+				if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
 				{
 					//create new node
 					auto dir_node = new QDirectoriesNode();
@@ -116,7 +116,8 @@ int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 		} while (_findnext(handle, &fileinfo) == 0);
 		_findclose(handle);
 	}
-
+	delete[] path;
+	delete[] next;
 	return 0;
 }
 
@@ -166,12 +167,15 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 		char* fcmd = char_merge(mkCmd, f);
 		QDEBUG("create folders at {0}", fcmd);
 		system(fcmd);
+		delete[] fcmd;
 	}
 
 
 
 	update_resource_node();
 
+
+	delete[] mkCmd;
 	return 0;
 }
 

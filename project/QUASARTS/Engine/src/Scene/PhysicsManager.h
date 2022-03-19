@@ -1,11 +1,11 @@
 #pragma once
 
-#include "IManager.h"
+#include "Core/IManager.h"
 #include "btBulletCollisionCommon.h"
-#include "EventModule.h"
+#include "Event/EventModule.h"
+#include "Core/core.h"
 
-
-class PhysicsManager : public IManager
+class QS_API PhysicsManager : public IManager
 {
 // singleton
 private:

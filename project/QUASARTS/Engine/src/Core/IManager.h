@@ -1,5 +1,6 @@
 #pragma once
-class IManager
+#include "core.h"
+class QS_API IManager
 {
 public:
 	/// <summary>

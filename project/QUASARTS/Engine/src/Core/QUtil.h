@@ -1,5 +1,5 @@
 #pragma once
-#include "LogModule.h"
+#include "Logger/LogModule.h"
 inline char* char_merge(const char* a, const char* b)
 {
 	char* res = new char[strlen(a) + strlen(b) + 1];
