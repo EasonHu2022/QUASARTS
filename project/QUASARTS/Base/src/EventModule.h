@@ -11,11 +11,21 @@
 #include <sstream>
 
 
-#define CALLBACK_SIGNATURE(type) handler_##type( const EventModule::Event& evt )
-#define CALLBACK_REGISTRATION(type) EventModule::Instance()->register_handler(		\
-	#type,																			\
-	[this](const EventModule::Event& evt) -> void { this->handler_##type(evt); }	\
-)
+// Parameter 'eventType' does NOT expect a string.
+// Usage:
+// For handler declaration: void CALLBACK_SIGNATURE( EventType )
+// For handler defintion:	void MyClass::CALLBACK_SIGNATURE( EventType )
+#define CALLBACK_SIGNATURE(eventType) handler_##eventType( const EventModule::Event& evt )
+
+// Parameter 'eventType' does NOT expect a string.
+// Usage: 
+// event_module_instance->register_handler( CALLBACK_REGISTRATION( EventType ) );
+#define CALLBACK_REGISTRATION(eventType) #eventType, [this](const EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
+
+#define ARG_BOOL	0
+#define ARG_INT		1
+#define ARG_FLOAT	2
+#define ARG_STRING	3
 
 
 class EventModule : public IModule
@@ -39,8 +49,21 @@ public:
 
 
 public:
-	struct VarArg; // Foward declaration of VarArg - defined below.
-	struct Event; // Forward declaration of Event - defined below.
+	// Forward declaration of event structures.
+	struct VarArg;
+	struct Event;
+
+	// Event argument information structure for creating event arguments.
+	template< class T >
+	struct VarArgInfo
+	{
+		unsigned int eArgType;
+		T argValue;
+		std::string argName;
+
+		VarArgInfo(unsigned int eArgType, T argValue, std::string argName)
+			: eArgType(eArgType), argValue(argValue), argName(argName) {}
+	};
 
 	// Enums //
 public:
@@ -69,7 +92,7 @@ public:
 
 	// Usage functions //
 public:
-	int submit_event( std::string eventType, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
+	int submit_event( std::string eventType, EventPriority priority, std::initializer_list< VarArgInfo > argInfo = {} );
 
 	// Currently, registering interest in an event type requires the user-object to pass two arguments:
 	// 1. the event type they are interested in.
@@ -96,7 +119,7 @@ private:
 	// Util functions //
 private:
 	// Create an event and add it to the queue.
-	Event create_event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
+	Event create_event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo = {} );
 	// Check that the given event type is in the set of known event types.
 	bool valid_event_type( std::string eventType );
 	// Dispatch all events in the queue to registered handlers.
@@ -133,14 +156,35 @@ private:
 		VarArg() {}
 		~VarArg() {}
 
-		VarArg( bool aBool )			{ argType = Bool;		argValue.vBool		= aBool;	}
-		VarArg( int aInt )				{ argType = Integer;	argValue.vInt		= aInt;		}
-		VarArg( float aFloat )			{ argType = Float;		argValue.vFloat		= aFloat;	}
-		VarArg( char* aCStr )			{ argType = CString;
+		VarArg( const bool aBool )		{ argType = Bool;		argValue.vBool		= aBool;	}
+		VarArg( const int aInt )		{ argType = Integer;	argValue.vInt		= aInt;		}
+		VarArg( const float aFloat )	{ argType = Float;		argValue.vFloat		= aFloat;	}
+		VarArg( const char* aCStr )		{ argType = CString;
 			argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
 			strncpy_s( argValue.vCStr, sizeof(argValue.vCStr), aCStr, sizeof(argValue.vCStr) - 1 );
 		}
 
+		std::string to_string() const
+		{
+			std::ostringstream ostr;
+			ostr << "Type: ";
+			switch (argType)
+			{
+			case VarArg::ArgType::Bool:
+				ostr << "Bool, Value: " << ( (argValue.vBool) ? "true" : "false" );
+				break;
+			case VarArg::ArgType::Integer:
+				ostr << "Integer, Value: " << argValue.vInt;
+				break;
+			case VarArg::ArgType::Float:
+				ostr << "Float, Value: " << argValue.vFloat;
+				break;
+			case VarArg::ArgType::CString:
+				ostr << "CString, Value: " << argValue.vCStr;
+				break;
+			}
+			return ostr.str();
+		}
 	};
 
 public:
@@ -156,13 +200,13 @@ public:
 
 	private:
 		// Private constructor prevents other modules from creating their own Event instances.
-		Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
+		Event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo = {} );
 	public:
 		~Event() { };
 
 
 		// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
-		friend Event EventModule::create_event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args );
+		friend Event EventModule::create_event( std::string type, EventPriority priority, std::initializer_list< VarArgInfo > argInfo );
 
 
 		// Usage functions //
@@ -172,7 +216,7 @@ public:
 		//int get_timestamp() const						{ return timestamp; }
 
 		template<class T>
-		void find_argument( T ref, std::string argName ) const
+		bool find_argument( T ref, std::string argName ) const
 		{
 			char msg[256];
 
@@ -185,25 +229,30 @@ public:
 						{
 						case VarArg::ArgType::Bool:
 							*ref = arguments[i].second.argValue.vBool;
+							return true;
 						case VarArg::ArgType::Integer:
 							*ref = arguments[i].second.argValue.vInt;
+							return true;
 						case VarArg::ArgType::Float:
 							*ref = arguments[i].second.argValue.vFloat;
+							return true;
 						}
 					}
 					catch (const std::exception& e)
 					{
 						snprintf( msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what() );
 						QDEBUG( msg );
+						return false;
 					}
 				}
 			}
 			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: %s", argName.c_str());
 			QDEBUG(msg);
+			return false;
 		}
 
 		template<>
-		void find_argument(std::string* ref, std::string argName) const
+		bool find_argument(std::string* ref, std::string argName) const
 		{
 			char msg[256];
 
@@ -213,16 +262,19 @@ public:
 				{
 					try {
 						*ref = std::string(arguments[i].second.argValue.vCStr);
+						return true;
 					}
 					catch (const std::exception& e)
 					{
 						snprintf(msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what());
 						QDEBUG(msg);
+						return false;
 					}
 				}
 			}
 			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: %s", argName.c_str());
 			QDEBUG(msg);
+			return false;
 		}
 
 
@@ -233,9 +285,10 @@ public:
 			// TODO: print args
 			std::ostringstream ostr;
 			ostr << "Event '" << type << "', Priority level: " << priority_to_string(priority) << '\n';
+			ostr << "Arguments: " << numArgs;
 			for (size_t i = 0; i < numArgs; ++i)
 			{
-
+				ostr << '\n' << i << ". Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
 			}
 			return ostr.str();
 		}

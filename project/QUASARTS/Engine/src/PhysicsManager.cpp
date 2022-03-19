@@ -120,19 +120,22 @@ void PhysicsManager::runTests_start()
 		// Events submitted in reverse order of priority to demonstrate the queue's ability to sort by priority level.
 
 		// Event 0
-		EventModule::Instance()->submit_event( "KeyPressed", EventModule::EventPriority::High );
+		//EventModule::Instance()->submit_event( "KeyPressed", EventModule::EventPriority::High );
 
 		// Event 1
-		EventModule::Instance()->submit_event( "KeyReleased", EventModule::EventPriority::Medium, {{"code", 0}});
+		//EventModule::Instance()->submit_event( "KeyReleased", EventModule::EventPriority::Medium, {{"code", 39}});
 
 		// Event 2
-		EventModule::Instance()->submit_event( "KeyPressed", EventModule::EventPriority::Low, {{"code", 37}, {"repeat", true}} );
+		//EventModule::Instance()->submit_event( "KeyPressed", EventModule::EventPriority::Low, {{"code", 37}, {"repeat", true}} );
+
+		// Event 3
+		//EventModule::Instance()->submit_event( "KeyReleased", EventModule::EventPriority::High, {{"name", "Jim"}} );
 	}
 	EventModule::Instance()->log_queue();
 
 	// Test event handler registration.
-	CALLBACK_REGISTRATION( KeyPressed );
-	CALLBACK_REGISTRATION( KeyReleased );
+	EventModule::Instance()->register_handler( CALLBACK_REGISTRATION( KeyPressed ) );
+	EventModule::Instance()->register_handler( CALLBACK_REGISTRATION( KeyReleased ) );
 
 
 
@@ -224,18 +227,54 @@ void PhysicsManager::runTests_start()
 
 void PhysicsManager::CALLBACK_SIGNATURE( KeyPressed )
 {
-	char msg[128];
-	snprintf(msg, 128, "PhysicsManager handler for type 'KeyPressed' called, received Event:\n%s", evt.to_string().c_str());
+	char msg[512];
+	snprintf(msg, 512, "PhysicsManager handler for type 'KeyPressed' called, received Event:\n%s", evt.to_string().c_str());
 	QDEBUG(msg);
+
+	std::string name = "code";
 	int iarg = -1;
-	evt.find_argument(&iarg, "code");
-	snprintf(msg, 128, "Event argument query for 'code' returned: %d", iarg);
+	bool ret = evt.find_argument(&iarg, name);
+	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
 	QDEBUG(msg);
+	if (ret) {
+		snprintf(msg, 512, "Event argument value: %d", iarg);
+		QDEBUG(msg);
+	}
+
+	name = "repeat";
+	bool barg = false;
+	ret = evt.find_argument(&barg, name);
+	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	QDEBUG(msg);
+	if (ret) {
+		snprintf(msg, 512, "Event argument value: %d", barg);
+		QDEBUG(msg);
+	}
 }
 
 void PhysicsManager::CALLBACK_SIGNATURE( KeyReleased )
 {
-	char msg[128];
-	snprintf(msg, 128, "PhysicsManager handler for type 'KeyReleased' called, received Event:\n%s", evt.to_string().c_str());
+	char msg[512];
+	snprintf(msg, 512, "PhysicsManager handler for type 'KeyReleased' called, received Event:\n%s", evt.to_string().c_str());
 	QDEBUG(msg);
+
+	std::string name = "code";
+	int iarg = -1;
+	bool ret = evt.find_argument(&iarg, name);
+	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	QDEBUG(msg);
+	if (ret) {
+		snprintf(msg, 512, "Event argument value: %d", iarg);
+		QDEBUG(msg);
+	}
+
+	name = "repeat";
+	bool barg = false;
+	ret = evt.find_argument(&barg, name);
+	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	QDEBUG(msg);
+	if (ret) {
+		snprintf(msg, 512, "Event argument value: %d", barg);
+		QDEBUG(msg);
+	}
 }
