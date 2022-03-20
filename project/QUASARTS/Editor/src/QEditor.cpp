@@ -1,31 +1,40 @@
-#include "QuasartsEngine.h"
-#include "GuiViews/MenuBarView.h"
+#include "QEditor.h"
 #include "GuiViews/FileInputView.h"
+#include "GuiViews/MenuBarView.h"
 
-/*
-	Entry point
-*/
-#include "Core/EntryPoint.h"
-
-class QEditor : public Engine::Application
+QEditor::QEditor()
 {
-public:
-	QEditor()
+}
+
+QEditor::~QEditor()
+{
+}
+
+void QEditor::init()
+{
+	Application::init();
+	/*
+	* add menu bar
+	*/
+	add_gui_view<MenuBarView>();
+	add_gui_view<FileInputView>();
+}
+
+void QEditor::on_update()
+{
+	Application::on_update();
+}
+
+void QEditor::on_gui()
+{
+	for (auto& v : guiViews)
 	{
-		QDEBUG("create");
-		//push views into app
-		auto menuBar = new MenuBarView();
-		auto fileInput = new FileInputView();
-		add_gui_view(menuBar);
-		add_gui_view(fileInput);
-	};
-	~QEditor() {};
+		v.second->on_gui();
+	}
 
-private:
+	/*
+		base fun
+	*/
 
-};
-
-Engine::Application* Engine::create_application()
-{
-	return new QEditor();
+	Application::on_gui();
 }

@@ -24,10 +24,13 @@ namespace Engine
 		GLFWwindow* get_glfw_context() { return m_window->get_native_window(); }
 		Application();
 		virtual ~Application();
+		virtual void init();
 		virtual void start();
 		virtual void close();
-		int add_gui_view(Engine::GuiView* view);
-		void remove_gui_view(int handle);
+		virtual void on_gui();
+		virtual void on_update();
+		virtual void on_render();
+		virtual void on_release();
 	};
 	Application* create_application();
 }
