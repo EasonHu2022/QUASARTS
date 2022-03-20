@@ -44,7 +44,7 @@
 // Returns a wrapper for event arguments, initialised with a char array of size 64 containing the given string.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_CSTRING64( cstringValue1 )}, ... } );
-#define EV_ARG_STRING(aString)	EventModule::stringArg( aString )
+#define EV_ARG_STRING(aString)			EventModule::stringArg( aString )
 
 
 // Important numbers //
@@ -74,10 +74,11 @@ public:
 	void release();
 
 
+	// Forward declaration of event structures. //
 public:
-	// Forward declaration of event structures.
-	struct VarArg;
 	struct Event;
+private:
+	struct VarArg;
 
 
 	// Enums //
@@ -115,12 +116,12 @@ public:
 
 	// Create a 'KeyPressed' event and add it to the queue.
 	// Usage:
-	// EventModule::Instance()->create_KeyPressed_event( KeyCode::Code, [EventModule::EventPriority::PriorityLevel] );
+	// EventModule::Instance()->create_KeyPressed_event( KeyCode::Code, EventModule::EventPriority::PriorityLevel );
 	int create_KeyPressed_event( const KeyCode code, const EventPriority priority = EventPriority::High);
 
 	// Create a 'KeyReleased' event and add it to the queue.
 	// Usage:
-	// EventModule::Instance()->create_KeyReleased_event( KeyCode::Code, [EventModule::EventPriority::PriorityLevel] );
+	// EventModule::Instance()->create_KeyReleased_event( KeyCode::Code, EventModule::EventPriority::PriorityLevel );
 	int create_KeyReleased_event( const KeyCode code, const EventPriority priority = EventPriority::High );
 
 
