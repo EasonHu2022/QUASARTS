@@ -78,7 +78,7 @@ int EventModule::create_event( std::string eventType, EventPriority priority, st
 	// Check type is valid.
 	if ( ! valid_event_type( eventType ) )
 	{
-		QERROR( ("EventModule::submit_event() was passed an unknown event type:" + eventType).c_str() );
+		QERROR( ("EventModule::submit_event() was passed an unrecognised event type:" + eventType).c_str() );
 		return 1;
 	}
 
@@ -89,12 +89,32 @@ int EventModule::create_event( std::string eventType, EventPriority priority, st
 } // submit_event()
 
 
+int EventModule::create_KeyPressed_event(KeyCode code, EventPriority priority)
+{
+	std::initializer_list< std::pair<std::string, VarArg> > args = {
+		{ "code", EV_ARG_INT(code) }
+	};
+	create_event( "KeyPressed", priority, args );
+	return 0;
+}
+
+
+int EventModule::create_KeyReleased_event(KeyCode code, EventPriority priority)
+{
+	std::initializer_list< std::pair<std::string, VarArg> > args = {
+		{ "code", EV_ARG_INT(code) }
+	};
+	create_event( "KeyReleased", priority, args );
+	return 0;
+}
+
+
 int EventModule::register_handler( std::string eventType, std::function<void( const Event& )> eventHandler )
 {
 	// Check the given event type is valid.
 	if ( ! valid_event_type( eventType ) )
 	{
-		QERROR( ("EventModule::register_handler() was passed an unknown event type:" + eventType).c_str() );
+		QERROR( ("EventModule::register_handler() was passed an unrecognised event type:" + eventType).c_str() );
 		return 1;
 	}
 
@@ -157,6 +177,41 @@ void EventModule::log_handlers()
 } // log_handlers()
 
 
+EventModule::VarArg EventModule::boolArg(const bool aBool)
+{
+	VarArg arg = VarArg();
+	arg.argType = VarArg::ArgType::Bool;
+	arg.argValue.vBool = aBool;
+	return arg;
+}
+
+EventModule::VarArg EventModule::intArg(const int aInt)
+{
+	VarArg arg = VarArg();
+	arg.argType = VarArg::ArgType::Integer;
+	arg.argValue.vInt = aInt;
+	return arg;
+}
+
+EventModule::VarArg EventModule::floatArg(const float aFloat)
+{
+	VarArg arg = VarArg();
+	arg.argType = VarArg::ArgType::Float;
+	arg.argValue.vFloat = aFloat;
+	return arg;
+}
+
+EventModule::VarArg EventModule::stringArg(const std::string aStr)
+{
+	VarArg arg = VarArg();
+	arg.argType = VarArg::ArgType::String;
+	arg.argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
+	//char* aCStr = aStr.c_str();
+	strncpy_s(arg.argValue.vCStr, sizeof(arg.argValue.vCStr), aStr.c_str(), sizeof(arg.argValue.vCStr) - 1);
+	return arg;
+}
+
+
 
 // Util functions //
 
@@ -199,54 +254,13 @@ void EventModule::dispatch_all()
 
 
 
-// VarArg functions //
-
-EventModule::VarArg EventModule::VarArg::boolArg(const bool aBool)
-{
-	VarArg arg = VarArg();
-	arg.argType = Bool;
-	arg.argValue.vBool = aBool;
-	return arg;
-}
-
-EventModule::VarArg EventModule::VarArg::intArg(const int aInt)
-{
-	VarArg arg = VarArg();
-	arg.argType = Integer;
-	arg.argValue.vInt = aInt;
-	return arg;
-}
-
-EventModule::VarArg EventModule::VarArg::floatArg(const float aFloat)
-{
-	VarArg arg = VarArg();
-	arg.argType = Float;
-	arg.argValue.vFloat = aFloat;
-	return arg;
-}
-
-EventModule::VarArg EventModule::VarArg::cstringArg(const char* aCStr)
-{
-	VarArg arg = VarArg();
-	arg.argType = CString;
-	arg.argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
-	strncpy_s(arg.argValue.vCStr, sizeof(arg.argValue.vCStr), aCStr, sizeof(arg.argValue.vCStr) - 1);
-	return arg;
-}
-
-
-
-// Event constructor //
+// Event functions //
 
 EventModule::Event::Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
 	:
 	type(type), 
 	priority(priority)
 {
-	char msg[128];
-	snprintf(msg, 128, "Event constructor called with argument count: %d", args.size() );
-	QDEBUG(msg);
-
 	// Iterate over the length of the arguments array and assign values from the args list.
 	numArgs = (args.size() < arguments.max_size()) ? args.size() : arguments.max_size();
 	if ( numArgs > 0 )
@@ -257,8 +271,5 @@ EventModule::Event::Event( std::string type, EventPriority priority, std::initia
 			arguments[i] = *it;
 			++it;
 		}
-		snprintf(msg, 128, "Args assigned: %d", numArgs);
-		QDEBUG(msg);
 	}
-	QDEBUG("Event constructor complete");
 };

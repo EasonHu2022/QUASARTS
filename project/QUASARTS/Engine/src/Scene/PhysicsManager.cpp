@@ -120,16 +120,25 @@ void PhysicsManager::runTests_start()
 		// Events submitted in reverse order of priority to demonstrate the queue's ability to sort by priority level.
 
 		// Event 0
-		EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::High );
+		//EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::High );
 
 		// Event 1
-		EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::Medium, { {"code", EV_ARG_INT(39)} } );
+		//EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::Medium, { {"code", EV_ARG_INT(39)} } );
 
 		// Event 2
-		EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::Low, { {"code", EV_ARG_INT(17)}, {"repeat", EV_ARG_BOOL(true)} } );
+		//EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::Low, { {"code", EV_ARG_INT(17)}, {"repeat", EV_ARG_BOOL(true)} } );
 
 		// Event 3
-		EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::High, { {"name", EV_ARG_CSTRING64("Jim")} } );
+		//EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::High, { {"name", EV_ARG_STRING("Jim")} } );
+
+		// Event 4
+		EventModule::Instance()->create_KeyPressed_event(KeyCode::_0);
+
+		// Event 5
+		EventModule::Instance()->create_KeyPressed_event(KeyCode::_W);
+
+		// Event 6
+		EventModule::Instance()->create_KeyReleased_event(KeyCode::SPACE);
 	}
 	EventModule::Instance()->log_queue();
 
@@ -234,7 +243,7 @@ void PhysicsManager::EV_CALLBACK_SIGNATURE( KeyPressed )
 	std::string name = "code";
 	int iarg = -1;
 	bool ret = evt.find_argument(&iarg, name);
-	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
 	QDEBUG(msg);
 	if (ret) {
 		snprintf(msg, 512, "Event argument value: %d", iarg);
@@ -244,10 +253,10 @@ void PhysicsManager::EV_CALLBACK_SIGNATURE( KeyPressed )
 	name = "repeat";
 	bool barg = false;
 	ret = evt.find_argument(&barg, name);
-	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
 	QDEBUG(msg);
 	if (ret) {
-		snprintf(msg, 512, "Event argument value: %s", (barg ? "true" : "false"));
+		snprintf(msg, 512, "Event argument value: '%s'", (barg ? "true" : "false"));
 		QDEBUG(msg);
 	}
 }
@@ -261,7 +270,7 @@ void PhysicsManager::EV_CALLBACK_SIGNATURE( KeyReleased )
 	std::string name = "code";
 	int iarg = -1;
 	bool ret = evt.find_argument(&iarg, name);
-	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
 	QDEBUG(msg);
 	if (ret) {
 		snprintf(msg, 512, "Event argument value: %d", iarg);
@@ -271,20 +280,20 @@ void PhysicsManager::EV_CALLBACK_SIGNATURE( KeyReleased )
 	name = "repeat";
 	bool barg = false;
 	ret = evt.find_argument(&barg, name);
-	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
 	QDEBUG(msg);
 	if (ret) {
-		snprintf(msg, 512, "Event argument value: %s", (barg ? "true" : "false"));
+		snprintf(msg, 512, "Event argument value: '%s'", (barg ? "true" : "false"));
 		QDEBUG(msg);
 	}
 
 	name = "name";
 	std::string strarg = "";
 	ret = evt.find_argument(&strarg, name);
-	snprintf(msg, 512, "Event argument query for '%s' returned: %s", name.c_str(), (ret ? "true" : "false"));
+	snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
 	QDEBUG(msg);
 	if (ret) {
-		snprintf(msg, 512, "Event argument value: %s", strarg.c_str());
+		snprintf(msg, 512, "Event argument value: '%s'", strarg.c_str());
 		QDEBUG(msg);
 	}
 }
