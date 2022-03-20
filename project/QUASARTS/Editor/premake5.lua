@@ -39,6 +39,14 @@ project "Editor"
 	filter "system:windows"
 		systemversion "latest"
 		staticruntime "On"
+		defines
+		{
+			"_UNICODE",
+            "UNICODE",
+			"_CONSOLE",
+			"GLFW_INCLUDE_NONE",
+			"QS_WINDOWS",
+		}
 		
 	
 	filter "configurations:Debug"

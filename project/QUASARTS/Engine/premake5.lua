@@ -55,6 +55,7 @@ project "Engine"
 			"_CONSOLE",
 			"GLFW_INCLUDE_NONE",
 			"QS_BUILD_DLL",
+			"QS_WINDOWS",
 		}
 		postbuildcommands
 		{
