@@ -24,7 +24,7 @@ namespace Engine
 		template<typename T>
 		void add_loader();
 
-		void load(const std::string& obj, const std::string& extension, std::unordered_map<std::string, std::shared_ptr<Mesh>>&);
+		void load(const std::string& obj, std::unordered_map<std::string, std::shared_ptr<Mesh>>&);
 
 		inline auto& get_support_extension() const
 		{
@@ -32,6 +32,7 @@ namespace Engine
 		}
 	private:
 		std::unordered_map<std::string, std::shared_ptr<MeshLoader>> loaders;
+
 		std::unordered_set<std::string> supportExtensions;
 
 	};
@@ -39,12 +40,12 @@ namespace Engine
 	template<typename T>
 	inline auto MeshLoaderFactory::add_loader() -> void
 	{
-		auto loader = std::make_shared<T>();
+		/*auto loader = std::make_shared<T>();
 		for (auto ext : T::EXTENSIONS)
 		{
 			loaders.emplace(ext, loader);
 			supportExtensions.emplace(ext);
-		}
+		}*/
 	}
 
 
