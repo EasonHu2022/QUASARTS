@@ -41,7 +41,7 @@ int PhysicsManager::start()
 {
 
 	// Test collision world.
-	//runTests_start();
+	runTests_start();
 
 	return 0;
 
@@ -149,7 +149,7 @@ void PhysicsManager::runTests_start()
 
 
 
-
+	/*
 	char msg[128];
 	QDEBUG("------------------------------");
 	snprintf(msg, 128, "Number of collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
@@ -230,6 +230,7 @@ void PhysicsManager::runTests_start()
 			QDEBUG("Collision object %i not hit");
 		}
 	}
+	*/
 
 } // runTests_start()
 

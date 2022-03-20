@@ -73,7 +73,7 @@ void EventModule::release()
 
 // Usage functions //
 
-int EventModule::create_event( std::string eventType, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
+int EventModule::create_event( const std::string eventType, EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args )
 {
 	// Check type is valid.
 	if ( ! valid_event_type( eventType ) )
@@ -89,7 +89,7 @@ int EventModule::create_event( std::string eventType, EventPriority priority, st
 } // submit_event()
 
 
-int EventModule::create_KeyPressed_event(KeyCode code, EventPriority priority)
+int EventModule::create_KeyPressed_event( const KeyCode code, const EventPriority priority)
 {
 	std::initializer_list< std::pair<std::string, VarArg> > args = {
 		{ "code", EV_ARG_INT(code) }
@@ -99,7 +99,7 @@ int EventModule::create_KeyPressed_event(KeyCode code, EventPriority priority)
 }
 
 
-int EventModule::create_KeyReleased_event(KeyCode code, EventPriority priority)
+int EventModule::create_KeyReleased_event( const KeyCode code, const EventPriority priority)
 {
 	std::initializer_list< std::pair<std::string, VarArg> > args = {
 		{ "code", EV_ARG_INT(code) }
@@ -109,7 +109,7 @@ int EventModule::create_KeyReleased_event(KeyCode code, EventPriority priority)
 }
 
 
-int EventModule::register_handler( std::string eventType, std::function<void( const Event& )> eventHandler )
+int EventModule::register_handler( const std::string eventType, const std::function<void( const Event& )> eventHandler )
 {
 	// Check the given event type is valid.
 	if ( ! valid_event_type( eventType ) )
@@ -133,6 +133,7 @@ int EventModule::register_handler( std::string eventType, std::function<void( co
 			return 1;
 		}
 	}*/
+
 	vectorRef.push_back(eventHandler);
 
 	return 0;
@@ -206,7 +207,6 @@ EventModule::VarArg EventModule::stringArg(const std::string aStr)
 	VarArg arg = VarArg();
 	arg.argType = VarArg::ArgType::String;
 	arg.argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
-	//char* aCStr = aStr.c_str();
 	strncpy_s(arg.argValue.vCStr, sizeof(arg.argValue.vCStr), aStr.c_str(), sizeof(arg.argValue.vCStr) - 1);
 	return arg;
 }
@@ -215,8 +215,7 @@ EventModule::VarArg EventModule::stringArg(const std::string aStr)
 
 // Util functions //
 
-
-bool EventModule::valid_event_type(std::string eventType)
+bool EventModule::valid_event_type( const std::string eventType )
 {
 	if ( eventTypes.find(eventType) == eventTypes.end() )
 		return false;
@@ -226,7 +225,7 @@ bool EventModule::valid_event_type(std::string eventType)
 
 void EventModule::dispatch_all()
 {
-	// Dispatch all events in the queue, front to back (in order of priority).
+	// Dispatch all events in the queue, front to back (in 'ascending' order).
 	while (true)
 	{
 		// Iterate over the queue.
@@ -240,14 +239,13 @@ void EventModule::dispatch_all()
 		if (handlerIt != registeredHandlers.end())
 		{
 			// Forward the event to each of the registered handlers.
-			for (int i = 0; i < handlerIt->second.size(); ++i)
+			for (auto handler : handlerIt->second)
 			{
-				handlerIt->second[i](*evtIt);
+				handler(*evtIt);
 			}
 		}
 
-		// Event has been forwarded to all interested objects (if any):
-		// remove it from the queue.
+		// Event has been forwarded to all interested objects (if any): remove event from queue.
 		queue.pop_front();
 	}
 } // dispatch_all()
@@ -256,7 +254,7 @@ void EventModule::dispatch_all()
 
 // Event functions //
 
-EventModule::Event::Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args )
+EventModule::Event::Event( const std::string type, const EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args )
 	:
 	type(type), 
 	priority(priority)

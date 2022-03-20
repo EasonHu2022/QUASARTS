@@ -12,6 +12,9 @@
 #include "KeyCodes.h"
 
 
+
+// Convenient macros //
+
 // Parameter 'eventType' is NOT a string.
 // Usage:
 // For handler declaration: void CALLBACK_SIGNATURE( EventType )
@@ -42,6 +45,12 @@
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_CSTRING64( cstringValue1 )}, ... } );
 #define EV_ARG_STRING(aString)	EventModule::stringArg( aString )
+
+
+// Important numbers //
+
+#define MAX_ARGS_PER_EVENT 8
+#define MAX_CHARS_PER_STRING_ARG 64
 
 
 
@@ -84,7 +93,7 @@ public:
 		Medium = 1,	// 'less than' used for sorting events (see operator< below).
 		Low = 2
 	};
-	static std::string priority_to_string(const EventPriority priority)
+	static std::string priority_to_string( const EventPriority priority )
 	{
 		switch (priority)
 		{
@@ -101,16 +110,25 @@ public:
 	// Create an event and add it to the queue.
 	// Usage:
 	// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_TYPE( value1 )}, ... } );
-	int create_event( std::string eventType, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
+	// See macros: EV_ARG_*()
+	int create_event( const std::string eventType, EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args = {} );
 
-	int create_KeyPressed_event( KeyCode code, EventPriority priority = EventPriority::High);
-	int create_KeyReleased_event( KeyCode code, EventPriority priority = EventPriority::High );
+	// Create a 'KeyPressed' event and add it to the queue.
+	// Usage:
+	// EventModule::Instance()->create_KeyPressed_event( KeyCode::Code, [EventModule::EventPriority::PriorityLevel] );
+	int create_KeyPressed_event( const KeyCode code, const EventPriority priority = EventPriority::High);
+
+	// Create a 'KeyReleased' event and add it to the queue.
+	// Usage:
+	// EventModule::Instance()->create_KeyReleased_event( KeyCode::Code, [EventModule::EventPriority::PriorityLevel] );
+	int create_KeyReleased_event( const KeyCode code, const EventPriority priority = EventPriority::High );
 
 
 	// Currently, registering interest in an event type requires the user/object to pass two arguments:
 	// 1. the string name of the event type they are interested in.
 	// 2. their event handler function: the event handler's return type must be 'void', with a single parameter of type 'const Event&'.
-	int register_handler( std::string eventType, std::function<void( const EventModule::Event& )> eventHandler );
+	// See macro: EV_CALLBACK_REGISTRATION()
+	int register_handler( const std::string eventType, const std::function<void( const EventModule::Event& )> eventHandler );
 
 	// debug
 	void log_queue();
@@ -118,17 +136,18 @@ public:
 
 
 	// Static functions for explicitly creating VarArg with different types.
+	// See macros: EV_ARG_*()
 	static VarArg boolArg(const bool aBool);
 	static VarArg intArg(const int aInt);
 	static VarArg floatArg(const float aFloat);
 	static VarArg stringArg(const std::string aStr);
 
 
+	// Private utils //
 private:
 	// Event queue:
 	// The Event struct has an operator< overload to customise the behaviour of forward_list::sort(), i.e.,
-	// queue.sort() will sort the events on the queue in ascending order:
-	// if Event 'lhs' is less than Event 'rhs', 'lhs' comes before 'rhs' in the queue.
+	// queue.sort() will sort the events on the queue in 'ascending' order.
 	std::forward_list<Event> queue;
 	// Mapping of each event type to a corresponding list of handlers interested in that type.
 	std::unordered_map< std::string, std::vector< std::function<void( const Event& )> > > registeredHandlers;
@@ -138,7 +157,7 @@ private:
 	// Util functions //
 private:
 	// Check that the given event type is in the set of known event types.
-	bool valid_event_type( std::string eventType );
+	bool valid_event_type( const std::string eventType );
 	// Dispatch all events in the queue to registered handlers.
 	void dispatch_all();
 
@@ -146,6 +165,7 @@ private:
 
 	// Structs //
 private:
+	// Struct for dynamic event arguments.
 	struct VarArg
 	{
 	public:
@@ -154,7 +174,7 @@ private:
 			bool vBool;
 			int vInt;
 			float vFloat;
-			char vCStr[64];
+			char vCStr[ MAX_CHARS_PER_STRING_ARG ];
 
 			~ArgUnion() {}
 		};
@@ -207,17 +227,17 @@ public:
 		EventPriority priority;
 		//int timestamp;
 		size_t numArgs;
-		std::array< std::pair< std::string, VarArg >, 8 > arguments;
+		std::array< std::pair< std::string, VarArg >, MAX_ARGS_PER_EVENT > arguments;
 
 	private:
-		// Private constructor prevents other modules from creating their own Event instances.
-		Event( std::string type, EventPriority priority, std::initializer_list< std::pair<std::string, VarArg> > args = {} );
+		// Private constructor prevents objects (except the EventModule singleton) from creating their own Event instances.
+		Event( const std::string type, const EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args = {} );
 	public:
 		~Event() { };
 
 
 		// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
-		friend int EventModule::create_event(std::string type, EventPriority priority, std::initializer_list < std::pair<std::string, VarArg> > args );
+		friend int EventModule::create_event( const std::string type, const EventPriority priority, const std::initializer_list < std::pair<std::string, VarArg> >& args );
 
 
 		// Usage functions //
@@ -234,10 +254,8 @@ public:
 		// Usage:
 		// Type myVariable;  bool ret = event.find_argument( &myVariable, "argumentName" );
 		template<class T>
-		bool find_argument( T varPointer, std::string argName ) const
+		bool find_argument( T varPointer, const std::string argName ) const
 		{
-			char msg[256];
-
 			for (size_t i = 0; i < numArgs; ++i)
 			{
 				if ( arguments[i].first.compare( argName ) == 0 )
@@ -258,22 +276,22 @@ public:
 					}
 					catch (const std::exception& e)
 					{
+						char msg[256];
 						snprintf( msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what() );
 						QDEBUG( msg );
 						return false;
 					}
 				}
 			}
+			char msg[256];
 			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
 			QDEBUG(msg);
 			return false;
 		}
 
 		template<>
-		bool find_argument( std::string* varPointer, std::string argName ) const
+		bool find_argument( std::string* varPointer, const std::string argName ) const
 		{
-			char msg[256];
-
 			for (size_t i = 0; i < numArgs; ++i)
 			{
 				if (arguments[i].first.compare(argName) == 0)
@@ -284,12 +302,14 @@ public:
 					}
 					catch (const std::exception& e)
 					{
+						char msg[256];
 						snprintf(msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what());
 						QDEBUG(msg);
 						return false;
 					}
 				}
 			}
+			char msg[256];
 			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
 			QDEBUG(msg);
 			return false;
@@ -300,13 +320,12 @@ public:
 		// debug
 		std::string to_string() const
 		{
-			// TODO: print args
 			std::ostringstream ostr;
 			ostr << "Event '" << type << "', Priority level: " << priority_to_string(priority) << '\n';
 			ostr << "Arguments: " << numArgs;
 			for (size_t i = 0; i < numArgs; ++i)
 			{
-				ostr << "\n - arg " << i << " - Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
+				ostr << "\n - Arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
 			}
 			return ostr.str();
 		}
@@ -318,7 +337,7 @@ public:
 // Event operator< overload
 // Used to sort events in the queue:
 // if lhs is 'less than' rhs, lhs comes first.
-inline bool operator<(const EventModule::Event& lhs, const EventModule::Event& rhs )
+inline bool operator<( const EventModule::Event& lhs, const EventModule::Event& rhs )
 {
 	if (lhs.get_priority() < rhs.get_priority())
 		return true;
