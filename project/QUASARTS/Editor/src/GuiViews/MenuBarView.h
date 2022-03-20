@@ -1,9 +1,10 @@
 #pragma once
 #include "QuasartsEngine.h"
 #include <string>
+#include "GuiViews/FileInputView.h"
 
 
-class MenuBarView : public Engine::GuiView
+class MenuBarView : public GuiView
 {
 public:
 	static std::string OpenFileDialogue();

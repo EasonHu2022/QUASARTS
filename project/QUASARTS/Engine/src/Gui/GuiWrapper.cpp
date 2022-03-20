@@ -9,24 +9,8 @@
 namespace Engine
 {
 
-    GuiWrapper* GuiWrapper::Instance = NULL;
-    GuiWrapper::GuiWrapper()
-    {
-        
-    }
-
-    GuiWrapper::~GuiWrapper()
-    {
-    }
     void GuiWrapper::init()
     {
-        if (NULL != Instance)
-        {
-            QERROR("duplicate init !");
-            return;
-        }
-        GuiWrapper::Instance = new GuiWrapper();
-
         /*
             here need to be more abstract if we need diff gui
             now just for imgui
@@ -89,26 +73,6 @@ namespace Engine
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
-    void GuiWrapper::on_gui()
-    {
-        for (auto view : view_stack)
-        {
-            view->on_gui();
-        }
-    }
-
-    int GuiWrapper::add_gui_view(GuiView *view)
-    {
-        view_stack.push_back(view);
-
-        view->on_add();
-        return 0;
-    }
-
-    void GuiWrapper::remove_gui_view(int handle)
-    {
-        //todo : make a map for view with a unique handle returned from add func;
-    }
 
 }
 
