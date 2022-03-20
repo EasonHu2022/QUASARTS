@@ -20,13 +20,9 @@
 //#define IM_ASSERT(_EXPR)  ((void)(_EXPR))     // Disable asserts
 
 
-#ifdef QS_BUILD_DLL
-#define QS_API __declspec(dllexport)
-#else
-#define QS_API __declspec(dllimport)
-#endif
 
 
+#include "Core/Core.h"
 #define IMGUI_API QS_API
 
 //---- Define attributes of all API symbols declarations, e.g. for DLL under Windows
