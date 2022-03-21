@@ -206,8 +206,8 @@ EventModule::VarArg EventModule::stringArg(const std::string aStr)
 {
 	VarArg arg = VarArg();
 	arg.argType = VarArg::ArgType::String;
-	arg.argValue.vCStr[0] = '\0'; // vCStr is now active member of union.
-	strncpy_s(arg.argValue.vCStr, sizeof(arg.argValue.vCStr), aStr.c_str(), sizeof(arg.argValue.vCStr) - 1);
+	arg.argValue.vCStr[ MAX_CHARS_PER_STRING_ARG - 1 ] = '\0'; // vCStr is now active member of union.
+	strncpy(arg.argValue.vCStr, aStr.c_str(), MAX_CHARS_PER_STRING_ARG - 1);
 	return arg;
 }
 

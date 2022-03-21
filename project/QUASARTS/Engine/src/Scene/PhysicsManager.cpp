@@ -132,13 +132,22 @@ void PhysicsManager::runTests_start()
 		//EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::High, { {"name", EV_ARG_STRING("Jim")} } );
 
 		// Event 4
-		EventModule::Instance()->create_KeyPressed_event(KeyCode::_0);
+		//EventModule::Instance()->create_KeyPressed_event(KeyCode::_0);
 
 		// Event 5
-		EventModule::Instance()->create_KeyPressed_event(KeyCode::_W);
+		//EventModule::Instance()->create_KeyPressed_event(KeyCode::_W);
 
 		// Event 6
-		EventModule::Instance()->create_KeyReleased_event(KeyCode::SPACE);
+		//EventModule::Instance()->create_KeyReleased_event(KeyCode::SPACE);
+
+		// Event 7
+		EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High, { {"msg", EV_ARG_STRING("1234567890")} });
+
+		// Event 8
+		EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::Medium, { {"msg", EV_ARG_STRING("0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF")} });
+
+		// Event 9
+		EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::Low, { {"msg", EV_ARG_STRING("0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF")} });
 	}
 	EventModule::Instance()->log_queue();
 

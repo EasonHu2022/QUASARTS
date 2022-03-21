@@ -43,7 +43,7 @@
 
 // Returns a wrapper for event arguments, initialised with a char array of size 64 containing the given string.
 // Usage:
-// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_CSTRING64( cstringValue1 )}, ... } );
+// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_STRING( cstringValue1 )}, ... } );
 #define EV_ARG_STRING(aString)			EventModule::stringArg( aString )
 
 
@@ -124,7 +124,6 @@ public:
 	// EventModule::Instance()->create_KeyReleased_event( KeyCode::Code, EventModule::EventPriority::PriorityLevel );
 	int create_KeyReleased_event( const KeyCode code, const EventPriority priority = EventPriority::High );
 
-
 	// Currently, registering interest in an event type requires the user/object to pass two arguments:
 	// 1. the string name of the event type they are interested in.
 	// 2. their event handler function: the event handler's return type must be 'void', with a single parameter of type 'const Event&'.
@@ -134,7 +133,6 @@ public:
 	// debug
 	void log_queue();
 	void log_handlers();
-
 
 	// Static functions for explicitly creating VarArg with different types.
 	// See macros: EV_ARG_*()
@@ -218,6 +216,7 @@ private:
 			return ostr.str();
 		}
 	};
+
 
 public:
 	struct Event
