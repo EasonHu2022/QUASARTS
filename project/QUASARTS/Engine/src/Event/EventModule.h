@@ -290,8 +290,7 @@ public:
 			return false;
 		}
 
-		template<>
-		bool find_argument<std::string*>( std::string* varPointer, const std::string argName ) const
+		bool find_argument( std::string* varPointer, const std::string argName ) const
 		{
 			for (size_t i = 0; i < numArgs; ++i)
 			{
