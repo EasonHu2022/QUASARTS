@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/Core.h"
-#include "MeshLoader.h"
+#include "ResourceManager/MeshLoader.h"
 namespace Engine
 {
 
-	class ObjLoader : MeshLoader
+	class ObjLoader : public MeshLoader
 	{
 	public:
 		static constexpr char* EXTENSIONS[] = { "obj" };

@@ -38,14 +38,14 @@ namespace Engine
 	};
 
 	template<typename T>
-	inline auto MeshLoaderFactory::add_loader() -> void
+	inline void MeshLoaderFactory::add_loader()
 	{
-		/*auto loader = std::make_shared<T>();
+		auto loader = std::make_shared<T>();
 		for (auto ext : T::EXTENSIONS)
 		{
 			loaders.emplace(ext, loader);
 			supportExtensions.emplace(ext);
-		}*/
+		}
 	}
 
 
