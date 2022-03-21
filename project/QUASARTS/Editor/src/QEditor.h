@@ -34,14 +34,15 @@ private:
 	std::unordered_map<size_t, std::shared_ptr<GuiView>> guiViews;
 
 };
+template<class T>
+inline void QEditor::add_gui_view()
+{
+	guiViews.emplace(typeid(T).hash_code(), std::make_shared<T>());
+}
+
 
 Engine::Application* Engine::create_application()
 {
 	return new QEditor();
 }
 
-template<class T>
-inline void QEditor::add_gui_view()
-{
-	guiViews.emplace(typeid(T).hash_code(), std::make_shared<T>());
-}

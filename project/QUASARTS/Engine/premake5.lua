@@ -14,6 +14,8 @@ project "Engine"
 		"**.lua",
 		"../ThirdParty/ImGui/*.cpp",
 		"../ThirdParty/ImGui/*.h",
+		"../ThirdParty/tiny_obj_loader/*.h",
+		"../ThirdParty/tiny_obj_loader/*.cc",
 	}
 	
 	links
@@ -42,6 +44,7 @@ project "Engine"
 		"../ThirdParty/Bullet3/Bullet3Common",
 		"../ThirdParty/Bullet3/Bullet3Geometry",
 		"../ThirdParty/Bullet3",
+		"../ThirdParty/tiny_obj_loader",
 	}
 
 	filter "system:windows"
