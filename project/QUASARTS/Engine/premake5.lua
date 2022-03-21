@@ -15,7 +15,6 @@ project "Engine"
 		"../ThirdParty/ImGui/*.cpp",
 		"../ThirdParty/ImGui/*.h",
 		"../ThirdParty/tiny_obj_loader/*.h",
-		"../ThirdParty/tiny_obj_loader/*.cc",
 	}
 	
 	links
