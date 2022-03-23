@@ -15,6 +15,9 @@ project "Engine"
 		"../ThirdParty/ImGui/*.cpp",
 		"../ThirdParty/ImGui/*.h",
 		"../ThirdParty/tiny_obj_loader/*.h",
+		"../ThirdParty/glm/glm/*.hpp",
+		"../ThirdParty/glm/glm/*/*.hpp",
+		"../ThirdParty/glm/glm/*/*.inl",
 	}
 	
 	links
@@ -44,6 +47,7 @@ project "Engine"
 		"../ThirdParty/Bullet3/Bullet3Geometry",
 		"../ThirdParty/Bullet3",
 		"../ThirdParty/tiny_obj_loader",
+		"../ThirdParty/glm",
 	}
 
 	filter "system:windows"
