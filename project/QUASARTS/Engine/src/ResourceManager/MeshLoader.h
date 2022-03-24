@@ -24,7 +24,7 @@ namespace Engine
 		template<typename T>
 		void add_loader();
 
-		void load(const std::string& obj, std::unordered_map<std::string, std::shared_ptr<Mesh>>&);
+		void load(const std::string& obj, std::unordered_map<std::string, std::shared_ptr<Mesh>>& meshes);
 
 		inline auto& get_support_extension() const
 		{

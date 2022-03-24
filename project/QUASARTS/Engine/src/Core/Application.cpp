@@ -18,6 +18,8 @@ namespace Engine
 		LogModule::Instance()->init();
 
 		EventModule::Instance()->init();
+
+		loaderFactory = new MeshLoaderFactory();
 		//create window for app
 		m_window = Window::create(WindowProps(name));		
 	}
@@ -46,6 +48,14 @@ namespace Engine
 		GuiWrapper::init();
 	}
 
+	void Application::Test()
+	{
+		/*std::string path = "F:\\WorkSpace\\LEEDS\\Graphics and Render\\Assignment2\\objects\\cube_flat.obj";
+		std::unordered_map<std::string, std::shared_ptr<Mesh>> meshes{};
+		loaderFactory->load(path, meshes);
+		QDEBUG("test load meshes");*/
+	}
+
 	void Application::start()
 	{
 
@@ -57,6 +67,11 @@ namespace Engine
 		LogModule::Instance()->start();
 		PhysicsManager::Instance()->start();
 		EventModule::Instance()->start();
+
+		/// <summary>
+		/// for test
+		/// </summary>
+		Test();
 
 
 		//main loop

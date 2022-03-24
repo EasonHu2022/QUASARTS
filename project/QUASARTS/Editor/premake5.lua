@@ -35,6 +35,8 @@ project "Editor"
 		"../ThirdParty/Bullet3/Bullet3Common",
 		"../ThirdParty/Bullet3/Bullet3Geometry",
 		"../ThirdParty/Bullet3",
+		"../ThirdParty/tiny_obj_loader",
+		"../ThirdParty/glm",
 	}
 
 	filter "system:windows"

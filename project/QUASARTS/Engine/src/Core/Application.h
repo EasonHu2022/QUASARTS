@@ -6,6 +6,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "ResourceManager/MeshLoader.h"
 namespace Engine
 {
 
@@ -18,6 +19,10 @@ namespace Engine
 
 	public:
 		static Application* Instance;
+		MeshLoaderFactory * loaderFactory;
+		//for all test code entrance
+		void Test();
+
 
 	public:
 		Window* get_window() { return m_window; }
