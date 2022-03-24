@@ -30,6 +30,13 @@ public:
 		return std::static_pointer_cast<T>(guiViews[typeid(T).hash_code()]);
 	}
 
+	/// <summary>
+	/// test code in init()
+	/// </summary>
+	void test_in_init();
+
+	void test_in_update();
+
 private:
 	std::unordered_map<size_t, std::shared_ptr<GuiView>> guiViews;
 

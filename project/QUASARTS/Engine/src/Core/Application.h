@@ -20,8 +20,7 @@ namespace Engine
 	public:
 		static Application* Instance;
 		MeshLoaderFactory * loaderFactory;
-		//for all test code entrance
-		void Test();
+
 
 
 	public:

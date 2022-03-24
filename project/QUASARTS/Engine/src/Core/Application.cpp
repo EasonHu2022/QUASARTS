@@ -48,13 +48,6 @@ namespace Engine
 		GuiWrapper::init();
 	}
 
-	void Application::Test()
-	{
-		/*std::string path = "F:\\WorkSpace\\LEEDS\\Graphics and Render\\Assignment2\\objects\\cube_flat.obj";
-		std::unordered_map<std::string, std::shared_ptr<Mesh>> meshes{};
-		loaderFactory->load(path, meshes);
-		QDEBUG("test load meshes");*/
-	}
 
 	void Application::start()
 	{
