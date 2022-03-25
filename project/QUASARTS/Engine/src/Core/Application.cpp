@@ -64,8 +64,7 @@ namespace Engine
 		/// <summary>
 		/// for test
 		/// </summary>
-		Test();
-
+		
 
 		//main loop
 		while (bIs_Running)
