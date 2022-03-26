@@ -1,6 +1,10 @@
 #pragma once
 #include "Core/IModule.h"
 #include "Logger/LogModule.h"
+#include "KeyCodes.h"
+#include "MouseButtonCodes.h"
+#include "GLFW/glfw3.h"
+
 #include <forward_list>
 #include <functional>
 #include <unordered_map>
@@ -8,8 +12,6 @@
 #include <set>
 #include <array>
 #include <sstream>
-
-#include "KeyCodes.h"
 
 
 
@@ -26,22 +28,22 @@
 // EventModule::Instance()->register_handler( CALLBACK_REGISTRATION( EventType ) );
 #define EV_CALLBACK_REGISTRATION(eventType) #eventType, [this](const EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
 
-// Returns a wrapper for event arguments, initialised with a boolean of the given value.
+// Returns a wrapper for an event argument, initialised with a boolean of the given value.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_BOOL( boolValue1 )}, ... } );
 #define EV_ARG_BOOL(aBool)				EventModule::boolArg( aBool )
 
-// Returns a wrapper for event arguments, initialised with an integer of the given value.
+// Returns a wrapper for an event argument, initialised with an integer of the given value.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_INT( intValue1 )}, ... } );
 #define EV_ARG_INT(aInt)				EventModule::intArg( aInt )
 
-// Returns a wrapper for event arguments, initialised with a float of the given value.
+// Returns a wrapper for an event argument, initialised with a float of the given value.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_FLOAT( floatValue1 )}, ... } );
 #define EV_ARG_FLOAT(aFloat)			EventModule::floatArg( aFloat )
 
-// Returns a wrapper for event arguments, initialised with a char array of size 64 containing the given string.
+// Returns a wrapper for an event argument, initialised with a char array of size 64 containing the given string.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_STRING( cstringValue1 )}, ... } );
 #define EV_ARG_STRING(aString)			EventModule::stringArg( aString )
@@ -49,9 +51,10 @@
 
 // Important numbers //
 
+#define MAX_CHARS_PER_EVENT_TYPE_NAME 24
 #define MAX_ARGS_PER_EVENT 8
-#define MAX_CHARS_PER_STRING_ARG 64
-
+#define MAX_CHARS_PER_EVENT_ARG_NAME 24
+#define MAX_CHARS_PER_STRING_ARG 32
 
 
 class EventModule : public IModule
@@ -110,19 +113,9 @@ public:
 public:
 	// Create an event and add it to the queue.
 	// Usage:
-	// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_TYPE( value1 )}, ... } );
+	// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel [ , { {"argumentName1", EV_ARG_TYPE( value1 )}, ... } ] );
 	// See macros: EV_ARG_*()
 	int create_event( const std::string eventType, EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args = {} );
-
-	// Create a 'KeyPressed' event and add it to the queue.
-	// Usage:
-	// EventModule::Instance()->create_KeyPressed_event( KeyCode::Code, EventModule::EventPriority::PriorityLevel );
-	int create_KeyPressed_event( const KeyCode code, const EventPriority priority = EventPriority::High);
-
-	// Create a 'KeyReleased' event and add it to the queue.
-	// Usage:
-	// EventModule::Instance()->create_KeyReleased_event( KeyCode::Code, EventModule::EventPriority::PriorityLevel );
-	int create_KeyReleased_event( const KeyCode code, const EventPriority priority = EventPriority::High );
 
 	// Currently, registering interest in an event type requires the user/object to pass two arguments:
 	// 1. the string name of the event type they are interested in.
@@ -142,7 +135,7 @@ public:
 	static VarArg stringArg(const std::string aStr);
 
 
-	// Private utils //
+	// Util variables //
 private:
 	// Event queue:
 	// The Event struct has an operator< overload to customise the behaviour of forward_list::sort(), i.e.,
@@ -155,8 +148,10 @@ private:
 
 	// Util functions //
 private:
+	// Add a new event type with name 'eventType' if the name is within the maximum type name size and does not clash with an existing type name.
+	int add_event_type( const std::string eventType );
 	// Check that the given event type is in the set of known event types.
-	bool valid_event_type( const std::string eventType );
+	bool recognised_event_type( const std::string eventType );
 	// Dispatch all events in the queue to registered handlers.
 	void dispatch_all();
 
@@ -182,6 +177,7 @@ private:
 			Bool,
 			Integer,
 			Float,
+			Vector,
 			String
 		};
 
@@ -223,11 +219,11 @@ public:
 	{
 		// Event information //
 	private:
-		std::string type;
+		char type[ MAX_CHARS_PER_EVENT_TYPE_NAME ];
 		EventPriority priority;
 		//int timestamp;
 		size_t numArgs;
-		std::array< std::pair< std::string, VarArg >, MAX_ARGS_PER_EVENT > arguments;
+		std::array< std::pair< char[MAX_CHARS_PER_EVENT_ARG_NAME], VarArg >, MAX_ARGS_PER_EVENT > arguments;
 
 	private:
 		// Private constructor prevents objects (except the EventModule singleton) from creating their own Event instances.
@@ -242,7 +238,7 @@ public:
 
 		// Usage functions //
 	public:
-		std::string get_type() const { return type; }
+		std::string get_type() const { return std::string( type ); }
 		EventPriority get_priority() const { return priority; }
 		//int get_timestamp() const						{ return timestamp; }
 
@@ -258,7 +254,7 @@ public:
 		{
 			for (size_t i = 0; i < numArgs; ++i)
 			{
-				if ( arguments[i].first.compare( argName ) == 0 )
+				if ( strcmp(arguments[i].first, argName.c_str()) == 0 )
 				{
 					try {
 						switch (arguments[i].second.argType)
@@ -293,7 +289,7 @@ public:
 		{
 			for (size_t i = 0; i < numArgs; ++i)
 			{
-				if (arguments[i].first.compare(argName) == 0)
+				if ( strcmp(arguments[i].first, argName.c_str()) == 0 )
 				{
 					try {
 						*varPointer = std::string(arguments[i].second.argValue.vCStr);

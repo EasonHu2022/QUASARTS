@@ -41,7 +41,7 @@ int PhysicsManager::start()
 {
 
 	// Test collision world.
-	runTests_start();
+	//runTests_start();
 
 	return 0;
 
@@ -269,6 +269,17 @@ void PhysicsManager::EV_CALLBACK_SIGNATURE( KeyPressed )
 		snprintf(msg, 512, "Event argument value: '%s'", (barg ? "true" : "false"));
 		QDEBUG(msg);
 	}
+
+	name = "msg";
+	std::string strarg = "";
+	ret = evt.find_argument(&strarg, name);
+	snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
+	QDEBUG(msg);
+	if (ret) {
+		snprintf(msg, 512, "Event argument value: '%s'", strarg.c_str());
+		QDEBUG(msg);
+	}
+
 }
 
 void PhysicsManager::EV_CALLBACK_SIGNATURE( KeyReleased )

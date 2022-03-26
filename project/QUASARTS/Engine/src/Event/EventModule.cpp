@@ -27,8 +27,14 @@ void EventModule::init()
 
 	// Initialise base event types. TODO: get from datafile.
 	eventTypes.clear();
-	eventTypes.insert( "KeyPressed" );
-	eventTypes.insert( "KeyReleased" );
+	add_event_type( "WindowResized" );
+	add_event_type( "WindowClosed" );
+	add_event_type( "KeyPressed" );
+	add_event_type(	"KeyReleased" );
+	add_event_type(	"MouseButtonPressed" );
+	add_event_type(	"MouseMoved" );
+	add_event_type( "MouseButtonReleased" );
+	add_event_type( "Scrolled" );
 
 } // init()
 
@@ -76,7 +82,7 @@ void EventModule::release()
 int EventModule::create_event( const std::string eventType, EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args )
 {
 	// Check type is valid.
-	if ( ! valid_event_type( eventType ) )
+	if ( ! recognised_event_type( eventType ) )
 	{
 		QERROR( ("EventModule::submit_event() was passed an unrecognised event type:" + eventType).c_str() );
 		return 1;
@@ -89,30 +95,10 @@ int EventModule::create_event( const std::string eventType, EventPriority priori
 } // submit_event()
 
 
-int EventModule::create_KeyPressed_event( const KeyCode code, const EventPriority priority)
-{
-	std::initializer_list< std::pair<std::string, VarArg> > args = {
-		{ "code", EV_ARG_INT(code) }
-	};
-	create_event( "KeyPressed", priority, args );
-	return 0;
-}
-
-
-int EventModule::create_KeyReleased_event( const KeyCode code, const EventPriority priority)
-{
-	std::initializer_list< std::pair<std::string, VarArg> > args = {
-		{ "code", EV_ARG_INT(code) }
-	};
-	create_event( "KeyReleased", priority, args );
-	return 0;
-}
-
-
 int EventModule::register_handler( const std::string eventType, const std::function<void( const Event& )> eventHandler )
 {
 	// Check the given event type is valid.
-	if ( ! valid_event_type( eventType ) )
+	if ( ! recognised_event_type( eventType ) )
 	{
 		QERROR( ("EventModule::register_handler() was passed an unrecognised event type:" + eventType).c_str() );
 		return 1;
@@ -215,7 +201,20 @@ EventModule::VarArg EventModule::stringArg(const std::string aStr)
 
 // Util functions //
 
-bool EventModule::valid_event_type( const std::string eventType )
+int EventModule::add_event_type(const std::string eventType)
+{
+	// If name is small enough and does not clash with an existing name, add to list.
+	if ( sizeof(eventType.c_str()) <= MAX_CHARS_PER_EVENT_TYPE_NAME &&
+		! recognised_event_type(eventType) )
+	{
+		eventTypes.insert(eventType);
+		return 0;
+	}
+	return 1;
+}
+
+
+bool EventModule::recognised_event_type( const std::string eventType )
 {
 	if ( eventTypes.find(eventType) == eventTypes.end() )
 		return false;
@@ -256,9 +255,10 @@ void EventModule::dispatch_all()
 
 EventModule::Event::Event( const std::string type, const EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args )
 	:
-	type(type), 
 	priority(priority)
 {
+	strncpy(this->type, type.c_str(), MAX_CHARS_PER_EVENT_TYPE_NAME - 1);
+
 	// Iterate over the length of the arguments array and assign values from the args list.
 	numArgs = (args.size() < arguments.max_size()) ? args.size() : arguments.max_size();
 	if ( numArgs > 0 )
@@ -266,7 +266,9 @@ EventModule::Event::Event( const std::string type, const EventPriority priority,
 		auto it = args.begin();
 		for ( size_t i = 0; i < numArgs; ++i )
 		{
-			arguments[i] = *it;
+			// Copy argument components to an item in the arguments array.
+			strncpy(arguments[i].first, it->first.c_str(), MAX_CHARS_PER_EVENT_ARG_NAME - 1);
+			arguments[i].second = it->second;
 			++it;
 		}
 	}
