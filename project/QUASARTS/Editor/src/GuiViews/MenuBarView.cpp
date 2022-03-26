@@ -4,9 +4,12 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <commdlg.h>
+#include <ShlObj_core.h>
 #endif
 void MenuBarView::on_add()
 {
+    new_project = false;
+    folder_path = "";
 	QDEBUG("on add view : MenuBar");
 }
 
@@ -16,11 +19,7 @@ void MenuBarView::on_gui()
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New Project")) {
-
-
-
-            }
+            ImGui::MenuItem("New Project", NULL, &new_project);
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 std::cout << OpenFileDialogue().c_str() << std::endl;
@@ -115,6 +114,9 @@ void MenuBarView::on_gui()
         }
         ImGui::EndMainMenuBar();
     }
+
+    if (new_project)
+        newProject();
 }
 
 void MenuBarView::on_remove()
@@ -146,6 +148,26 @@ std::string MenuBarView::OpenFileDialogue() {
     else
         return "N/A";
 }
+std::string MenuBarView::OpenFolderDialogue() {
+    wchar_t path[MAX_PATH] = L"";
+    BROWSEINFO bi;
+
+    bi.hwndOwner = NULL;
+    bi.pidlRoot = NULL;
+    bi.pszDisplayName = path;	// This is just for display: not useful
+    bi.lpszTitle = L"Choose Client Directory";
+    bi.ulFlags = BIF_RETURNONLYFSDIRS;
+    bi.lpfn = NULL;
+    bi.lParam = 0;
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (SHGetPathFromIDList(pidl, path)) {
+        std::wstring ws(path);
+        std::string pathstr(ws.begin(), ws.end());
+        return pathstr;
+    }
+    else
+        return "N/A";
+}
 #else
 std::string MenuBarView::OpenFileDialogue() {
     char filename[1024];
@@ -160,4 +182,59 @@ std::string MenuBarView::OpenFileDialogue() {
     }
 
 }
+std::string MenuBarView::OpenFolderDialogue() {
+    char foldername[1024];
+    FILE* f = popen("zenity  --file-selection --directory", "r");
+    if (f == NULL)
+        return "N/A";
+    else {
+        fgets(foldername, 1024, f);
+        std::string folderNameStr;
+        folderNameStr = foldername;
+        return folderNameStr;
+    }
+
+}
 #endif
+
+void MenuBarView::newProject() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+    static char buf2[MAX_PATH] = "";
+    for (int i = 0; i < folder_path.length(); i++) {
+        buf2[i] = folder_path[i];
+    }
+    std::string check = "pokemon";
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
+    ImGui::PopItemWidth();
+    if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 64)) {
+        folder_path = buf2;
+    }
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2);
+    if (ImGui::Button("  Browse  ")) {
+        std::string temp_path = OpenFolderDialogue();
+        if (temp_path.compare("N/A") != 0)
+            folder_path = temp_path;
+
+    }
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0 && strlen(buf2) != 0) {
+            FileModule newModule;
+            newModule.create_workdir(buf2, buf1);
+            new_project = false;
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_project = false;
+    }
+
+    ImGui::End();
+
+}

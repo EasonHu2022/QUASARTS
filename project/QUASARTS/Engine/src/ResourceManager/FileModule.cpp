@@ -73,6 +73,10 @@ const FileModule::QDirectoriesNode* FileModule::get_root()
 	return cur_root;
 }
 
+void FileModule::build_file_vdb(std::string root_dir)
+{
+}
+
 
 int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 {

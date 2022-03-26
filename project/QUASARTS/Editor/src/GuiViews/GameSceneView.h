@@ -1,9 +1,9 @@
 #pragma once
 #include "QuasartsEngine.h"
 #include <string>
-#include "GuiViews/FileInputView.h"
+#include "GuiViews/GuiView.h"
 
-class MenuBarView : public GuiView
+class GameSceneView : public GuiView
 {
 public:
 	bool new_project;

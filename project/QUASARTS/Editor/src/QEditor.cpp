@@ -1,6 +1,7 @@
 #include "QEditor.h"
 #include "GuiViews/FileInputView.h"
 #include "GuiViews/MenuBarView.h"
+#include "GuiViews/GameSceneView.h"
 #include "Core/Mesh.h"
 
 QEditor::QEditor()
@@ -19,6 +20,7 @@ void QEditor::init()
 	*/
 	add_gui_view<MenuBarView>();
 	add_gui_view<FileInputView>();
+	add_gui_view<GameSceneView>();
 	test_in_init();
 }
 
