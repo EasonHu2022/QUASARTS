@@ -1,14 +1,10 @@
 #pragma once
 #include "Core/IModule.h"
+#include "Core/Core.h"
 #include <vector>
-class FileModule:public IModule
+#include <string>
+class QS_API FileModule : public IModule
 {
-public:
-	enum QLOADTYPE
-	{
-		QASYNC = 0,
-		QSYNC,
-	};
 private:
 	static FileModule* instance;
 public:
@@ -45,16 +41,7 @@ public:
 //functions
 private:
 
-	/// <summary>
-	/// Synchronous File I/O
-	/// </summary>
-	/// <returns>file handle(unique)</returns>
-	int sync_read_file();
-	/// <summary>
-	/// Asynchronous File I/O
-	/// </summary>
-	/// <returns>file handle</returns>
-	int async_read_file();
+
 
 
 public:
@@ -112,16 +99,8 @@ public:
 	const QDirectoriesNode* get_root();
 
 	/// <summary>
-	/// Load files from a fixed dir called Resources
+	/// build a db for files 
+	/// now just for editor
 	/// </summary>
-	/// <param name="name">file path relative to the resource folder</param>
-	/// <param name="_type">load type, sync or async</param>
-	/// <returns>file handle(generated uid maybe)</returns>
-	int load_resources(char* name, QLOADTYPE _type = QSYNC);
-
-	/// <summary>
-	/// release the loaded resources by handle
-	/// </summary>
-	/// <param name="handle">file handle</param>
-	void release_resource(int handle);
+	void build_file_vdb(std::string root_dir);
 };
