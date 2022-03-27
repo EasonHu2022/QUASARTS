@@ -67,135 +67,139 @@ void Window::init(const WindowProps& props)
 	now reserve for event system
 */
 #pragma region CallBacks
-	// Set GLFW callbacks
-	glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-		{
-			EventModule::Instance()->create_event("WindowResized", EventModule::EventPriority::High,
+	{	
+		using namespace Engine;
+		
+		// Set GLFW callbacks
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+			{
+				EventModule::Instance()->create_event("WindowResized", EventModule::EventPriority::High,
+					{
+						{ "width",		EV_ARG_INT(width)	},
+						{ "height",		EV_ARG_INT(height)	}
+					}
+				);
+			}
+		);
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+			{
+
+
+				EventModule::Instance()->create_event("WindowClosed", EventModule::EventPriority::High, { });
+
+				glfwDestroyWindow(window);
+
+				glfwTerminate();
+			}
+		);
+
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+			{
+				switch (action)
 				{
-					{ "width",		EV_ARG_INT(width)	},
-					{ "height",		EV_ARG_INT(height)	}
-				}
-			);
-		}
-	);
-
-	glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-		{
-			
-
-			EventModule::Instance()->create_event( "WindowClosed", EventModule::EventPriority::High, { } );
-
-			glfwDestroyWindow(window);
-
-			glfwTerminate();
-		}
-	);
-
-	glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-		{
-			switch (action)
-			{
-			case GLFW_PRESS:
-			{
-				EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::High,
-					{
-						{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
-						//{ "scancode",	EV_ARG_INT(scancode)	},
-						{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
-						{ "repeat",		EV_ARG_BOOL(false)		}
-					}
-				);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::High,
-					{
-						{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
-						//{ "scancode",	EV_ARG_INT(scancode)	},
-						{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	}
-					}
-				);
-				break;
-			}
-			case GLFW_REPEAT:
-			{
-				EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::High,
-					{
-						{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
-						//{ "scancode",	EV_ARG_INT(scancode)	},
-						{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
-						{ "repeat",		EV_ARG_BOOL(true)		}
-					}
-				);
-				break;
-			}
-			}
-		}
-	);
-
-	//glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
-	//	{
-	//	});
-
-	glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-		{
-			//WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			double xPos, yPos;
-			glfwGetCursorPos(window, &xPos, &yPos);
-
-			switch (action)
-			{
-			case GLFW_PRESS:
-			{
-				EventModule::Instance()->create_event( "MouseButtonPressed", EventModule::EventPriority::High,
-					{
-						{ "button",		EV_ARG_INT(mousecode_convert_glfw_to_q(button))		},
-						{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))			},
-						{ "xpos",		EV_ARG_FLOAT((float)xPos)							},
-						{ "ypos",		EV_ARG_FLOAT((float)yPos)							}
-					}
-				);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				EventModule::Instance()->create_event( "MouseButtonReleased", EventModule::EventPriority::High,
-					{
-						{ "button",		EV_ARG_INT(mousecode_convert_glfw_to_q(button))		},
-						{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))			},
-						{ "xpos",		EV_ARG_FLOAT((float)xPos)							},
-						{ "ypos",		EV_ARG_FLOAT((float)yPos)							}
-					}
-				);
-				break;
-			}
-			}
-		}
-	);
-
-	glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-		{
-			EventModule::Instance()->create_event("Scrolled", EventModule::EventPriority::High,
+				case GLFW_PRESS:
 				{
-					{ "xOffset",	EV_ARG_FLOAT(float(xOffset))	},
-					{ "yOffset",	EV_ARG_FLOAT(float(yOffset))	}
+					EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
+						{
+							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+							//{ "scancode",	EV_ARG_INT(scancode)	},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
+							{ "repeat",		EV_ARG_BOOL(false)		}
+						}
+					);
+					break;
 				}
-			);
-		}
-	);
-
-	glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-		{
-			EventModule::Instance()->create_event("MouseMoved", EventModule::EventPriority::High,
+				case GLFW_RELEASE:
 				{
-					{ "xpos",		EV_ARG_FLOAT((float)xPos)	},
-					{ "ypos",		EV_ARG_FLOAT((float)yPos)	}
+					EventModule::Instance()->create_event("KeyReleased", EventModule::EventPriority::High,
+						{
+							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+							//{ "scancode",	EV_ARG_INT(scancode)	},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	}
+						}
+					);
+					break;
 				}
-			);
-		}
-	);
+				case GLFW_REPEAT:
+				{
+					EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
+						{
+							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+							//{ "scancode",	EV_ARG_INT(scancode)	},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
+							{ "repeat",		EV_ARG_BOOL(true)		}
+						}
+					);
+					break;
+				}
+				}
+			}
+		);
+
+		//glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+		//	{
+		//	});
+
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				//WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				double xPos, yPos;
+				glfwGetCursorPos(window, &xPos, &yPos);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					EventModule::Instance()->create_event("MouseButtonPressed", EventModule::EventPriority::High,
+						{
+							{ "button",		EV_ARG_INT(mousecode_convert_glfw_to_q(button))		},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))			},
+							{ "xpos",		EV_ARG_FLOAT((float)xPos)							},
+							{ "ypos",		EV_ARG_FLOAT((float)yPos)							}
+						}
+					);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					EventModule::Instance()->create_event("MouseButtonReleased", EventModule::EventPriority::High,
+						{
+							{ "button",		EV_ARG_INT(mousecode_convert_glfw_to_q(button))		},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))			},
+							{ "xpos",		EV_ARG_FLOAT((float)xPos)							},
+							{ "ypos",		EV_ARG_FLOAT((float)yPos)							}
+						}
+					);
+					break;
+				}
+				}
+			}
+		);
+
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+			{
+				EventModule::Instance()->create_event("Scrolled", EventModule::EventPriority::High,
+					{
+						{ "xOffset",	EV_ARG_FLOAT(float(xOffset))	},
+						{ "yOffset",	EV_ARG_FLOAT(float(yOffset))	}
+					}
+				);
+			}
+		);
+
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+			{
+				EventModule::Instance()->create_event("MouseMoved", EventModule::EventPriority::High,
+					{
+						{ "xpos",		EV_ARG_FLOAT((float)xPos)	},
+						{ "ypos",		EV_ARG_FLOAT((float)yPos)	}
+					}
+				);
+			}
+		);
+	}
 #pragma endregion
 
 	

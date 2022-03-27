@@ -2,7 +2,7 @@
 #include "Gui/GuiWrapper.h"
 #include "Render/Renderer.h"
 #include "Logger/LogModule.h"
-#include "Scene/PhysicsManager.h"
+#include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
 #include "Core/Input.h"
 
@@ -43,7 +43,7 @@ namespace Engine
 			later remove instance
 		*/
 		
-		PhysicsManager::Instance()->init();
+		PhysicsSystem::Instance()->init();
 		
 
 
@@ -63,7 +63,7 @@ namespace Engine
 			temp
 		*/
 		LogModule::Instance()->start();
-		PhysicsManager::Instance()->start();
+		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace Engine
 
 
 		LogModule::Instance()->update();
-		PhysicsManager::Instance()->update();
+		PhysicsSystem::Instance()->update();
 		
 		on_gui();
 	}
@@ -132,7 +132,7 @@ namespace Engine
 	{
 		//release everything
 		LogModule::Instance()->release();
-		PhysicsManager::Instance()->release();
+		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
 	}
 
