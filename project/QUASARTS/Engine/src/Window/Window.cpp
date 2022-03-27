@@ -18,7 +18,7 @@ Window::Window(const WindowProps& props)
 Window::~Window()
 {
 
-	shutdown();
+	//do release things 
 }
 
 Window* Window::create(const WindowProps& props)
@@ -81,7 +81,13 @@ void Window::init(const WindowProps& props)
 
 	glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 		{
+			
+
 			EventModule::Instance()->create_event( "WindowClosed", EventModule::EventPriority::High, { } );
+
+			glfwDestroyWindow(window);
+
+			glfwTerminate();
 		}
 	);
 
@@ -195,35 +201,11 @@ void Window::init(const WindowProps& props)
 	
 }
 
-void Window::shutdown()
-{
-	
-
-
-	glfwDestroyWindow(m_Window);
-
-	glfwTerminate();
-
-
-}
 
 void Window::on_update()
 {
-	if (glfwWindowShouldClose(m_Window))
-	{
-		/*
-			later instead of close event send to app
-			now  just shutdown the window and can't close the app
-			temply we 'll get an error after close window
-			that's because we shutdown the imgui but app can't be shutdown, so the update is continued
-			which cause an error in imgui
-			just ignore it before we finish the event sys
-		*/
-		shutdown();
-		return;
-	}
 
-	glfwPollEvents();
+	
 
 	int display_w, display_h;
 	glfwGetFramebufferSize(m_Window, &display_w, &display_h);
@@ -237,6 +219,8 @@ void Window::on_update()
 	GLint minor = 0;
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+	glfwPollEvents();
 
 }
 

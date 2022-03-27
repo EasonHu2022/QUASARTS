@@ -3,6 +3,7 @@
 #include "GuiViews/MenuBarView.h"
 #include "GuiViews/GameSceneView.h"
 #include "Core/Mesh.h"
+#include "Core/Input.h"
 
 QEditor::QEditor()
 {
@@ -60,4 +61,13 @@ void QEditor::test_in_init()
 
 void QEditor::test_in_update()
 {
+	if (Engine::Input::get_key_pressed(Q_KEY_W))
+	{
+		QDEBUG("Get Key from Editor : W");
+	}
+
+	if (Engine::Input::get_key_released(Q_KEY_W))
+	{
+		QDEBUG("Get Key from Editor : W");
+	}
 }

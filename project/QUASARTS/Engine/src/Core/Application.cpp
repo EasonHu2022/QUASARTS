@@ -4,6 +4,7 @@
 #include "Logger/LogModule.h"
 #include "Scene/PhysicsManager.h"
 #include "Event/EventModule.h"
+#include "Core/Input.h"
 
 namespace Engine
 {
@@ -18,6 +19,8 @@ namespace Engine
 		LogModule::Instance()->init();
 
 		EventModule::Instance()->init();
+
+		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
 
 		loaderFactory = new MeshLoaderFactory();
 		//create window for app
@@ -46,6 +49,8 @@ namespace Engine
 
 		//do init things
 		GuiWrapper::init();
+
+		Input::init();
 	}
 
 
@@ -69,6 +74,7 @@ namespace Engine
 		//main loop
 		while (bIs_Running)
 		{
+			
 			/*
 				render frame
 			*/			
@@ -82,7 +88,8 @@ namespace Engine
 			/*
 				System Manager Update
 			*/
-			m_window->swap_buffer();
+			if(bIs_Running)
+				m_window->swap_buffer();
 		}
 
 		//on destroy
@@ -102,12 +109,16 @@ namespace Engine
 
 	void Application::on_update()
 	{
+		//reset input
+		Input::reset_state();
 		m_window->on_update();
+
+		EventModule::Instance()->update();
+
 
 		LogModule::Instance()->update();
 		PhysicsManager::Instance()->update();
-		EventModule::Instance()->update();
-
+		
 		on_gui();
 	}
 
@@ -119,11 +130,16 @@ namespace Engine
 
 	void Application::on_release()
 	{
-		
+		//release everything
 		LogModule::Instance()->release();
 		PhysicsManager::Instance()->release();
 		EventModule::Instance()->release();
-		m_window->shutdown();
+	}
+
+	void Application::EV_CALLBACK_SIGNATURE(WindowClosed)
+	{
+		QDEBUG("closed");
+		close();
 	}
 
 }
