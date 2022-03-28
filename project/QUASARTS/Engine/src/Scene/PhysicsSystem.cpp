@@ -1,6 +1,9 @@
 #include "PhysicsSystem.h"
 #include "Logger/LogModule.h"
 
+#include <sstream>
+#include <iomanip>
+
 
 namespace Engine {
 
@@ -35,7 +38,7 @@ namespace Engine {
 
 
 		// Test collision world.
-		//runTests_init();
+		runTests_init();
 
 	}
 
@@ -43,7 +46,7 @@ namespace Engine {
 	{
 
 		// Test collision world.
-		//runTests_start();
+		runTests_start();
 
 		return 0;
 
@@ -70,12 +73,12 @@ namespace Engine {
 			delete obj;
 		}
 
-		// Delete collision shapes (should no longer be dependended on).
-		for (int i = 0; i < collisionShapes.size(); ++i)
+		// Delete collision sphere (should no longer be dependended on).
+		for (int i = 0; i < collisionSpheres.size(); ++i)
 		{
-			btCollisionShape* shape = collisionShapes[i];
-			collisionShapes[i] = 0; // Remove pointer from array.
-			delete shape;
+			btSphereShape* sphere = collisionSpheres[i];
+			collisionSpheres[i] = 0; // Remove pointer from array.
+			delete sphere;
 		}
 
 		// Delete collision detection objects in reverse order of creation.
@@ -87,35 +90,122 @@ namespace Engine {
 	} // release()
 
 
-	void PhysicsSystem::runTests_init()
+	void PhysicsSystem::create_collision_sphere(float radius)
 	{
+		btCollisionObject* obj = new btCollisionObject();
 
-		// Test collision detection //
-
-		btCollisionObject* testCollisionObject = new btCollisionObject();
+		btSphereShape* sphere;
+		// Set collision shape to an existing btSphereShape with same radius, if one exists.
+		int i = 0;
+		for (; i < collisionSpheres.size(); ++i)
+		{
+			if (abs(collisionSpheres[i]->getRadius() - radius) < Q_COLLISION_EPSILON)
+			{
+				sphere = collisionSpheres[i];
+				break;
+			}
+		}
+		// If none was found, create new.
+		if (i == collisionSpheres.size())
+		{
+			sphere = new btSphereShape(radius);
+			collisionSpheres.push_back(sphere);
+		}
 
 		// Set object's collision shape.
-		btCollisionShape* testCollisionShape = new btSphereShape(2.66666f); // Test with sphere shape: radius = 1.
-		collisionShapes.push_back(testCollisionShape); // Store collision shape - can be re-used!
-		testCollisionObject->setCollisionShape(testCollisionShape);
+		obj->setCollisionShape(sphere);
 
 		// Set object's world transform.
-		float yaw, pitch, roll;
-		yaw = 15.f;
-		pitch = -99.99999f;
-		roll = 0;
+		float yaw = 0.f, pitch = 0.f, roll = 0.f;
 		btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
-		btVector3 pos = btVector3(60.5f, -109.77777f, 0);
-		btTransform testTransform = btTransform(orn, pos);
-		testCollisionObject->setWorldTransform(testTransform); // Apply transform to object.
+
+		btVector3 pos = btVector3(0.f, 0.f, 0.f);
+
+		btTransform transform = btTransform(orn, pos);
+		obj->setWorldTransform(transform); // Apply transform to object.
 
 		// Add test object to the collision world.
-		collisionWorld->addCollisionObject(testCollisionObject);
+		collisionWorld->addCollisionObject(obj);
+
+	}
+
+
+	// Util //
+
+	std::string PhysicsSystem::object_to_string(const btCollisionObject* obj, const bool angles_to_deg)
+	{
+		std::ostringstream ostr;
+		ostr << "transform: " << transform_to_string(&obj->getWorldTransform(), angles_to_deg);
+		ostr << ", shape: " << shape_to_string(obj->getCollisionShape());
+		// TODO : collision shape
+		return ostr.str();
+	}
+
+
+	std::string PhysicsSystem::transform_to_string(const btTransform* trf, const bool angles_to_deg)
+	{
+		std::ostringstream ostr;
+
+		ostr << std::setprecision(3);
+
+		// Position
+		btVector3 pos = trf->getOrigin();
+		ostr << "position: (" << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << ")";
+
+		// Orientation
+		btQuaternion orn = trf->getRotation();
+		float yaw, pitch, roll;
+		orn.getEulerZYX(yaw, pitch, roll);
+		if (angles_to_deg)
+		{
+			yaw *= SIMD_DEGS_PER_RAD;
+			pitch *= SIMD_DEGS_PER_RAD;
+			roll *= SIMD_DEGS_PER_RAD;
+		}
+		ostr << ", orientation: (" << yaw << ", " << pitch << ", " << roll << ")";
+
+		return ostr.str();
+	}
+
+
+	std::string PhysicsSystem::shape_to_string(const btCollisionShape* shape)
+	{
+		std::ostringstream ostr;
+
+		ostr << std::setprecision(3);
+
+		switch (shape->getShapeType())
+		{
+		case (SPHERE_SHAPE_PROXYTYPE):
+			ostr << "Sphere, radius: " << ((btSphereShape*)shape)->getRadius();
+			break;
+		}
+
+		return ostr.str();
+	}
+
+
+
+
+
+
+
+
+
+	void PhysicsSystem::runTests_init()
+	{
+		create_collision_sphere(5.f);
+		create_collision_sphere(5.1f);
+		create_collision_sphere(5.f);
 
 	} // runTests_init()
 
 	void PhysicsSystem::runTests_start()
 	{
+		// Event tests //
+		/*
+		// Test event handler registration.
+		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(DebugEvent));
 
 		// Test event submission.
 		{
@@ -134,52 +224,31 @@ namespace Engine {
 			EventModule::Instance()->create_event( "DebugEvent", EventModule::EventPriority::High, { {"name", EV_ARG_STRING("Jim")} } );
 		}
 		EventModule::Instance()->log_queue();
-
-		// Test event handler registration.
-		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(DebugEvent));
+		*/
 
 
-		/*
-		char msg[128];
+		// Object tests //
+
+		char msg[512];
 		QDEBUG("------------------------------");
-		snprintf(msg, 128, "Number of collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
+		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
 		QDEBUG(msg);
-
+		snprintf(msg, 512, "Number of collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
+		QDEBUG(msg);
 
 		// Check persistence of collision world state since initialisation.
 
 		for (int i = 0; i < collisionWorld->getNumCollisionObjects(); ++i)
 		{
-
-			snprintf(msg, 128, "Collision object %i", i);
-			QDEBUG(msg);
-
 			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
 
-			btTransform trf = obj->getWorldTransform();
-
-			btQuaternion orn = trf.getRotation();
-			float yaw, pitch, roll;
-			orn.getEulerZYX(yaw, pitch, roll);
-			snprintf(msg, 128, "World Orientation (rad): (%5.5f, %5.5f, %5.5f)", yaw, pitch, roll);
+			snprintf(msg, 512, "- object %i: %s", i, object_to_string(obj, true).c_str());
 			QDEBUG(msg);
-			snprintf(msg, 128, "World Orientation (deg): (%5.5f, %5.5f, %5.5f)", yaw * SIMD_DEGS_PER_RAD, pitch * SIMD_DEGS_PER_RAD, roll * SIMD_DEGS_PER_RAD);
-			QDEBUG(msg);
-
-			btVector3 pos = trf.getOrigin();
-			snprintf(msg, 128, "World Position: (%5.5f, %5.5f, %5.5f)", pos.getX(), pos.getY(), pos.getZ());
-			QDEBUG(msg);
-
-			btSphereShape* collisionSphere = dynamic_cast<btSphereShape*>(obj->getCollisionShape());
-			if (nullptr != collisionSphere)
-			{
-				snprintf(msg, 128, "Collision shape: Sphere, radius: %5.5f", collisionSphere->getRadius());
-				QDEBUG(msg);
-			}
-
 		}
 
 
+		// Collision tests //
+		/*
 		// Test raycasting against collision objects.
 		QDEBUG("------------------------------");
 		QDEBUG("Static raycasting tests, closest hits:");

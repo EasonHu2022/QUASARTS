@@ -7,6 +7,8 @@
 
 namespace Engine {
 
+#define Q_COLLISION_EPSILON 1e-3
+
 	class QS_API PhysicsSystem : public IManager
 	{
 		// singleton
@@ -17,7 +19,6 @@ namespace Engine {
 		static PhysicsSystem* Instance();
 		~PhysicsSystem() {};
 
-
 	public:
 		void init();
 		int start();
@@ -26,6 +27,12 @@ namespace Engine {
 		void release();
 
 
+		// Usage functions //
+	public:
+		void create_collision_sphere(float radius);
+
+
+		// Collision world //
 	private:
 		btDefaultCollisionConfiguration* collisionConfiguration;
 		btCollisionDispatcher* dispatcher;
@@ -33,17 +40,23 @@ namespace Engine {
 		btCollisionWorld* collisionWorld;
 		// Store collision shapes.
 		// Re-use collision shapes as often as possible, release them in PhysicsManager::release().
-		btAlignedObjectArray<btCollisionShape*> collisionShapes;
+		btAlignedObjectArray<btSphereShape*> collisionSpheres;
 
 
+		// Util //
+	private:
+		static std::string object_to_string(const btCollisionObject* obj, const bool angles_to_deg = true);
+		static std::string transform_to_string(const btTransform* trf, const bool angles_to_deg = true);
+		static std::string shape_to_string(const btCollisionShape* shape);
+
+		// Tests //
 	private:
 		void runTests_init();
 		void runTests_start();
 
-	public:
-		void handler(const EventModule::Event& evt);
-		void handler2(const EventModule::Event& evt);
 
+		// Events //
+	public:
 		void EV_CALLBACK_SIGNATURE(DebugEvent);
 
 	};
