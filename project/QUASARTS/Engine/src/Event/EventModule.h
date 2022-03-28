@@ -177,7 +177,6 @@ namespace Engine {
 				Bool,
 				Integer,
 				Float,
-				Vector,
 				String
 			};
 
@@ -186,29 +185,31 @@ namespace Engine {
 
 
 		public:
-			VarArg() : argType(Bool) {}
-
-
 			std::string to_string() const
 			{
 				std::ostringstream ostr;
-				ostr << "Type: ";
+				ostr << "type: " << type_to_string(argType) << ", value: ";
 				switch (argType)
 				{
-				case VarArg::ArgType::Bool:
-					ostr << "Bool, Value: " << ((argValue.vBool) ? "true" : "false");
-					break;
-				case VarArg::ArgType::Integer:
-					ostr << "Integer, Value: " << argValue.vInt;
-					break;
-				case VarArg::ArgType::Float:
-					ostr << "Float, Value: " << argValue.vFloat;
-					break;
-				case VarArg::ArgType::String:
-					ostr << "CString, Value: '" << argValue.vCStr << "'";
-					break;
+				case VarArg::ArgType::Bool:		ostr << ((argValue.vBool) ? "true" : "false");	break;
+				case VarArg::ArgType::Integer:	ostr << argValue.vInt;							break;
+				case VarArg::ArgType::Float:	ostr << argValue.vFloat;						break;
+				case VarArg::ArgType::String:	ostr << "'" << argValue.vCStr << "'";			break;
+				default:						ostr << "(unknown: VarArg::to_string() is missing switch case)";
 				}
 				return ostr.str();
+			}
+
+			static std::string type_to_string(const ArgType type)
+			{
+				switch (type)
+				{
+				case (Bool):		return "Bool";
+				case (Integer):		return "Integer";
+				case (Float):		return "Float";
+				case (String):		return "String";
+				default:			return "(unknown - VarArg::type_to_string() is missing switch case)";
+				}
 			}
 		};
 
@@ -222,85 +223,24 @@ namespace Engine {
 			EventPriority get_priority() const { return priority; }
 			//int get_timestamp() const						{ return timestamp; }
 
-			// Query an Event for an argument with a given name.
-			// Returns true if an argument with the given name is found, false otherwise.
-			// If the argument is found, its value is copied to the address in varPointer.
-			// To find string arguments, varPointer must be the address of an std::string variable.
-			// Usage:
-			// Type myVariable;  bool ret = event.find_argument( &myVariable, "argumentName" );
-			template<class T>
-			bool find_argument(T varPointer, const std::string argName) const
-			{
-				for (size_t i = 0; i < numArgs; ++i)
-				{
-					//if (strcmp(arguments[i].first, argName.c_str()) == 0)
-					if (arguments[i].first == argName)
-					{
-						try {
-							switch (arguments[i].second.argType)
-							{
-							case VarArg::ArgType::Bool:
-								*varPointer = arguments[i].second.argValue.vBool;
-								return true;
-							case VarArg::ArgType::Integer:
-								*varPointer = arguments[i].second.argValue.vInt;
-								return true;
-							case VarArg::ArgType::Float:
-								*varPointer = arguments[i].second.argValue.vFloat;
-								return true;
-							}
-						}
-						catch (const std::exception& e)
-						{
-							char msg[256];
-							snprintf(msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what());
-							QDEBUG(msg);
-							return false;
-						}
-					}
-				}
-				char msg[256];
-				snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
-				QDEBUG(msg);
-				return false;
-			}
+			bool find_argument(bool* dest, const std::string argName) const;
+			bool find_argument(int* dest, const std::string argName) const;
+			bool find_argument(float* dest, const std::string argName) const;
+			bool find_argument(std::string* dest, const std::string argName) const;
 
-			bool find_argument(std::string* varPointer, const std::string argName) const
-			{
-				for (size_t i = 0; i < numArgs; ++i)
-				{
-					//if (strcmp(arguments[i].first, argName.c_str()) == 0)
-					if (arguments[i].first == argName)
-					{
-						try {
-							*varPointer = std::string(arguments[i].second.argValue.vCStr);
-							return true;
-						}
-						catch (const std::exception& e)
-						{
-							char msg[256];
-							snprintf(msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what());
-							QDEBUG(msg);
-							return false;
-						}
-					}
-				}
-				char msg[256];
-				snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
-				QDEBUG(msg);
-				return false;
-			}
+		private:
+			int find_arg_index(const std::string argName, const VarArg::ArgType argType) const;
 
 
-			// debug
+			// debug //
+		public:
 			std::string to_string() const
 			{
 				std::ostringstream ostr;
-				ostr << "Event '" << type << "', Priority level: " << priority_to_string(priority) << '\n';
-				ostr << "Arguments: " << numArgs;
+				ostr << "'" << type << "' event, priority: " << priority_to_string(priority) << ", arguments: " << numArgs;
 				for (size_t i = 0; i < numArgs; ++i)
 				{
-					ostr << "\n - Arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
+					ostr << "\n- arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
 				}
 				return ostr.str();
 			}
@@ -318,10 +258,12 @@ namespace Engine {
 			// Private constructor prevents objects (except the EventModule singleton) from creating their own Event instances.
 			Event(const std::string type, const EventPriority priority, const std::initializer_list< ArgNamePair >& args = {});
 		public:
-
 			// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
 			friend int EventModule::create_event(const std::string type, const EventPriority priority, const std::initializer_list < ArgNamePair >& args);
 		};
+
+
+		static std::string key_to_string(const int keycode, const int mods);
 
 	};
 

@@ -44,8 +44,7 @@ namespace Engine {
 		void handler(const EventModule::Event& evt);
 		void handler2(const EventModule::Event& evt);
 
-		void EV_CALLBACK_SIGNATURE(KeyPressed);
-		void EV_CALLBACK_SIGNATURE(KeyReleased);
+		void EV_CALLBACK_SIGNATURE(DebugEvent);
 
 	};
 

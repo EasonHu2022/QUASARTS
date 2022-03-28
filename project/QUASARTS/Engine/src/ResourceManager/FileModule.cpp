@@ -13,11 +13,12 @@ FileModule* FileModule::instance = nullptr;
 FileModule* FileModule::Instance()
 {
 	if (nullptr == instance)
-		return new FileModule();
-	else
 	{
-		return instance;
+		instance = new FileModule();
 	}
+		
+		return instance;
+	
 }
 
 
