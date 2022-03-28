@@ -90,7 +90,7 @@ namespace Engine {
 	} // release()
 
 
-	void PhysicsSystem::create_collision_sphere(float radius)
+	void PhysicsSystem::create_collision_sphere(const float radius)
 	{
 		btCollisionObject* obj = new btCollisionObject();
 
@@ -129,8 +129,34 @@ namespace Engine {
 
 	}
 
+	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
+	{
+		btVector3 hitLoc;
+		bool ret = raycast(glm_to_bt_vec3(origin), glm_to_bt_vec3(direction), &hitLoc);
+		*hitLocation = bt_to_glm_vec3(hitLoc);
+		return ret;
+	}
+
 
 	// Util //
+
+	bool PhysicsSystem::raycast(const btVector3 origin, const btVector3 direction, btVector3* hitLocation)
+	{
+		btVector3 end = direction;
+		if (end.length() < Q_RAYCAST_RAY_MIN_LENGTH)
+			end.normalize() *= Q_RAYCAST_RAY_MIN_LENGTH;
+
+		btCollisionWorld::ClosestRayResultCallback closestRaycastResult(origin, end);
+		collisionWorld->rayTest(origin, end, closestRaycastResult);
+
+		if (closestRaycastResult.hasHit())
+		{
+			*hitLocation = closestRaycastResult.m_hitPointWorld;
+			return true;
+		}
+		return false;
+	}
+
 
 	std::string PhysicsSystem::object_to_string(const btCollisionObject* obj, const bool angles_to_deg)
 	{
@@ -150,7 +176,7 @@ namespace Engine {
 
 		// Position
 		btVector3 pos = trf->getOrigin();
-		ostr << "position: (" << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << ")";
+		ostr << "position: " << vector_to_string(pos);
 
 		// Orientation
 		btQuaternion orn = trf->getRotation();
@@ -184,6 +210,13 @@ namespace Engine {
 		return ostr.str();
 	}
 
+
+	std::string PhysicsSystem::vector_to_string(const btVector3 vec)
+	{
+		std::ostringstream ostr;
+		ostr << "(" << vec.x() << ", " << vec.y() << ", " << vec.z() << ")";
+		return ostr.str();
+	}
 
 
 
@@ -246,8 +279,15 @@ namespace Engine {
 			QDEBUG(msg);
 		}
 
-
 		// Collision tests //
+
+		btVector3 hitLoc;
+		btVector3 rayOrigin = btVector3(10, 0, 0);
+		btVector3 rayDirection = btVector3(-10, 0, 0);
+		bool ret = raycast(rayOrigin, rayDirection, &hitLoc);
+		snprintf(msg, 512, "Hit test, returned: %s, %s", (ret?"true":"false"), (ret?vector_to_string(hitLoc).c_str():""));
+		QDEBUG(msg);
+
 		/*
 		// Test raycasting against collision objects.
 		QDEBUG("------------------------------");
