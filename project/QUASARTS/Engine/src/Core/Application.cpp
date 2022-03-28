@@ -2,8 +2,9 @@
 #include "Gui/GuiWrapper.h"
 #include "Render/Renderer.h"
 #include "Logger/LogModule.h"
-#include "Scene/PhysicsManager.h"
+#include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
+#include "Core/Input.h"
 
 namespace Engine
 {
@@ -18,6 +19,8 @@ namespace Engine
 		LogModule::Instance()->init();
 
 		EventModule::Instance()->init();
+
+		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
 
 		loaderFactory = new MeshLoaderFactory();
 		//create window for app
@@ -40,12 +43,14 @@ namespace Engine
 			later remove instance
 		*/
 		
-		PhysicsManager::Instance()->init();
+		PhysicsSystem::Instance()->init();
 		
 
 
 		//do init things
 		GuiWrapper::init();
+
+		Input::init();
 	}
 
 
@@ -58,7 +63,7 @@ namespace Engine
 			temp
 		*/
 		LogModule::Instance()->start();
-		PhysicsManager::Instance()->start();
+		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
 
 		/// <summary>
@@ -69,6 +74,7 @@ namespace Engine
 		//main loop
 		while (bIs_Running)
 		{
+			
 			/*
 				render frame
 			*/			
@@ -82,7 +88,8 @@ namespace Engine
 			/*
 				System Manager Update
 			*/
-			m_window->swap_buffer();
+			if(bIs_Running)
+				m_window->swap_buffer();
 		}
 
 		//on destroy
@@ -102,12 +109,16 @@ namespace Engine
 
 	void Application::on_update()
 	{
+		//reset input
+		Input::reset_state();
 		m_window->on_update();
 
-		LogModule::Instance()->update();
-		PhysicsManager::Instance()->update();
 		EventModule::Instance()->update();
 
+
+		LogModule::Instance()->update();
+		PhysicsSystem::Instance()->update();
+		
 		on_gui();
 	}
 
@@ -119,11 +130,16 @@ namespace Engine
 
 	void Application::on_release()
 	{
-		
+		//release everything
 		LogModule::Instance()->release();
-		PhysicsManager::Instance()->release();
+		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
-		m_window->shutdown();
+	}
+
+	void Application::EV_CALLBACK_SIGNATURE(WindowClosed)
+	{
+		QDEBUG("closed");
+		close();
 	}
 
 }

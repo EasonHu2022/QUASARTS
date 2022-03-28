@@ -7,6 +7,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "ResourceManager/MeshLoader.h"
+#include "Event/EventModule.h"
 namespace Engine
 {
 
@@ -35,6 +36,8 @@ namespace Engine
 		virtual void on_update();
 		virtual void on_render();
 		virtual void on_release();
+
+		void EV_CALLBACK_SIGNATURE(WindowClosed);
 	};
 	Application* create_application();
 }

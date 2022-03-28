@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Logger/LogModule.h"
+#include "Event/EventModule.h"
 
 #include <glad/glad.h>
 
@@ -17,7 +18,7 @@ Window::Window(const WindowProps& props)
 Window::~Window()
 {
 
-	shutdown();
+	//do release things 
 }
 
 Window* Window::create(const WindowProps& props)
@@ -66,101 +67,149 @@ void Window::init(const WindowProps& props)
 	now reserve for event system
 */
 #pragma region CallBacks
-	// Set GLFW callbacks
-	//glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-	//	{
-	//     
-	// 
-	//	});
+	{	
+		using namespace Engine;
+		
+		// Set GLFW callbacks
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+			{
+				EventModule::Instance()->create_event("WindowResized", EventModule::EventPriority::High,
+					{
+						{ "width",		EV_ARG_INT(width)	},
+						{ "height",		EV_ARG_INT(height)	}
+					}
+				);
+			}
+		);
 
-	//glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-	//	{
-	//    
-	//	});
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+			{
 
-	//glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-	//	{
 
-	//		switch (action)
-	//		{
-	//		case GLFW_PRESS:
-	//		{
-	//			break;
-	//		}
-	//		case GLFW_RELEASE:
-	//		{
-	//			break;
-	//		}
-	//		case GLFW_REPEAT:
-	//		{
-	//			break;
-	//		}
-	//		}
-	//	});
+				EventModule::Instance()->create_event("WindowClosed", EventModule::EventPriority::High, { });
 
-	//glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
-	//	{
-	//	});
+				glfwDestroyWindow(window);
 
-	//glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-	//	{
-	//		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				glfwTerminate();
+			}
+		);
 
-	//		switch (action)
-	//		{
-	//		case GLFW_PRESS:
-	//		{
-	//			break;
-	//		}
-	//		case GLFW_RELEASE:
-	//		{
-	//			break;
-	//		}
-	//		}
-	//	});
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+			{
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
+						{
+							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+							//{ "scancode",	EV_ARG_INT(scancode)	},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
+							{ "repeat",		EV_ARG_BOOL(false)		}
+						}
+					);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					EventModule::Instance()->create_event("KeyReleased", EventModule::EventPriority::High,
+						{
+							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+							//{ "scancode",	EV_ARG_INT(scancode)	},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	}
+						}
+					);
+					break;
+				}
+				case GLFW_REPEAT:
+				{
+					EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
+						{
+							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+							//{ "scancode",	EV_ARG_INT(scancode)	},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
+							{ "repeat",		EV_ARG_BOOL(true)		}
+						}
+					);
+					break;
+				}
+				}
+			}
+		);
 
-	//glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-	//	{
-	//	});
+		//glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+		//	{
+		//	});
 
-	//glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-	//	{
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				//WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-	//	});
+				double xPos, yPos;
+				glfwGetCursorPos(window, &xPos, &yPos);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					EventModule::Instance()->create_event("MouseButtonPressed", EventModule::EventPriority::High,
+						{
+							{ "button",		EV_ARG_INT(mousecode_convert_glfw_to_q(button))		},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))			},
+							{ "xpos",		EV_ARG_FLOAT((float)xPos)							},
+							{ "ypos",		EV_ARG_FLOAT((float)yPos)							}
+						}
+					);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					EventModule::Instance()->create_event("MouseButtonReleased", EventModule::EventPriority::High,
+						{
+							{ "button",		EV_ARG_INT(mousecode_convert_glfw_to_q(button))		},
+							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))			},
+							{ "xpos",		EV_ARG_FLOAT((float)xPos)							},
+							{ "ypos",		EV_ARG_FLOAT((float)yPos)							}
+						}
+					);
+					break;
+				}
+				}
+			}
+		);
+
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+			{
+				EventModule::Instance()->create_event("Scrolled", EventModule::EventPriority::High,
+					{
+						{ "xOffset",	EV_ARG_FLOAT(float(xOffset))	},
+						{ "yOffset",	EV_ARG_FLOAT(float(yOffset))	}
+					}
+				);
+			}
+		);
+
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+			{
+				EventModule::Instance()->create_event("MouseMoved", EventModule::EventPriority::High,
+					{
+						{ "xpos",		EV_ARG_FLOAT((float)xPos)	},
+						{ "ypos",		EV_ARG_FLOAT((float)yPos)	}
+					}
+				);
+			}
+		);
+	}
 #pragma endregion
 
 	
 }
 
-void Window::shutdown()
-{
-	
-
-
-	glfwDestroyWindow(m_Window);
-
-	glfwTerminate();
-
-
-}
 
 void Window::on_update()
 {
-	if (glfwWindowShouldClose(m_Window))
-	{
-		/*
-			later instead of close event send to app
-			now  just shutdown the window and can't close the app
-			temply we 'll get an error after close window
-			that's because we shutdown the imgui but app can't be shutdown, so the update is continued
-			which cause an error in imgui
-			just ignore it before we finish the event sys
-		*/
-		shutdown();
-		return;
-	}
 
-	glfwPollEvents();
+	
 
 	int display_w, display_h;
 	glfwGetFramebufferSize(m_Window, &display_w, &display_h);
@@ -174,6 +223,8 @@ void Window::on_update()
 	GLint minor = 0;
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+	glfwPollEvents();
 
 }
 

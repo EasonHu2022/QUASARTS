@@ -1,6 +1,6 @@
 workspace "QUASARTS" --solution name
 	language "C++"
-	cppdialect "C++11"
+	cppdialect "C++17"
 	cdialect "C99"
 	architecture "x86_64"
 	configurations
