@@ -193,8 +193,8 @@ void Window::init(const WindowProps& props)
 			{
 				EventModule::Instance()->create_event("MouseMoved", EventModule::EventPriority::High,
 					{
-						{ "xpos",		EV_ARG_FLOAT((float)xPos)	},
-						{ "ypos",		EV_ARG_FLOAT((float)yPos)	}
+						{ "xPos",		EV_ARG_FLOAT((float)xPos)	},
+						{ "yPos",		EV_ARG_FLOAT((float)yPos)	}
 					}
 				);
 			}

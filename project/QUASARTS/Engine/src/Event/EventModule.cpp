@@ -29,6 +29,7 @@ namespace Engine {
 
 		// Initialise base event types. TODO: get from datafile.
 		eventTypes.clear();
+		add_event_type("DebugEvent");
 		add_event_type("WindowResized");
 		add_event_type("WindowClosed");
 		add_event_type("KeyPressed");
@@ -274,5 +275,93 @@ namespace Engine {
 			}
 		}
 	};
+
+
+	// Type-specific arg finders
+
+	bool EventModule::Event::find_argument(bool* dest, const std::string argName) const
+	{
+		if (int idx = find_arg_index(argName, VarArg::ArgType::Bool);
+			idx != -1)
+		{
+			*dest = arguments[idx].second.argValue.vBool;
+			return true;
+		}
+		return false;		
+	}
+	bool EventModule::Event::find_argument(int* dest, const std::string argName) const
+	{
+		if (int idx = find_arg_index(argName, VarArg::ArgType::Integer);
+			idx != -1)
+		{
+			*dest = arguments[idx].second.argValue.vInt;
+			return true;
+		}
+		return false;
+	}
+	bool EventModule::Event::find_argument(float* dest, const std::string argName) const
+	{
+		if (int idx = find_arg_index(argName, VarArg::ArgType::Float);
+			idx != -1)
+		{
+			*dest = arguments[idx].second.argValue.vFloat;
+			return true;
+		}
+		return false;
+	}
+	bool EventModule::Event::find_argument(std::string* dest, const std::string argName) const
+	{
+		if (int idx = find_arg_index(argName, VarArg::ArgType::String);
+			idx != -1)
+		{
+			*dest = arguments[idx].second.argValue.vCStr;
+			return true;
+		}
+		return false;
+	}
+
+
+	int EventModule::Event::find_arg_index(const std::string argName, const VarArg::ArgType argType) const
+	{
+		for (size_t i = 0; i < numArgs; ++i)
+		{
+			//if (strcmp(arguments[i].first, argName.c_str()) == 0)
+			if (arguments[i].first == argName)
+			{
+				if (arguments[i].second.argType == argType)
+				{
+					return i;
+				}
+				else
+				{
+					char msg[256];
+					snprintf(msg, 256, "Event::find_argument() was passed a pointer to a type which does not match the argument's stored value type: %s", VarArg::type_to_string(argType).c_str());
+					QDEBUG(msg);
+					return -1;
+				}
+			}
+		}
+		char msg[256];
+		snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
+		QDEBUG(msg);
+		return -1;
+	}
+
+
+	std::string EventModule::key_to_string(const int keycode, const int mods)
+	{
+		std::ostringstream ostr;
+		if (48 <= keycode && keycode <= 90)
+			ostr << (char)keycode;
+		else return ""; // TODO : non-alphanumerics to strings
+
+		if (mods & Q_MOD_SHIFT) ostr << " + shift";
+		if (mods & Q_MOD_CONTROL) ostr << " + control";
+		if (mods & Q_MOD_ALT) ostr << " + alt";
+		if (mods & Q_MOD_SUPER) ostr << " + super";
+		if (mods & Q_MOD_CAPS_LOCK) ostr << " + capslock";
+		if (mods & Q_MOD_NUM_LOCK) ostr << " + numlock";
+		return ostr.str();
+	}
 
 }

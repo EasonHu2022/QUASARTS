@@ -122,42 +122,21 @@ namespace Engine {
 			// Events submitted in reverse order of priority to demonstrate the queue's ability to sort by priority level.
 
 			// Event 0
-			//EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::High );
+			EventModule::Instance()->create_event( "DebugEvent", EventModule::EventPriority::High, { {"distance", EV_ARG_FLOAT(3.7e4)} });
 
 			// Event 1
-			//EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::Medium, { {"code", EV_ARG_INT(39)} } );
+			EventModule::Instance()->create_event( "DebugEvent", EventModule::EventPriority::Medium, { {"code", EV_ARG_INT(39)} } );
 
 			// Event 2
-			//EventModule::Instance()->create_event( "KeyPressed", EventModule::EventPriority::Low, { {"code", EV_ARG_INT(17)}, {"repeat", EV_ARG_BOOL(true)} } );
+			EventModule::Instance()->create_event( "DebugEvent", EventModule::EventPriority::Low, { {"code", EV_ARG_INT(17)}, {"repeat", EV_ARG_BOOL(true)} } );
 
 			// Event 3
-			//EventModule::Instance()->create_event( "KeyReleased", EventModule::EventPriority::High, { {"name", EV_ARG_STRING("Jim")} } );
-
-			// Event 4
-			//EventModule::Instance()->create_KeyPressed_event(KeyCode::_0);
-
-			// Event 5
-			//EventModule::Instance()->create_KeyPressed_event(KeyCode::_W);
-
-			// Event 6
-			//EventModule::Instance()->create_KeyReleased_event(KeyCode::SPACE);
-
-			// Event 7
-			EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High, { {"msg", EV_ARG_STRING("1234567890")} });
-
-			// Event 8
-			EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::Medium, { {"msg", EV_ARG_STRING("0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF")} });
-
-			// Event 9
-			EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::Low, { {"msg", EV_ARG_STRING("0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF")} });
+			EventModule::Instance()->create_event( "DebugEvent", EventModule::EventPriority::High, { {"name", EV_ARG_STRING("Jim")} } );
 		}
 		EventModule::Instance()->log_queue();
 
 		// Test event handler registration.
-		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(KeyPressed));
-		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(KeyReleased));
-
-
+		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(DebugEvent));
 
 
 		/*
@@ -246,48 +225,10 @@ namespace Engine {
 	} // runTests_start()
 
 
-	void PhysicsSystem::EV_CALLBACK_SIGNATURE(KeyPressed)
+	void PhysicsSystem::EV_CALLBACK_SIGNATURE(DebugEvent)
 	{
 		char msg[512];
-		snprintf(msg, 512, "PhysicsSystem handler for type 'KeyPressed' called, received Event:\n%s", evt.to_string().c_str());
-		QDEBUG(msg);
-
-		std::string name = "code";
-		int iarg = -1;
-		bool ret = evt.find_argument(&iarg, name);
-		snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
-		QDEBUG(msg);
-		if (ret) {
-			snprintf(msg, 512, "Event argument value: %d", iarg);
-			QDEBUG(msg);
-		}
-
-		name = "repeat";
-		bool barg = false;
-		ret = evt.find_argument(&barg, name);
-		snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
-		QDEBUG(msg);
-		if (ret) {
-			snprintf(msg, 512, "Event argument value: '%s'", (barg ? "true" : "false"));
-			QDEBUG(msg);
-		}
-
-		name = "msg";
-		std::string strarg = "";
-		ret = evt.find_argument(&strarg, name);
-		snprintf(msg, 512, "Event argument query for '%s' returned: '%s'", name.c_str(), (ret ? "true" : "false"));
-		QDEBUG(msg);
-		if (ret) {
-			snprintf(msg, 512, "Event argument value: '%s'", strarg.c_str());
-			QDEBUG(msg);
-		}
-
-	}
-
-	void PhysicsSystem::EV_CALLBACK_SIGNATURE(KeyReleased)
-	{
-		char msg[512];
-		snprintf(msg, 512, "PhysicsSystem handler for type 'KeyReleased' called, received Event:\n%s", evt.to_string().c_str());
+		snprintf(msg, 512, "PhysicsSystem handler for type 'DebugEvent' called, received Event:\n%s", evt.to_string().c_str());
 		QDEBUG(msg);
 
 		std::string name = "code";
@@ -317,6 +258,16 @@ namespace Engine {
 		QDEBUG(msg);
 		if (ret) {
 			snprintf(msg, 512, "Event argument value: '%s'", strarg.c_str());
+			QDEBUG(msg);
+		}
+
+		name = "distance";
+		float flarg = 0.f;
+		ret = evt.find_argument(&flarg, name);
+		snprintf(msg, 512, "Event argument query for '%s' returned: '%s', value:", name.c_str(), (ret ? "true" : "false"));
+		QDEBUG(msg);
+		if (ret) {
+			snprintf(msg, 512, "Event argument value: '%f'", flarg);
 			QDEBUG(msg);
 		}
 	}
