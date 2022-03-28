@@ -8,6 +8,39 @@ group project for HPG
 
 A callback-based data-driven event system for sending information across the engine.
 
+Hardcoded types and their (intended) arguments:
+- DebugEvent:
+  - user defined
+- WindowResized:
+  - "width", int
+  - "height", int
+- WindowClosed:
+  - none
+- KeyPressed:
+  - "key", int
+  - "mods", int
+  - "repeat", bool
+- KeyReleased:
+  - "key", int
+  - "mods", int
+- MouseButtonPressed:
+  - "button", int
+  - "mods", int
+  - "xPos", float
+  - "yPos", float
+- MouseMoved:
+  - "xPos", float
+  - "yPos", float
+- MouseButtonReleased:
+  - "button", int
+  - "mods", int
+  - "xPos", float
+  - "yPos", float
+- Scrolled:
+  - "xOffset", float
+  - "yOffset", float
+
+
 ### Overview: ###
 
 An event system is ultimately a messaging service which takes the responsibility of delivering messages away from the objects which write them.
