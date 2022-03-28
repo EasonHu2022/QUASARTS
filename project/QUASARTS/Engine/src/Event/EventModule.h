@@ -14,13 +14,14 @@
 #include <sstream>
 
 
+namespace Engine {
 
-// Convenient macros //
+	// Convenient macros //
 
-// Parameter 'eventType' is NOT a string.
-// Usage:
-// For handler declaration: void CALLBACK_SIGNATURE( EventType )
-// For handler defintion:	void MyClass::CALLBACK_SIGNATURE( EventType )
+	// Parameter 'eventType' is NOT a string.
+	// Usage:
+	// For handler declaration: void CALLBACK_SIGNATURE( EventType )
+	// For handler defintion:	void MyClass::CALLBACK_SIGNATURE( EventType )
 #define EV_CALLBACK_SIGNATURE(eventType) handler_##eventType( const EventModule::Event& evt )
 
 // Parameter 'eventType' is NOT a string.
@@ -57,284 +58,224 @@
 #define MAX_CHARS_PER_STRING_ARG 32
 
 
-class EventModule : public IModule
-{
-// singleton
-private:
-	static EventModule* instance;
-	EventModule() {};
-public:
-	// Return the EventModule singleton.
-	static EventModule* Instance();
-	~EventModule() {};
-
-	// IModule functions //
-public:
-	void init();
-	int start();
-	void update();
-	int stop();
-	void release();
-
-
-	// Forward declaration of event structures. //
-public:
-	struct Event;
-private:
-	struct VarArg;
-
-
-	// Enums //
-public:
-	// Priority level is used to order events with equal timestamps:
-	// it is common to set timestamp to 'current time' so the event is handled as soon as possible,
-	// or to add an offset of a multiple of a standardised delta time to handle the event in the future,
-	// so timestamps are often shared by multiple events in the queue.
-	// This makes it useful to have another sorting method in the form of simple priority levels.
-	enum EventPriority
+	class QS_API EventModule : public IModule
 	{
-		High = 0,	// Counterintuitive numbering, but consistent with the concept of
-		Medium = 1,	// 'less than' used for sorting events (see operator< below).
-		Low = 2
-	};
-	static std::string priority_to_string( const EventPriority priority )
-	{
-		switch (priority)
-		{
-		case High:			return "High";
-		case Medium:		return "Medium";
-		case Low:			return "Low";
-		}
-		return "unknown";
-	}
-
-
-	// Usage functions //
-public:
-	// Create an event and add it to the queue.
-	// Usage:
-	// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel [ , { {"argumentName1", EV_ARG_TYPE( value1 )}, ... } ] );
-	// See macros: EV_ARG_*()
-	int create_event( const std::string eventType, EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args = {} );
-
-	// Currently, registering interest in an event type requires the user/object to pass two arguments:
-	// 1. the string name of the event type they are interested in.
-	// 2. their event handler function: the event handler's return type must be 'void', with a single parameter of type 'const Event&'.
-	// See macro: EV_CALLBACK_REGISTRATION()
-	int register_handler( const std::string eventType, const std::function<void( const EventModule::Event& )> eventHandler );
-
-	// debug
-	void log_queue();
-	void log_handlers();
-
-	// Static functions for explicitly creating VarArg with different types.
-	// See macros: EV_ARG_*()
-	static VarArg boolArg(const bool aBool);
-	static VarArg intArg(const int aInt);
-	static VarArg floatArg(const float aFloat);
-	static VarArg stringArg(const std::string aStr);
-
-
-	// Util variables //
-private:
-	// Event queue:
-	// The Event struct has an operator< overload to customise the behaviour of forward_list::sort(), i.e.,
-	// queue.sort() will sort the events on the queue in 'ascending' order.
-	std::forward_list<Event> queue;
-	// Mapping of each event type to a corresponding list of handlers interested in that type.
-	std::unordered_map< std::string, std::vector< std::function<void( const Event& )> > > registeredHandlers;
-	// Set of recognised events types.
-	std::set< std::string > eventTypes;
-
-	// Util functions //
-private:
-	// Add a new event type with name 'eventType' if the name is within the maximum type name size and does not clash with an existing type name.
-	int add_event_type( const std::string eventType );
-	// Check that the given event type is in the set of known event types.
-	bool recognised_event_type( const std::string eventType );
-	// Dispatch all events in the queue to registered handlers.
-	void dispatch_all();
-
-
-
-	// Structs //
-private:
-	// Struct for dynamic event arguments.
-	struct VarArg
-	{
+		// singleton
+	private:
+		static EventModule* instance;
+		EventModule() {};
 	public:
-		union ArgUnion
-		{
-			bool vBool;
-			int vInt;
-			float vFloat;
-			char vCStr[ MAX_CHARS_PER_STRING_ARG ];
+		// Return the EventModule singleton.
+		static EventModule* Instance();
+		~EventModule() {};
 
-			~ArgUnion() {}
-		};
-		enum ArgType
-		{
-			Bool,
-			Integer,
-			Float,
-			Vector,
-			String
-		};
-
-		ArgUnion argValue;
-		ArgType argType;
-
-
+		// IModule functions //
 	public:
-		VarArg() {}
-		~VarArg() {}
+		void init();
+		int start();
+		void update();
+		int stop();
+		void release();
 
 
-		std::string to_string() const
+		// Forward declaration of event structures. //
+	public:
+		struct Event;
+	private:
+		struct VarArg;
+		using ArgNamePair = std::pair< std::string, VarArg >;
+
+
+		// Enums //
+	public:
+		// Priority level is used to order events with equal timestamps:
+		// it is common to set timestamp to 'current time' so the event is handled as soon as possible,
+		// or to add an offset of a multiple of a standardised delta time to handle the event in the future,
+		// so timestamps are often shared by multiple events in the queue.
+		// This makes it useful to have another sorting method in the form of simple priority levels.
+		enum EventPriority
 		{
-			std::ostringstream ostr;
-			ostr << "Type: ";
-			switch (argType)
+			High = 0,	// Counterintuitive numbering, but consistent with the concept of
+			Medium = 1,	// 'less than' used for sorting events (see operator< below).
+			Low = 2
+		};
+		static std::string priority_to_string(const EventPriority priority)
+		{
+			switch (priority)
 			{
-			case VarArg::ArgType::Bool:
-				ostr << "Bool, Value: " << ( (argValue.vBool) ? "true" : "false" );
-				break;
-			case VarArg::ArgType::Integer:
-				ostr << "Integer, Value: " << argValue.vInt;
-				break;
-			case VarArg::ArgType::Float:
-				ostr << "Float, Value: " << argValue.vFloat;
-				break;
-			case VarArg::ArgType::String:
-				ostr << "CString, Value: '" << argValue.vCStr << "'";
-				break;
+			case High:			return "High";
+			case Medium:		return "Medium";
+			case Low:			return "Low";
 			}
-			return ostr.str();
+			return "unknown";
 		}
-	};
-
-
-public:
-	struct Event
-	{
-		// Event information //
-	private:
-		char type[ MAX_CHARS_PER_EVENT_TYPE_NAME ];
-		EventPriority priority;
-		//int timestamp;
-		size_t numArgs;
-		std::array< std::pair< char[MAX_CHARS_PER_EVENT_ARG_NAME], VarArg >, MAX_ARGS_PER_EVENT > arguments;
-
-	private:
-		// Private constructor prevents objects (except the EventModule singleton) from creating their own Event instances.
-		Event( const std::string type, const EventPriority priority, const std::initializer_list< std::pair<std::string, VarArg> >& args = {} );
-	public:
-		~Event() { };
-
-
-		// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
-		friend int EventModule::create_event( const std::string type, const EventPriority priority, const std::initializer_list < std::pair<std::string, VarArg> >& args );
 
 
 		// Usage functions //
 	public:
-		std::string get_type() const { return std::string( type ); }
-		EventPriority get_priority() const { return priority; }
-		//int get_timestamp() const						{ return timestamp; }
-
-
-		// Query an Event for an argument with a given name.
-		// Returns true if an argument with the given name is found, false otherwise.
-		// If the argument is found, its value is copied to the address in varPointer.
-		// To find string arguments, varPointer must be the address of an std::string variable.
+		// Create an event and add it to the queue.
 		// Usage:
-		// Type myVariable;  bool ret = event.find_argument( &myVariable, "argumentName" );
-		template<class T>
-		bool find_argument( T varPointer, const std::string argName ) const
-		{
-			for (size_t i = 0; i < numArgs; ++i)
-			{
-				if ( strcmp(arguments[i].first, argName.c_str()) == 0 )
-				{
-					try {
-						switch (arguments[i].second.argType)
-						{
-						case VarArg::ArgType::Bool:
-							*varPointer = arguments[i].second.argValue.vBool;
-							return true;
-						case VarArg::ArgType::Integer:
-							*varPointer = arguments[i].second.argValue.vInt;
-							return true;
-						case VarArg::ArgType::Float:
-							*varPointer = arguments[i].second.argValue.vFloat;
-							return true;
-						}
-					}
-					catch (const std::exception& e)
-					{
-						char msg[256];
-						snprintf( msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what() );
-						QDEBUG( msg );
-						return false;
-					}
-				}
-			}
-			char msg[256];
-			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
-			QDEBUG(msg);
-			return false;
-		}
+		// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel [ , { {"argumentName1", EV_ARG_TYPE( value1 )}, ... } ] );
+		// See macros: EV_ARG_*()
+		int create_event(const std::string eventType, EventPriority priority, const std::initializer_list< ArgNamePair >& args = {});
 
-		bool find_argument( std::string* varPointer, const std::string argName ) const
-		{
-			for (size_t i = 0; i < numArgs; ++i)
-			{
-				if ( strcmp(arguments[i].first, argName.c_str()) == 0 )
-				{
-					try {
-						*varPointer = std::string(arguments[i].second.argValue.vCStr);
-						return true;
-					}
-					catch (const std::exception& e)
-					{
-						char msg[256];
-						snprintf(msg, 256, "Event::find_argument() called with incorrect type.\nError message: %s", e.what());
-						QDEBUG(msg);
-						return false;
-					}
-				}
-			}
-			char msg[256];
-			snprintf(msg, 256, "Event::find_argument() could not find an argument with the given name: '%s'", argName.c_str());
-			QDEBUG(msg);
-			return false;
-		}
-
-
+		// Currently, registering interest in an event type requires the user/object to pass two arguments:
+		// 1. the string name of the event type they are interested in.
+		// 2. their event handler function: the event handler's return type must be 'void', with a single parameter of type 'const Event&'.
+		// See macro: EV_CALLBACK_REGISTRATION()
+		int register_handler(const std::string eventType, const std::function<void(const EventModule::Event&)> eventHandler);
 
 		// debug
-		std::string to_string() const
+		void log_queue();
+		void log_handlers();
+
+		// Static functions for explicitly creating VarArg with different types.
+		// See macros: EV_ARG_*()
+		static VarArg boolArg(const bool aBool);
+		static VarArg intArg(const int aInt);
+		static VarArg floatArg(const float aFloat);
+		static VarArg stringArg(const std::string aStr);
+
+
+		// Util variables //
+	private:
+		// Event queue:
+		// The Event struct has an operator< overload to customise the behaviour of forward_list::sort(), i.e.,
+		// queue.sort() will sort the events on the queue in 'ascending' order.
+		std::forward_list<Event> queue;
+		// Mapping of each event type to a corresponding list of handlers interested in that type.
+		std::unordered_map< std::string, std::vector< std::function<void(const Event&)> > > registeredHandlers;
+		// Set of recognised events types.
+		std::set< std::string > eventTypes;
+
+		// Util functions //
+	private:
+		// Add a new event type with name 'eventType' if the name is within the maximum type name size and does not clash with an existing type name.
+		int add_event_type(const std::string eventType);
+		// Check that the given event type is in the set of known event types.
+		bool recognised_event_type(const std::string eventType);
+		// Dispatch all events in the queue to registered handlers.
+		void dispatch_all();
+
+
+
+		// Structs //
+	private:
+		// Struct for dynamic event arguments.
+		struct VarArg
 		{
-			std::ostringstream ostr;
-			ostr << "Event '" << type << "', Priority level: " << priority_to_string(priority) << '\n';
-			ostr << "Arguments: " << numArgs;
-			for (size_t i = 0; i < numArgs; ++i)
+		public:
+			union ArgUnion
 			{
-				ostr << "\n - Arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
+				bool vBool;
+				int vInt;
+				float vFloat;
+				char vCStr[MAX_CHARS_PER_STRING_ARG];
+			};
+			enum ArgType
+			{
+				Bool,
+				Integer,
+				Float,
+				String
+			};
+
+			ArgUnion argValue;
+			ArgType argType;
+
+
+		public:
+			std::string to_string() const
+			{
+				std::ostringstream ostr;
+				ostr << "type: " << type_to_string(argType) << ", value: ";
+				switch (argType)
+				{
+				case VarArg::ArgType::Bool:		ostr << ((argValue.vBool) ? "true" : "false");	break;
+				case VarArg::ArgType::Integer:	ostr << argValue.vInt;							break;
+				case VarArg::ArgType::Float:	ostr << argValue.vFloat;						break;
+				case VarArg::ArgType::String:	ostr << "'" << argValue.vCStr << "'";			break;
+				default:						ostr << "(unknown: VarArg::to_string() is missing switch case)";
+				}
+				return ostr.str();
 			}
-			return ostr.str();
-		}
+
+			static std::string type_to_string(const ArgType type)
+			{
+				switch (type)
+				{
+				case (Bool):		return "Bool";
+				case (Integer):		return "Integer";
+				case (Float):		return "Float";
+				case (String):		return "String";
+				default:			return "(unknown - VarArg::type_to_string() is missing switch case)";
+				}
+			}
+		};
+
+
+	public:
+		struct Event
+		{
+			// Usage functions //
+		public:
+			std::string get_type() const { return std::string(type); }
+			EventPriority get_priority() const { return priority; }
+			//int get_timestamp() const						{ return timestamp; }
+
+			bool find_argument(bool* dest, const std::string argName) const;
+			bool find_argument(int* dest, const std::string argName) const;
+			bool find_argument(float* dest, const std::string argName) const;
+			bool find_argument(std::string* dest, const std::string argName) const;
+
+		private:
+			int find_arg_index(const std::string argName, const VarArg::ArgType argType) const;
+
+
+			// debug //
+		public:
+			std::string to_string() const
+			{
+				std::ostringstream ostr;
+				ostr << "'" << type << "' event, priority: " << priority_to_string(priority) << ", arguments: " << numArgs;
+				for (size_t i = 0; i < numArgs; ++i)
+				{
+					ostr << "\n- arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
+				}
+				return ostr.str();
+			}
+
+
+			// Event information //
+		private:
+			char type[MAX_CHARS_PER_EVENT_TYPE_NAME];
+			EventPriority priority;
+			//int timestamp;
+			size_t numArgs;
+			std::array< std::pair< std::string, VarArg >, MAX_ARGS_PER_EVENT > arguments;
+
+		private:
+			// Private constructor prevents objects (except the EventModule singleton) from creating their own Event instances.
+			Event(const std::string type, const EventPriority priority, const std::initializer_list< ArgNamePair >& args = {});
+		public:
+			// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
+			friend int EventModule::create_event(const std::string type, const EventPriority priority, const std::initializer_list < ArgNamePair >& args);
+		};
+
+
+		static std::string key_to_string(const int keycode, const int mods);
+
 	};
 
-};
 
+	// Event operator< overload
+	// Used to sort events in the queue:
+	// if lhs is 'less than' rhs, lhs comes first.
+	inline bool operator<(const EventModule::Event& lhs, const EventModule::Event& rhs)
+	{
+		if (lhs.get_priority() < rhs.get_priority())
+			return true;
+		return false;
+	}
 
-// Event operator< overload
-// Used to sort events in the queue:
-// if lhs is 'less than' rhs, lhs comes first.
-inline bool operator<( const EventModule::Event& lhs, const EventModule::Event& rhs )
-{
-	if (lhs.get_priority() < rhs.get_priority())
-		return true;
-	return false;
 }
