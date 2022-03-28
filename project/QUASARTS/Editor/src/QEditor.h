@@ -23,7 +23,6 @@ public:
 
 	template <class T>
 	void add_gui_view();
-
 	template <class T>
 	inline auto getGuiView()
 	{

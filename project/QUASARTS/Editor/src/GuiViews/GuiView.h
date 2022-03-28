@@ -10,7 +10,7 @@ public:
 		on gui update
 	*/
 	virtual void on_gui() = 0;
-
+	
 	/*
 		on view added
 	*/

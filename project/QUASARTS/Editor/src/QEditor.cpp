@@ -46,6 +46,7 @@ void QEditor::on_gui()
 	Application::on_gui();
 }
 
+
 /// <summary>
 /// place for all test code
 /// </summary>
