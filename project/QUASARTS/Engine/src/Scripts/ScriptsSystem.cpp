@@ -23,6 +23,7 @@ namespace Engine {
 	void ScriptsSys::init()
 	{
 		lua.open_libraries(sol::lib::base);
+		exportLogSys();
 	}
 
 	/// <summary>
@@ -32,10 +33,6 @@ namespace Engine {
 	int ScriptsSys::start()
 	{
 		QDEBUG("Scripts system test :  engine hardcode");
-
-		lua.set_function("Qlog", std::function <void(const std::string&)>([](const std::string& str) {
-			QDEBUG(str);
-			}));
 		loadScripts("test.lua");
 		return 0;
 	}
@@ -78,6 +75,33 @@ namespace Engine {
 	void ScriptsSys::exportFunction(const std::string& lua_func_name, int(*func)())
 	{
 		lua.set_function(lua_func_name, &(*func));
+	}
+
+	void ScriptsSys::exportLogSys()
+	{
+		//for engine 
+		lua.set_function("Qlog", std::function <void(const std::string&)>([](const std::string& str) {
+			QDEBUG(str);
+			}));
+
+		lua.set_function("Qtrace", std::function <void(const std::string&)>([](const std::string& str) {
+			QTRACE(str);
+			}));
+		lua.set_function("Qerror", std::function <void(const std::string&)>([](const std::string& str) {
+			QERROR(str);
+			}));
+
+		//for game     
+		lua.set_function("Glog", std::function <void(const std::string&)>([](const std::string& str) {
+			DEBUG(str);
+			}));
+		lua.set_function("Gtrace", std::function <void(const std::string&)>([](const std::string& str) {
+			TRACE(str);
+			}));
+		lua.set_function("Gerror", std::function <void(const std::string&)>([](const std::string& str) {
+			ERROR(str);
+			}));
+
 	}
 }
 

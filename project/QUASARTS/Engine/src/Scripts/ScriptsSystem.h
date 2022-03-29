@@ -35,6 +35,8 @@ namespace Engine {
 		void exportFunction(const std::string& lua_func_name, int(*func)());
 		//todo ... more 
 
+		void exportLogSys();
+
 
 	//public status for now 
 	public:
