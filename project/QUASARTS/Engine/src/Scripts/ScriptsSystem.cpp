@@ -1,6 +1,8 @@
 #include "ScriptsSystem.h"
 #include "Logger/LogModule.h"
 
+#include "Utilities\FileParser.h"
+
 namespace Engine {
 
 	// singleton
@@ -32,8 +34,13 @@ namespace Engine {
 	/// <returns>res</returns>
 	int ScriptsSys::start()
 	{
+		//get file name test 
+		std::string file_name = getFileName("./test.lua");
+		QDEBUG("Test : Get file name func : {0}", file_name);
+
+		//scripts test
 		QDEBUG("Scripts system test :  engine hardcode");
-		loadScripts("test.lua");
+ 		loadScripts("test.lua");
 		return 0;
 	}
 
