@@ -11,6 +11,8 @@ namespace Engine {
 	{
 		vertices = _vertices;
 		indices = _indices;
+
+		set_up_buffers();
 	}
 
 	Mesh::~Mesh()
@@ -104,5 +106,51 @@ namespace Engine {
 
 	void Mesh::set_name(std::string _name)
 	{
+	}
+
+
+	void Mesh::set_up_buffers()
+	{
+		// Generate buffer objects and store handles.
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
+
+		// Bind vertex array and vertex buffer.
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+		// Copy vertex data to the vertex buffer.
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+
+		// Bind element buffer and copy vertex indices to it.
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
+
+
+		// Enable and copy vertex attributes:
+		// "pos"
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+		// "color"
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
+		// "texCoord"
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+
+		// "normal"
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
+		// "tangent"
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+
+
+		// Unbind.
+		glBindVertexArray(0);
 	}
 }

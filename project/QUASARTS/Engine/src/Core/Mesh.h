@@ -3,6 +3,7 @@
 #include <vector>
 #include "Core/Vertex.h"
 #include <string>
+#include "glad/glad.h"
 namespace Engine
 {
 	class QS_API Mesh
@@ -19,6 +20,11 @@ namespace Engine
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
 		std::string name;
+
+	public:
+		unsigned int VAO, VBO, EBO;
+		void set_up_buffers();
+
 	};
 }
 
