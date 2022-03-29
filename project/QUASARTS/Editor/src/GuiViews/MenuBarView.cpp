@@ -224,9 +224,9 @@ void MenuBarView::newProject() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0 && strlen(buf2) != 0) {
-            FileModule newModule;
-            newModule.create_workdir(buf2, buf1);
+            FileModule::Instance()->create_workdir(buf2, buf1);
             new_project = false;
+            show_window = true;
         }
 
     }

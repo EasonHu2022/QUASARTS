@@ -2,6 +2,8 @@
 #include "GuiViews/FileInputView.h"
 #include "GuiViews/MenuBarView.h"
 #include "GuiViews/GameSceneView.h"
+#include "GuiViews/HierarchyView.h"
+#include "GuiViews/AttributeView.h"
 #include "Core/Mesh.h"
 #include "Core/Input.h"
 
@@ -22,6 +24,8 @@ void QEditor::init()
 	add_gui_view<MenuBarView>();
 	add_gui_view<FileInputView>();
 	add_gui_view<GameSceneView>();
+	add_gui_view<HierarchyView>();
+	add_gui_view<AttributeView>();
 	test_in_init();
 }
 
@@ -46,6 +50,7 @@ void QEditor::on_gui()
 
 	Application::on_gui();
 }
+
 
 /// <summary>
 /// place for all test code

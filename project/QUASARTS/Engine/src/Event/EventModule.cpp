@@ -92,7 +92,7 @@ namespace Engine {
 		}
 
 		// Create event and push to queue.
-		queue.push_front(Event(eventType, priority, args));
+		queue.emplace_front(Event(eventType, priority, args));
 
 		return 0;
 	} // submit_event()
@@ -129,44 +129,6 @@ namespace Engine {
 	} // register_handler()
 
 
-	void EventModule::log_queue()
-	{
-		char msg[1024];
-		QDEBUG("------------------------------");
-		QDEBUG("Logging event queue:");
-
-		if (queue.empty())
-			QDEBUG("[Queue empty]");
-
-		int i = 0;
-		for (const Event evt : queue)
-		{
-			snprintf(msg, 1024, "\nEvent %d:\n%s", i, evt.to_string().c_str());
-			QDEBUG(msg);
-			++i;
-		}
-	} // log_queue()
-
-
-	void EventModule::log_handlers()
-	{
-		char msg[1024];
-		QDEBUG("------------------------------");
-		QDEBUG("Logging event handler list sizes:");
-
-		for (auto typeIt = eventTypes.begin(); typeIt != eventTypes.end(); ++typeIt)
-		{
-			size_t numRegistered = 0;
-			auto handlersIt = registeredHandlers.find((*typeIt));
-			if (registeredHandlers.end() != handlersIt)
-				numRegistered = handlersIt->second.size();
-
-			snprintf(msg, 1024, "Event type '%s', number of registered handlers: %d", (*typeIt).c_str(), numRegistered);
-			QDEBUG(msg);
-		}
-	} // log_handlers()
-
-
 	EventModule::VarArg EventModule::boolArg(const bool aBool)
 	{
 		VarArg arg = VarArg();
@@ -200,6 +162,74 @@ namespace Engine {
 		return arg;
 	}
 
+
+	// debug //
+
+	void EventModule::log_queue()
+	{
+		char msg[1024];
+		QDEBUG("------------------------------");
+		QDEBUG("Logging event queue:");
+
+		if (queue.empty())
+			QDEBUG("[Queue empty]");
+
+		int i = 0;
+		for (const Event evt : queue)
+		{
+			snprintf(msg, 1024, "\nEvent %d:\n%s", i, evt.to_string().c_str());
+			QDEBUG(msg);
+			++i;
+		}
+	} // log_queue()
+
+
+	void EventModule::log_handlers()
+	{
+		char msg[1024];
+		QDEBUG("------------------------------");
+		QDEBUG("Logging event handler list sizes:");
+
+		for (auto typeIt = eventTypes.begin(); typeIt != eventTypes.end(); ++typeIt)
+		{
+			size_t numRegistered = 0;
+			auto handlersIt = registeredHandlers.find((*typeIt));
+			if (registeredHandlers.end() != handlersIt)
+				numRegistered = handlersIt->second.size();
+
+			snprintf(msg, 1024, "Event type '%s', number of registered handlers: %d", (*typeIt).c_str(), (int)numRegistered);
+			QDEBUG(msg);
+		}
+	} // log_handlers()
+
+
+	std::string EventModule::priority_to_string(const EventPriority priority)
+	{
+		switch (priority)
+		{
+		case EventPriority::High:		return "High";
+		case EventPriority::Medium:		return "Medium";
+		case EventPriority::Low:		return "Low";
+		}
+		return "unknown";
+	}
+
+
+	std::string EventModule::key_to_string(const int keycode, const int mods)
+	{
+		std::ostringstream ostr;
+		if (48 <= keycode && keycode <= 90)
+			ostr << (char)keycode;
+		else return ""; // TODO : non-alphanumerics to strings
+
+		if (mods & Q_MOD_SHIFT) ostr << " + shift";
+		if (mods & Q_MOD_CONTROL) ostr << " + control";
+		if (mods & Q_MOD_ALT) ostr << " + alt";
+		if (mods & Q_MOD_SUPER) ostr << " + super";
+		if (mods & Q_MOD_CAPS_LOCK) ostr << " + capslock";
+		if (mods & Q_MOD_NUM_LOCK) ostr << " + numlock";
+		return ostr.str();
+	}
 
 
 	// Util functions //
@@ -277,7 +307,7 @@ namespace Engine {
 	};
 
 
-	// Type-specific arg finders
+	// Event arg finders //
 
 	bool EventModule::Event::find_argument(bool* dest, const std::string argName) const
 	{
@@ -321,9 +351,11 @@ namespace Engine {
 	}
 
 
+	// Event utils //
+
 	int EventModule::Event::find_arg_index(const std::string argName, const VarArg::ArgType argType) const
 	{
-		for (size_t i = 0; i < numArgs; ++i)
+		for (int i = 0; i < (int)numArgs; ++i)
 		{
 			//if (strcmp(arguments[i].first, argName.c_str()) == 0)
 			if (arguments[i].first == argName)
@@ -348,20 +380,48 @@ namespace Engine {
 	}
 
 
-	std::string EventModule::key_to_string(const int keycode, const int mods)
+	// Event debug //
+
+	std::string EventModule::Event::to_string() const
 	{
 		std::ostringstream ostr;
-		if (48 <= keycode && keycode <= 90)
-			ostr << (char)keycode;
-		else return ""; // TODO : non-alphanumerics to strings
-
-		if (mods & Q_MOD_SHIFT) ostr << " + shift";
-		if (mods & Q_MOD_CONTROL) ostr << " + control";
-		if (mods & Q_MOD_ALT) ostr << " + alt";
-		if (mods & Q_MOD_SUPER) ostr << " + super";
-		if (mods & Q_MOD_CAPS_LOCK) ostr << " + capslock";
-		if (mods & Q_MOD_NUM_LOCK) ostr << " + numlock";
+		ostr << "'" << type << "' event, priority: " << priority_to_string(priority) << ", arguments: " << numArgs;
+		for (size_t i = 0; i < numArgs; ++i)
+		{
+			ostr << "\n- arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
+		}
 		return ostr.str();
+	}
+
+
+	// VarArg debug //
+
+	std::string EventModule::VarArg::to_string() const
+	{
+		std::ostringstream ostr;
+		ostr << "type: " << type_to_string(argType) << ", value: ";
+		switch (argType)
+		{
+		case ArgType::Bool:		ostr << ((argValue.vBool) ? "true" : "false");	break;
+		case ArgType::Integer:	ostr << argValue.vInt;							break;
+		case ArgType::Float:	ostr << argValue.vFloat;						break;
+		case ArgType::String:	ostr << "'" << argValue.vCStr << "'";			break;
+		default:						ostr << "(unknown: VarArg::to_string() is missing switch case)";
+		}
+		return ostr.str();
+	}
+
+
+	std::string EventModule::VarArg::type_to_string(const ArgType type)
+	{
+		switch (type)
+		{
+		case (ArgType::Bool):		return "Bool";
+		case (ArgType::Integer):	return "Integer";
+		case (ArgType::Float):		return "Float";
+		case (ArgType::String):		return "String";
+		default:			return "(unknown - VarArg::type_to_string() is missing switch case)";
+		}
 	}
 
 }

@@ -81,6 +81,7 @@ namespace Engine {
 		// Forward declaration of event structures. //
 	public:
 		struct Event;
+
 	private:
 		struct VarArg;
 		using ArgNamePair = std::pair< std::string, VarArg >;
@@ -93,22 +94,12 @@ namespace Engine {
 		// or to add an offset of a multiple of a standardised delta time to handle the event in the future,
 		// so timestamps are often shared by multiple events in the queue.
 		// This makes it useful to have another sorting method in the form of simple priority levels.
-		enum EventPriority
+		enum class EventPriority
 		{
 			High = 0,	// Counterintuitive numbering, but consistent with the concept of
 			Medium = 1,	// 'less than' used for sorting events (see operator< below).
 			Low = 2
 		};
-		static std::string priority_to_string(const EventPriority priority)
-		{
-			switch (priority)
-			{
-			case High:			return "High";
-			case Medium:		return "Medium";
-			case Low:			return "Low";
-			}
-			return "unknown";
-		}
 
 
 		// Usage functions //
@@ -125,10 +116,6 @@ namespace Engine {
 		// See macro: EV_CALLBACK_REGISTRATION()
 		int register_handler(const std::string eventType, const std::function<void(const EventModule::Event&)> eventHandler);
 
-		// debug
-		void log_queue();
-		void log_handlers();
-
 		// Static functions for explicitly creating VarArg with different types.
 		// See macros: EV_ARG_*()
 		static VarArg boolArg(const bool aBool);
@@ -137,7 +124,15 @@ namespace Engine {
 		static VarArg stringArg(const std::string aStr);
 
 
-		// Util variables //
+		// debug //
+	public:
+		void log_queue();
+		void log_handlers();
+		static std::string priority_to_string(const EventPriority priority);
+		static std::string key_to_string(const int keycode, const int mods);
+
+
+		// State //
 	private:
 		// Event queue:
 		// The Event struct has an operator< overload to customise the behaviour of forward_list::sort(), i.e.,
@@ -147,6 +142,7 @@ namespace Engine {
 		std::unordered_map< std::string, std::vector< std::function<void(const Event&)> > > registeredHandlers;
 		// Set of recognised events types.
 		std::set< std::string > eventTypes;
+
 
 		// Util functions //
 	private:
@@ -172,7 +168,7 @@ namespace Engine {
 				float vFloat;
 				char vCStr[MAX_CHARS_PER_STRING_ARG];
 			};
-			enum ArgType
+			enum class ArgType
 			{
 				Bool,
 				Integer,
@@ -184,33 +180,10 @@ namespace Engine {
 			ArgType argType;
 
 
+			// debug //
 		public:
-			std::string to_string() const
-			{
-				std::ostringstream ostr;
-				ostr << "type: " << type_to_string(argType) << ", value: ";
-				switch (argType)
-				{
-				case VarArg::ArgType::Bool:		ostr << ((argValue.vBool) ? "true" : "false");	break;
-				case VarArg::ArgType::Integer:	ostr << argValue.vInt;							break;
-				case VarArg::ArgType::Float:	ostr << argValue.vFloat;						break;
-				case VarArg::ArgType::String:	ostr << "'" << argValue.vCStr << "'";			break;
-				default:						ostr << "(unknown: VarArg::to_string() is missing switch case)";
-				}
-				return ostr.str();
-			}
-
-			static std::string type_to_string(const ArgType type)
-			{
-				switch (type)
-				{
-				case (Bool):		return "Bool";
-				case (Integer):		return "Integer";
-				case (Float):		return "Float";
-				case (String):		return "String";
-				default:			return "(unknown - VarArg::type_to_string() is missing switch case)";
-				}
-			}
+			std::string to_string() const;
+			static std::string type_to_string(const ArgType type);
 		};
 
 
@@ -228,25 +201,17 @@ namespace Engine {
 			bool find_argument(float* dest, const std::string argName) const;
 			bool find_argument(std::string* dest, const std::string argName) const;
 
+
+			// Utils //
 		private:
 			int find_arg_index(const std::string argName, const VarArg::ArgType argType) const;
 
-
 			// debug //
 		public:
-			std::string to_string() const
-			{
-				std::ostringstream ostr;
-				ostr << "'" << type << "' event, priority: " << priority_to_string(priority) << ", arguments: " << numArgs;
-				for (size_t i = 0; i < numArgs; ++i)
-				{
-					ostr << "\n- arg " << i << ", Name: '" << arguments[i].first << "', " << (arguments[i].second.to_string());
-				}
-				return ostr.str();
-			}
+			std::string to_string() const;
 
 
-			// Event information //
+			// Event state //
 		private:
 			char type[MAX_CHARS_PER_EVENT_TYPE_NAME];
 			EventPriority priority;
@@ -254,6 +219,8 @@ namespace Engine {
 			size_t numArgs;
 			std::array< std::pair< std::string, VarArg >, MAX_ARGS_PER_EVENT > arguments;
 
+
+			// Hidden constructor //
 		private:
 			// Private constructor prevents objects (except the EventModule singleton) from creating their own Event instances.
 			Event(const std::string type, const EventPriority priority, const std::initializer_list< ArgNamePair >& args = {});
@@ -261,9 +228,6 @@ namespace Engine {
 			// Give EventModule::create_event() exclusive access to the Event constructor (and its other private members).
 			friend int EventModule::create_event(const std::string type, const EventPriority priority, const std::initializer_list < ArgNamePair >& args);
 		};
-
-
-		static std::string key_to_string(const int keycode, const int mods);
 
 	};
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "QuasartsEngine.h"
 #include "GuiViews/GuiView.h"
+#include "filesystem"
+#include <iostream>
 class FileInputView : public GuiView
 {
 	void on_add() override;
