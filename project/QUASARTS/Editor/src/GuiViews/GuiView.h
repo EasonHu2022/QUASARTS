@@ -1,4 +1,5 @@
 #pragma once
+#include "QuasartsEngine.h"
 
 class GuiView
 {
@@ -6,11 +7,13 @@ public:
 	GuiView() {};
 	~GuiView() {};
 public:
+	bool show_window = true;
+	Window* window = Engine::Application::Instance->get_window();
 	/*
 		on gui update
 	*/
 	virtual void on_gui() = 0;
-
+	
 	/*
 		on view added
 	*/

@@ -4,7 +4,7 @@
 #include "GuiViews/GuiView.h"
 
 
-class GameSceneView : public GuiView
+class AttributeView : public GuiView
 {
 public:
 	
