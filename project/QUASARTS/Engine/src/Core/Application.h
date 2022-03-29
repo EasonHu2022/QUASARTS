@@ -8,6 +8,8 @@
 #include "imgui_impl_opengl3.h"
 #include "ResourceManager/MeshLoader.h"
 #include "Event/EventModule.h"
+#include "Scripts/ScriptsSystem.h"
+
 namespace Engine
 {
 
