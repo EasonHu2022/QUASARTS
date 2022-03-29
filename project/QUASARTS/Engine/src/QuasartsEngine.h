@@ -26,3 +26,9 @@
 */
 
 #include "ResourceManager/FileModule.h"
+#include "ResourceManager/ModelResource.h"
+
+/*
+	entity
+*/
+#include "Core/EntityWorld.h"
