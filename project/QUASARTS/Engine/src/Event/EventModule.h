@@ -22,12 +22,12 @@ namespace Engine {
 	// Usage:
 	// For handler declaration: void CALLBACK_SIGNATURE( EventType )
 	// For handler defintion:	void MyClass::CALLBACK_SIGNATURE( EventType )
-#define EV_CALLBACK_SIGNATURE(eventType) handler_##eventType( const EventModule::Event& evt )
+#define EV_CALLBACK_SIGNATURE(eventType) handler_##eventType( const Engine::EventModule::Event& evt )
 
 // Parameter 'eventType' is NOT a string.
 // Usage: 
 // EventModule::Instance()->register_handler( CALLBACK_REGISTRATION( EventType ) );
-#define EV_CALLBACK_REGISTRATION(eventType) #eventType, [this](const EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
+#define EV_CALLBACK_REGISTRATION(eventType) #eventType, [this](const Engine::EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
 
 // Returns a wrapper for an event argument, initialised with a boolean of the given value.
 // Usage:

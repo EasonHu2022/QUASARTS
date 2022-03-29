@@ -35,8 +35,6 @@ void Window::init(const WindowProps& props)
 
 	QDEBUG("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-	
-
 	int success = glfwInit();
 	if (success == GLFW_FALSE)
 	{

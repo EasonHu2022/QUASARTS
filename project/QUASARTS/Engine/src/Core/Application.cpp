@@ -52,6 +52,7 @@ namespace Engine
 		
 		PhysicsSystem::Instance()->init();
 		
+		Renderer::Instance()->init();
 
 		//do init things
 		GuiWrapper::init();
@@ -109,8 +110,7 @@ namespace Engine
 
 	void Application::on_render()
 	{
-
-		//do render things
+		Renderer::Instance()->render_loop();
 	}
 
 	void Application::on_gui()
