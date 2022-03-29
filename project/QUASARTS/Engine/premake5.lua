@@ -46,7 +46,7 @@ project "Engine"
 		"../ThirdParty/GLAD/include",
 		"../ThirdParty/ImGui",
 		"../ThirdParty/lua/src",
-		"../ThirdParty/sol/include/sol",
+		"../ThirdParty/sol2/include",
 		"../ThirdParty/Bullet3/Bullet3Collision",
 		"../ThirdParty/Bullet3/Bullet3Common",
 		"../ThirdParty/Bullet3/Bullet3Geometry",
