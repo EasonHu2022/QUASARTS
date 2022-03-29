@@ -18,6 +18,7 @@ namespace Engine
 
 		/******temp*********/
 		entityWorld = new EntityWorld();
+		miniecs = new miniECS();
 
 		LogModule::Instance()->init();
 

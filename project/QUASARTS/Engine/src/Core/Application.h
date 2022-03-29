@@ -10,6 +10,7 @@
 #include "Event/EventModule.h"
 #include "Scripts/ScriptsSystem.h"
 #include "Core/EntityWorld.h"
+#include "Core/miniECS.h"
 
 namespace Engine
 {
@@ -25,7 +26,7 @@ namespace Engine
 		static Application* Instance;
 		MeshLoaderFactory * loaderFactory;
 		EntityWorld* entityWorld;
-
+		miniECS* miniecs;
 
 	public:
 		Window* get_window() { return m_window; }

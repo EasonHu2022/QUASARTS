@@ -63,10 +63,20 @@ void FileInputView::on_gui()
                         if (ImGui::Selectable(assetsFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
 
                             if (ImGui::IsMouseDoubleClicked(0)) {
-                                if (FileModule::Instance()->get_root() == NULL)
-                                    std::cout << "null" << std::endl;
-                                if (FileModule::Instance()->get_root() != NULL)
-                                    std::cout << FileModule::Instance()->get_root()->path << std::endl;
+                                //std::cout << assetsFiles[i].path().string().c_str() << std::endl;
+                                std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes{};
+                                Engine::Application::Instance -> loaderFactory->load(assetsFiles[i].path().string().c_str(), meshes);
+                                auto model = new Engine::ModelResource();
+                                auto ent = new Engine::AttributeVector();
+                                ent->attributes[0].x = i;
+                                std::cout << ent->attributes[0].x << std::endl;
+                                std::cout << ent->attributes.size() << std::endl;
+                                model->meshes = meshes;
+                                model->name = assetsFiles[i].path().filename().string().c_str();
+                                Engine::Application::Instance->entityWorld->add_entity(model);
+                                Engine::Application::Instance->miniecs->add_entity(ent);
+                                std::cout << Engine::Application::Instance->miniecs->entities.size() << std::endl;
+
                             }
                                 
                         }
