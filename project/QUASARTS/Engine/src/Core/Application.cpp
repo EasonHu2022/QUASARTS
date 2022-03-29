@@ -16,6 +16,8 @@ namespace Engine
 		Instance = this;
 		bIs_Running = false;
 
+		/******temp*********/
+		entityWorld = new EntityWorld();
 
 		LogModule::Instance()->init();
 
@@ -40,7 +42,8 @@ namespace Engine
 	/// </summary>
 	void Application::init()
 	{
-	
+		
+
 		/*
 			later change to ECS mode
 			later remove instance

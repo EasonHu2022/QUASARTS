@@ -9,6 +9,7 @@
 #include "ResourceManager/MeshLoader.h"
 #include "Event/EventModule.h"
 #include "Scripts/ScriptsSystem.h"
+#include "Core/EntityWorld.h"
 
 namespace Engine
 {
@@ -23,7 +24,7 @@ namespace Engine
 	public:
 		static Application* Instance;
 		MeshLoaderFactory * loaderFactory;
-
+		EntityWorld* entityWorld;
 
 
 	public:
