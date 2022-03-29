@@ -46,7 +46,7 @@ namespace Engine {
 	{
 
 		// Test collision world.
-		runTests_start();
+		//runTests_start();
 
 		return 0;
 
@@ -73,7 +73,7 @@ namespace Engine {
 			delete obj;
 		}
 
-		// Delete collision sphere (should no longer be dependended on).
+		// Delete collision spheres (should no longer be dependended on).
 		for (int i = 0; i < collisionSpheres.size(); ++i)
 		{
 			btSphereShape* sphere = collisionSpheres[i];
