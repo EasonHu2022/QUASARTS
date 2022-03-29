@@ -5,6 +5,7 @@
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
 #include "Core/Input.h"
+#include "Scripts/ScriptsSystem.h"
 
 namespace Engine
 {
@@ -21,6 +22,8 @@ namespace Engine
 		EventModule::Instance()->init();
 
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
+
+		ScriptsSys::Instance()->init();
 
 		loaderFactory = new MeshLoaderFactory();
 		//create window for app
@@ -46,11 +49,11 @@ namespace Engine
 		PhysicsSystem::Instance()->init();
 		
 
-
 		//do init things
 		GuiWrapper::init();
 
 		Input::init();
+
 	}
 
 
@@ -65,6 +68,10 @@ namespace Engine
 		LogModule::Instance()->start();
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
+		ScriptsSys::Instance()->start();
+
+		
+
 
 		/// <summary>
 		/// for test
