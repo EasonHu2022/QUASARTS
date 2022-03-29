@@ -16,7 +16,7 @@ namespace Engine {
 		// singleton
 	private:
 		static PhysicsSystem* instance;
-		PhysicsSystem() {};
+		PhysicsSystem() : collisionConfiguration(nullptr), collisionWorld(nullptr), dispatcher(nullptr), overlappingPairCache(nullptr) {};
 	public:
 		static PhysicsSystem* Instance();
 		~PhysicsSystem() {};
