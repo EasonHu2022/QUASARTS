@@ -6,6 +6,7 @@
 #include "Core/Mesh.h"
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace Engine
 {
