@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/IModule.h"
+#include "Core/IModule.h"
 #include "spdlog/spdlog.h"
 #include <memory>
 #include "Core/Core.h"
