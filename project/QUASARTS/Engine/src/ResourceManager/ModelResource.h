@@ -6,6 +6,8 @@
 #include "Core/Mesh.h"
 #include <vector>
 #include <string>
+#include <memory>
+
 namespace Engine
 {
 
@@ -14,7 +16,7 @@ namespace Engine
 	public:
 		ModelResource();
 		~ModelResource();
-		std::vector<Mesh*> meshes;
+		std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes;
 		std::string name;
 	};
 
