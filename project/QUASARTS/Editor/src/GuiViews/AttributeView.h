@@ -16,4 +16,6 @@ public:
 	std::vector<float> v2;
 	float vec3f[3];
 	float vec3f2[3];
+	bool game = false;
+	int i = -1;
 };
