@@ -14,7 +14,7 @@ namespace Engine
 		static void generate_normals(std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 		static void generate_tangents(std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 		void set_name(std::string _name);
-	protected:
+	public:
 		static glm::vec3 generateTangent(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec2& ta, const glm::vec2& tb, const glm::vec2& tc);
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
