@@ -31,6 +31,7 @@ project "Editor"
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
 		"../ThirdParty/lua/src",
+		"../ThirdParty/sol2/include",
 		"../ThirdParty/Bullet3/Bullet3Collision",
 		"../ThirdParty/Bullet3/Bullet3Common",
 		"../ThirdParty/Bullet3/Bullet3Geometry",

@@ -170,6 +170,7 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 	{
 		
 		char* fcmd = char_merge(mkCmd, f);
+		
 		QDEBUG("create folders at {0}", fcmd);
 		system(fcmd);
 		delete[] fcmd;

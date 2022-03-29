@@ -62,6 +62,7 @@ public:
 		std::vector<QDirectoriesNode*> children;
 		//list of file
 		std::vector<QFileNode*> files;
+		
 	};
 	
 private:
