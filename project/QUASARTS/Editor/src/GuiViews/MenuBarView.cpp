@@ -163,6 +163,7 @@ std::string MenuBarView::OpenFolderDialogue() {
     if (SHGetPathFromIDList(pidl, path)) {
         std::wstring ws(path);
         std::string pathstr(ws.begin(), ws.end());
+        //Engine::Application::Instance->loaderFactory->load(pathstr, pathstr);
         return pathstr;
     }
     else

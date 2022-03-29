@@ -26,7 +26,7 @@ void QEditor::init()
 	add_gui_view<GameSceneView>();
 	add_gui_view<HierarchyView>();
 	add_gui_view<AttributeView>();
-	test_in_init();
+	//test_in_init();
 }
 
 void QEditor::on_update()
@@ -55,14 +55,25 @@ void QEditor::on_gui()
 /// <summary>
 /// place for all test code
 /// </summary>
-void QEditor::test_in_init()
+/*void QEditor::test_in_init()
 {
 	std::string path = "F:\\WorkSpace\\LEEDS\\Graphics and Render\\Assignment2\\objects\\cube_flat.obj";
 	std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes{};
 	loaderFactory->load(path, meshes);
+	auto model = new Engine::ModelResource();
+	model->meshes = meshes;
+	model->name = "name";
+	Engine::Application::entityWorld->add_entity(model);
+
+	auto models = Engine::Application::entityWorld->models;
+	for (auto m : models) {
+	
+		auto name = m->name;
+	
+	}
 	QDEBUG("test load meshes");
 
-}
+}*/
 
 void QEditor::test_in_update()
 {

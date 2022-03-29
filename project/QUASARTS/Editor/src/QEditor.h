@@ -32,7 +32,7 @@ public:
 	/// <summary>
 	/// test code in init()
 	/// </summary>
-	void test_in_init();
+	//void test_in_init();
 
 	void test_in_update();
 
