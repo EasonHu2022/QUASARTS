@@ -60,7 +60,7 @@ namespace Engine
 	}
 	void Input::reset_state()
 	{
-		memset(keyHeld, 0, MAX_KEYS);
+		//memset(keyHeld, 0, MAX_KEYS);
 		memset(keyPressed, 0, MAX_KEYS);
 		memset(keyReleased, 0, MAX_KEYS);
 		memset(mouseClicked, 0, MAX_BUTTONS);
@@ -79,6 +79,7 @@ namespace Engine
 		}			
 		
 		keyPressed[keycode] = true;
+		keyHeld[keycode] = true;
 	}
 	void Input::EV_CALLBACK_SIGNATURE(KeyReleased)
 	{
@@ -92,6 +93,7 @@ namespace Engine
 		}
 
 		keyReleased[keycode] = true;
+		keyHeld[keycode] = false;
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonPressed)
 	{
