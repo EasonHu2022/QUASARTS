@@ -110,7 +110,7 @@ namespace Engine
 
 	void Application::on_render()
 	{
-		Renderer::Instance()->render_loop();
+		//Renderer::Instance()->render_loop();
 	}
 
 	void Application::on_gui()

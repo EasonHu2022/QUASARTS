@@ -2,6 +2,7 @@
 namespace Engine {
 	miniECS::miniECS()
 	{
+		index = -1;
 	}
 
 	miniECS::~miniECS()
@@ -15,6 +16,11 @@ namespace Engine {
 
 	void miniECS::remove_entity(AttributeVector* attrib)
 	{
+	}
+
+	void miniECS::set_index(int* ind)
+	{
+		index = *ind;
 	}
 
 };

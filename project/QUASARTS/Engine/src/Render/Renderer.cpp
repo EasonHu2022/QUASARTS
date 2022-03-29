@@ -27,7 +27,7 @@ static void glfw_error_callback(int error, const char* description)
 void Renderer::TestDrawDemo()
 {
 	//a lovely triangle
-	const float triangles[] = {
+	/*const float triangles[] = {
 	-0.5f,-0.5f,0.0f,
 	0.5f,-0.5f,0.0f,
 	0.0f,0.5f,0.0f,
@@ -113,10 +113,10 @@ void Renderer::TestDrawDemo()
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
-	QDEBUG("TestDrawDemo: ")
+	//QDEBUG("TestDrawDemo: ")
 
 	render_context.shader_program = shader_program;
-	render_context.VAO_handle = vertext_array_object;
+	render_context.VAO_handle = vertext_array_object;*/
 }
 
 
