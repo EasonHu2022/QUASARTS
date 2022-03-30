@@ -6,6 +6,7 @@
 #include "Event/EventModule.h"
 #include "Core/Input.h"
 #include "Scripts/ScriptsSystem.h"
+#include "Render/RendererTemp.h"
 
 namespace Engine
 {
@@ -31,6 +32,8 @@ namespace Engine
 		loaderFactory = new MeshLoaderFactory();
 		//create window for app
 		m_window = Window::create(WindowProps(name));		
+
+		RendererTemp::Instance()->init();
 	}
 	Application:: ~Application()
 	{
@@ -52,7 +55,7 @@ namespace Engine
 		
 		PhysicsSystem::Instance()->init();
 		
-		Renderer::Instance()->init();
+		/*Renderer::Instance()->init();*/
 
 		//do init things
 		GuiWrapper::init();
@@ -110,7 +113,8 @@ namespace Engine
 
 	void Application::on_render()
 	{
-		Renderer::Instance()->render_loop();
+		//Renderer::Instance()->render_loop();
+		RendererTemp::Instance()->render_scene();
 	}
 
 	void Application::on_gui()
