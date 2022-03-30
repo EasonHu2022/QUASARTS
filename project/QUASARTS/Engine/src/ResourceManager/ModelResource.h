@@ -18,6 +18,7 @@ namespace Engine
 		~ModelResource();
 		std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes;
 		std::string name;
+		void render();
 	};
 
 

@@ -14,6 +14,8 @@ namespace Engine
 
 		void remove_entity(ModelResource* model);
 
+		void render();
+
 		std::vector<ModelResource*> models;
 
 	};

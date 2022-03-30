@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Render/RendererTemp.h"
 #pragma once
 namespace Engine {
 
@@ -109,6 +110,13 @@ namespace Engine {
 	}
 
 
+	void Mesh::render()
+	{
+		auto p = pack(VAO,indices.size());
+
+		RendererTemp::Instance()->renderQueue->push(p);
+	}
+
 	void Mesh::set_up_buffers()
 	{
 		// Generate buffer objects and store handles.
@@ -123,9 +131,6 @@ namespace Engine {
 		// Copy vertex data to the vertex buffer.
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-		// Bind element buffer and copy vertex indices to it.
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
 
 
 		// Enable and copy vertex attributes:
@@ -149,6 +154,11 @@ namespace Engine {
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
 
+
+
+		// Bind element buffer and copy vertex indices to it.
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
 
 		// Unbind.
 		glBindVertexArray(0);

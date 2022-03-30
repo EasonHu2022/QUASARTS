@@ -7,4 +7,11 @@ namespace Engine
 	ModelResource::~ModelResource()
 	{
 	}
+	void ModelResource::render()
+	{
+		for (auto m : meshes)
+		{
+			m.second->render();
+		}
+	}
 };

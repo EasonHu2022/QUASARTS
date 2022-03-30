@@ -17,4 +17,12 @@ namespace Engine {
 	{
 	}
 
+	void EntityWorld::render()
+	{
+		for (auto m : models)
+		{
+			m->render();
+		}
+	}
+
 };

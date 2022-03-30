@@ -22,6 +22,7 @@ namespace Engine
 		std::string name;
 
 	public:
+		void render();
 		unsigned int VAO, VBO, EBO;
 		void set_up_buffers();
 

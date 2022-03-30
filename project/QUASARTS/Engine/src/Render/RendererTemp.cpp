@@ -1,5 +1,6 @@
 #include "RendererTemp.h"
 #include "Logger/LogModule.h"
+#include "Core/Application.h"
 
 //singleton
 RendererTemp* RendererTemp::instance = nullptr;
@@ -19,33 +20,11 @@ RendererTemp* RendererTemp::Instance()
 
 
 
-void RendererTemp::TestDrawDemo()
+
+	
+
+void RendererTemp::Shader()
 {
-	//a lovely triangle
-	const float triangles[] = {
-	-0.5f,-0.5f,0.0f,
-	0.5f,-0.5f,0.0f,
-	0.0f,0.5f,0.0f,
-	};
-
-	//apply for VAO
-	GLuint vertext_array_object;
-	glGenVertexArrays(1, &vertext_array_object);
-	glBindVertexArray(vertext_array_object);
-
-	//apply for VBO
-	GLuint vertext_buffer_object;
-	glGenBuffers(1, &vertext_buffer_object);
-	glBindBuffer(GL_ARRAY_BUFFER, vertext_buffer_object);
-	//bind
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//shader
 	const char* vertex_shader_source =
 		"#version 330 core\n"
@@ -59,7 +38,7 @@ void RendererTemp::TestDrawDemo()
 		"out vec4 FragColor;\n"
 		"void main()\n"
 		"{\n"
-		"	FragColor = vec4(1.0f,0.5f,0.2f,1.0f);\n"
+		"	FragColor = vec4(0.2f,0.2f,0.2f,1.0f);\n"
 		"}\n\0";
 
 	//compile shader
@@ -88,7 +67,7 @@ void RendererTemp::TestDrawDemo()
 	if (!success)
 	{
 		glGetShaderInfoLog(fragment_shader, 512, NULL, info_log);
-		QERROR ("FRAG SHADER COMPILE ERROR\n", info_log);
+		QERROR("FRAG SHADER COMPILE ERROR\n", info_log);
 	}
 
 	//link
@@ -108,10 +87,7 @@ void RendererTemp::TestDrawDemo()
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
-	QDEBUG("TestDrawDemo: ")
-
 	render_context.shader_program = shader_program;
-	render_context.VAO_handle = vertext_array_object;
 }
 
 
@@ -120,17 +96,17 @@ void RendererTemp::TestDrawDemo()
 /// </summary>
 int RendererTemp::init()
 {
+	renderQueue = new RenderQueue();
+	Shader();
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glGenTextures(1, &tbo);
 	glBindTexture(GL_TEXTURE_2D, tbo);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 400, 400, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 400, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tbo, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//TestDrawDemo();
-	
 	return 0;
 }
 
@@ -140,8 +116,11 @@ int RendererTemp::init()
 /// </summary>
 int RendererTemp::render()
 {
-	
-
+	auto etts = Engine::Application::Instance->entityWorld->models;
+	for (auto m : etts)
+	{
+		m->render();
+	}
 
 
 
@@ -153,15 +132,15 @@ int RendererTemp::render()
 	//give a clear color of the window
 	glClearColor(0.45f, 0.55f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, 400, 400);
+	glViewport(0, 0, 400, 600);
 	while (renderQueue->get_size() != 0)
 	{
 		auto buffer = renderQueue->get();
 
 		glUseProgram(render_context.shader_program);
-		glBindVertexArray(buffer);//bind VAO
-		glDrawArrays(GL_TRIANGLES, 0, 3);//draw tri
-		glBindVertexArray(0);//unbind
+		glBindVertexArray(buffer._VAO);
+		glDrawElements(GL_TRIANGLES, buffer.size, GL_UNSIGNED_SHORT, 0);
+		glBindVertexArray(0);
 		renderQueue->pop();
 	}
 	
@@ -176,10 +155,6 @@ int RendererTemp::stop()
 }
 
 
-void RendererTemp::bind_texture() {
-
-	
-}
 
 
 

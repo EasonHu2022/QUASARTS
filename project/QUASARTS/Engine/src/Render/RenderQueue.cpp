@@ -8,7 +8,7 @@ RenderQueue::~RenderQueue()
 {
 }
 
-void RenderQueue::push(uint32_t handle)
+void RenderQueue::push(pack handle)
 {
 	queue.push(handle);
 }
@@ -18,7 +18,7 @@ void RenderQueue::pop()
 	queue.pop();
 }
 
-uint32_t RenderQueue::get()
+pack RenderQueue::get()
 {
 	return queue.front();
 }

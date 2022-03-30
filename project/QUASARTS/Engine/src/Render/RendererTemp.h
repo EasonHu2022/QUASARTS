@@ -27,6 +27,7 @@ public:
 	unsigned int fbo;
 private:
 	RenderContext render_context;
+public:
 	RenderQueue* renderQueue;
 
 public:
@@ -56,13 +57,6 @@ public:
 
 
 private:
-	/// <summary>
-	/// the main render loop for scene render
-	/// </summary>
-	void scene_loop();
 
-
-	//void editor_loop(GLFWwindow*);
-
-	void TestDrawDemo();
+	void Shader();
 };

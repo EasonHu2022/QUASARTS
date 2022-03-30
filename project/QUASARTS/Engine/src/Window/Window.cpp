@@ -213,7 +213,7 @@ void Window::on_update()
 	glfwGetFramebufferSize(m_Window, &display_w, &display_h);
 	glViewport(0, 0, display_w, display_h);
 
-	glClearColor(1, 0, 0, 0);
+	glClearColor(0.2, 0.2, 0.2, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
