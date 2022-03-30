@@ -114,6 +114,7 @@ namespace Engine
 	void Application::on_render()
 	{
 		//Renderer::Instance()->render_loop();
+		//Renderer::Instance()->render_loop();
 		RendererTemp::Instance()->render_scene();
 	}
 

@@ -14,7 +14,11 @@ namespace Engine
 
 		void remove_entity(AttributeVector* attrib);
 
+		void set_index(int* ind);
+
 		std::vector<AttributeVector*> entities;
+
+		int index;
 
 	};
 

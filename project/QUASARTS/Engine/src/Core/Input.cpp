@@ -36,7 +36,7 @@ namespace Engine
 
 	bool Input::get_key(int key)
 	{
-		return false;
+		return keyHeld[key];
 	}
 	bool Input::get_key_pressed(int key)
 	{
@@ -60,11 +60,11 @@ namespace Engine
 	}
 	void Input::reset_state()
 	{
-		memset(keyHeld, 0, MAX_KEYS);
+		//memset(keyHeld, 0, MAX_KEYS);
 		memset(keyPressed, 0, MAX_KEYS);
 		memset(keyReleased, 0, MAX_KEYS);
+		//memset(mouseHeld, 0, MAX_BUTTONS);
 		memset(mouseClicked, 0, MAX_BUTTONS);
-		memset(mouseHeld, 0, MAX_BUTTONS);
 		memset(mouseReleased,0, MAX_BUTTONS);
 	}
 	void Input::EV_CALLBACK_SIGNATURE(KeyPressed)
@@ -79,6 +79,7 @@ namespace Engine
 		}			
 		
 		keyPressed[keycode] = true;
+		keyHeld[keycode] = true;
 	}
 	void Input::EV_CALLBACK_SIGNATURE(KeyReleased)
 	{
@@ -92,12 +93,35 @@ namespace Engine
 		}
 
 		keyReleased[keycode] = true;
+		keyHeld[keycode] = false;
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonPressed)
 	{
+		int button = -1;
+		std::string name = "button";
+		auto ret = evt.find_argument(&button, name);
+		if (!ret)
+		{
+			QDEBUG("No args named {0} in event 'MouseButtonPressed', please check !", name);
+			return;
+		}
+
+		mouseClicked[button] = true;
+		mouseHeld[button] = true;
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonReleased)
 	{
+		int button = -1;
+		std::string name = "button";
+		auto ret = evt.find_argument(&button, name);
+		if (!ret)
+		{
+			QDEBUG("No args named {0} in event 'MouseButtonReleased', please check !", name);
+			return;
+		}
+
+		mouseReleased[button] = true;
+		mouseHeld[button] = false;
 	}
 };
 

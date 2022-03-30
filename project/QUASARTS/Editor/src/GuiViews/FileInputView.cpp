@@ -68,14 +68,16 @@ void FileInputView::on_gui()
                                 Engine::Application::Instance -> loaderFactory->load(assetsFiles[i].path().string().c_str(), meshes);
                                 auto model = new Engine::ModelResource();
                                 auto ent = new Engine::AttributeVector();
-                                ent->attributes[0].x = i;
-                                std::cout << ent->attributes[0].x << std::endl;
-                                std::cout << ent->attributes.size() << std::endl;
+                                ent->attributes[0].x = 0;
+                                ent->attributes[0].y = 0;
+                                ent->attributes[0].z = 0;
+                                ent->attributes[1].x = 0;
+                                ent->attributes[1].y = 0;
+                                ent->attributes[1].z = 0;
                                 model->meshes = meshes;
                                 model->name = assetsFiles[i].path().filename().string().c_str();
                                 Engine::Application::Instance->entityWorld->add_entity(model);
                                 Engine::Application::Instance->miniecs->add_entity(ent);
-                                std::cout << Engine::Application::Instance->miniecs->entities.size() << std::endl;
 
                             }
                                 
