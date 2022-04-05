@@ -51,7 +51,14 @@ project "Editor"
 			"GLFW_INCLUDE_NONE",
 			"QS_WINDOWS",
 		}
-		
+
+	filter "system:linux"
+		systemversion "latest"
+		staticruntime "On"
+		defines
+		{
+			"GLFW_INCLUDE_NONE",
+		}		
 	
 	filter "configurations:Debug"
 		runtime "Debug"
