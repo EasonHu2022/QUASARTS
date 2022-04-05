@@ -128,14 +128,14 @@ void MenuBarView::on_remove()
 #if defined(_WIN32)
 std::string MenuBarView::OpenFileDialogue() {
     OPENFILENAME ofn;
-    wchar_t fileName[MAX_PATH] = L"";
+    wchar_t fileName[260] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = NULL;
     ofn.lpstrFilter = L"All Files (*.*)\0*.cpp\0";
     ofn.lpstrFile = fileName;
-    ofn.nMaxFile = MAX_PATH;
+    ofn.nMaxFile = 260;
     ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     ofn.lpstrDefExt = L"";
 
@@ -149,7 +149,7 @@ std::string MenuBarView::OpenFileDialogue() {
         return "N/A";
 }
 std::string MenuBarView::OpenFolderDialogue() {
-    wchar_t path[MAX_PATH] = L"";
+    wchar_t path[260] = L"";
     BROWSEINFO bi;
 
     bi.hwndOwner = NULL;
@@ -203,7 +203,7 @@ void MenuBarView::newProject() {
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
-    static char buf2[MAX_PATH] = "";
+    static char buf2[260] = "";
     for (int i = 0; i < folder_path.length(); i++) {
         buf2[i] = folder_path[i];
     }
