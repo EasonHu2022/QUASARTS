@@ -1,7 +1,7 @@
 #include "ScriptsSystem.h"
 #include "Logger/LogModule.h"
 
-#include "Utilities\FileParser.h"
+#include "Utilities/FileParser.h"
 
 namespace Engine {
 
