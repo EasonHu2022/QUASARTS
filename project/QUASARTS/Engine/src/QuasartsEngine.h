@@ -32,6 +32,7 @@
 	entity
 */
 #include "Core/EntityWorld.h"
+#include "ECS/ECSManager.h"
 
 
 /*
