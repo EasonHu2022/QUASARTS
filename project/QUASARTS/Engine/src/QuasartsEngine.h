@@ -32,3 +32,9 @@
 	entity
 */
 #include "Core/EntityWorld.h"
+
+
+/*
+	Scripts
+*/
+#include "Scripts/ScriptsSystem.h"
