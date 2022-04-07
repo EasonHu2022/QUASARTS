@@ -4,8 +4,8 @@
 #include <cstdint>
 
 // Component includes:
-#include "ECS/Component/TransformComponent.h"
-#include "ECS/Component/MeshComponent.h"
+//#include "ECS/Component/TransformComponent.h"
+//#include "ECS/Component/MeshComponent.h"
 
 namespace Engine {
     // Class declarations for the whole ECS:
