@@ -156,6 +156,12 @@ namespace Engine {
             compArray->remove_data(entityID);
         }
 
+        // Save the whole scene to file:
+        bool save_scene(char *filename);
+
+        // Load a scene from file:
+        bool load_scene(char *filename);
+
         // Print Entity information for debugging purposes:
         void print_entities();
 
