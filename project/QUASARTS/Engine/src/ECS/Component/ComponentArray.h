@@ -10,17 +10,17 @@ namespace Engine {
     class QS_API ParentComponentArray {
         public:
         // Destructor:
-        virtual ~ParentComponentArray();
+        virtual ~ParentComponentArray() {}
 
         // Add data to the component array:
         template <typename T>
         void add_data(T data, unsigned int entityID);
 
         // Add a data entry (uninitialized) to the component array:
-        virtual void add_data(unsigned int entityID);
+        virtual void add_data(unsigned int entityID) = 0;
 
         // Copy data from one entity to another:
-        virtual void copy_data(unsigned int copyFrom, unsigned int copyTo);
+        virtual void copy_data(unsigned int copyFrom, unsigned int copyTo) = 0;
 
         // Remove data from the component array:
         virtual void remove_data(unsigned int entityID) = 0;
