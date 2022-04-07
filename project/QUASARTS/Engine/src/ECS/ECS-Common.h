@@ -6,6 +6,7 @@
 // Component includes:
 #include "ECS/Component/TransformComponent.h"
 #include "ECS/Component/MeshComponent.h"
+#include "ECS/Component/FamilyComponent.h"
 
 namespace Engine {
     // Class declarations for the whole ECS:
@@ -23,6 +24,7 @@ namespace Engine {
     // Component types:
     #define COMPONENT_TRANSFORM 0
     #define COMPONENT_MESH 1
+    #define COMPONENT_FAMILY 2
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

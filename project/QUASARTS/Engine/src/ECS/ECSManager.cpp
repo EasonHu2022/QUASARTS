@@ -8,9 +8,11 @@ namespace Engine {
         // Add Component arrays:
         ComponentArray<TransformComponent> *array_transform = new ComponentArray<TransformComponent>;
         ComponentArray<MeshComponent> *array_mesh = new ComponentArray<MeshComponent>;
+        ComponentArray<FamilyComponent> *array_family = new ComponentArray<FamilyComponent>;
 
         componentArrays.push_back(array_transform);
         componentArrays.push_back(array_mesh);
+        componentArrays.push_back(array_family);
     }
 
     // Destructor:
@@ -84,6 +86,20 @@ namespace Engine {
                 break;
             }
         }
+    }
+
+    // Save the whole scene to file:
+    bool ECSManager::save_scene(char *filename) {
+        /* I'm thinking that the file could contain:
+         * - Entity ID mask detailing all Entity IDs in use.
+         * - Component masks for each Entity.
+         * - Data for Components - Component arrays.
+         * - Entity ID matches for Component array elements. */
+    }
+
+    // Load a scene from file:
+    bool ECSManager::load_scene(char *filename) {
+
     }
 
     // Print Entity information for debugging purposes:
