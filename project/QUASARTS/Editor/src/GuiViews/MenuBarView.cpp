@@ -9,6 +9,7 @@
 void MenuBarView::on_add()
 {
     new_project = false;
+    new_scene = false;
     folder_path = "";
 	QDEBUG("on add view : MenuBar");
 }
@@ -31,11 +32,7 @@ void MenuBarView::on_gui()
 
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("New Scene", "Ctrl+N")) {
-
-
-
-            }
+            ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);
             if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
 
 
@@ -88,9 +85,7 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Add Path")) {
 
             }
-            if (ImGui::MenuItem("Add Script")) {
-
-            }
+            ImGui::MenuItem("Add Script", NULL, &new_script);
             if (ImGui::MenuItem("Delete Script")) {
 
             }
@@ -117,6 +112,10 @@ void MenuBarView::on_gui()
 
     if (new_project)
         newProject();
+    if (new_scene)
+        newScene();
+    if (new_script)
+        newScript();
 }
 
 void MenuBarView::on_remove()
@@ -130,7 +129,7 @@ std::string MenuBarView::OpenFileDialogue() {
     OPENFILENAME ofn;
     wchar_t fileName[MAX_PATH] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
-
+    
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = NULL;
     ofn.lpstrFilter = L"All Files (*.*)\0*.cpp\0";
@@ -207,7 +206,7 @@ void MenuBarView::newProject() {
     for (int i = 0; i < folder_path.length(); i++) {
         buf2[i] = folder_path[i];
     }
-    std::string check = "pokemon";
+
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
     ImGui::PopItemWidth();
@@ -234,6 +233,66 @@ void MenuBarView::newProject() {
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
     if (ImGui::Button("Cancel")) {
         new_project = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newScene() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose Scene Name", &new_scene, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+  
+    
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
+    ImGui::PopItemWidth();
+ 
+   
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0) {
+
+            new_scene = false;
+            show_window = true;
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_scene = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newScript() {
+
+    ImGui::SetNextWindowSize(ImVec2(250, 80));
+    ImGui::Begin("Choose Script Name", &new_script, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+
+
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
+    ImGui::PopItemWidth();
+
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0) {
+
+            new_script = false;
+            show_window = true;
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_script = false;
     }
 
     ImGui::End();
