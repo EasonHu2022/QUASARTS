@@ -1,13 +1,17 @@
 #pragma once
 #include <lua.hpp>
 #include <sol/sol.hpp>
-#include <iostream>
+#include <string>
 
 #include "Core/IManager.h"
+
+//export functions to lua
 #include "Logger/LogModule.h"
+#include "Core/Input.h"
+//export functions to lua
+
 
 namespace Engine {
-
 	class QS_API ScriptsSys : public IManager
 	{
 		// singleton
@@ -27,20 +31,19 @@ namespace Engine {
 
 		// Usage functions //
 	public:
-		void loadScripts(const std::string& path);
+		void createScript(const std::string& file_name);		
+		void loadScript(const std::string& path);
+		void updateScript();
+		void deleteScript();
 
-		//todo  template..  if we need     or we could have the export.cpp
-		void exportFunction(const std::string& lua_func_name, void(*func)(const std::string));
+		//export functions
+		void exportLog();
+		//export functions 
 
-		void exportFunction(const std::string& lua_func_name, int(*func)());
-		//todo ... more 
-
-		void exportLogSys();
-
-
-	//public status for now 
 	public:
-		//load the lua virtual machine, which is wrapped by sol2. 
+		//lua virtual machine
 		sol::state lua{};
+		std::string script_name = "";
+		std::string root = "../Scripts/";
 	};
 }

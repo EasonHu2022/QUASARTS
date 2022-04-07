@@ -1,6 +1,7 @@
 #include "ScriptsSystem.h"
 #include "Logger/LogModule.h"
 
+#include <fstream>
 #include "Utilities/FileParser.h"
 
 namespace Engine {
@@ -24,8 +25,11 @@ namespace Engine {
 	/// </summary>
 	void ScriptsSys::init()
 	{
+		//lib 
 		lua.open_libraries(sol::lib::base);
-		exportLogSys();
+
+		//export
+		exportLog();
 	}
 
 	/// <summary>
@@ -34,13 +38,6 @@ namespace Engine {
 	/// <returns>res</returns>
 	int ScriptsSys::start()
 	{
-		//get file name test 
-		std::string file_name = getFileName("./test.lua");
-		QDEBUG("Test : Get file name func : {0}", file_name);
-
-		//scripts test
-		QDEBUG("Scripts system test :  engine hardcode");
- 		loadScripts("test.lua");
 		return 0;
 	}
 
@@ -69,22 +66,27 @@ namespace Engine {
 
 	}
 	
-	void ScriptsSys::loadScripts(const std::string& path)
+	void ScriptsSys::createScript(const std::string& file_name)
+	{	
+		script_name = file_name;
+		std::ofstream ofs;
+		ofs.open(root + file_name + ".lua", std::ios::out);
+		if (ofs)
+		{
+			QDEBUG("Created a {0} script.", script_name);
+		}
+		ofs << "--Scripts test: we now can use our log function" << std::endl;
+		ofs << "--And we have a simple entity class here. usage: printPos, setX, setY" << std::endl;
+		ofs.close();
+		
+	}
+
+	void ScriptsSys::loadScript(const std::string& path)
 	{
 		lua.script_file(path);
 	}
 	
-	void ScriptsSys::exportFunction(const std::string& lua_func_name, void(*func)(const std::string))
-	{
-		lua.set_function(lua_func_name, &(*func));
-	}
-	
-	void ScriptsSys::exportFunction(const std::string& lua_func_name, int(*func)())
-	{
-		lua.set_function(lua_func_name, &(*func));
-	}
-
-	void ScriptsSys::exportLogSys()
+	void ScriptsSys::exportLog()
 	{
 		//for engine 
 		lua.set_function("Qlog", std::function <void(const std::string&)>([](const std::string& str) {
@@ -94,6 +96,7 @@ namespace Engine {
 		lua.set_function("Qtrace", std::function <void(const std::string&)>([](const std::string& str) {
 			QTRACE(str);
 			}));
+
 		lua.set_function("Qerror", std::function <void(const std::string&)>([](const std::string& str) {
 			QERROR(str);
 			}));
@@ -102,25 +105,36 @@ namespace Engine {
 		lua.set_function("Glog", std::function <void(const std::string&)>([](const std::string& str) {
 			DEBUG(str);
 			}));
+
 		lua.set_function("Gtrace", std::function <void(const std::string&)>([](const std::string& str) {
 			TRACE(str);
 			}));
+
 		lua.set_function("Gerror", std::function <void(const std::string&)>([](const std::string& str) {
 			ERROR(str);
 			}));
+	}
+
+	void ScriptsSys::updateScript()
+	{
+		loadScript(root + script_name + ".lua");
+	}
+
+	void ScriptsSys::deleteScript()
+	{
+		std::string file_path = root + script_name + ".lua";
+
+		if (std::remove(file_path.c_str()) == 0)
+		{
+			QDEBUG("Deleted the file: {0}.lua", script_name);
+		}
 
 	}
+
 }
 
-
-
-//ScriptsSys::ScriptsSys()
-//{
-//	lua.open_libraries(sol::lib::base,
-//		sol::lib::package,
-//		sol::lib::string,
-//		sol::lib::math,
-//		sol::lib::table
-//	);
-//
-//}
+//sol::lib::base,
+//sol::lib::package,
+//sol::lib::string,
+//sol::lib::math,
+//sol::lib::table
