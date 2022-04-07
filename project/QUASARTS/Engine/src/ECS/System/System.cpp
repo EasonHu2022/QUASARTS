@@ -35,7 +35,7 @@ namespace Engine {
 
     // Function to add component type to System:
     void System::add_component_type(unsigned int component_type) {
-        unsigned long long mask = 1 << component_type;
+        uint64_t mask = (uint64_t)1 << component_type;
         if ((component_mask.mask & mask) != mask) {
             component_mask.mask += mask;
         }
@@ -43,7 +43,7 @@ namespace Engine {
 
     // Function to remove component type from System:
     void System::remove_component_type(unsigned int component_type) {
-        unsigned long long mask = 1 << component_type;
+        uint64_t mask = (uint64_t)1 << component_type;
         if ((component_mask.mask & mask) == mask) {
             component_mask.mask -= mask;
         }

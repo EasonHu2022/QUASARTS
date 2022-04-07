@@ -29,7 +29,7 @@ namespace Engine {
 
     // Add component type:
     void Entity::add_component_type(unsigned int component_type) {
-        unsigned long long mask = 1 << component_type;
+        uint64_t mask = (uint64_t)1 << component_type;
         if ((componentMask.mask & mask) != mask) {
             componentMask.mask += mask;
         }
@@ -37,7 +37,7 @@ namespace Engine {
 
     // Remove component type:
     void Entity::remove_component_type(unsigned int component_type) {
-        unsigned long long mask = 1 << component_type;
+        uint64_t mask = (uint64_t)1 << component_type;
         if ((componentMask.mask & mask) == mask) {
             componentMask.mask -= mask;
         }

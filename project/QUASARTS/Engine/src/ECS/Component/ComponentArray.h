@@ -6,24 +6,27 @@
 // Local includes:
 #include "Core/Core.h"
 
+/* Methods:
+ * T get_data(unsigned int entityID)
+ * void add_data(unsigned int entityID)
+ * void add_data(unsigned int entityID, T data)
+ * void copy_data(unsigned int copyFrom, unsigned int copyTo)
+ * void remove_data(unsigned int entityID)
+ * void replace_data(unsigned int entityID, T data)
+ * unsigned int entityID_from_data(unsigned int index)
+ * unsigned int data_from_entityID(unsigned int entityID) */
+
 namespace Engine {
     class QS_API ParentComponentArray {
         public:
         // Destructor:
         virtual ~ParentComponentArray() {}
 
-        // Add data to the component array:
-        template <typename T>
-        void add_data(T data, unsigned int entityID);
+        // Remove the entry for an Entity from the array:
+        virtual void remove_entity(unsigned int entityID) = 0;
 
-        // Add a data entry (uninitialized) to the component array:
-        virtual void add_data(unsigned int entityID) = 0;
-
-        // Copy data from one entity to another:
-        virtual void copy_data(unsigned int copyFrom, unsigned int copyTo) = 0;
-
-        // Remove data from the component array:
-        virtual void remove_data(unsigned int entityID) = 0;
+        // Print out the state of the component array for debugging:
+        virtual void print_state() = 0;
     };
 
     template <typename T>
@@ -34,12 +37,34 @@ namespace Engine {
             num_entries = 0;
         }
 
+        // Get a data element from the array:
+        T get_data(unsigned int entityID) {
+            unsigned int index = data_from_entityID(entityID);
+            if (index == (MAX_ENTITIES + 1)) {
+                // Print a warning:
+                std::cerr << "Warning: Entity " << entityID << " not found!" << std::endl;
+                T result{};
+                return result;
+            }
+            return componentData[index];
+        }
+
+        // Add data (zero initialized) to the component array:
+        void add_data(unsigned int entityID) {
+            unsigned int index = data_from_entityID(entityID);
+            if (index != (MAX_ENTITIES + 1)) { return; }
+            T data{};
+            componentData[num_entries] = data;
+            entityIDs[num_entries] = entityID;
+            num_entries++;
+        }
+
         // Add data to the component array:
-        void add_data(T data, unsigned int entityID) override {
+        void add_data(unsigned int entityID, T data) {
             unsigned int index = data_from_entityID(entityID);
             if (index != (MAX_ENTITIES + 1)) {
                 // Replace the data instead of adding it:
-                replace_data(data, entityID);
+                replace_data(entityID, data);
                 return;
             }
             componentData[num_entries] = data;
@@ -47,16 +72,8 @@ namespace Engine {
             num_entries++;
         }
 
-        // Add a data entry (uninitialized) to the component array:
-        void add_data(unsigned int entityID) override {
-            unsigned int index = data_from_entityID(entityID);
-            if (index != (MAX_ENTITIES + 1)) { return; }
-            entityIDs[num_entries] = entityID;
-            num_entries++;
-        }
-
         // Copy data from one entity to another:
-        void copy_data(unsigned int copyFrom, unsigned int copyTo) override {
+        void copy_data(unsigned int copyFrom, unsigned int copyTo) {
             // Check that the copyFrom entity exists:
             unsigned int index = data_from_entityID(copyFrom);
             if (index != (MAX_ENTITIES + 1)) {
@@ -65,7 +82,7 @@ namespace Engine {
                 return;
             }
             // Copy the data:
-            add_data(componentData[index], copyTo);
+            add_data(copyTo, componentData[index]);
         }
 
         // Remove data from the component array:
@@ -86,21 +103,17 @@ namespace Engine {
         }
 
         // Replace data in the component array:
-        void replace_data(T data, unsigned int entityID) {
+        void replace_data(unsigned int entityID, T data) {
             // Find the index of data:
             unsigned int index = data_from_entityID(entityID);
             if (index == (MAX_ENTITIES + 1)) {
-                // No data for the entity here, just leave:
+                // Print a warning:
+                std::cerr << "Warning: Entity " << entityID << " not found!" << std::endl;
                 return;
             }
 
             // Replace the data at the index:
             componentData[index] = data;
-        }
-
-        // Get pointer to component array:
-        std::array<T, MAX_ENTITIES> *get_componentData() {
-            return &componentData;
         }
 
         // Get entity ID for data index:
@@ -112,13 +125,28 @@ namespace Engine {
         unsigned int data_from_entityID(unsigned int entityID) {
             // Find the index of data:
             unsigned int index = MAX_ENTITIES + 1;
-            for (int i = 0; i < num_entries; i++) {
+            for (unsigned int i = 0; i < num_entries; i++) {
                 if (entityIDs[i] == entityID) {
                     index = i;
                     break;
                 }
             }
             return index;
+        }
+
+        // Remove the entry for an Entity from the array:
+        virtual void remove_entity(unsigned int entityID) override {
+            remove_data(entityID);
+        }
+
+        // Print out the state of the component array for debugging:
+        virtual void print_state() {
+            std::cout << "Number of entries: " << num_entries << std::endl;
+            std::cout << "Entities:" << std::endl;
+            for (int i = 0; i < num_entries; i++) {
+                std::cout << entityIDs[i] << "\t";
+            }
+            std::cout << std::endl;
         }
 
         private:

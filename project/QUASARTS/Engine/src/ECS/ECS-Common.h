@@ -1,8 +1,11 @@
 #pragma once
 
+// Library includes:
+#include <cstdint>
+
 // Component includes:
-//#include "ECS/Component/TransformComponent.h"
-//#include "ECS/Component/MeshComponent.h"
+#include "ECS/Component/TransformComponent.h"
+#include "ECS/Component/MeshComponent.h"
 
 namespace Engine {
     // Class declarations for the whole ECS:
@@ -11,11 +14,7 @@ namespace Engine {
     class QS_API System;
     class QS_API ECSManager;
 
-    /* Maximum number of component types allowed. Note that if this changes to a
-     * higher value, the type within the component mask will need to be changed.
-     * Since it's currently a long long, there isn't anywhere to go from there.
-     * It will have to be changed to an array like the entity ID mask. Then the
-     * function that compares component signatures will have to be changed. */
+    // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
 
     // Maximum number of entities allowed:
@@ -25,12 +24,9 @@ namespace Engine {
     #define COMPONENT_TRANSFORM 0
     #define COMPONENT_MESH 1
 
-    #define COMPONENT_TYPES     TransformComponent, \
-                                MeshComponent
-
     // Bit field structure for component types:
     struct quasarts_component_mask {
-        unsigned long long mask : MAX_COMPONENT_TYPES;
+        uint64_t mask : MAX_COMPONENT_TYPES;
     };
 
     // "Bit field" (in this case an array) structure for entity IDs:
