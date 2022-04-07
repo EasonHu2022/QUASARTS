@@ -20,6 +20,10 @@ project "Engine"
 		"../ThirdParty/glm/glm/*.inl",
 		"../ThirdParty/glm/glm/*/*.hpp",
 		"../ThirdParty/glm/glm/*/*.inl",
+		"../ThirdParty/GLAD/**.c",
+		"../ThirdParty/GLAD/**.h",
+		"../ThirdParty/lua/**.c",
+		"../ThirdParty/lua/**.h"
 	}
 	
 	links

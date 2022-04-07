@@ -194,7 +194,7 @@ static int pmain(lua_State* L)
  }
  return 0;
 }
-
+/* Comment out the main function to avoid conflicts.
 int main(int argc, char* argv[])
 {
  lua_State* L;
@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
  lua_close(L);
  return EXIT_SUCCESS;
 }
-
+*/
 /*
 ** print bytecodes
 */
