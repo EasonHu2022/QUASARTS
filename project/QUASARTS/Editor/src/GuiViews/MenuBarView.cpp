@@ -285,6 +285,7 @@ void MenuBarView::newScript() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
 
+
             new_script = false;
             show_window = true;
         }
