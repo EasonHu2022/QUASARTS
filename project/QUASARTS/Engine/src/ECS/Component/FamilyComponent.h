@@ -6,6 +6,6 @@
 namespace Engine {
     struct FamilyComponent {
         unsigned int parent;
-        quasarts_entity_ID_mask children;
+        //quasarts_entity_ID_mask children;
     };
 }

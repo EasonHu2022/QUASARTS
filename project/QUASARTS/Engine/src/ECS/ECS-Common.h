@@ -6,7 +6,7 @@
 // Component includes:
 #include "ECS/Component/TransformComponent.h"
 #include "ECS/Component/MeshComponent.h"
-#include "ECS/Component/FamilyComponent.h"
+//#include "ECS/Component/FamilyComponent.h"
 
 namespace Engine {
     // Class declarations for the whole ECS:

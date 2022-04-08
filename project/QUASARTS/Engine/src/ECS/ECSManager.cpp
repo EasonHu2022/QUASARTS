@@ -8,11 +8,11 @@ namespace Engine {
         // Add Component arrays:
         ComponentArray<TransformComponent> *array_transform = new ComponentArray<TransformComponent>;
         ComponentArray<MeshComponent> *array_mesh = new ComponentArray<MeshComponent>;
-        ComponentArray<FamilyComponent> *array_family = new ComponentArray<FamilyComponent>;
+        //ComponentArray<FamilyComponent> *array_family = new ComponentArray<FamilyComponent>;
 
         componentArrays.push_back(array_transform);
         componentArrays.push_back(array_mesh);
-        componentArrays.push_back(array_family);
+        //componentArrays.push_back(array_family);
     }
 
     // Destructor:
@@ -95,11 +95,12 @@ namespace Engine {
          * - Component masks for each Entity.
          * - Data for Components - Component arrays.
          * - Entity ID matches for Component array elements. */
+        return true;
     }
 
     // Load a scene from file:
     bool ECSManager::load_scene(char *filename) {
-
+        return true;
     }
 
     // Print Entity information for debugging purposes:
