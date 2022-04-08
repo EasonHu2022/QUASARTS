@@ -88,6 +88,11 @@ void MenuBarView::on_gui()
             ImGui::MenuItem("Add Script", NULL, &new_script);
             if (ImGui::MenuItem("Delete Script")) {
 
+                Engine::ScriptsSys::Instance()->deleteScript();
+            }
+            if (ImGui::MenuItem("Update Script(temp)")) {
+
+                Engine::ScriptsSys::Instance()->updateScript();
             }
             if (ImGui::MenuItem("Add Attribute")) {
 
@@ -279,13 +284,14 @@ void MenuBarView::newScript() {
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
     ImGui::PopItemWidth();
-
+    
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
 
-
+            //create and add maybe?
+            Engine::ScriptsSys::Instance()->createScript(buf1);
             new_script = false;
             show_window = true;
         }
