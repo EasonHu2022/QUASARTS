@@ -35,6 +35,9 @@ void QEditor::on_update()
 
 	//for test
 	test_in_update();
+
+	// Handle relevant input.
+	handle_input();
 }
 
 void QEditor::on_gui()
@@ -86,4 +89,17 @@ void QEditor::test_in_update()
 	{
 		QDEBUG("Get Key from Editor : W");
 	}
+}
+
+
+void QEditor::handle_input()
+{
+
+	// N + L/R Control --> new scene
+	if ( Engine::Input::get_key_pressed(Q_KEY_N) &&
+		(Engine::Input::get_key(Q_KEY_LEFT_CONTROL) || Engine::Input::get_key(Q_KEY_RIGHT_CONTROL)) )
+	{
+		getGuiView<MenuBarView>()->new_scene = true;
+	}
+
 }

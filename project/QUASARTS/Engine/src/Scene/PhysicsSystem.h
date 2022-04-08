@@ -8,7 +8,7 @@
 
 namespace Engine {
 
-#define Q_COLLISION_EPSILON			1e-3
+#define Q_COLLISION_EPSILON			1e-3	// If using unit length = 1 metre, epsilon = 1e-3 is equivalent to 1 millimetre of collision tolerance.
 #define Q_RAYCAST_RAY_MIN_LENGTH	1e6
 
 	class QS_API PhysicsSystem : public IManager
@@ -41,7 +41,7 @@ namespace Engine {
 		btCollisionDispatcher* dispatcher;
 		btBroadphaseInterface* overlappingPairCache;
 		btCollisionWorld* collisionWorld;
-		// Store collision shapes.
+		// Store collision shapes:
 		// Re-use collision shapes as often as possible, release them in PhysicsManager::release().
 		btAlignedObjectArray<btSphereShape*> collisionSpheres;
 
