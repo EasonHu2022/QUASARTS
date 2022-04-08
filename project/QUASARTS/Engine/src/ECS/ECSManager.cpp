@@ -88,6 +88,21 @@ namespace Engine {
         }
     }
 
+    // Get a pointer to an Entity:
+    Entity *ECSManager::get_entity(unsigned int entityID) {
+        for (int i = 0; i < entity_ID_match.size(); i++) {
+            if (entity_ID_match[i] == entityID) {
+                return &entities[i];
+            }
+        }
+        return NULL;
+    }
+
+    // Get the list of Entity IDs:
+    quasarts_entity_ID_mask *ECSManager::get_entityIDs() {
+        return &entity_IDs;
+    }
+
     // Save the whole scene to file:
     bool ECSManager::save_scene(char *filename) {
         /* I'm thinking that the file could contain:

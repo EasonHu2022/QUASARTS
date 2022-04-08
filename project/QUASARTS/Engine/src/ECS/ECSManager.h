@@ -156,6 +156,12 @@ namespace Engine {
             compArray->remove_data(entityID);
         }
 
+        // Get a pointer to an Entity:
+        Entity *get_entity(unsigned int EntityID);
+
+        // Get the list of Entity IDs:
+        quasarts_entity_ID_mask *get_entityIDs();
+
         // Save the whole scene to file:
         bool save_scene(char *filename);
 

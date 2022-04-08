@@ -159,4 +159,7 @@ namespace Engine {
         // Number of elements currently in the array:
         unsigned int num_entries;
     };
+
+    template class QS_API ComponentArray<TransformComponent>;
+    template class QS_API ComponentArray<MeshComponent>;
 }

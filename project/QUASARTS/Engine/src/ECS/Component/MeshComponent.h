@@ -1,8 +1,10 @@
 #pragma once
 
+// Library includes:
+#include <string>
+
 namespace Engine {
     struct MeshComponent {
-        float vertices;
-        float indices;
+        std::string name;
     };
 }
