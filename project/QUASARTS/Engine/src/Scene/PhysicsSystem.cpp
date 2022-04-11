@@ -73,7 +73,7 @@ namespace Engine {
 			delete obj;
 		}
 
-		// Delete collision spheres (should no longer be dependended on).
+		// Delete collision spheres (no longer referenced by collision objects).
 		for (int i = 0; i < collisionSpheres.size(); ++i)
 		{
 			btSphereShape* sphere = collisionSpheres[i];
