@@ -44,7 +44,7 @@ namespace Engine {
         // Get a data element from the array:
         T get_data(unsigned int entityID) {
             unsigned int index = data_from_entityID(entityID);
-            if (index == (MAX_ENTITIES + 1)) {
+            if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
                 std::cerr << "Warning: Entity " << entityID << " not found!" << std::endl;
                 T result{};
@@ -56,7 +56,7 @@ namespace Engine {
         // Add data (zero initialized) to the component array:
         void add_data(unsigned int entityID) {
             unsigned int index = data_from_entityID(entityID);
-            if (index != (MAX_ENTITIES + 1)) { return; }
+            if (index != TOO_MANY_ENTITIES) { return; }
             T data{};
             componentData[num_entries] = data;
             entityIDs[num_entries] = entityID;
@@ -66,7 +66,7 @@ namespace Engine {
         // Add data to the component array:
         void add_data(unsigned int entityID, T data) {
             unsigned int index = data_from_entityID(entityID);
-            if (index != (MAX_ENTITIES + 1)) {
+            if (index != TOO_MANY_ENTITIES) {
                 // Replace the data instead of adding it:
                 replace_data(entityID, data);
                 return;
@@ -80,7 +80,7 @@ namespace Engine {
         void copy_data(unsigned int copyFrom, unsigned int copyTo) {
             // Check that the copyFrom entity exists:
             unsigned int index = data_from_entityID(copyFrom);
-            if (index != (MAX_ENTITIES + 1)) {
+            if (index != TOO_MANY_ENTITIES) {
                 // If the copyFrom entity doesn't exist, add uninitialized data:
                 add_data(copyTo);
                 return;
@@ -93,7 +93,7 @@ namespace Engine {
         void remove_data(unsigned int entityID) {
             // Find the index of data:
             unsigned int index = data_from_entityID(entityID);
-            if (index == (MAX_ENTITIES + 1)) {
+            if (index == TOO_MANY_ENTITIES) {
                 // No data for the entity here, just leave:
                 return;
             }
@@ -110,7 +110,7 @@ namespace Engine {
         void replace_data(unsigned int entityID, T data) {
             // Find the index of data:
             unsigned int index = data_from_entityID(entityID);
-            if (index == (MAX_ENTITIES + 1)) {
+            if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
                 std::cerr << "Warning: Entity " << entityID << " not found!" << std::endl;
                 return;
@@ -128,7 +128,7 @@ namespace Engine {
         // Get data index from entity ID:
         unsigned int data_from_entityID(unsigned int entityID) {
             // Find the index of data:
-            unsigned int index = MAX_ENTITIES + 1;
+            unsigned int index = TOO_MANY_ENTITIES;
             for (unsigned int i = 0; i < num_entries; i++) {
                 if (entityIDs[i] == entityID) {
                     index = i;
@@ -164,6 +164,7 @@ namespace Engine {
         unsigned int num_entries;
     };
 
+    // Declarations of type-specific Components, for the DLL:
     template class QS_API ComponentArray<TransformComponent>;
     template class QS_API ComponentArray<MeshComponent>;
 }

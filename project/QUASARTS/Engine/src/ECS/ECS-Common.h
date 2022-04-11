@@ -12,6 +12,7 @@ namespace Engine {
 
     // Maximum number of entities allowed:
     #define MAX_ENTITIES 1024
+    #define TOO_MANY_ENTITIES 1025
 
     // Component types:
     #define COMPONENT_TRANSFORM 0

@@ -11,11 +11,6 @@ namespace Engine {
 
         componentArrays.push_back(array_transform);
         componentArrays.push_back(array_mesh);
-
-        // Add Systems:
-        sys_example = new ExampleSystem();
-
-        systems.push_back(sys_example);
     }
 
     // Destructor:
@@ -36,7 +31,7 @@ namespace Engine {
             }
         }
         // If we get here then there are no free IDs - return an invalid value:
-        return MAX_ENTITIES + 1;
+        return TOO_MANY_ENTITIES;
     }
 
     // Create a new Entity and add it to the vector:
@@ -44,7 +39,7 @@ namespace Engine {
         // Get a new entity ID:
         unsigned int entityID = get_free_entity_ID();
         // Check that the new ID is valid:
-        if (entityID == (MAX_ENTITIES + 1)) {
+        if (entityID == TOO_MANY_ENTITIES) {
             std::cerr << "Warning: unable to create new entity. Maximum number of entities reached." << std::endl;
             return entityID;
         }
@@ -61,27 +56,20 @@ namespace Engine {
 
     // Destroy an Entity:
     void ECSManager::destroy_entity(unsigned int entityID) {
-        /* Tasks:
-         * Free up the Entity ID.
-         * Remove all Component data.
-         * Rearrange the Component data so that it's packed.
-         * Change the entity mask in all Systems.
-         * Remove the Entity from the vector. */
-
-        // 1. Free up the Entity ID:
+        // Free up the Entity ID:
         entity_IDs.mask[entityID] = 0;
 
-        // 2, 3. Remove all Component data and rearrange:
+        // Remove all Component data and rearrange:
         for (int i = 0; i < componentArrays.size(); i++) {
             componentArrays[i]->remove_entity(entityID);
         }
 
-        // 4. Change the entity mask in all Systems:
+        // Change the entity mask in all Systems:
         for (int i = 0; i < systems.size(); i++) {
             systems[i]->clear_entity(entityID);
         }
 
-        // 5. Remove the Entity from the vector:
+        // Remove the Entity from the vector:
         for (int i = 0; i < entity_ID_match.size(); i++) {
             if (entity_ID_match[i] == entityID) {
                 entities.erase(entities.begin() + i);
