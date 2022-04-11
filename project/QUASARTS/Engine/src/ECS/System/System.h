@@ -15,7 +15,7 @@ namespace Engine {
         ~System();
 
         // Update function (empty - to be redefined in specific Systems):
-        virtual void update();
+        virtual void update() = 0;
 
         // Function to clear the component mask:
         void clear_component_mask() {
