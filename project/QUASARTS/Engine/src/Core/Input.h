@@ -39,6 +39,13 @@ namespace Engine
 		static bool get_key_released(int key);
 
 		/// <summary>
+		/// Return true if the combination of keys is held in current frame, and all other keys are not held.
+		/// </summary>
+		/// <param name="key">keycode</param>
+		/// <returns></returns>
+		static bool get_key_combination(const std::vector<int>& keys);
+
+		/// <summary>
 		/// return true if the mouse is held
 		/// </summary>
 		/// <param name="mouse"></param>
@@ -82,6 +89,8 @@ namespace Engine
 		static bool keyReleased[MAX_KEYS];
 
 		static bool keyHeld[MAX_KEYS];
+
+		static int numKeysHeld;
 
 
 		static bool mouseReleased[MAX_BUTTONS];

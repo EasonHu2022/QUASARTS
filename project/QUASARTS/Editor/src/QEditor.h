@@ -39,7 +39,7 @@ public:
 private:
 	std::unordered_map<size_t, std::shared_ptr<GuiView>> guiViews;
 
-	void handle_input();
+	void poll_input();
 
 };
 template<class T>

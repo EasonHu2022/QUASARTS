@@ -37,7 +37,7 @@ void QEditor::on_update()
 	test_in_update();
 
 	// Handle relevant input.
-	handle_input();
+	poll_input();
 }
 
 void QEditor::on_gui()
@@ -92,12 +92,10 @@ void QEditor::test_in_update()
 }
 
 
-void QEditor::handle_input()
+void QEditor::poll_input()
 {
-
 	// N + L/R Control --> new scene
-	if ( Engine::Input::get_key_pressed(Q_KEY_N) &&
-		(Engine::Input::get_key(Q_KEY_LEFT_CONTROL) || Engine::Input::get_key(Q_KEY_RIGHT_CONTROL)) )
+	if ( Engine::Input::get_key_combination( { Q_KEY_N, Q_KEY_LEFT_CONTROL } ) )
 	{
 		getGuiView<MenuBarView>()->new_scene = true;
 	}
