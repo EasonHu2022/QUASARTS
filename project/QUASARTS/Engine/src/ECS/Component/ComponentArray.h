@@ -6,6 +6,10 @@
 // Local includes:
 #include "ECS/ECS-Common.h"
 
+// Component includes:
+#include "ECS/Component/TransformComponent.h"
+#include "ECS/Component/MeshComponent.h"
+
 /* Methods:
  * T get_data(unsigned int entityID)
  * void add_data(unsigned int entityID)

@@ -8,11 +8,14 @@ namespace Engine {
         // Add Component arrays:
         ComponentArray<TransformComponent> *array_transform = new ComponentArray<TransformComponent>;
         ComponentArray<MeshComponent> *array_mesh = new ComponentArray<MeshComponent>;
-        //ComponentArray<FamilyComponent> *array_family = new ComponentArray<FamilyComponent>;
 
         componentArrays.push_back(array_transform);
         componentArrays.push_back(array_mesh);
-        //componentArrays.push_back(array_family);
+
+        // Add Systems:
+        sys_example = new ExampleSystem();
+
+        systems.push_back(sys_example);
     }
 
     // Destructor:

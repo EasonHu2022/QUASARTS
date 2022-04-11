@@ -5,7 +5,9 @@
 
 namespace Engine {
     struct QS_API TransformComponent {
-        float position;
+        float x;
+        float y;
+        float z;
         float rotation;
         float scale;
     };

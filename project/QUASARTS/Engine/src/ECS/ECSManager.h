@@ -11,6 +11,9 @@
 #include "ECS/Component/ComponentArray.h"
 #include "ECS/System/System.h"
 
+// System includes:
+#include "ECS/System/ExampleSystem.h"
+
 namespace Engine {
     class QS_API ECSManager {
         public:
@@ -184,6 +187,7 @@ namespace Engine {
 
         // Systems:
         std::vector<System *> systems;  // For iterating over Systems easily.
+        ExampleSystem *sys_example;
 
         // Bit mask (array) of entity IDs that are in use (0 = free, 1 = used):
         quasarts_entity_ID_mask entity_IDs;

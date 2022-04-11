@@ -15,7 +15,7 @@ namespace Engine {
         ~System();
 
         // Update function (empty - to be redefined in specific Systems):
-        void update();
+        virtual void update();
 
         // Function to clear the component mask:
         void clear_component_mask() {
@@ -58,6 +58,21 @@ namespace Engine {
             } else {
                 entity_mask.mask[entityID] = 0;
             }
+        }
+
+        // Get the manager pointer:
+        ECSManager *get_manager() {
+            return manager;
+        }
+
+        // Get the component mask:
+        quasarts_component_mask *get_component_mask() {
+            return &component_mask;
+        }
+
+        // Get the entity mask:
+        quasarts_entity_ID_mask *get_entity_ID_mask() {
+            return &entity_mask;
         }
 
         private:

@@ -6,10 +6,6 @@
 // Local includes:
 #include "Core/Core.h"
 
-// Component includes:
-#include "ECS/Component/TransformComponent.h"
-#include "ECS/Component/MeshComponent.h"
-
 namespace Engine {
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
@@ -21,6 +17,9 @@ namespace Engine {
     #define COMPONENT_TRANSFORM 0
     #define COMPONENT_MESH 1
     #define COMPONENT_FAMILY 2
+
+    // Systems:
+    #define SYSTEM_EXAMPLE 0
 
     // Bit field structure for component types:
     struct quasarts_component_mask {
