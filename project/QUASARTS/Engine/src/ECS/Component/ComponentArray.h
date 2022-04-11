@@ -4,7 +4,7 @@
 #include <array>
 
 // Local includes:
-#include "Core/Core.h"
+#include "ECS/ECS-Common.h"
 
 /* Methods:
  * T get_data(unsigned int entityID)

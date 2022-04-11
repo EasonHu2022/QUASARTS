@@ -1,7 +1,6 @@
 #pragma once
 
 // Local includes:
-#include "Core/Core.h"
 #include "ECS/ECS-Common.h"
 
 namespace Engine {

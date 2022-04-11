@@ -33,7 +33,6 @@
 */
 #include "Core/EntityWorld.h"
 #include "ECS/ECSManager.h"
-//#include "ECS/ECS-Test-Function.h"
 
 
 /*

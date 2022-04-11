@@ -3,8 +3,11 @@
 // Library includes:
 #include <string>
 
+// Local includes:
+#include "ECS/ECS-Common.h"
+
 namespace Engine {
-    struct MeshComponent {
+    struct QS_API MeshComponent {
         std::string name;
     };
 }

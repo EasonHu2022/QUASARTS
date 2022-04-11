@@ -3,17 +3,14 @@
 // Library includes:
 #include <cstdint>
 
+// Local includes:
+#include "Core/Core.h"
+
 // Component includes:
 #include "ECS/Component/TransformComponent.h"
 #include "ECS/Component/MeshComponent.h"
 
 namespace Engine {
-    // Class declarations for the whole ECS:
-    class QS_API Entity;
-    class QS_API ParentComponentArray;
-    class QS_API System;
-    class QS_API ECSManager;
-
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
 
