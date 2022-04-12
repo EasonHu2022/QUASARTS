@@ -4,18 +4,34 @@
 #include <vector>
 
 // Local includes:
+#include "Core/IManager.h"
 #include "ECS/ECS-Common.h"
+
+/* Functions:
+ * virtual void update()
+ * void clear_component_mask()
+ * clear_entitity_mask()
+ * clear_entity(unsigned int entityID)
+ * add_component_type(unsigned int component_type)
+ * void remove_component_type(unsigned int component_type)
+ * void test_entity(quasarts_component_mask mask, unsigned int entityID)
+ * ECSManager *get_manager()
+ * void set_manager(ECSManager *manager_ptr)
+ * quasarts_component_mask *get_component_mask()
+ * quasarts_entity_ID_mask *get_entity_ID_mask() */
+
+/* Members:
+ * ECSManager *manager
+ * quasarts_component_mask component_mask
+ * quasarts_entity_ID_mask entity_mask */
 
 namespace Engine {
     class QS_API ECSManager;
-    class QS_API System {
+    class QS_API System : public IManager {
         public:
         // Constructor and destructor:
-        System();
+        System() : manager(nullptr), component_mask({0}), entity_mask({0}) {}
         ~System();
-
-        // Update function (empty - to be redefined in specific Systems):
-        virtual void update() = 0;
 
         // Function to clear the component mask:
         void clear_component_mask() {
@@ -63,6 +79,11 @@ namespace Engine {
         // Get the manager pointer:
         ECSManager *get_manager() {
             return manager;
+        }
+
+        // Set the manager pointer:
+        void set_manager(ECSManager *manager_ptr) {
+            manager = manager_ptr;
         }
 
         // Get the component mask:

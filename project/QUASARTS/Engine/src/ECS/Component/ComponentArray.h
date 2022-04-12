@@ -10,7 +10,7 @@
 #include "ECS/Component/TransformComponent.h"
 #include "ECS/Component/MeshComponent.h"
 
-/* Methods:
+/* Functions:
  * T get_data(unsigned int entityID)
  * void add_data(unsigned int entityID)
  * void add_data(unsigned int entityID, T data)
@@ -19,6 +19,11 @@
  * void replace_data(unsigned int entityID, T data)
  * unsigned int entityID_from_data(unsigned int index)
  * unsigned int data_from_entityID(unsigned int entityID) */
+
+/* Members:
+ * std::array<T, MAX_ENTITIES> componentData
+ * std::array<unsigned int, MAX_ENTITIES> entityIDs
+ * unsigned int num_entries */
 
 namespace Engine {
     class QS_API ParentComponentArray {

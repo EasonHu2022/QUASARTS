@@ -7,6 +7,15 @@
 
 namespace Engine {
     class QS_API ExampleSystem : public System {
+        private:
+        // Singleton:
+        static ExampleSystem *instance;
+        ExampleSystem() {}
+
+        public:
+        static ExampleSystem *Instance();
+        ~ExampleSystem();
+
         public:
         // Constructor and destructor:
         ExampleSystem() {
@@ -17,8 +26,16 @@ namespace Engine {
         }
         ~ExampleSystem();
 
+        void init() {
+
+        }
+
+        int start() {
+            return 0;
+        }
+
         // Update function:
-        virtual void update() override {
+        void update() {
             // Get the manager:
             ECSManager *active_manager = get_manager();
 
@@ -42,6 +59,14 @@ namespace Engine {
                         (i, COMPONENT_TRANSFORM, transform);
                 }
             }
+        }
+
+        int stop() {
+            return 0;
+        }
+
+        void release() {
+
         }
     };
 }

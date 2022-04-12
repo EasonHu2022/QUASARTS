@@ -1,24 +1,34 @@
 #include "ECS/ECSManager.h"
 
 namespace Engine {
-    // Constructor:
-    ECSManager::ECSManager() {
-        entity_IDs = {0};
+    // Singleton:
+	ECSManager *ECSManager::instance = nullptr;
 
-        // Add Component arrays:
-        ComponentArray<TransformComponent> *array_transform = new ComponentArray<TransformComponent>;
-        ComponentArray<MeshComponent> *array_mesh = new ComponentArray<MeshComponent>;
+	// Create the instance of the ECSManager:
+	ECSManager *ECSManager::Instance() {
+		if (nullptr == instance)
+			instance = new ECSManager();
+		return instance;
+	}
 
-        componentArrays.push_back(array_transform);
-        componentArrays.push_back(array_mesh);
+    void ECSManager::init() {
+
     }
 
-    // Destructor:
-    ECSManager::~ECSManager() {
-        // Destroy Component arrays:
-        for (int i = 0; i < componentArrays.size(); i++) {
-            delete componentArrays[i];
-        }
+    int ECSManager::start() {
+        return 0;
+    }
+
+    void ECSManager::update() {
+
+    }
+
+    int ECSManager::stop() {
+        return 0;
+    }
+
+    void ECSManager::release() {
+
     }
 
     // Get a new Entity ID (the first free one):
@@ -26,7 +36,7 @@ namespace Engine {
         // Returns the position of the first free Entity.
         // DOES NOT write into the array.
         for (unsigned int i = 0; i < MAX_ENTITIES; i++) {
-            if (entity_IDs.mask[i] == 0) {
+            if (scene->entity_IDs.mask[i] == 0) {
                 return i;
             }
         }
@@ -48,20 +58,20 @@ namespace Engine {
         Entity new_entity = Entity(entityID);
 
         // Update the manager entries:
-        entities.push_back(new_entity);
-        entity_ID_match.push_back(entityID);
-        entity_IDs.mask[entityID] = 1;
+        scene->entities.push_back(new_entity);
+        scene->entity_ID_match.push_back(entityID);
+        scene->entity_IDs.mask[entityID] = 1;
         return entityID;
     }
 
     // Destroy an Entity:
     void ECSManager::destroy_entity(unsigned int entityID) {
         // Free up the Entity ID:
-        entity_IDs.mask[entityID] = 0;
+        scene->entity_IDs.mask[entityID] = 0;
 
         // Remove all Component data and rearrange:
-        for (int i = 0; i < componentArrays.size(); i++) {
-            componentArrays[i]->remove_entity(entityID);
+        for (int i = 0; i < scene->componentArrays.size(); i++) {
+            scene->componentArrays[i]->remove_entity(entityID);
         }
 
         // Change the entity mask in all Systems:
@@ -70,10 +80,10 @@ namespace Engine {
         }
 
         // Remove the Entity from the vector:
-        for (int i = 0; i < entity_ID_match.size(); i++) {
-            if (entity_ID_match[i] == entityID) {
-                entities.erase(entities.begin() + i);
-                entity_ID_match.erase(entity_ID_match.begin() + i);
+        for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+            if (scene->entity_ID_match[i] == entityID) {
+                scene->entities.erase(scene->entities.begin() + i);
+                scene->entity_ID_match.erase(scene->entity_ID_match.begin() + i);
                 break;
             }
         }
@@ -81,9 +91,9 @@ namespace Engine {
 
     // Get a pointer to an Entity:
     Entity *ECSManager::get_entity(unsigned int entityID) {
-        for (int i = 0; i < entity_ID_match.size(); i++) {
-            if (entity_ID_match[i] == entityID) {
-                return &entities[i];
+        for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+            if (scene->entity_ID_match[i] == entityID) {
+                return &(scene->entities[i]);
             }
         }
         return NULL;
@@ -91,16 +101,26 @@ namespace Engine {
 
     // Get the list of Entity IDs:
     quasarts_entity_ID_mask *ECSManager::get_entityIDs() {
-        return &entity_IDs;
+        return &(scene->entity_IDs);
+    }
+
+    // Register a System with the Manager:
+    void ECSManager::register_system(unsigned int systemType, System *system) {
+        systems[systemType] = system;
+    }
+
+    // Deregister a System with the Manager:
+    void ECSManager::deregister_system(unsigned int systemType) {
+        systems.erase(systemType);
+    }
+
+    // Set the pointer to the current scene:
+    void ECSManager::set_scene(Scene *scene_ptr) {
+        scene = scene_ptr;
     }
 
     // Save the whole scene to file:
     bool ECSManager::save_scene(char *filename) {
-        /* I'm thinking that the file could contain:
-         * - Entity ID mask detailing all Entity IDs in use.
-         * - Component masks for each Entity.
-         * - Data for Components - Component arrays.
-         * - Entity ID matches for Component array elements. */
         return true;
     }
 
@@ -111,8 +131,8 @@ namespace Engine {
 
     // Print Entity information for debugging purposes:
     void ECSManager::print_entities() {
-        for (int i = 0; i < entities.size(); i++) {
-            Entity entity = entities[i];
+        for (int i = 0; i < scene->entities.size(); i++) {
+            Entity entity = scene->entities[i];
             std::cout << "Entity ID: " << entity.get_entityID() << std::endl;
             std::cout << "Component Mask:" << std::endl;
             quasarts_component_mask mask;
@@ -128,6 +148,6 @@ namespace Engine {
 
     // Print out Component array information:
     void ECSManager::print_componentArray_info(unsigned int componentType) {
-        componentArrays[componentType]->print_state();
+        scene->componentArrays[componentType]->print_state();
     }
 }

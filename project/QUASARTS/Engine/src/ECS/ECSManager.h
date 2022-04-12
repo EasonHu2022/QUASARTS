@@ -2,21 +2,35 @@
 
 // Library includes:
 #include <vector>
+#include <map>
 #include <iostream>
 
 // Local includes:
 #include "Core/Core.h"
+#include "Core/IManager.h"
 #include "ECS/ECS-Common.h"
 #include "ECS/Entity/Entity.h"
 #include "ECS/Component/ComponentArray.h"
 #include "ECS/System/System.h"
+#include "ECS/Scene.h"
 
 namespace Engine {
-    class QS_API ECSManager {
+    class QS_API ECSManager : public IManager {
+        private:
+        // Singleton:
+        static ECSManager *instance;
+        ECSManager() : scene(nullptr), systems() {}
+
         public:
-        // Constructor and destructor:
-        ECSManager();
+        static ECSManager *Instance();
         ~ECSManager();
+
+        // Functions inherited from IManager:
+        void init();
+		int start();
+		void update();
+		int stop();
+		void release();
 
         // Get a new Entity ID (the first free one):
         unsigned int get_free_entity_ID();
@@ -162,6 +176,15 @@ namespace Engine {
         // Get the list of Entity IDs:
         quasarts_entity_ID_mask *get_entityIDs();
 
+        // Register a System with the Manager:
+        void register_system(unsigned int systemType, System *system);
+
+        // Deregister a System with the Manager:
+        void deregister_system(unsigned int systemType);
+
+        // Set the pointer to the current scene:
+        void set_scene(Scene *scene_ptr);
+
         // Save the whole scene to file:
         bool save_scene(char *filename);
 
@@ -175,17 +198,10 @@ namespace Engine {
         void print_componentArray_info(unsigned int componentType);
 
         private:
-        // Entities:
-        std::vector<Entity> entities;
-        std::vector<unsigned int> entity_ID_match;
-
-        // Component arrays:
-        std::vector<ParentComponentArray *> componentArrays;
+        // Currently loaded scene:
+        Scene *scene;
 
         // Systems:
-        std::vector<System *> systems;  // For iterating over Systems easily.
-
-        // Bit mask (array) of entity IDs that are in use (0 = free, 1 = used):
-        quasarts_entity_ID_mask entity_IDs;
+        std::map<unsigned int, System *> systems;  // For iterating over Systems easily.
     };
 }
