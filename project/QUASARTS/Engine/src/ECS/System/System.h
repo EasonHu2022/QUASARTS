@@ -31,7 +31,7 @@ namespace Engine {
         public:
         // Constructor and destructor:
         System() : manager(nullptr), component_mask({0}), entity_mask({0}) {}
-        ~System();
+        ~System() {}
 
         // Function to clear the component mask:
         void clear_component_mask() {
