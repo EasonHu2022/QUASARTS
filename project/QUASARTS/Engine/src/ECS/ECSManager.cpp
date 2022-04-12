@@ -65,6 +65,12 @@ namespace Engine {
         return entityID;
     }
 
+    // Change the name of an Entity:
+    void ECSManager::set_entityName(unsigned int entityID, std::string name) {
+        Entity *entity = get_entity(entityID);
+        entity->set_entityName(name);
+    }
+
     // Destroy an Entity:
     void ECSManager::destroy_entity(unsigned int entityID) {
         // Free up the Entity ID:

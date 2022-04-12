@@ -38,6 +38,9 @@ namespace Engine {
         // Create a new Entity and add it to the vector:
         unsigned int create_entity();
 
+        // Change the name of an Entity:
+        void set_entityName(unsigned int entityID, std::string name);
+
         // Destroy an Entity:
         void destroy_entity(unsigned int entityID);
 
