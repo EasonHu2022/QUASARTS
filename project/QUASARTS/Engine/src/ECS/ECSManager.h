@@ -14,6 +14,9 @@
 #include "ECS/System/System.h"
 #include "ECS/Scene.h"
 
+// Systems:
+#include "ECS/System/ExampleSystem.h"
+
 namespace Engine {
     class QS_API ECSManager : public IManager {
         private:
