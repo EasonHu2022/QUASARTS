@@ -10,20 +10,15 @@ namespace Engine {
         private:
         // Singleton:
         static ExampleSystem *instance;
-        ExampleSystem() {}
-
-        public:
-        static ExampleSystem *Instance();
-        ~ExampleSystem();
-
-        public:
-        // Constructor and destructor:
         ExampleSystem() {
             // Set the component mask:
             quasarts_component_mask *mask = get_component_mask();
             mask->mask = 0;
             mask->mask += (uint64_t)1 << COMPONENT_TRANSFORM;
         }
+
+        public:
+        static ExampleSystem *Instance();
         ~ExampleSystem();
 
         void init() {
