@@ -46,9 +46,9 @@ namespace Engine {
             // Update the component mask of the Entity:
             int matched = 0;
             unsigned int entity_index;
-            for (int i = 0; i < entity_ID_match.size(); i++) {
-                if (entity_ID_match[i] == entityID) {
-                    entities[i].add_component_type(componentType);
+            for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+                if (scene->entity_ID_match[i] == entityID) {
+                    scene->entities[i].add_component_type(componentType);
                     entity_index = i;
                     matched = 1;
                     break;
@@ -61,10 +61,10 @@ namespace Engine {
             }
             // Update each System:
             for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(entities[entity_index].get_componentMask(), entityID);
+                systems[i]->test_entity(scene->entities[entity_index].get_componentMask(), entityID);
             }
             // Add the data to the relevant component array:
-            ComponentArray<T> *compArray = (ComponentArray<T> *)componentArrays[componentType];
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->add_data(entityID, data);
         }
 
@@ -74,9 +74,9 @@ namespace Engine {
             // Update the component mask of the Entity:
             int matched = 0;
             unsigned int entity_index;
-            for (int i = 0; i < entity_ID_match.size(); i++) {
-                if (entity_ID_match[i] == entityID) {
-                    entities[i].add_component_type(componentType);
+            for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+                if (scene->entity_ID_match[i] == entityID) {
+                    scene->entities[i].add_component_type(componentType);
                     entity_index = i;
                     matched = 1;
                     break;
@@ -89,10 +89,10 @@ namespace Engine {
             }
             // Update each System:
             for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(entities[entity_index].get_componentMask(), entityID);
+                systems[i]->test_entity(scene->entities[entity_index].get_componentMask(), entityID);
             }
             // Add the data to the relevant component array:
-            ComponentArray<T> *compArray = (ComponentArray<T> *)componentArrays[componentType];
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->add_data(entityID);
         }
 
@@ -102,8 +102,8 @@ namespace Engine {
             // Check that the Entity exists:
             int matched = 0;
             unsigned int entity_index;
-            for (int i = 0; i < entity_ID_match.size(); i++) {
-                if (entity_ID_match[i] == entityID) {
+            for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+                if (scene->entity_ID_match[i] == entityID) {
                     entity_index = i;
                     matched = 1;
                     break;
@@ -117,28 +117,28 @@ namespace Engine {
             // Check the Component mask of the Entity:
             quasarts_component_mask mask = {0};
             mask.mask = (uint64_t)1 << componentType;
-            if ((entities[entity_index].get_componentMask().mask & mask.mask) != mask.mask) {
+            if ((scene->entities[entity_index].get_componentMask().mask & mask.mask) != mask.mask) {
                 // Add the data instead of replacing it:
                 create_component<T>(entityID, componentType, data);
                 return;
             }
 
             // If the Component exists for the Entity, replace the data:
-            ComponentArray<T> *compArray = (ComponentArray<T> *)componentArrays[componentType];
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->replace_data(entityID, data);
         }
 
         // Get a Component from the Component array:
         template <typename T>
         T get_component(unsigned int entityID, unsigned int componentType) {
-                ComponentArray<T> *compArray = (ComponentArray<T> *)componentArrays[componentType];
+                ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
                 return compArray->get_data(entityID);
         }
 
         // Copy a component from one Entity to another:
         template <typename T>
         void copy_component(unsigned int copyFrom, unsigned int copyTo, unsigned int componentType) {
-                ComponentArray<T> *compArray = (ComponentArray<T> *)componentArrays[componentType];
+                ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
                 compArray->copy_data(copyFrom, copyTo);
         }
 
@@ -148,9 +148,9 @@ namespace Engine {
             // Update the component mask of the entity:
             int matched = 0;
             unsigned int entity_index;
-            for (int i = 0; i < entity_ID_match.size(); i++) {
-                if (entity_ID_match[i] == entityID) {
-                    entities[i].remove_component_type(componentType);
+            for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+                if (scene->entity_ID_match[i] == entityID) {
+                    scene->entities[i].remove_component_type(componentType);
                     entity_index = i;
                     matched = 1;
                     break;
@@ -163,10 +163,10 @@ namespace Engine {
             }
             // Update each System:
             for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(entities[entity_index].get_componentMask(), entityID);
+                systems[i]->test_entity(scene->entities[entity_index].get_componentMask(), entityID);
             }
             // Remove the data from the relevant component array:
-            ComponentArray<T> *compArray = (ComponentArray<T> *)componentArrays[componentType];
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->remove_data(entityID);
         }
 
