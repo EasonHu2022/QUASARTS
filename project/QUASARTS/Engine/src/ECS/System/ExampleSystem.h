@@ -68,4 +68,6 @@ namespace Engine {
 
         }
     };
+
+    ExampleSystem *ExampleSystem::instance = nullptr;
 }
