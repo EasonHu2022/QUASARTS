@@ -6,8 +6,9 @@ namespace Engine {
 
 	// Create the instance of the ECSManager:
 	ECSManager *ECSManager::Instance() {
-		if (nullptr == instance)
+		if (nullptr == instance) {
 			instance = new ECSManager();
+        }
 		return instance;
 	}
 
