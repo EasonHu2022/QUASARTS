@@ -1,5 +1,8 @@
 #pragma once
 
+// Library includes:
+#include <string>
+
 // Local includes:
 #include "ECS/ECS-Common.h"
 
@@ -25,9 +28,15 @@ namespace Engine {
         // Remove component type:
         void remove_component_type(unsigned int component_type);
 
+        // Set the entity name:
+        void set_entityName(std::string name);
+
         private:
-        // Unique ID number for the entity:
+        // Unique ID number for the Entity:
         unsigned int entityID;
+
+        // Name of the Entity:
+        std::string entityName;
 
         // Binary mask for component types:
         quasarts_component_mask componentMask;

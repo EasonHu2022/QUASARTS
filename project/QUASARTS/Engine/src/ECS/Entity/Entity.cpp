@@ -42,4 +42,9 @@ namespace Engine {
             componentMask.mask -= mask;
         }
     }
+
+    // Set the entity name:
+    void Entity::set_entityName(std::string name) {
+        entityName = name;
+    }
 }
