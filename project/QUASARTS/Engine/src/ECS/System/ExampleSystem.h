@@ -11,6 +11,9 @@ namespace Engine {
         // Singleton:
         static ExampleSystem *instance;
         ExampleSystem() {
+            // Set the instance to null:
+            instance = nullptr;
+            
             // Set the component mask:
             quasarts_component_mask *mask = get_component_mask();
             mask->mask = 0;
