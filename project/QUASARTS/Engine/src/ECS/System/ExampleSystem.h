@@ -18,7 +18,11 @@ namespace Engine {
         }
 
         public:
-        static ExampleSystem *Instance();
+        static ExampleSystem *Instance() {
+            if (nullptr == instance)
+			instance = new ExampleSystem();
+		    return instance;
+        }
         ~ExampleSystem();
 
         void init() {
