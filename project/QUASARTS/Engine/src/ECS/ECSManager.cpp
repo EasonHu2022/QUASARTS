@@ -108,6 +108,7 @@ namespace Engine {
     // Register a System with the Manager:
     void ECSManager::register_system(unsigned int systemType, System *system) {
         systems[systemType] = system;
+        system->set_manager(this);
     }
 
     // Deregister a System with the Manager:
