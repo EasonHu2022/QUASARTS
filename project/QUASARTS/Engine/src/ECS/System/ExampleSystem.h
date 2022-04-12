@@ -7,22 +7,13 @@
 
 namespace Engine {
     class QS_API ExampleSystem : public System {
-        private:
-        // Singleton:
-        static ExampleSystem *instance;
+        public:
+        // Constructor and destructor:
         ExampleSystem() {
             // Set the component mask:
             quasarts_component_mask *mask = get_component_mask();
             mask->mask = 0;
             mask->mask += (uint64_t)1 << COMPONENT_TRANSFORM;
-        }
-
-        public:
-        static ExampleSystem *Instance() {
-            if (nullptr == instance) {
-			    instance = new ExampleSystem();
-            }
-		    return instance;
         }
         ~ExampleSystem();
 
@@ -69,6 +60,4 @@ namespace Engine {
 
         }
     };
-
-    ExampleSystem *ExampleSystem::instance = nullptr;
 }
