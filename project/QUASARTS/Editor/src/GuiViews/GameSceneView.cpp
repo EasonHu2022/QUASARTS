@@ -33,6 +33,11 @@ void GameSceneView::on_gui()
             }
             if (ImGui::BeginTabItem("Game"))
             {
+                ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Text Edit"))
+            {
                 static TextEditor editor;
 
                 editor.SetShowWhitespaces(false);
@@ -40,9 +45,7 @@ void GameSceneView::on_gui()
                 editor.SetPalette(TextEditor::GetDarkPalette());
                 editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
                 editor.Render("##EditorWindow", ImVec2(1120, 630));
-
-                //ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-                //ImGui::EndTabItem();
+                ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
         }
