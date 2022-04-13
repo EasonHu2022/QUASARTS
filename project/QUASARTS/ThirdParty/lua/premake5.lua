@@ -18,11 +18,11 @@ project "lua"
 
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 
 	filter "system:linux"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 
 	filter "configurations:Debug"
 		runtime "Debug"

@@ -42,7 +42,7 @@ project "Editor"
 
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 		defines
 		{
 			"_UNICODE",
@@ -54,7 +54,7 @@ project "Editor"
 
 	filter "system:linux"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 		defines
 		{
 			"GLFW_INCLUDE_NONE",

@@ -63,7 +63,7 @@ project "Engine"
 	filter "system:windows"
 		system "Windows"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 		defines
 		{
 			"_UNICODE",
@@ -81,7 +81,7 @@ project "Engine"
 	filter "system:linux"
 		system "Linux"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 		defines
 		{
 			"GLFW_INCLUDE_NONE",

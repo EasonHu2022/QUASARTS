@@ -36,7 +36,7 @@ project "ImGui"
 	filter "system:windows"
         systemversion "latest"
         cppdialect "C++17"
-        staticruntime "On"
+        staticruntime "Off"
 		defines
 		{
 		"QS_BUILD_DLL",
@@ -46,7 +46,7 @@ project "ImGui"
         pic "On"
         systemversion "latest"
         cppdialect "C++17"
-        staticruntime "On"
+        staticruntime "Off"
 
     filter "configurations:Debug"
         runtime "Debug"

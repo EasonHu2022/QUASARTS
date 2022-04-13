@@ -26,7 +26,7 @@ project "Game"
 
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "Off"
 		
 	
 	filter "configurations:Debug"

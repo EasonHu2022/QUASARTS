@@ -31,7 +31,7 @@ project "spdlog"
     filter "system:windows"
 		systemversion "latest"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "Off"
 
     filter "configurations:Debug"
 		runtime "Debug"

@@ -22,7 +22,7 @@ project "Bullet3Collision"
     filter "system:windows"
 		systemversion "latest"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "Off"
 
 	filter "system:linux"
 		pic "On"
