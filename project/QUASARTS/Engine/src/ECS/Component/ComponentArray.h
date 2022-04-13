@@ -156,7 +156,7 @@ namespace Engine {
             std::cout << "Number of entries: " << num_entries << std::endl;
             std::cout << "Entities:" << std::endl;
             for (int i = 0; i < num_entries; i++) {
-                std::cout << entityIDs[i] << "\t";
+                std::cout << entityIDs[i] << ", ";
             }
             std::cout << std::endl;
         }
