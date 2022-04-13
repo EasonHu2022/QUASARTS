@@ -2,6 +2,7 @@
 #include <iostream>
 // Decide OS
 #include "GameSceneView.h"
+#include "TextEditor.h"
 
 void GameSceneView::on_add()
 {
@@ -32,8 +33,16 @@ void GameSceneView::on_gui()
             }
             if (ImGui::BeginTabItem("Game"))
             {
-                ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
+                static TextEditor editor;
+
+                editor.SetShowWhitespaces(false);
+                editor.SetReadOnly(false);
+                editor.SetPalette(TextEditor::GetDarkPalette());
+                editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+                editor.Render("##EditorWindow", ImVec2(1120, 630));
+
+                //ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
+                //ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
         }
