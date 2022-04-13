@@ -45,7 +45,7 @@ namespace Engine {
     }
 
     // Get the entity name:
-    std::string Entity::get_name() {
+    std::string Entity::get_name() const {
         return entityName;
     }
 

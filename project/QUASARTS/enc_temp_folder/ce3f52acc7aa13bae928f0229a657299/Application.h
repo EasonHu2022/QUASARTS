@@ -29,6 +29,8 @@ namespace Engine
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
 
+		Scene* scene; // scene test
+
 	public:
 		Window* get_window() { return m_window; }
 		GLFWwindow* get_glfw_context() { return m_window->get_native_window(); }

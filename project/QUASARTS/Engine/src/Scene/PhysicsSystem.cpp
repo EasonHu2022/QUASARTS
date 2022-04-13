@@ -90,12 +90,45 @@ namespace Engine {
 	} // release()
 
 
-	void PhysicsSystem::create_collision_sphere(const float radius)
+	int PhysicsSystem::create_collision_sphere(const glm::vec3 worldPosition, const float radius)
 	{
 		btCollisionObject* obj = new btCollisionObject();
 
+		btSphereShape* sphere = getSphereShape(radius);
+
+		// Set object's collision shape.
+		obj->setCollisionShape(sphere);
+
+		// Set object's world transform.
+		float yaw = 0.f, pitch = 0.f, roll = 0.f;
+		btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
+
+		btVector3 pos = glm_to_bt_vec3(worldPosition);
+
+		btTransform transform = btTransform(orn, pos);
+		obj->setWorldTransform(transform); // Apply transform to object.
+
+		// Add test object to the collision world, return its index in the collision object array.
+		int id = collisionWorld->getNumCollisionObjects();
+		collisionWorld->addCollisionObject(obj);
+		return id;
+	}
+
+	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
+	{
+		btVector3 hitLoc;
+		bool ret = raycast(glm_to_bt_vec3(origin), glm_to_bt_vec3(direction), &hitLoc);
+		*hitLocation = bt_to_glm_vec3(hitLoc);
+		return ret;
+	}
+
+
+	// Util //
+
+	btSphereShape* PhysicsSystem::getSphereShape(float radius)
+	{
 		btSphereShape* sphere;
-		// Set collision shape to an existing btSphereShape with same radius, if one exists.
+		// Find an existing btSphereShape with same radius, if one has already been created.
 		int i = 0;
 		for (; i < collisionSpheres.size(); ++i)
 		{
@@ -111,34 +144,9 @@ namespace Engine {
 			sphere = new btSphereShape(radius);
 			collisionSpheres.push_back(sphere);
 		}
+		return sphere;
+	} // getSphereShape()
 
-		// Set object's collision shape.
-		obj->setCollisionShape(sphere);
-
-		// Set object's world transform.
-		float yaw = 0.f, pitch = 0.f, roll = 0.f;
-		btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
-
-		btVector3 pos = btVector3(0.f, 0.f, 0.f);
-
-		btTransform transform = btTransform(orn, pos);
-		obj->setWorldTransform(transform); // Apply transform to object.
-
-		// Add test object to the collision world.
-		collisionWorld->addCollisionObject(obj);
-
-	}
-
-	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
-	{
-		btVector3 hitLoc;
-		bool ret = raycast(glm_to_bt_vec3(origin), glm_to_bt_vec3(direction), &hitLoc);
-		*hitLocation = bt_to_glm_vec3(hitLoc);
-		return ret;
-	}
-
-
-	// Util //
 
 	bool PhysicsSystem::raycast(const btVector3 origin, const btVector3 direction, btVector3* hitLocation)
 	{
@@ -155,7 +163,7 @@ namespace Engine {
 			return true;
 		}
 		return false;
-	}
+	} // raycast()
 
 
 	std::string PhysicsSystem::object_to_string(const btCollisionObject* obj, const bool angles_to_deg)
@@ -165,7 +173,7 @@ namespace Engine {
 		ostr << ", shape: " << shape_to_string(obj->getCollisionShape());
 		// TODO : collision shape
 		return ostr.str();
-	}
+	} // object_to_string()
 
 
 	std::string PhysicsSystem::transform_to_string(const btTransform* trf, const bool angles_to_deg)
@@ -191,7 +199,7 @@ namespace Engine {
 		ostr << ", orientation: (" << yaw << ", " << pitch << ", " << roll << ")";
 
 		return ostr.str();
-	}
+	} // transform_to_string()
 
 
 	std::string PhysicsSystem::shape_to_string(const btCollisionShape* shape)
@@ -208,7 +216,7 @@ namespace Engine {
 		}
 
 		return ostr.str();
-	}
+	} // shape_to_string()
 
 
 	std::string PhysicsSystem::vector_to_string(const btVector3 vec)
@@ -216,7 +224,7 @@ namespace Engine {
 		std::ostringstream ostr;
 		ostr << "(" << vec.x() << ", " << vec.y() << ", " << vec.z() << ")";
 		return ostr.str();
-	}
+	} // vector_to_string()
 
 
 
@@ -227,9 +235,9 @@ namespace Engine {
 
 	void PhysicsSystem::runTests_init()
 	{
-		create_collision_sphere(5.f);
-		create_collision_sphere(5.1f);
-		create_collision_sphere(5.f);
+		create_collision_sphere(glm::vec3(), 5.f);
+		create_collision_sphere(glm::vec3(), 5.1f);
+		create_collision_sphere(glm::vec3(), 5.f);
 
 	} // runTests_init()
 
@@ -285,7 +293,7 @@ namespace Engine {
 		btVector3 rayOrigin = btVector3(10, 0, 0);
 		btVector3 rayDirection = btVector3(-10, 0, 0);
 		bool ret = raycast(rayOrigin, rayDirection, &hitLoc);
-		snprintf(msg, 512, "Hit test, returned: %s, %s", (ret?"true":"false"), (ret?vector_to_string(hitLoc).c_str():""));
+		snprintf(msg, 512, "Hit test, returned: %s, %s", (ret ? "true" : "false"), (ret ? vector_to_string(hitLoc).c_str() : ""));
 		QDEBUG(msg);
 
 		/*

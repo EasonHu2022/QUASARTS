@@ -6,6 +6,7 @@
 /*
 	Event Manager
 */
+#include "Event/EventModule.h"
 
 
 /*

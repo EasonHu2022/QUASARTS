@@ -1,0 +1,225 @@
+#pragma once
+
+// Library includes:
+#include <vector>
+#include <set>
+#include <map>
+#include <iostream>
+
+// Local includes:
+#include "Core/Core.h"
+#include "Core/IManager.h"
+#include "ECS/ECS-Common.h"
+#include "ECS/Entity/Entity.h"
+#include "ECS/Component/ComponentArray.h"
+#include "ECS/System/System.h"
+#include "ECS/Scene.h"
+
+namespace Engine {
+    class QS_API ECSManager : public IManager {
+        private:
+        // Singleton:
+        static ECSManager *instance;
+        ECSManager() {}
+
+        public:
+        static ECSManager *Instance();
+        ~ECSManager();
+
+        // Functions inherited from IManager:
+        void init();
+		int start();
+		void update();
+		int stop();
+		void release();
+
+        // Get a new Entity ID (the first free one):
+        unsigned int get_free_entity_ID();
+
+        // Create a new Entity and add it to the vector:
+        unsigned int create_entity();
+
+        // Get the name of an Entity:
+        std::string get_entityName(unsigned int entityID);
+
+        // Change the name of an Entity:
+        void set_entityName(unsigned int entityID, const std::string& name);
+
+        // Destroy an Entity:
+        void destroy_entity(unsigned int entityID);
+
+        template <typename T>
+        void create_component(unsigned int entityID, unsigned int componentType, T data) {
+            // Update the component mask of the Entity:
+            unsigned int index = get_index_from_ID(entityID);
+            if (index == TOO_MANY_ENTITIES) {
+                std::cerr << "Function ECSManager::create_component(): \
+                            Warning: no match was found for entity " <<
+                            entityID << "!" << std::endl;
+                return;
+            }
+            scene->entities[index].add_component_type(componentType);
+
+            // Update each System:
+            for (int i = 0; i < systems.size(); i++) {
+                systems[i]->test_entity(scene->entities[index].get_componentMask(), entityID);
+            }
+
+            // Add the data to the relevant component array:
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
+            compArray->add_data(entityID, data);
+        }
+
+        // Add a new Component with no specific data:
+        template <typename T>
+        void create_component(unsigned int entityID, unsigned int componentType) {
+            // Update the component mask of the Entity:
+            unsigned int index = get_index_from_ID(entityID);
+            if (index == TOO_MANY_ENTITIES) {
+                std::cerr << "Function ECSManager::create_component(): \
+                            Warning: no match was found for entity " <<
+                            entityID << "!" << std::endl;
+                return;
+            }
+            scene->entities[index].add_component_type(componentType);
+
+            // Update each System:
+            for (int i = 0; i < systems.size(); i++) {
+                systems[i]->test_entity(scene->entities[index].get_componentMask(), entityID);
+            }
+
+            // Add the data to the relevant component array:
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
+            compArray->add_data(entityID);
+        }
+
+        // Replace Component data in the Component array:
+        template <typename T>
+        void replace_component(unsigned int entityID, unsigned int componentType, T data) {
+            // Check that the Entity exists:
+            unsigned int index = get_index_from_ID(entityID);
+            if (index == TOO_MANY_ENTITIES) {
+                std::cerr << "Function ECSManager::replace_component(): \
+                            Warning: no match was found for entity " <<
+                            entityID << "!" << std::endl;
+                return;
+            }
+
+            // Check the Component mask of the Entity:
+            quasarts_component_mask mask = {0};
+            mask.mask = (uint64_t)1 << componentType;
+            if ((scene->entities[index].get_componentMask().mask & mask.mask) != mask.mask) {
+                // Add the data instead of replacing it:
+                create_component<T>(entityID, componentType, data);
+                return;
+            }
+
+            // If the Component exists for the Entity, replace the data:
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
+            compArray->replace_data(entityID, data);
+        }
+
+        // Get a Component from the Component array:
+        template <typename T>
+        T get_component(unsigned int entityID, unsigned int componentType) {
+                ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
+                return compArray->get_data(entityID);
+        }
+
+        // Copy a component from one Entity to another:
+        template <typename T>
+        void copy_component(unsigned int copyFrom, unsigned int copyTo, unsigned int componentType) {
+                ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
+                compArray->copy_data(copyFrom, copyTo);
+        }
+
+        // Remove a Component from an Entity:
+        template <typename T>
+        void destroy_component(unsigned int entityID, unsigned int componentType) {
+            // Update the component mask of the entity:
+            unsigned int index = get_index_from_ID(entityID);
+            if (index == TOO_MANY_ENTITIES) {
+                std::cerr << "Function ECSManager::destroy_component(): \
+                            Warning: no match was found for entity " <<
+                            entityID << "!" << std::endl;
+                return;
+            }
+            scene->entities[index].remove_component_type(componentType);
+
+            // Update each System:
+            for (int i = 0; i < systems.size(); i++) {
+                systems[i]->test_entity(scene->entities[index].get_componentMask(), entityID);
+            }
+            // Remove the data from the relevant component array:
+            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
+            compArray->remove_data(entityID);
+        }
+
+        // Add an entity group:
+        void add_entity_group(std::string group_name);
+
+        // Destroy an entity group (does not destroy entities in the group):
+        void destroy_entity_group(std::string group_name);
+
+        // Add an entity to a group:
+        void add_entity_to_group(std::string group_name, unsigned int entityID);
+
+        // Remove an entity from a group:
+        void remove_entity_from_group(std::string group_name, unsigned int entityID);
+
+        // Destroy all the entities in a group (does not destroy the group):
+        void destroy_entities_in_group(std::string group_name);
+
+        // Get a pointer to an Entity:
+        Entity *get_entity(unsigned int EntityID);
+
+        // Get the mask of Entity IDs:
+        quasarts_entity_ID_mask get_entity_ID_mask();
+
+        // Get the Entity ID match list:
+        std::vector<unsigned int> get_entity_ID_match();
+
+        // Add a child to an Entity:
+        void add_child(unsigned int parent, unsigned int child);
+
+        // Remove a child from an Entity:
+        void remove_child(unsigned int parent, unsigned int child);
+
+        // Get the children of an Entity:
+        std::set<unsigned int> get_children(unsigned int entityID);
+
+        // Get the parent of an Entity:
+        unsigned int get_parent(unsigned int entityID);
+
+        // Register a System with the Manager:
+        void register_system(unsigned int systemType, System *system);
+
+        // Deregister a System with the Manager:
+        void deregister_system(unsigned int systemType);
+
+        // Set the pointer to the current scene:
+        void set_scene(Scene *scene_ptr);
+
+        // Save the whole scene to file:
+        bool save_scene(char *filename);
+
+        // Load a scene from file:
+        bool load_scene(char *filename);
+
+        // Get an index for an Entity by ID:
+        unsigned int get_index_from_ID(unsigned int entityID);
+
+        // Print Entity information for debugging purposes:
+        void print_entities();
+
+        // Print out Component array information:
+        void print_componentArray_info(unsigned int componentType);
+
+        private:
+        // Currently loaded scene:
+        Scene *scene;
+
+        // Systems:
+        std::map<unsigned int, System *> systems;  // For iterating over Systems easily.
+    };
+}

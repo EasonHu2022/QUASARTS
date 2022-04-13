@@ -9,6 +9,7 @@
 // Component includes:
 #include "ECS/Component/TransformComponent.h"
 #include "ECS/Component/MeshComponent.h"
+#include "ECS/Component/CollisionSphereComponent.h"
 
 /* Functions:
  * T get_data(unsigned int entityID)

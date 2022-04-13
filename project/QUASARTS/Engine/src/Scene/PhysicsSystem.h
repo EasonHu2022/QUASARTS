@@ -1,9 +1,8 @@
 #pragma once
 
+#include "QuasartsEngine.h"
 #include "Core/IManager.h"
 #include "btBulletCollisionCommon.h"
-#include "Event/EventModule.h"
-#include "Core/Core.h"
 #include "glm/vec3.hpp"
 
 namespace Engine {
@@ -22,20 +21,20 @@ namespace Engine {
 		~PhysicsSystem() {};
 
 	public:
-		void init();
-		int start();
-		void update();
-		int stop();
-		void release();
+		void init() override;
+		int start() override;
+		void update() override;
+		int stop() override;
+		void release() override;
 
 
 		// Usage functions //
 	public:
-		void create_collision_sphere(const float radius);
+		int create_collision_sphere(const glm::vec3 worldPosition, const float radius);
 		bool raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation);
 
 
-		// Collision world //
+		// Collision world variables //
 	private:
 		btDefaultCollisionConfiguration* collisionConfiguration;
 		btCollisionDispatcher* dispatcher;
@@ -48,11 +47,14 @@ namespace Engine {
 
 		// Util //
 	private:
+		btSphereShape* getSphereShape(float radius);
 		bool raycast(const btVector3 origin, const btVector3 direction, btVector3* hitLocation);
 
+		// Math lib conversions
 		static btVector3 glm_to_bt_vec3(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
 		static glm::vec3 bt_to_glm_vec3(const btVector3 bt_vec) { return glm::vec3(bt_vec.x(), bt_vec.y(), bt_vec.z()); }
 
+		// Debug
 		static std::string object_to_string(const btCollisionObject* obj, const bool angles_to_deg = true);
 		static std::string transform_to_string(const btTransform* trf, const bool angles_to_deg = true);
 		static std::string shape_to_string(const btCollisionShape* shape);

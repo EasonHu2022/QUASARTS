@@ -15,9 +15,10 @@ namespace Engine {
     #define TOO_MANY_ENTITIES 1025
 
     // Component types:
-    #define COMPONENT_TRANSFORM 0
-    #define COMPONENT_MESH 1
-    #define COMPONENT_FAMILY 2
+    #define COMPONENT_TRANSFORM         0
+    #define COMPONENT_MESH              1
+    #define COMPONENT_FAMILY            2
+    #define COMPONENT_COLLISION_SPHERE  3
 
     // Systems:
     #define SYSTEM_EXAMPLE 0
