@@ -197,6 +197,12 @@ namespace Engine {
         // Deregister a System with the Manager:
         void deregister_system(unsigned int systemType);
 
+        // Get the current Entity ID:
+        unsigned int get_current_entity();
+
+        // Set the current Entity ID:
+        unsigned int set_current_entity(unsigned int entityID);
+
         // Set the pointer to the current scene:
         void set_scene(Scene *scene_ptr);
 
@@ -218,6 +224,9 @@ namespace Engine {
         private:
         // Currently loaded scene:
         Scene *scene;
+
+        // Currently selected Entity:
+        unsigned int current_entity;
 
         // Systems:
         std::map<unsigned int, System *> systems;  // For iterating over Systems easily.

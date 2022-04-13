@@ -243,6 +243,16 @@ namespace Engine {
         systems.erase(systemType);
     }
 
+    // Get the current Entity ID:
+    unsigned int ECSManager::get_current_entity() {
+        return current_entity;
+    }
+
+    // Set the current Entity ID:
+    unsigned int ECSManager::set_current_entity(unsigned int entityID) {
+        current_entity = entityID;
+    }
+
     // Set the pointer to the current scene:
     void ECSManager::set_scene(Scene *scene_ptr) {
         scene = scene_ptr;
@@ -287,7 +297,12 @@ namespace Engine {
             std::cout << std::endl;
 
             // Print parent-child relationships of Entity:
-            std::cout << "Parent: " << scene->parents[i] << std::endl;
+            std::cout << "Parent: ";
+            if (scene->parents[i] == TOO_MANY_ENTITIES) {
+                std::cout << "No parent" << std::endl;
+            } else {
+                std::cout << scene->parents[i] << std::endl;
+            }
             std::cout << "Children:" << std::endl;
             std::set<unsigned int>::iterator iter;
             for (iter = scene->children[i].begin();
