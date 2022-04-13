@@ -20,7 +20,7 @@ namespace Engine {
         private:
         // Singleton:
         static ECSManager *instance;
-        ECSManager() : scene(nullptr), systems() {}
+        ECSManager() {}
 
         public:
         static ECSManager *Instance();
