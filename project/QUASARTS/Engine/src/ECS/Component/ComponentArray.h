@@ -52,7 +52,8 @@ namespace Engine {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
-                std::cerr << "Warning: Entity " << entityID << " not found!" << std::endl;
+                std::cerr << "Function ComponentArray::get_data(): Warning: \
+                            Entity " << entityID << " not found!" << std::endl;
                 T result{};
                 return result;
             }
@@ -118,7 +119,9 @@ namespace Engine {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
-                std::cerr << "Warning: Entity " << entityID << " not found!" << std::endl;
+                std::cerr << "Function ComponentArray::replace_data(): \
+                            Warning: Entity " << entityID << " not found!"
+                            << std::endl;
                 return;
             }
 
@@ -154,7 +157,7 @@ namespace Engine {
             std::cout << "Number of entries: " << num_entries << std::endl;
             std::cout << "Entities:" << std::endl;
             for (int i = 0; i < num_entries; i++) {
-                std::cout << entityIDs[i] << "\t";
+                std::cout << entityIDs[i] << ", ";
             }
             std::cout << std::endl;
         }

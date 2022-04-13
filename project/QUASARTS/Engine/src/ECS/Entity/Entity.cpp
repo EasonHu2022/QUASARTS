@@ -5,6 +5,7 @@ namespace Engine {
     Entity::Entity(unsigned int ID) {
         entityID = ID;
         componentMask = {0};
+        entityName = "Default";
     }
 
     // Destructor:
@@ -43,8 +44,13 @@ namespace Engine {
         }
     }
 
+    // Get the entity name:
+    std::string Entity::get_name() {
+        return entityName;
+    }
+
     // Set the entity name:
-    void Entity::set_entityName(std::string name) {
+    void Entity::set_name(std::string name) {
         entityName = name;
     }
 }
