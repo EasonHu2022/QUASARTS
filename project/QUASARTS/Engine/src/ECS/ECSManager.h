@@ -20,7 +20,7 @@ namespace Engine {
         private:
         // Singleton:
         static ECSManager *instance;
-        ECSManager() {}
+        ECSManager() { current_entity = TOO_MANY_ENTITIES; }
 
         public:
         static ECSManager *Instance();
@@ -201,7 +201,7 @@ namespace Engine {
         unsigned int get_current_entity();
 
         // Set the current Entity ID:
-        unsigned int set_current_entity(unsigned int entityID);
+        void set_current_entity(unsigned int entityID);
 
         // Set the pointer to the current scene:
         void set_scene(Scene *scene_ptr);

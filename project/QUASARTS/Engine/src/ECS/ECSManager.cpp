@@ -249,7 +249,7 @@ namespace Engine {
     }
 
     // Set the current Entity ID:
-    unsigned int ECSManager::set_current_entity(unsigned int entityID) {
+    void ECSManager::set_current_entity(unsigned int entityID) {
         current_entity = entityID;
     }
 
