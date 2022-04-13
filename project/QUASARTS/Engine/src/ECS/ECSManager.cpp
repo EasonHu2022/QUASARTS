@@ -51,7 +51,9 @@ namespace Engine {
         unsigned int entityID = get_free_entity_ID();
         // Check that the new ID is valid:
         if (entityID == TOO_MANY_ENTITIES) {
-            std::cerr << "Warning: unable to create new entity. Maximum number of entities reached." << std::endl;
+            std::cerr << "Function ECSManager::create_entity(): Warning: \
+                            unable to create new entity. Maximum number of \
+                            entities reached." << std::endl;
             return entityID;
         }
 
@@ -62,6 +64,9 @@ namespace Engine {
         scene->entities.push_back(new_entity);
         scene->entity_ID_match.push_back(entityID);
         scene->entity_IDs.mask[entityID] = 1;
+        scene->parents.push_back(TOO_MANY_ENTITIES);
+        scene->children.push_back({});
+
         return entityID;
     }
 
@@ -86,29 +91,139 @@ namespace Engine {
             systems[i]->clear_entity(entityID);
         }
 
-        // Remove the Entity from the vector:
-        for (int i = 0; i < scene->entity_ID_match.size(); i++) {
-            if (scene->entity_ID_match[i] == entityID) {
-                scene->entities.erase(scene->entities.begin() + i);
-                scene->entity_ID_match.erase(scene->entity_ID_match.begin() + i);
-                break;
+        // Remove the Entity from the manager:
+        unsigned int index = get_index_from_ID(entityID);
+        if (index == TOO_MANY_ENTITIES) { return; }
+        scene->entities.erase(scene->entities.begin() + index);
+        scene->entity_ID_match.erase(scene->entity_ID_match.begin() + index);
+        scene->parents.erase(scene->parents.begin() + index);
+        scene->children.erase(scene->children.begin() + index);
+
+        // Remove all references to the Entity from relationships:
+        for (int i = 0; i < scene->entities.size(); i++) {
+            if (scene->parents[i] == entityID) {
+                scene->parents[i] = TOO_MANY_ENTITIES;
             }
+            scene->children[i].erase(entityID);
         }
+    }
+
+    // Add an entity group:
+    void ECSManager::add_entity_group(std::string group_name) {
+        if (scene->entity_groups.find(group_name) != scene->entity_groups.end()) {
+            std::cerr << "Function ECSManager::add_entity_group: Warning: group \
+                                                    already exists!" << std::endl;
+            return;
+        }
+        scene->entity_groups[group_name] = {};
+    }
+
+    // Destroy an entity group (does not destroy entities in the group):
+    void ECSManager::destroy_entity_group(std::string group_name) {
+        scene->entity_groups.erase(group_name);
+    }
+
+    // Add an entity to a group:
+    void ECSManager::add_entity_to_group(std::string group_name, unsigned int entityID) {
+        scene->entity_groups[group_name].emplace(entityID);
+    }
+
+    // Remove an entity from a group:
+    void ECSManager::remove_entity_from_group(std::string group_name, unsigned int entityID) {
+        scene->entity_groups[group_name].erase(entityID);
+    }
+
+    // Destroy all the entities in a group (does not destroy the group):
+    void ECSManager::destroy_entities_in_group(std::string group_name) {
+        std::set<unsigned int>::iterator iter;
+        for (iter = scene->entity_groups[group_name].begin();
+                    iter != scene->entity_groups[group_name].end(); iter++) {
+            destroy_entity(*iter);
+        }
+        scene->entity_groups[group_name].clear();
     }
 
     // Get a pointer to an Entity:
     Entity *ECSManager::get_entity(unsigned int entityID) {
-        for (int i = 0; i < scene->entity_ID_match.size(); i++) {
-            if (scene->entity_ID_match[i] == entityID) {
-                return &(scene->entities[i]);
-            }
-        }
-        return NULL;
+        unsigned int index = get_index_from_ID(entityID);
+        if (index == TOO_MANY_ENTITIES) { return NULL; }
+        return &(scene->entities[index]);
     }
 
-    // Get the list of Entity IDs:
-    quasarts_entity_ID_mask *ECSManager::get_entityIDs() {
+    // Get the mask of Entity IDs:
+    quasarts_entity_ID_mask *ECSManager::get_entity_ID_mask() {
         return &(scene->entity_IDs);
+    }
+
+    // Get the Entity ID match list:
+    std::vector<unsigned int> ECSManager::get_entity_ID_match() {
+        return scene->entity_ID_match;
+    }
+
+    // Add a child to an Entity:
+    void ECSManager::add_child(unsigned int parent, unsigned int child) {
+        // Check that both parent and child exist:
+        unsigned int parent_index = get_index_from_ID(parent);
+        unsigned int child_index = get_index_from_ID(child);
+        if (parent_index == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::add_child: Warning: no match \
+                                    was found for parent entity " << parent <<
+                                    "!" << std::endl;
+            return;
+        } else if (child_index == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::add_child: Warning: no match \
+                                    was found for child entity " << child <<
+                                    "!" << std::endl;
+            return;
+        }
+
+        // If both parent and child exist, create the relationship:
+        scene->children[parent_index].emplace(child);
+        scene->parents[child_index] = parent;
+    }
+
+    // Remove a child from an Entity:
+    void ECSManager::remove_child(unsigned int parent, unsigned int child) {
+        // Check that both parent and child exist:
+        unsigned int parent_index = get_index_from_ID(parent);
+        unsigned int child_index = get_index_from_ID(child);
+        if (parent_index == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::remove_child: Warning: no match \
+                                    was found for parent entity " << parent <<
+                                    "!" << std::endl;
+            return;
+        } else if (child_index == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::remove_child: Warning: no match \
+                                    was found for child entity " << child <<
+                                    "!" << std::endl;
+            return;
+        }
+
+        // If both parent and child exist, remove the relationship:
+        scene->children[parent_index].erase(child);
+        scene->parents[child_index] = TOO_MANY_ENTITIES;
+    }
+
+    // Get the children of an Entity:
+    std::set<unsigned int> ECSManager::get_children(unsigned int entityID) {
+        unsigned int index = get_index_from_ID(entityID);
+        if (index == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::get_children: Warning: no match \
+                        was found for entity " << entityID << "!" << std::endl;
+            return {};
+        }
+        return scene->children[index];
+    }
+
+    // Get the parent of an Entity:
+    unsigned int ECSManager::get_parent(unsigned int entityID) {
+        unsigned int index = get_index_from_ID(entityID);
+        if (index == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::get_parent: Warning: no match \
+                        was found for entity " << entityID << "!" << std::endl;
+            return TOO_MANY_ENTITIES;
+        }
+        return scene->parents[index];
     }
 
     // Register a System with the Manager:
@@ -137,11 +252,24 @@ namespace Engine {
         return true;
     }
 
+    // Get an index for an Entity by ID:
+    unsigned int ECSManager::get_index_from_ID(unsigned int entityID) {
+        for (int i = 0; i < scene->entity_ID_match.size(); i++) {
+            if (scene->entity_ID_match[i] == entityID) {
+                return i;
+            }
+        }
+        return TOO_MANY_ENTITIES;
+    }
+
     // Print Entity information for debugging purposes:
     void ECSManager::print_entities() {
         for (int i = 0; i < scene->entities.size(); i++) {
+            // Print Entity ID:
             Entity entity = scene->entities[i];
             std::cout << "Entity ID: " << entity.get_entityID() << std::endl;
+
+            // Print Component mask:
             std::cout << "Component Mask:" << std::endl;
             quasarts_component_mask mask;
             for (int j = MAX_COMPONENT_TYPES - 1; j >= 0 ; j--) {
@@ -149,6 +277,16 @@ namespace Engine {
                 if ((entity.get_componentMask().mask & mask.mask) == mask.mask) {
                     std::cout << "1";
                 } else { std::cout << "0"; }
+            }
+            std::cout << std::endl;
+
+            // Print parent-child relationships of Entity:
+            std::cout << "Parent: " << scene->parents[i] << std::endl;
+            std::cout << "Children:" << std::endl;
+            std::set<unsigned int>::iterator iter;
+            for (iter = scene->children[i].begin();
+                            iter != scene->children[i].end(); iter++) {
+                std::cout << *iter << " ";
             }
             std::cout << std::endl;
         }

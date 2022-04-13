@@ -2,6 +2,9 @@
 
 // Library includes:
 #include <vector>
+#include <set>
+#include <map>
+#include <string>
 
 // Local includes:
 #include "ECS/ECS-Common.h"
@@ -38,10 +41,17 @@ namespace Engine {
         std::vector<Entity> entities;
         std::vector<unsigned int> entity_ID_match;
 
+        // Groups of Entities:
+        std::map<std::string, std::set<unsigned int>> entity_groups;
+
         // Component arrays:
         std::vector<ParentComponentArray *> componentArrays;
 
         // Bit mask (array) of entity IDs that are in use (0 = free, 1 = used):
         quasarts_entity_ID_mask entity_IDs;
+
+        // Parents and children:
+        std::vector<std::set<unsigned int>> children;
+        std::vector<unsigned int> parents;
     };
 }
