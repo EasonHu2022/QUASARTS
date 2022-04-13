@@ -43,6 +43,11 @@ namespace Engine {
         }
     }
 
+    // Get the entity name:
+    std::string Entity::get_entityName() {
+        return entityName;
+    }
+
     // Set the entity name:
     void Entity::set_entityName(std::string name) {
         entityName = name;

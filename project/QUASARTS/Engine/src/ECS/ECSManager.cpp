@@ -70,6 +70,12 @@ namespace Engine {
         return entityID;
     }
 
+    // Get the name of an Entity:
+    std::string ECSManager::get_entityName(unsigned int entityID) {
+        Entity *entity = get_entity(entityID);
+        return entity->get_entityName();
+    }
+
     // Change the name of an Entity:
     void ECSManager::set_entityName(unsigned int entityID, std::string name) {
         Entity *entity = get_entity(entityID);
