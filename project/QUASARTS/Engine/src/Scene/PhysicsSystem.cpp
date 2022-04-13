@@ -235,9 +235,9 @@ namespace Engine {
 
 	void PhysicsSystem::runTests_init()
 	{
-		create_collision_sphere(5.f);
-		create_collision_sphere(5.1f);
-		create_collision_sphere(5.f);
+		create_collision_sphere(glm::vec3(), 5.f);
+		create_collision_sphere(glm::vec3(), 5.1f);
+		create_collision_sphere(glm::vec3(), 5.f);
 
 	} // runTests_init()
 

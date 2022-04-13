@@ -35,7 +35,7 @@ void MenuBarView::on_gui()
                 QDEBUG("MenuItem: Save Project");
                 Engine::ECSManager::Instance()->print_entities();
                 char msg[512];
-                snprintf(msg, 512, "Number of collision spheres : %d", ent->);
+                snprintf(msg, 512, "Entity name : %s", ent->get_name().c_str());
                 QDEBUG(msg);
                 // end scene test
             }

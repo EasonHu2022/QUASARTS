@@ -29,7 +29,7 @@ namespace Engine {
         void remove_component_type(unsigned int component_type);
 
         // Get the entity name:
-        std::string get_name();
+        std::string get_name() const;
 
         // Set the entity name:
         void set_name(std::string name);
