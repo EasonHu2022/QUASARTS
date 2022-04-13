@@ -28,8 +28,16 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
 
-
-
+                // scene test
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                std::string testing = "testing";
+                Engine::Entity* ent = Engine::ECSManager::Instance()->get_entity(entityID);
+                QDEBUG("MenuItem: Save Project");
+                Engine::ECSManager::Instance()->print_entities();
+                char msg[512];
+                snprintf(msg, 512, "Number of collision spheres : %d", ent->);
+                QDEBUG(msg);
+                // end scene test
             }
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);

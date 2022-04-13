@@ -11,6 +11,7 @@
 #include "Scripts/ScriptsSystem.h"
 #include "Core/EntityWorld.h"
 #include "Core/miniECS.h"
+#include "ECS/System/ExampleSystem.h" // scene test
 
 namespace Engine
 {
@@ -27,6 +28,8 @@ namespace Engine
 		MeshLoaderFactory * loaderFactory;
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
+
+		Scene* scene; // scene test
 
 	public:
 		Window* get_window() { return m_window; }
