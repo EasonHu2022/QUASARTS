@@ -11,7 +11,7 @@
 namespace Engine
 {
 	Application* Application::Instance = NULL;
-	
+
 	Application::Application()
 	{
 		Instance = this;
@@ -20,6 +20,8 @@ namespace Engine
 		/******temp*********/
 		entityWorld = new EntityWorld();
 		miniecs = new miniECS();
+		notreserved = new ExampleSystem();
+		scene = new Scene();
 
 		LogModule::Instance()->init();
 
@@ -29,9 +31,13 @@ namespace Engine
 
 		ScriptsSys::Instance()->init();
 
+		ECSManager::Instance()->init();
+
+		ECSManager::Instance()->set_scene(scene);
+
 		loaderFactory = new MeshLoaderFactory();
 		//create window for app
-		m_window = Window::create(WindowProps(name));		
+		m_window = Window::create(WindowProps(name));
 
 		RendererTemp::Instance()->init();
 
@@ -47,15 +53,15 @@ namespace Engine
 	/// </summary>
 	void Application::init()
 	{
-		
+
 
 		/*
 			later change to ECS mode
 			later remove instance
 		*/
-		
+
 		PhysicsSystem::Instance()->init();
-		
+
 		/*Renderer::Instance()->init();*/
 
 		//do init things
@@ -79,21 +85,21 @@ namespace Engine
 		EventModule::Instance()->start();
 		ScriptsSys::Instance()->start();
 
-		
+
 
 
 		/// <summary>
 		/// for test
 		/// </summary>
-		
+
 
 		//main loop
 		while (bIs_Running)
 		{
-			
+
 			/*
 				render frame
-			*/			
+			*/
 			GuiWrapper::begin();
 			{
 				on_update();
@@ -104,7 +110,7 @@ namespace Engine
 			/*
 				System Manager Update
 			*/
-			if(bIs_Running)
+			if (bIs_Running)
 				m_window->swap_buffer();
 		}
 
@@ -135,7 +141,7 @@ namespace Engine
 
 		LogModule::Instance()->update();
 		PhysicsSystem::Instance()->update();
-		
+
 		on_gui();
 	}
 

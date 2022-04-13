@@ -11,7 +11,7 @@ void MenuBarView::on_add()
     new_project = false;
     new_scene = false;
     folder_path = "";
-	QDEBUG("on add view : MenuBar");
+    QDEBUG("on add view : MenuBar");
 }
 
 void MenuBarView::on_gui()
@@ -27,6 +27,25 @@ void MenuBarView::on_gui()
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
+
+                Engine::Scene* scene = new Engine::Scene();
+                Engine::ECSManager::Instance()->set_scene(scene);
+                Engine::ECSManager::Instance()->register_system(SYSTEM_EXAMPLE, Engine::Application::Instance->notreserved);
+                Engine::Application::Instance->notreserved->set_manager(Engine::ECSManager::Instance());
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                Engine::TransformComponent transform = { 0 };
+                transform.y = 5.0;
+                Engine::ECSManager::Instance()->create_component(entityID, COMPONENT_TRANSFORM, transform);
+                transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                std::cout << transform.x << std::endl;
+                std::cout << transform.y << std::endl;
+                std::cout << transform.z << std::endl;
+
+                Engine::Application::Instance->notreserved->update();
+                transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                std::cout << transform.x << std::endl;
+                std::cout << transform.y << std::endl;
+                std::cout << transform.z << std::endl;
 
             }
             ImGui::Separator();
@@ -103,11 +122,54 @@ void MenuBarView::on_gui()
 
         if (ImGui::BeginMenu("Object"))
         {
+            if (ImGui::MenuItem("Blank Entity")) {
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                //Engine::ECSManager::Instance()->print_entities();
+                std::string testing = "testing";
+                //Engine::ECSManager::Instance()->create_component < Engine::TransformComponent > (entityID, COMPONENT_TRANSFORM);
+                //Engine::ECSManager::Instance()->set_entityName(entityID, testing);
+                Engine::Entity* ent = Engine::ECSManager::Instance()->get_entity(entityID);
+                printf("anything, just print anything");
+                Engine::ECSManager::Instance()->print_entities();
+                std::cout << ent->get_name() << std::endl;
+                //Engine::ECSManager::Instance()->print_componentArray_info(COMPONENT_TRANSFORM);
+            }
+            if (ImGui::BeginMenu("Insert Basic Object")) {
+                if (ImGui::MenuItem("Triangle")) {
+
+                }
+                if (ImGui::MenuItem("Pane")) {
+
+                }
+                if (ImGui::MenuItem("Pyramid")) {
+
+                }
+                if (ImGui::MenuItem("Cube")) {
+
+                }
+                if (ImGui::MenuItem("Cone")) {
+
+                }
+                if (ImGui::MenuItem("Sphere")) {
+
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::MenuItem("Camera")) {
+
+            }
+            if (ImGui::MenuItem("Light")) {
+
+            }
+            if (ImGui::MenuItem("Particle Emitter")) {
+
+            }
             ImGui::EndMenu();
         }
 
         if (ImGui::BeginMenu("Help"))
         {
+
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
@@ -123,7 +185,7 @@ void MenuBarView::on_gui()
 
 void MenuBarView::on_remove()
 {
-	QDEBUG("on remove view : MenuBar");
+    QDEBUG("on remove view : MenuBar");
 }
 
 
@@ -132,7 +194,7 @@ std::string MenuBarView::OpenFileDialogue() {
     OPENFILENAME ofn;
     wchar_t fileName[260] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
-    
+
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = NULL;
     ofn.lpstrFilter = L"All Files (*.*)\0*.cpp\0";
@@ -247,13 +309,13 @@ void MenuBarView::newScene() {
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Scene Name", &new_scene, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
-  
-    
+
+
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
     ImGui::PopItemWidth();
- 
-   
+
+
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
@@ -282,7 +344,7 @@ void MenuBarView::newScript() {
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
     ImGui::PopItemWidth();
-    
+
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {

@@ -11,7 +11,7 @@
 #include "Scripts/ScriptsSystem.h"
 #include "Core/EntityWorld.h"
 #include "Core/miniECS.h"
-#include "ECS/System/ExampleSystem.h" // scene test
+#include "ECS/System/ExampleSystem.h"
 
 namespace Engine
 {
@@ -21,13 +21,16 @@ namespace Engine
 	private:
 		std::string name = "Quarsart Editor V1.0";
 		Window* m_window = NULL;
-		bool bIs_Running ;
+		bool bIs_Running;
 
 	public:
 		static Application* Instance;
-		MeshLoaderFactory * loaderFactory;
+		MeshLoaderFactory* loaderFactory;
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
+		ExampleSystem* notreserved;
+		Scene* scene;
+
 
 	public:
 		Window* get_window() { return m_window; }
