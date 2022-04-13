@@ -73,13 +73,13 @@ namespace Engine {
     // Get the name of an Entity:
     std::string ECSManager::get_entityName(unsigned int entityID) {
         Entity *entity = get_entity(entityID);
-        return entity->get_entityName();
+        return entity->get_name();
     }
 
     // Change the name of an Entity:
     void ECSManager::set_entityName(unsigned int entityID, std::string name) {
         Entity *entity = get_entity(entityID);
-        entity->set_entityName(name);
+        entity->set_name(name);
     }
 
     // Destroy an Entity:
@@ -297,7 +297,7 @@ namespace Engine {
             std::cout << std::endl;
 
             // Print name of Entity:
-            std::cout << "Entity name: " << entity.get_entityName() << std::endl;
+            std::cout << "Entity name: " << entity.get_name() << std::endl;
         }
     }
 
