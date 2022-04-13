@@ -28,6 +28,15 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
 
+                // scene test
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                std::string testing = "testing";
+                QDEBUG("MenuItem: Save Project");
+                Engine::ECSManager::Instance()->print_entities();
+                
+                Engine::ECSManager::Instance()->set_entityName(entityID, "TEST");
+                // end scene test
+
             }
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);

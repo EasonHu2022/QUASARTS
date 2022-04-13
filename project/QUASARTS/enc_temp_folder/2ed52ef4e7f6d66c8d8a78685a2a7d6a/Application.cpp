@@ -35,6 +35,10 @@ namespace Engine
 
 		RendererTemp::Instance()->init();
 
+
+		ECSManager::Instance()->init();				 // scene test
+		scene = new Scene();						 // scene test
+		ECSManager::Instance()->set_scene(scene);	 // scene test
 	}
 	Application:: ~Application()
 	{
