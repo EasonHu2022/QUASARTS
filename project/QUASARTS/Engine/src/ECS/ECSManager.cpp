@@ -295,6 +295,9 @@ namespace Engine {
                 std::cout << *iter << " ";
             }
             std::cout << std::endl;
+
+            // Print name of Entity:
+            std::cout << "Entity name: " << entity.get_entityName() << std::endl;
         }
     }
 

@@ -5,6 +5,7 @@ namespace Engine {
     Entity::Entity(unsigned int ID) {
         entityID = ID;
         componentMask = {0};
+        entityName = "Default";
     }
 
     // Destructor:
