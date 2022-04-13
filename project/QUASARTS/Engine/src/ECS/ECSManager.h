@@ -171,7 +171,7 @@ namespace Engine {
         void destroy_entities_in_group(std::string group_name);
 
         // Get a pointer to an Entity:
-        Entity get_entity(unsigned int EntityID);
+        Entity *get_entity(unsigned int EntityID);
 
         // Get the mask of Entity IDs:
         quasarts_entity_ID_mask get_entity_ID_mask();

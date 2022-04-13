@@ -72,14 +72,14 @@ namespace Engine {
 
     // Get the name of an Entity:
     std::string ECSManager::get_entityName(unsigned int entityID) {
-        Entity entity = get_entity(entityID);
-        return entity.get_name();
+        Entity *entity = get_entity(entityID);
+        return entity->get_name();
     }
 
     // Change the name of an Entity:
     void ECSManager::set_entityName(unsigned int entityID, std::string name) {
-        Entity entity = get_entity(entityID);
-        entity.set_name(name);
+        Entity *entity = get_entity(entityID);
+        entity->set_name(name);
     }
 
     // Destroy an Entity:
@@ -150,10 +150,10 @@ namespace Engine {
     }
 
     // Get a pointer to an Entity:
-    Entity ECSManager::get_entity(unsigned int entityID) {
+    Entity *ECSManager::get_entity(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
         if (index == TOO_MANY_ENTITIES) { return NULL; }
-        return scene->entities[index];
+        return &(scene->entities[index]);
     }
 
     // Get the mask of Entity IDs:
