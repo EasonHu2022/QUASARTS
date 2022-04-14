@@ -8,6 +8,8 @@
 
 namespace Engine {
     struct QS_API MeshComponent {
-        std::string name;
+        float one;
+        float two;
+        float three;
     };
 }

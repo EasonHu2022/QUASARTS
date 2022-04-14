@@ -114,6 +114,18 @@ namespace Engine {
         }
     }
 
+    // Check if an Entity has a particular type of Component:
+    bool ECSManager::has_component(unsigned int entityID, unsigned int componentType) {
+        Entity *entity = get_entity(entityID);
+        quasarts_component_mask entity_mask = entity->get_componentMask();
+        quasarts_component_mask test_mask{};
+        test_mask.mask = (uint64_t)1 << componentType;
+        if ((test_mask.mask & entity_mask.mask) == test_mask.mask) {
+            return true;
+        }
+        return false;
+    }
+
     // Add an entity group:
     void ECSManager::add_entity_group(std::string group_name) {
         if (scene->entity_groups.find(group_name) != scene->entity_groups.end()) {
