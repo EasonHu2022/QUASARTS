@@ -36,11 +36,17 @@ namespace Engine {
 		// Collision world stores all collision objects and provides interface for queries.
 		collisionWorld = new btCollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
 
+		// Create default collision shape.
+		collisionSpheres.push_back(new btSphereShape(Q_DEFAULT_SPHERE_RADIUS));
+
+		// Initialise all collision object IDs to -1.
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i) { collisionObjectArrayUsage[i] = Unassigned; }
+
 
 		// Test collision world.
-		runTests_init();
+		//runTests_init();
 
-	}
+	} // init()
 
 	int PhysicsSystem::start()
 	{
@@ -90,29 +96,39 @@ namespace Engine {
 	} // release()
 
 
-	int PhysicsSystem::create_collision_sphere(const glm::vec3 worldPosition, const float radius)
+	int PhysicsSystem::assign_collision_sphere(const glm::vec3 worldPosition, const float radius)
 	{
-		btCollisionObject* obj = new btCollisionObject();
+		// Find an unassigned collision object.
+		int obj_idx = get_unassigned_collision_object_index();
+		if (obj_idx != -1)
+		{
+			collisionObjectArrayUsage[obj_idx] = Sphere;
+			++numAssignedObjects;
+			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[obj_idx];
 
-		btSphereShape* sphere = getSphereShape(radius);
+			// Set its collision shape.
+			btSphereShape* sphere = get_sphere_shape(radius);
+			obj->setCollisionShape(sphere);
 
-		// Set object's collision shape.
-		obj->setCollisionShape(sphere);
+			// Set its world transform.
+			float yaw = 0.f, pitch = 0.f, roll = 0.f;
+			btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
+			btVector3 pos = glm_to_bt_vec3(worldPosition);
+			obj->setWorldTransform(btTransform(orn, pos));
+		}
+		return obj_idx;
 
-		// Set object's world transform.
-		float yaw = 0.f, pitch = 0.f, roll = 0.f;
-		btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
+	} // assign_collision_sphere()
 
-		btVector3 pos = glm_to_bt_vec3(worldPosition);
 
-		btTransform transform = btTransform(orn, pos);
-		obj->setWorldTransform(transform); // Apply transform to object.
+	void PhysicsSystem::unassign_collision_object(const int id)
+	{
+		if (collisionObjectArrayUsage[id] == Unassigned) QDEBUG("unassign_collision_sphere() was passed the index of an unassigned collision object.");
+		collisionObjectArrayUsage[id] = Unassigned;
+		--numAssignedObjects;
 
-		// Add test object to the collision world, return its index in the collision object array.
-		int id = collisionWorld->getNumCollisionObjects();
-		collisionWorld->addCollisionObject(obj);
-		return id;
-	}
+	} // unassign_collision_sphere()
+
 
 	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
 	{
@@ -120,31 +136,51 @@ namespace Engine {
 		bool ret = raycast(glm_to_bt_vec3(origin), glm_to_bt_vec3(direction), &hitLoc);
 		*hitLocation = bt_to_glm_vec3(hitLoc);
 		return ret;
-	}
+
+	} // raycast()
 
 
 	// Util //
 
-	btSphereShape* PhysicsSystem::getSphereShape(float radius)
+	int PhysicsSystem::get_unassigned_collision_object_index()
 	{
-		btSphereShape* sphere;
-		// Find an existing btSphereShape with same radius, if one has already been created.
-		int i = 0;
-		for (; i < collisionSpheres.size(); ++i)
+		// Return the index of the first available object.
+		int numObjs = collisionWorld->getNumCollisionObjects();
+		for (int i = 0; i < numObjs; ++i)
+		{
+			if (collisionObjectArrayUsage[i] == Unassigned)
+			{
+				return i;
+			}
+		}
+		// If none are available and there are fewer than the maximum, create new and return its index.
+		if (numObjs < Q_MAX_COLLISION_OBJS)
+		{
+			btCollisionObject* obj = new btCollisionObject();
+			obj->setCollisionShape(collisionSpheres[0]); // set shape to default collision sphere shape.
+			collisionWorld->addCollisionObject(obj);
+			return numObjs;
+		}
+		return -1;
+
+	} // get_available_collision_object()
+
+
+	btSphereShape* PhysicsSystem::get_sphere_shape(float radius)
+	{
+		// Find an existing btSphereShape with same radius.
+		for (int i = 0; i < collisionSpheres.size(); ++i)
 		{
 			if (abs(collisionSpheres[i]->getRadius() - radius) < Q_COLLISION_EPSILON)
 			{
-				sphere = collisionSpheres[i];
-				break;
+				return collisionSpheres[i];
 			}
 		}
 		// If none was found, create new.
-		if (i == collisionSpheres.size())
-		{
-			sphere = new btSphereShape(radius);
-			collisionSpheres.push_back(sphere);
-		}
+		btSphereShape* sphere = new btSphereShape(radius);
+		collisionSpheres.push_back(sphere);
 		return sphere;
+
 	} // getSphereShape()
 
 
@@ -235,9 +271,74 @@ namespace Engine {
 
 	void PhysicsSystem::runTests_init()
 	{
-		create_collision_sphere(glm::vec3(), 5.f);
-		create_collision_sphere(glm::vec3(), 5.1f);
-		create_collision_sphere(glm::vec3(), 5.f);
+		testObjIds.push_back( assign_collision_sphere(glm::vec3(10,0,0), 5.f) );
+		testObjIds.push_back( assign_collision_sphere(glm::vec3(0,0,0), 5.1f) );
+		testObjIds.push_back( assign_collision_sphere(glm::vec3(0,0,-25), 5.f) );
+
+		char msg[512];
+		QDEBUG("------------------------------");
+		snprintf(msg, 512, "Test objects: %d", testObjIds.size());
+		QDEBUG(msg);
+		for (int i = 0; i < testObjIds.size(); ++i)
+		{
+			snprintf(msg, 512, "- object %d: index %d", i, testObjIds[i]);
+			QDEBUG(msg);
+		}
+		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
+		QDEBUG(msg);
+
+		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
+		QDEBUG(msg);
+		snprintf(msg, 512, "Collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
+		QDEBUG(msg);
+
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			if (collisionObjectArrayUsage[i] == Unassigned) continue;
+			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
+			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+		}
+
+		QDEBUG("------------------------------");
+		QDEBUG("Unassign testObjIds: idx 1, idx 2");
+		unassign_collision_object(testObjIds[2]);
+		testObjIds[2] = -1;
+		unassign_collision_object(testObjIds[1]);
+		testObjIds[1] = -1;
+		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
+		QDEBUG(msg);
+
+		QDEBUG("------------------------------");
+		QDEBUG("Re-assign testObjIds: idx 1, idx 2");
+		testObjIds[1] = assign_collision_sphere(glm::vec3(0, 51, 0), 5.f);
+		testObjIds[2] = assign_collision_sphere(glm::vec3(-40, 0, 0), 1.f);
+		QDEBUG("Assign testObjIds: idx 3");
+		testObjIds.push_back(assign_collision_sphere(glm::vec3(0, -200, 0), 0.5f));
+		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
+		QDEBUG(msg);
+		snprintf(msg, 512, "Test objects: %d", testObjIds.size());
+		QDEBUG(msg);
+		for (int i = 0; i < testObjIds.size(); ++i)
+		{
+			snprintf(msg, 512, "- object %d: index %d", i, testObjIds[i]);
+			QDEBUG(msg);
+		}
+		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
+		QDEBUG(msg);
+
+		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
+		QDEBUG(msg);
+		snprintf(msg, 512, "Collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
+		QDEBUG(msg);
+
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			if (collisionObjectArrayUsage[i] == Unassigned) continue;
+			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
+			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+		}
 
 	} // runTests_init()
 
@@ -269,7 +370,7 @@ namespace Engine {
 
 
 		// Object tests //
-
+		/*
 		char msg[512];
 		QDEBUG("------------------------------");
 		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
@@ -295,6 +396,7 @@ namespace Engine {
 		bool ret = raycast(rayOrigin, rayDirection, &hitLoc);
 		snprintf(msg, 512, "Hit test, returned: %s, %s", (ret ? "true" : "false"), (ret ? vector_to_string(hitLoc).c_str() : ""));
 		QDEBUG(msg);
+		*/
 
 		/*
 		// Test raycasting against collision objects.
