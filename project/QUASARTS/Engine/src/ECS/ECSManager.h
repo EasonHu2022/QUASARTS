@@ -209,6 +209,9 @@ namespace Engine {
         // Set the current Entity ID:
         void set_current_entity(unsigned int entityID);
 
+        // Get the name of the current scene:
+        std::string get_scene_name();
+
         // Set the pointer to the current scene:
         void set_scene(Scene *scene_ptr);
 

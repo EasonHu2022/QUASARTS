@@ -287,6 +287,11 @@ namespace Engine {
         current_entity = entityID;
     }
 
+    // Get the name of the current scene:
+    std::string ECSManager::get_scene_name() {
+        return scene->name;
+    }
+
     // Set the pointer to the current scene:
     void ECSManager::set_scene(Scene *scene_ptr) {
         scene = scene_ptr;
