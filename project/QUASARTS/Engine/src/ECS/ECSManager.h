@@ -155,13 +155,6 @@ namespace Engine {
             compArray->remove_data(entityID);
         }
 
-        // Print Component data for an Entity:
-        template <typename T>
-        void print_component(unsigned int entityID, unsigned int componentType) {
-            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
-            compArray->print_component(entityID);
-        }
-
         // Check if an Entity has a particular type of Component:
         bool has_component(unsigned int entityID, unsigned int componentType);
 
