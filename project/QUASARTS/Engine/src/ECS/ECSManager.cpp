@@ -183,11 +183,27 @@ namespace Engine {
             return;
         }
 
+        // Take into account the situation where a child already has a parent:
+        if (has_parent(child_index) == true) {
+            std::cerr << "Function ECSManager::add_child: Warning: child \
+                                    entity " << child << " already has a \
+                                    parent! Creation failed." << std::endl;
+            return;
+        }
+
+        // Deal with the situation where the child is the parent of the parent:
+        if (get_parent(parent_index) == child) {
+            std::cerr << "Function ECSManager::add_child: Warning: child \
+                                    entity " << child << " is the parent of \
+                                    parent entity " << parent << "! Circular \
+                                    relationship forbidden, creation failed."
+                                    << std::endl;
+            return;
+        }
+
         // If both parent and child exist, create the relationship:
         scene->children[parent_index].emplace(child);
         scene->parents[child_index] = parent;
-
-        // Take into account the situation where a child already has a parent:
     }
 
     // Remove a child from an Entity:
