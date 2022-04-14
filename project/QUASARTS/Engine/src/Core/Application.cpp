@@ -6,7 +6,7 @@
 #include "Event/EventModule.h"
 #include "Core/Input.h"
 #include "Scripts/ScriptsSystem.h"
-#include "Render/RendererTemp.h"
+#include "Render/Renderer.h"
 
 namespace Engine
 {
@@ -39,7 +39,7 @@ namespace Engine
 		//create window for app
 		m_window = Window::create(WindowProps(name));
 
-		RendererTemp::Instance()->init();
+		Renderer::Instance()->init();
 
 	}
 	Application:: ~Application()
@@ -122,7 +122,7 @@ namespace Engine
 	{
 		//Renderer::Instance()->render_loop();
 		//Renderer::Instance()->render_loop();
-		RendererTemp::Instance()->render();
+		Renderer::Instance()->render();
 	}
 
 	void Application::on_gui()

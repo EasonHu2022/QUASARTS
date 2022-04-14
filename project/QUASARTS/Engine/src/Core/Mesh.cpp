@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "Render/RendererTemp.h"
+#include "Render/Renderer.h"
 #pragma once
 namespace Engine {
 
@@ -114,7 +114,7 @@ namespace Engine {
 	{
 		auto p = pack(VAO,indices.size());
 
-		RendererTemp::Instance()->renderQueue->push(p);
+		Renderer::Instance()->renderQueue->push(p);
 	}
 
 	void Mesh::set_up_buffers()
