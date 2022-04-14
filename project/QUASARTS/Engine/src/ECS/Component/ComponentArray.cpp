@@ -18,4 +18,14 @@ namespace Engine {
         std::cout << "two: " << mesh.two << std::endl;
         std::cout << "three: " << mesh.three << std::endl;
     }
+
+    void ComponentArray<CollisionSphereComponent>::print_component(unsigned int entityID) {
+        CollisionSphereComponent collisionSphere = get_data(entityID);
+        std::cout << "Component type: Collision Sphere" << std::endl;
+        std::cout << "x: " << collisionSphere.x << std::endl;
+        std::cout << "y: " << collisionSphere.y << std::endl;
+        std::cout << "z: " << collisionSphere.z << std::endl;
+        std::cout << "radius: " << collisionSphere.radius << std::endl;
+        std::cout << "collision id: " << collisionSphere.collision_id << std::endl;
+    }
 }
