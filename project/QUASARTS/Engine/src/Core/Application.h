@@ -11,7 +11,7 @@
 #include "Scripts/ScriptsSystem.h"
 #include "Core/EntityWorld.h"
 #include "Core/miniECS.h"
-#include "ECS/System/ExampleSystem.h"
+#include "ECS/ECSManager.h"
 
 namespace Engine
 {
@@ -28,7 +28,6 @@ namespace Engine
 		MeshLoaderFactory* loaderFactory;
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
-		ExampleSystem* notreserved;
 		Scene* scene;
 
 

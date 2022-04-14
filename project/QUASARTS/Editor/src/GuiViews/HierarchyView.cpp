@@ -41,7 +41,7 @@ void HierarchyView::build_children(unsigned int entityID, bool show) {
 		std::set<unsigned int> children = Engine::ECSManager::Instance()->get_children(entityID);
 		bool is_expanded = ImGui::TreeNodeEx((void*)entityID, ImGuiTreeNodeFlags_FramePadding, "", nullptr);
 		ImGui::SameLine();
-		if (ImGui::Selectable(Engine::ECSManager::Instance()->get_entityName(entityID).c_str())) {
+		if (ImGui::Selectable(Engine::ECSManager::Instance()->get_entityName(entityID).c_str(), ImGuiTreeNodeFlags_Selected)) {
 
 			Engine::ECSManager::Instance()->set_current_entity(entityID);
 
