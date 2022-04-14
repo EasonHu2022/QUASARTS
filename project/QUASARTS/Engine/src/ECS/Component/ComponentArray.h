@@ -2,6 +2,7 @@
 
 // Library includes:
 #include <array>
+#include <iostream>
 
 // Local includes:
 #include "ECS/ECS-Common.h"
@@ -167,6 +168,8 @@ namespace Engine {
             }
             std::cout << std::endl;
         }
+
+        virtual void print_component(unsigned int entityID);
 
         private:
         // Component data:
