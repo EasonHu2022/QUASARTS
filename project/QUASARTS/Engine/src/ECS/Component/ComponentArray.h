@@ -169,8 +169,6 @@ namespace Engine {
             std::cout << std::endl;
         }
 
-        virtual void print_component(unsigned int entityID);
-
         private:
         // Component data:
         std::array<T, MAX_ENTITIES> componentData;
