@@ -2,11 +2,12 @@
 #include <lua.hpp>
 #include <sol/sol.hpp>
 #include <string>
+#include <memory>
 
 #include "Core/IManager.h"
 
 //export functions to lua
-#include "Logger/LogModule.h"
+//#include "Logger/LogModule.h"
 #include "Core/Input.h"
 //export functions to lua
 
@@ -31,19 +32,18 @@ namespace Engine {
 
 		// Usage functions //
 	public:
-		void createScript(const std::string& file_name);		
+
+		void createContext();
+		void destroyContext();
+		void createScript(const std::string& file_name, const std::string& file_path);
 		void loadScript(const std::string& path);
-		void updateScript();
+		void reloadScript();
 		void deleteScript();
 
-		//export functions
-		void exportLog();
-		//export functions 
-
-	public:
+	private:
 		//lua virtual machine
-		sol::state lua{};
+		std::unique_ptr<sol::state> lua_state;
 		std::string script_name = "";
-		std::string root = "../Scripts/";
+		std::string script_path = "";
 	};
 }

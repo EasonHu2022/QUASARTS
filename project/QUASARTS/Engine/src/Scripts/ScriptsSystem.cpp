@@ -1,8 +1,8 @@
 #include "ScriptsSystem.h"
-#include "Logger/LogModule.h"
+#include "ScriptsExporter.h"
+#include "Utilities/FileParser.h"
 
 #include <fstream>
-#include "Utilities/FileParser.h"
 
 namespace Engine {
 
@@ -25,11 +25,7 @@ namespace Engine {
 	/// </summary>
 	void ScriptsSys::init()
 	{
-		//lib 
-		lua.open_libraries(sol::lib::base);
-
-		//export
-		exportLog();
+		createContext();
 	}
 
 	/// <summary>
@@ -66,63 +62,55 @@ namespace Engine {
 
 	}
 	
-	void ScriptsSys::createScript(const std::string& file_name)
+	void ScriptsSys::createContext()
+	{
+		if (!lua_state)
+		{
+			lua_state = std::make_unique<sol::state>();
+			lua_state->open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
+			ScriptsExporter::exportScripts(*lua_state);
+		}
+	}
+
+	void ScriptsSys::destroyContext()
+	{
+		if (lua_state)
+		{
+			lua_state.reset();
+		}
+	}
+
+	void ScriptsSys::createScript(const std::string& file_name, const std::string& file_path)
 	{	
 		script_name = file_name;
+		std::string sub_path = "\\Assets\\Scripts\\";
+		script_path = file_path + sub_path + file_name;
 		std::ofstream ofs;
-		ofs.open(root + file_name + ".lua", std::ios::out);
+		ofs.open(script_path + ".lua", std::ios::out);
 		if (ofs)
 		{
-			QDEBUG("Created a {0} script.", script_name);
+			QDEBUG("created and added the script: {0}.lua , the path is {1}", script_name, script_path);
 		}
-		ofs << "--Scripts test: we now can use our log function" << std::endl;
-		ofs << "--And we have a simple entity class here. usage: printPos, setX, setY" << std::endl;
+		ofs << "--Scripts: we now can use the log function" << std::endl;
+		ofs << "--Hint: Qlog(), Qtrace(), Qerror()...etc" << std::endl;
 		ofs.close();
 		
 	}
 
 	void ScriptsSys::loadScript(const std::string& path)
 	{
-		lua.script_file(path);
+		lua_state->script_file(path);
+		
 	}
 	
-	void ScriptsSys::exportLog()
+	void ScriptsSys::reloadScript()
 	{
-		//for engine 
-		lua.set_function("Qlog", std::function <void(const std::string&)>([](const std::string& str) {
-			QDEBUG(str);
-			}));
-
-		lua.set_function("Qtrace", std::function <void(const std::string&)>([](const std::string& str) {
-			QTRACE(str);
-			}));
-
-		lua.set_function("Qerror", std::function <void(const std::string&)>([](const std::string& str) {
-			QERROR(str);
-			}));
-
-		//for game     
-		lua.set_function("Glog", std::function <void(const std::string&)>([](const std::string& str) {
-			DEBUG(str);
-			}));
-
-		lua.set_function("Gtrace", std::function <void(const std::string&)>([](const std::string& str) {
-			TRACE(str);
-			}));
-
-		lua.set_function("Gerror", std::function <void(const std::string&)>([](const std::string& str) {
-			ERROR(str);
-			}));
-	}
-
-	void ScriptsSys::updateScript()
-	{
-		loadScript(root + script_name + ".lua");
+		loadScript(script_path + ".lua");
 	}
 
 	void ScriptsSys::deleteScript()
 	{
-		std::string file_path = root + script_name + ".lua";
+		std::string file_path = script_path + ".lua";
 
 		if (std::remove(file_path.c_str()) == 0)
 		{
@@ -130,7 +118,6 @@ namespace Engine {
 		}
 
 	}
-
 }
 
 //sol::lib::base,
