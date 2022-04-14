@@ -79,7 +79,8 @@ namespace Engine {
     // Change the name of an Entity:
     void ECSManager::set_entityName(unsigned int entityID, std::string name) {
         Entity *entity = get_entity(entityID);
-        entity->set_name(name);
+        std::string new_name = name + "##" + std::to_string(entityID);
+        entity->set_name(new_name);
     }
 
     // Destroy an Entity:
