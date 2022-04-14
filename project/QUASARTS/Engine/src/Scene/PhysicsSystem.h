@@ -53,11 +53,11 @@ namespace Engine {
 		void unassign_collision_object(const int obj_idx);
 
 		/// <summary>
-		/// Displace a collision object by a given vector in world coordinates.
+		/// Set the world position of the indicated collision object to the given vector.
 		/// </summary>
 		/// <param name="obj_idx">The ID of the object to move.</param>
-		/// <param name="worldDisplacement">The vector in world coordinates by which the given object will be moved.</param>
-		void move_collision_object(const int obj_idx, const glm::vec3 worldDisplacement);
+		/// <param name="worldDisplacement">A vector in world coordinates to which the given object will be moved.</param>
+		void set_collision_object_position(const int obj_idx, const glm::vec3 worldPosition);
 
 		/// <summary>
 		/// Casts a ray from the given origin along the given direction vector. Raycasting stops at the first detected hit. Ray has finite length: ray.length = direction.length if direction.length >= Q_RAYCAST_RAY_MIN_LENGTH, otherwise ray.length = Q_RAYCAST_RAY_MIN_LENGTH.

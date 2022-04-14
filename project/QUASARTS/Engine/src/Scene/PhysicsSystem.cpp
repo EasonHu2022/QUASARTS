@@ -130,11 +130,10 @@ namespace Engine {
 	} // unassign_collision_object()
 
 
-	void PhysicsSystem::move_collision_object(const int obj_idx, const glm::vec3 worldDisplacement)
+	void PhysicsSystem::set_collision_object_position(const int obj_idx, const glm::vec3 worldPosition)
 	{
 		if (collisionObjectArrayUsage[obj_idx] == Unassigned) QDEBUG("move_collision_object() was passed the index of an unassigned collision object.");
-		btTransform& tf = collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform();
-		tf.setOrigin(tf.getOrigin() + glm_to_btvec3(worldDisplacement));
+		collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform().setOrigin(glm_to_btvec3(worldPosition));
 
 	} // move_collision_object()
 
@@ -313,7 +312,7 @@ namespace Engine {
 		QDEBUG("Displace all objects by (10,10,10):");
 		for (int i = 0; i < testObjIds.size(); ++i)
 		{
-			move_collision_object(i, glm::vec3(10,10,10));
+			set_collision_object_position(i, glm::vec3(10,10,10));
 		}
 		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
 		{
