@@ -155,6 +155,9 @@ namespace Engine {
             compArray->remove_data(entityID);
         }
 
+        // Check if an Entity has a particular type of Component:
+        bool has_component(unsigned int entityID, unsigned int componentType);
+
         // Add an entity group:
         void add_entity_group(std::string group_name);
 

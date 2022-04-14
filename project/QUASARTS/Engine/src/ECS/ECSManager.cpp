@@ -79,7 +79,8 @@ namespace Engine {
     // Change the name of an Entity:
     void ECSManager::set_entityName(unsigned int entityID, std::string name) {
         Entity *entity = get_entity(entityID);
-        entity->set_name(name);
+        std::string new_name = name + "##" + std::to_string(entityID);
+        entity->set_name(new_name);
     }
 
     // Destroy an Entity:
@@ -112,6 +113,18 @@ namespace Engine {
             }
             scene->children[i].erase(entityID);
         }
+    }
+
+    // Check if an Entity has a particular type of Component:
+    bool ECSManager::has_component(unsigned int entityID, unsigned int componentType) {
+        Entity *entity = get_entity(entityID);
+        quasarts_component_mask entity_mask = entity->get_componentMask();
+        quasarts_component_mask test_mask{};
+        test_mask.mask = (uint64_t)1 << componentType;
+        if ((test_mask.mask & entity_mask.mask) == test_mask.mask) {
+            return true;
+        }
+        return false;
     }
 
     // Add an entity group:

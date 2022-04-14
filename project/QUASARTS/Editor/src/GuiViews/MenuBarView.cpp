@@ -10,6 +10,8 @@ void MenuBarView::on_add()
 {
     new_project = false;
     new_scene = false;
+    new_entity = false;
+    new_child = false;
     folder_path = "";
     QDEBUG("on add view : MenuBar");
 }
@@ -28,24 +30,6 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
 
-                Engine::Scene* scene = new Engine::Scene();
-                Engine::ECSManager::Instance()->set_scene(scene);
-                Engine::ECSManager::Instance()->register_system(SYSTEM_EXAMPLE, Engine::Application::Instance->notreserved);
-                Engine::Application::Instance->notreserved->set_manager(Engine::ECSManager::Instance());
-                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                Engine::TransformComponent transform = { 0 };
-                transform.y = 5.0;
-                Engine::ECSManager::Instance()->create_component(entityID, COMPONENT_TRANSFORM, transform);
-                transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                std::cout << transform.x << std::endl;
-                std::cout << transform.y << std::endl;
-                std::cout << transform.z << std::endl;
-
-                Engine::Application::Instance->notreserved->update();
-                transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                std::cout << transform.x << std::endl;
-                std::cout << transform.y << std::endl;
-                std::cout << transform.z << std::endl;
 
             }
             ImGui::Separator();
@@ -111,9 +95,7 @@ void MenuBarView::on_gui()
 
                 Engine::ScriptsSys::Instance()->updateScript();
             }
-            if (ImGui::MenuItem("Add Attribute")) {
-
-            }
+            ImGui::MenuItem("Add Attribute", NULL, &new_attribute);
             if (ImGui::MenuItem("Delete Attribute")) {
 
             }
@@ -122,17 +104,11 @@ void MenuBarView::on_gui()
 
         if (ImGui::BeginMenu("Object"))
         {
-            if (ImGui::MenuItem("Blank Entity")) {
-                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                //Engine::ECSManager::Instance()->print_entities();
-                std::string testing = "testing";
-                //Engine::ECSManager::Instance()->create_component < Engine::TransformComponent > (entityID, COMPONENT_TRANSFORM);
-                //Engine::ECSManager::Instance()->set_entityName(entityID, testing);
-                Engine::Entity* ent = Engine::ECSManager::Instance()->get_entity(entityID);
-                printf("anything, just print anything");
-                Engine::ECSManager::Instance()->print_entities();
-                std::cout << ent->get_name() << std::endl;
-                //Engine::ECSManager::Instance()->print_componentArray_info(COMPONENT_TRANSFORM);
+            ImGui::MenuItem("Blank Entity", NULL, &new_entity);
+            if (ImGui::MenuItem("Child Entity")) {
+
+                new_child = true;
+
             }
             if (ImGui::BeginMenu("Insert Basic Object")) {
                 if (ImGui::MenuItem("Triangle")) {
@@ -181,6 +157,12 @@ void MenuBarView::on_gui()
         newScene();
     if (new_script)
         newScript();
+    if (new_entity)
+        newEntity();
+    if (new_child)
+        newChild();
+    if (new_attribute)
+        newAttribute();
 }
 
 void MenuBarView::on_remove()
@@ -360,6 +342,108 @@ void MenuBarView::newScript() {
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
     if (ImGui::Button("Cancel")) {
         new_script = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newEntity() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose Entity Name", &new_entity, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+
+
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Entity Name", buf1, 64);
+    ImGui::PopItemWidth();
+
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0) {
+
+            unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+            Engine::ECSManager::Instance()->set_entityName(entityID, buf1);
+            new_entity = false;
+            buf1[0] = '\0';
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_entity = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newChild() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose Entity Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+
+
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Entity Name", buf1, 64);
+    ImGui::PopItemWidth();
+
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0) {
+
+            unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+
+            Engine::ECSManager::Instance()->set_entityName(entityID, buf1);
+            Engine::ECSManager::Instance()->add_child(Engine::ECSManager::Instance()->get_current_entity(), entityID);
+            new_child = false;
+            buf1[0] = '\0';
+
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_child = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newAttribute() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose Attribute Type", &new_attribute, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    
+    static int item_current_idx = 0; // Here we store our selection data as an index.
+    const char* combo_preview_value = components[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+    if (ImGui::BeginCombo("Attributes", combo_preview_value))
+    {
+        for (int n = 0; n < 3; n++)
+        {
+            const bool is_selected = (item_current_idx == n);
+            if (ImGui::Selectable(components[n], is_selected))
+                item_current_idx = n;
+
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        new_attribute = false;
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_attribute = false;
     }
 
     ImGui::End();

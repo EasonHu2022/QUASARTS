@@ -20,7 +20,6 @@ namespace Engine
 		/******temp*********/
 		entityWorld = new EntityWorld();
 		miniecs = new miniECS();
-		notreserved = new ExampleSystem();
 		scene = new Scene();
 
 		LogModule::Instance()->init();
