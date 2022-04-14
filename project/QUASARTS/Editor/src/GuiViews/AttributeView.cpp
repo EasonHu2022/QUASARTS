@@ -18,33 +18,21 @@ void AttributeView::on_gui()
 		
 		if (!game) {
 		
-			if (Engine::Application::Instance->miniecs->index > -1) {
-
-				if (i != Engine::Application::Instance->miniecs->index) {
-
-					i = Engine::Application::Instance->miniecs->index;
-					
-					vec3f[0] = Engine::Application::Instance->miniecs->entities[i]->attributes[0].x;
-					vec3f[1] = Engine::Application::Instance->miniecs->entities[i]->attributes[0].y;
-					vec3f[2] = Engine::Application::Instance->miniecs->entities[i]->attributes[0].z;
-					vec3f2[0] = Engine::Application::Instance->miniecs->entities[i]->attributes[1].x;
-					vec3f2[1] = Engine::Application::Instance->miniecs->entities[i]->attributes[1].y;
-					vec3f2[2] = Engine::Application::Instance->miniecs->entities[i]->attributes[1].z;
-
+			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
+			
+				Engine::MeshComponent mesh = Engine::ECSManager::Instance()->get_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH);
+				static float v1[3] = { mesh.one,mesh.two,mesh.three };
+				ImGui::InputFloat3("Position", v1);
+				if (ImGui::Button("change")) {
+					mesh.one = v1[0];
+					mesh.two = v1[1];
+					mesh.three = v1[2];
+					Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH, mesh);
+					Engine::MeshComponent mesh2 = Engine::ECSManager::Instance()->get_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH);
+					std::cout << mesh2.one <<std::endl;
 				}
-
-				ImGui::InputFloat3("Position", vec3f);
-				Engine::Application::Instance->miniecs->entities[i]->attributes[0].x = vec3f[0];
-				Engine::Application::Instance->miniecs->entities[i]->attributes[0].y = vec3f[1];
-				Engine::Application::Instance->miniecs->entities[i]->attributes[0].z = vec3f[2];
-
-				ImGui::Separator();
-
-
-				ImGui::InputFloat3("Orientation", vec3f2);
-				Engine::Application::Instance->miniecs->entities[i]->attributes[1].x = vec3f2[0];
-				Engine::Application::Instance->miniecs->entities[i]->attributes[1].y = vec3f2[1];
-				Engine::Application::Instance->miniecs->entities[i]->attributes[1].z = vec3f2[2];
+				
+			
 			}
 		
 		}

@@ -95,7 +95,10 @@ void MenuBarView::on_gui()
 
                 Engine::ScriptsSys::Instance()->updateScript();
             }
-            ImGui::MenuItem("Add Attribute", NULL, &new_attribute);
+            if (ImGui::MenuItem("Add Attribute")) {
+                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
+                    new_attribute = true;
+            }
             if (ImGui::MenuItem("Delete Attribute")) {
 
             }
@@ -106,9 +109,8 @@ void MenuBarView::on_gui()
         {
             ImGui::MenuItem("Blank Entity", NULL, &new_entity);
             if (ImGui::MenuItem("Child Entity")) {
-
-                new_child = true;
-
+                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
+                    new_child = true;
             }
             if (ImGui::BeginMenu("Insert Basic Object")) {
                 if (ImGui::MenuItem("Triangle")) {
@@ -424,21 +426,22 @@ void MenuBarView::newAttribute() {
     const char* combo_preview_value = components[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
     if (ImGui::BeginCombo("Attributes", combo_preview_value))
     {
-        for (int n = 0; n < 3; n++)
+        for (int n = 0; n < NUM_COMPONENT_TYPES; n++)
         {
-            const bool is_selected = (item_current_idx == n);
-            if (ImGui::Selectable(components[n], is_selected))
+            if (ImGui::Selectable(components[n]))
                 item_current_idx = n;
-
-            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
         }
         ImGui::EndCombo();
     }
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
+        if(item_current_idx == COMPONENT_TRANSFORM)
+            Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
+        else if(item_current_idx == COMPONENT_MESH)
+            Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
+        else if (item_current_idx == COMPONENT_COLLISION_SPHERE)
+            Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
         new_attribute = false;
     }
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
