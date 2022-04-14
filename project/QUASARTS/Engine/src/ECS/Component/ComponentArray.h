@@ -11,6 +11,12 @@
 #include "ECS/Component/MeshComponent.h"
 #include "ECS/Component/CollisionSphereComponent.h"
 
+/* Process for adding new Component types:
+ * #include the source file here.
+ * Add a template class declaration here (at the bottom).
+ * Add a new definition in ECS-Common.h.
+ * Update NUM_COMPONENT_TYPES in ECS-Common.h */
+
 /* Functions:
  * T get_data(unsigned int entityID)
  * void add_data(unsigned int entityID)
@@ -176,4 +182,5 @@ namespace Engine {
     // Declarations of type-specific Components, for the DLL:
     template class QS_API ComponentArray<TransformComponent>;
     template class QS_API ComponentArray<MeshComponent>;
+    template class QS_API ComponentArray<CollisionSphereComponent>;
 }

@@ -28,8 +28,6 @@ void FileInputView::on_gui()
         {
 
             std::string items[]{ "Resources","Scripts" };
-            static const char* leaves[]{ "cool_object.obj","sphere.obj","another_object.obj" };
-            std::string test_string = "test";
             static bool is_selected = true;
             static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 

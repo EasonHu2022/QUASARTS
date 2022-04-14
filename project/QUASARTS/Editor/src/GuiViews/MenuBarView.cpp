@@ -10,6 +10,8 @@ void MenuBarView::on_add()
 {
     new_project = false;
     new_scene = false;
+    new_entity = false;
+    new_child = false;
     folder_path = "";
     QDEBUG("on add view : MenuBar");
 }
@@ -122,17 +124,11 @@ void MenuBarView::on_gui()
 
         if (ImGui::BeginMenu("Object"))
         {
-            if (ImGui::MenuItem("Blank Entity")) {
-                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                //Engine::ECSManager::Instance()->print_entities();
-                std::string testing = "testing";
-                //Engine::ECSManager::Instance()->create_component < Engine::TransformComponent > (entityID, COMPONENT_TRANSFORM);
-                //Engine::ECSManager::Instance()->set_entityName(entityID, testing);
-                Engine::Entity* ent = Engine::ECSManager::Instance()->get_entity(entityID);
-                printf("anything, just print anything");
-                Engine::ECSManager::Instance()->print_entities();
-                std::cout << ent->get_name() << std::endl;
-                //Engine::ECSManager::Instance()->print_componentArray_info(COMPONENT_TRANSFORM);
+            ImGui::MenuItem("Blank Entity", NULL, &new_entity);
+            if (ImGui::MenuItem("Child Entity")) {
+
+                new_child = true;
+
             }
             if (ImGui::BeginMenu("Insert Basic Object")) {
                 if (ImGui::MenuItem("Triangle")) {
@@ -181,6 +177,10 @@ void MenuBarView::on_gui()
         newScene();
     if (new_script)
         newScript();
+    if (new_entity)
+        newEntity();
+    if (new_child)
+        newChild();
 }
 
 void MenuBarView::on_remove()
@@ -360,6 +360,73 @@ void MenuBarView::newScript() {
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
     if (ImGui::Button("Cancel")) {
         new_script = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newEntity() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose Entity Name", &new_entity, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+
+
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Entity Name", buf1, 64);
+    ImGui::PopItemWidth();
+
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0) {
+
+            unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+            Engine::ECSManager::Instance()->set_entityName(entityID, buf1);
+            new_entity = false;
+            buf1[0] = '\0';
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_entity = false;
+    }
+
+    ImGui::End();
+
+}
+
+void MenuBarView::newChild() {
+
+    ImGui::SetNextWindowSize(ImVec2(300, 100));
+    ImGui::Begin("Choose Entity Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    static char buf1[64] = "";
+
+
+    ImGui::PushItemWidth(-1);
+    ImGui::InputTextWithHint("##pname", "Entity Name", buf1, 64);
+    ImGui::PopItemWidth();
+
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
+    if (ImGui::Button("Confirm")) {
+        if (strlen(buf1) != 0) {
+
+            unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+
+            Engine::ECSManager::Instance()->set_entityName(entityID, buf1);
+            Engine::ECSManager::Instance()->add_child(Engine::ECSManager::Instance()->get_current_entity(), entityID);
+            Engine::ECSManager::Instance()->print_entities();
+            new_child = false;
+
+        }
+
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+    if (ImGui::Button("Cancel")) {
+        new_child = false;
     }
 
     ImGui::End();

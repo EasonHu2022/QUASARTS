@@ -11,4 +11,5 @@ public:
 	void on_add() override;
 	void on_gui() override;
 	void on_remove() override;
+	void build_children(unsigned int, bool);
 };

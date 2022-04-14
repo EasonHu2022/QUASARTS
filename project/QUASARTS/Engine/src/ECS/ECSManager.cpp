@@ -114,6 +114,18 @@ namespace Engine {
         }
     }
 
+    // Check if an Entity has a particular type of Component:
+    bool ECSManager::has_component(unsigned int entityID, unsigned int componentType) {
+        Entity *entity = get_entity(entityID);
+        quasarts_component_mask entity_mask = entity->get_componentMask();
+        quasarts_component_mask test_mask{};
+        test_mask.mask = (uint64_t)1 << componentType;
+        if ((test_mask.mask & entity_mask.mask) == test_mask.mask) {
+            return true;
+        }
+        return false;
+    }
+
     // Add an entity group:
     void ECSManager::add_entity_group(std::string group_name) {
         if (scene->entity_groups.find(group_name) != scene->entity_groups.end()) {
@@ -183,6 +195,24 @@ namespace Engine {
             return;
         }
 
+        // Take into account the situation where a child already has a parent:
+        if (has_parent(child_index) == true) {
+            std::cerr << "Function ECSManager::add_child: Warning: child \
+                                    entity " << child << " already has a \
+                                    parent! Creation failed." << std::endl;
+            return;
+        }
+
+        // Deal with the situation where the child is the parent of the parent:
+        if (get_parent(parent_index) == child) {
+            std::cerr << "Function ECSManager::add_child: Warning: child \
+                                    entity " << child << " is the parent of \
+                                    parent entity " << parent << "! Circular \
+                                    relationship forbidden, creation failed."
+                                    << std::endl;
+            return;
+        }
+
         // If both parent and child exist, create the relationship:
         scene->children[parent_index].emplace(child);
         scene->parents[child_index] = parent;
@@ -232,6 +262,22 @@ namespace Engine {
         return scene->parents[index];
     }
 
+    // Check if the Entity has a parent:
+    bool ECSManager::has_parent(unsigned int entityID) {
+        if (get_parent(entityID) == TOO_MANY_ENTITIES) {
+            return false;
+        }
+        return true;
+    }
+
+    // Check if the Entity has children:
+    bool ECSManager::has_children(unsigned int entityID) {
+        if (get_children(entityID).size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
     // Register a System with the Manager:
     void ECSManager::register_system(unsigned int systemType, System *system) {
         systems[systemType] = system;
@@ -251,6 +297,11 @@ namespace Engine {
     // Set the current Entity ID:
     void ECSManager::set_current_entity(unsigned int entityID) {
         current_entity = entityID;
+    }
+
+    // Get the name of the current scene:
+    std::string ECSManager::get_scene_name() {
+        return scene->name;
     }
 
     // Set the pointer to the current scene:

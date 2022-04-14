@@ -155,6 +155,9 @@ namespace Engine {
             compArray->remove_data(entityID);
         }
 
+        // Check if an Entity has a particular type of Component:
+        bool has_component(unsigned int entityID, unsigned int componentType);
+
         // Add an entity group:
         void add_entity_group(std::string group_name);
 
@@ -191,6 +194,12 @@ namespace Engine {
         // Get the parent of an Entity:
         unsigned int get_parent(unsigned int entityID);
 
+        // Check if the Entity has a parent:
+        bool has_parent(unsigned int entityID);
+
+        // Check if the Entity has children:
+        bool has_children(unsigned int entityID);
+
         // Register a System with the Manager:
         void register_system(unsigned int systemType, System *system);
 
@@ -202,6 +211,9 @@ namespace Engine {
 
         // Set the current Entity ID:
         void set_current_entity(unsigned int entityID);
+
+        // Get the name of the current scene:
+        std::string get_scene_name();
 
         // Set the pointer to the current scene:
         void set_scene(Scene *scene_ptr);

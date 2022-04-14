@@ -17,6 +17,9 @@ namespace Engine {
         public:
         // Constructor:
         Scene() {
+            // Set the scene name to default:
+            name = "Default Scene";
+
             // Zero-initialize the entity IDs:
             entity_IDs = {0};
 
@@ -37,6 +40,9 @@ namespace Engine {
         }
 
         private:
+        // Scene name:
+        std::string name;
+
         // Entities:
         std::vector<Entity> entities;
         std::vector<unsigned int> entity_ID_match;
