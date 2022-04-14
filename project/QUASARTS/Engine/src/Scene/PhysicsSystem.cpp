@@ -44,7 +44,7 @@ namespace Engine {
 
 
 		// Test collision world.
-		//runTests_init();
+		runTests_init();
 
 	} // init()
 
@@ -113,7 +113,7 @@ namespace Engine {
 			// Set its world transform.
 			float yaw = 0.f, pitch = 0.f, roll = 0.f;
 			btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
-			btVector3 pos = glm_to_bt_vec3(worldPosition);
+			btVector3 pos = glm_to_btvec3(worldPosition);
 			obj->setWorldTransform(btTransform(orn, pos));
 		}
 		return obj_idx;
@@ -121,19 +121,28 @@ namespace Engine {
 	} // assign_collision_sphere()
 
 
-	void PhysicsSystem::unassign_collision_object(const int id)
+	void PhysicsSystem::unassign_collision_object(const int obj_idx)
 	{
-		if (collisionObjectArrayUsage[id] == Unassigned) QDEBUG("unassign_collision_sphere() was passed the index of an unassigned collision object.");
-		collisionObjectArrayUsage[id] = Unassigned;
+		if (collisionObjectArrayUsage[obj_idx] == Unassigned) QDEBUG("unassign_collision_sphere() was passed the index of an unassigned collision object.");
+		collisionObjectArrayUsage[obj_idx] = Unassigned;
 		--numAssignedObjects;
 
-	} // unassign_collision_sphere()
+	} // unassign_collision_object()
+
+
+	void PhysicsSystem::move_collision_object(const int obj_idx, const glm::vec3 worldDisplacement)
+	{
+		if (collisionObjectArrayUsage[obj_idx] == Unassigned) QDEBUG("move_collision_object() was passed the index of an unassigned collision object.");
+		btTransform& tf = collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform();
+		tf.setOrigin(tf.getOrigin() + glm_to_btvec3(worldDisplacement));
+
+	} // move_collision_object()
 
 
 	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
 	{
 		btVector3 hitLoc;
-		bool ret = raycast(glm_to_bt_vec3(origin), glm_to_bt_vec3(direction), &hitLoc);
+		bool ret = raycast(glm_to_btvec3(origin), glm_to_btvec3(direction), &hitLoc);
 		*hitLocation = bt_to_glm_vec3(hitLoc);
 		return ret;
 
@@ -301,6 +310,21 @@ namespace Engine {
 		}
 
 		QDEBUG("------------------------------");
+		QDEBUG("Displace all objects by (10,10,10):");
+		for (int i = 0; i < testObjIds.size(); ++i)
+		{
+			move_collision_object(i, glm::vec3(10,10,10));
+		}
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			if (collisionObjectArrayUsage[i] == Unassigned) continue;
+			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
+			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+		}
+
+
+		/*QDEBUG("------------------------------");
 		QDEBUG("Unassign testObjIds: idx 1, idx 2");
 		unassign_collision_object(testObjIds[2]);
 		testObjIds[2] = -1;
@@ -338,7 +362,7 @@ namespace Engine {
 			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
 			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
 			QDEBUG(msg);
-		}
+		}*/
 
 	} // runTests_init()
 

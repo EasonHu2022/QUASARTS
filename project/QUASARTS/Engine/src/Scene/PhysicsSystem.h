@@ -50,7 +50,14 @@ namespace Engine {
 		/// Unassign a collision object from a collision component.
 		/// </summary>
 		/// <param name="id">ID of the collision object to be unassigned, stored in the associated collision component.</param>
-		void unassign_collision_object(const int id);
+		void unassign_collision_object(const int obj_idx);
+
+		/// <summary>
+		/// Displace a collision object by a given vector in world coordinates.
+		/// </summary>
+		/// <param name="obj_idx">The ID of the object to move.</param>
+		/// <param name="worldDisplacement">The vector in world coordinates by which the given object will be moved.</param>
+		void move_collision_object(const int obj_idx, const glm::vec3 worldDisplacement);
 
 		/// <summary>
 		/// Casts a ray from the given origin along the given direction vector. Raycasting stops at the first detected hit. Ray has finite length: ray.length = direction.length if direction.length >= Q_RAYCAST_RAY_MIN_LENGTH, otherwise ray.length = Q_RAYCAST_RAY_MIN_LENGTH.
@@ -98,7 +105,7 @@ namespace Engine {
 		bool raycast(const btVector3 origin, const btVector3 direction, btVector3* hitLocation);
 
 		// Math lib conversions
-		static btVector3 glm_to_bt_vec3(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
+		static btVector3 glm_to_btvec3(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
 		static glm::vec3 bt_to_glm_vec3(const btVector3 bt_vec) { return glm::vec3(bt_vec.x(), bt_vec.y(), bt_vec.z()); }
 
 		// Debug
