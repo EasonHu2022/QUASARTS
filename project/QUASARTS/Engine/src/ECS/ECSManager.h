@@ -191,6 +191,12 @@ namespace Engine {
         // Get the parent of an Entity:
         unsigned int get_parent(unsigned int entityID);
 
+        // Check if the Entity has a parent:
+        bool has_parent(unsigned int entityID);
+
+        // Check if the Entity has children:
+        bool has_children(unsigned int entityID);
+
         // Register a System with the Manager:
         void register_system(unsigned int systemType, System *system);
 

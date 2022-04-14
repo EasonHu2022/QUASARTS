@@ -186,6 +186,8 @@ namespace Engine {
         // If both parent and child exist, create the relationship:
         scene->children[parent_index].emplace(child);
         scene->parents[child_index] = parent;
+
+        // Take into account the situation where a child already has a parent:
     }
 
     // Remove a child from an Entity:
@@ -230,6 +232,22 @@ namespace Engine {
             return TOO_MANY_ENTITIES;
         }
         return scene->parents[index];
+    }
+
+    // Check if the Entity has a parent:
+    bool ECSManager::has_parent(unsigned int entityID) {
+        if (get_parent(entityID) == TOO_MANY_ENTITIES) {
+            return false;
+        }
+        return true;
+    }
+
+    // Check if the Entity has children:
+    bool ECSManager::has_children(unsigned int entityID) {
+        if (get_children(entityID).size() == 0) {
+            return false;
+        }
+        return true;
     }
 
     // Register a System with the Manager:
