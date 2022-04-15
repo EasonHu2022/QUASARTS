@@ -19,6 +19,8 @@ namespace Engine {
     #define COMPONENT_TRANSFORM         0
     #define COMPONENT_MESH              1
     #define COMPONENT_COLLISION_SPHERE  2
+    #define COMPONENT_MATERIAL          3
+    #define COMPONENT_LIGHTING          4
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

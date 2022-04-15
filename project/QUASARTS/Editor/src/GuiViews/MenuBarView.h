@@ -13,6 +13,7 @@ public:
 	bool new_child;
 	bool new_attribute;
 	std::string folder_path;
+	std::string project_name;
 	static std::string OpenFileDialogue();
 	static std::string OpenFolderDialogue();
 	void newProject();

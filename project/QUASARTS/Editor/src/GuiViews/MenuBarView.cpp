@@ -13,6 +13,7 @@ void MenuBarView::on_add()
     new_entity = false;
     new_child = false;
     folder_path = "";
+    project_name = "";
     QDEBUG("on add view : MenuBar");
 }
 
@@ -74,6 +75,7 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             if (ImGui::MenuItem("Play", "Ctrl+P")) {
 
+                Engine::ScriptsSys::Instance()->reloadScript();
             }
             if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
 
@@ -90,10 +92,6 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Delete Script")) {
 
                 Engine::ScriptsSys::Instance()->deleteScript();
-            }
-            if (ImGui::MenuItem("Update Script(temp)")) {
-
-                Engine::ScriptsSys::Instance()->updateScript();
             }
             if (ImGui::MenuItem("Add Attribute")) {
                 if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
@@ -257,7 +255,10 @@ void MenuBarView::newProject() {
     }
 
     ImGui::PushItemWidth(-1);
-    ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
+    if (ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64))
+    {
+        project_name = buf1;
+    }
     ImGui::PopItemWidth();
     if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 64)) {
         folder_path = buf2;
@@ -335,7 +336,8 @@ void MenuBarView::newScript() {
         if (strlen(buf1) != 0) {
 
             //create and add maybe?
-            Engine::ScriptsSys::Instance()->createScript(buf1);
+            std::string file_path = folder_path + "\\" + project_name;
+            Engine::ScriptsSys::Instance()->createScript(buf1, file_path);
             new_script = false;
             show_window = true;
         }
