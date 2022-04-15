@@ -62,7 +62,7 @@ namespace Engine {
 
             // Update each System:
             for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(scene->entities[index].get_componentMask(), entityID);
+                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
             // Add the data to the relevant component array:
@@ -85,7 +85,7 @@ namespace Engine {
 
             // Update each System:
             for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(scene->entities[index].get_componentMask(), entityID);
+                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
             // Add the data to the relevant component array:
@@ -108,7 +108,7 @@ namespace Engine {
             // Check the Component mask of the Entity:
             quasarts_component_mask mask = {0};
             mask.mask = (uint64_t)1 << componentType;
-            if ((scene->entities[index].get_componentMask().mask & mask.mask) != mask.mask) {
+            if ((scene->entities[index].get_componentMask()->mask & mask.mask) != mask.mask) {
                 // Add the data instead of replacing it:
                 create_component<T>(entityID, componentType, data);
                 return;
@@ -148,7 +148,7 @@ namespace Engine {
 
             // Update each System:
             for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(scene->entities[index].get_componentMask(), entityID);
+                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
             // Remove the data from the relevant component array:
             ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];

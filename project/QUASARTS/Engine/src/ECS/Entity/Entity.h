@@ -17,7 +17,7 @@ namespace Engine {
         unsigned int get_entityID();
 
         // Get component mask:
-        quasarts_component_mask get_componentMask();
+        quasarts_component_mask *get_componentMask();
 
         // Set component mask:
         void set_component_mask(quasarts_component_mask mask);

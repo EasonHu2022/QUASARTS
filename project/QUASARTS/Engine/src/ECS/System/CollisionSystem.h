@@ -11,10 +11,13 @@ namespace Engine {
     public:
         // Constructor and destructor:
         CollisionSystem() {
-            // Set the component mask:
-            quasarts_component_mask* mask = get_component_mask();
-            mask->mask = 0;
-            mask->mask += (uint64_t)1 << COMPONENT_COLLISION_SPHERE;
+            // Set the Component mask:
+            quasarts_component_mask mask;
+            mask.mask = 0;
+            mask.mask += (uint64_t)1 << COMPONENT_COLLISION_SPHERE;
+
+            // Add the Component mask to the System:
+            add_component_mask(mask);
         }
         ~CollisionSystem();
 
@@ -25,7 +28,7 @@ namespace Engine {
             ECSManager* active_manager = get_manager();
 
             // Get the entity ID mask:
-            quasarts_entity_ID_mask* entities = get_entity_ID_mask();
+            quasarts_entity_ID_mask* entities = get_entity_ID_mask(0);
 
             // Increment the transform position:
             CollisionSphereComponent sphere;

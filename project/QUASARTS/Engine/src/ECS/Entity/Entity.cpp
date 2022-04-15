@@ -19,8 +19,8 @@ namespace Engine {
     }
 
     // Get component mask:
-    quasarts_component_mask Entity::get_componentMask() {
-        return componentMask;
+    quasarts_component_mask *Entity::get_componentMask() {
+        return &componentMask;
     }
 
     // Set component mask:

@@ -118,10 +118,10 @@ namespace Engine {
     // Check if an Entity has a particular type of Component:
     bool ECSManager::has_component(unsigned int entityID, unsigned int componentType) {
         Entity *entity = get_entity(entityID);
-        quasarts_component_mask entity_mask = entity->get_componentMask();
+        quasarts_component_mask *entity_mask = entity->get_componentMask();
         quasarts_component_mask test_mask{};
         test_mask.mask = (uint64_t)1 << componentType;
-        if ((test_mask.mask & entity_mask.mask) == test_mask.mask) {
+        if ((test_mask.mask & entity_mask->mask) == test_mask.mask) {
             return true;
         }
         return false;
@@ -342,7 +342,7 @@ namespace Engine {
             quasarts_component_mask mask;
             for (int j = MAX_COMPONENT_TYPES - 1; j >= 0 ; j--) {
                 mask.mask = (uint64_t)1 << j;
-                if ((entity.get_componentMask().mask & mask.mask) == mask.mask) {
+                if ((entity.get_componentMask()->mask & mask.mask) == mask.mask) {
                     std::cout << "1";
                 } else { std::cout << "0"; }
             }
