@@ -133,7 +133,7 @@ namespace Engine {
 		void runTests_init();
 		void runTests_start();
 
-		std::vector<int> testObjIds;
+		std::vector<int> pretendComponents;
 
 
 		// Events //

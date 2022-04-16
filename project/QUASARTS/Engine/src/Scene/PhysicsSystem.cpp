@@ -238,9 +238,9 @@ namespace Engine {
 
 	bool PhysicsSystem::raycast_bt(const btVector3 origin, const btVector3 direction, btVector3* hitLocation)
 	{
-		btVector3 end = direction;
-		if (end.length() < Q_RAYCAST_RAY_MIN_LENGTH)
-			end.normalize() *= Q_RAYCAST_RAY_MIN_LENGTH;
+		btVector3 end = origin + direction;
+		if (direction.length() < Q_RAYCAST_RAY_MIN_LENGTH)
+			end = origin + (direction.normalized() * Q_RAYCAST_RAY_MIN_LENGTH);
 
 		btCollisionWorld::ClosestRayResultCallback closestRaycastResult(origin, end);
 		closestRaycastResult.m_collisionFilterGroup = Q_COLLISION_FILTER_VISIBLE;
@@ -343,46 +343,71 @@ namespace Engine {
 
 	void PhysicsSystem::runTests_init()
 	{
-		testObjIds.push_back( assign_collision_sphere(testObjIds.size(), glm::vec3(10,0,0), 5.f) );		// component ID 0
-		testObjIds.push_back( assign_collision_sphere(testObjIds.size(), glm::vec3(20,0,0), 5.1f) );	// component ID 1
-		testObjIds.push_back( assign_collision_sphere(testObjIds.size(), glm::vec3(0,0,-25), 5.f) );	// component ID 2
+		pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(10,0,0), 5.f) );		// component ID 0
+		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(20,0,0), 5.1f) );	// component ID 1
+		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(0,0,-25), 5.f) );	// component ID 2
 		// target overlap pairs: {0,1}, 
 
 		char msg[512];
 
 		QDEBUG("------------------------------");
-		snprintf(msg, 512, "Test objects: %d", testObjIds.size());
+		snprintf(msg, 512, "No. collision spheres : %d", collisionSpheres.size());
 		QDEBUG(msg);
-		for (int i = 0; i < testObjIds.size(); ++i)
-		{
-			snprintf(msg, 512, "- object %d: ID %d", i, testObjIds[i]);
-			QDEBUG(msg);
-		}
-		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
+		snprintf(msg, 512, "No. collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
+		QDEBUG(msg);
+		snprintf(msg, 512, "Assigned object/component pairs: %d", numAssignedObjects);
 		QDEBUG(msg);
 		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
 		{
 			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[i];
 			if (objInfo->mUsage == Unassigned) continue;
-			snprintf(msg, 512, "- assigned object ID: %d, component ID: %d", i, objInfo->mComponentId);
+			snprintf(msg, 512, "- component: %d, object: %d, %s", objInfo->mComponentId, i, object_to_string(objInfo->pObject).c_str());
 			QDEBUG(msg);
 		}
 
-		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
-		QDEBUG(msg);
-		snprintf(msg, 512, "Collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
-		QDEBUG(msg);
-		for (int i = 0; i < 3; ++i)
+		QDEBUG("------------------------------");
+		QDEBUG("Test raycasting:");
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
 		{
-			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
-			snprintf(msg, 512, "- collision object %d: %s", i, object_to_string(obj, true).c_str());
-			QDEBUG(msg);
+			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[i];
+			if (objInfo->mUsage == Unassigned && objInfo->pObject != nullptr)
+			{
+				snprintf(msg, 512, "Control object (Unassigned): %s", object_to_string(objInfo->pObject).c_str());
+				QDEBUG(msg);
+				break;
+			}
 		}
 
+		btVector3 rayOrg;
+		btVector3 rayDir;
+		btVector3 hitLoc;
+		bool hitRet;
+
+		QDEBUG("Raycast 1:");
+		rayOrg.setValue(-10, 0, 0);
+		rayDir.setValue(  1, 0, 0);
+		hitRet = raycast_bt(rayOrg, rayDir, &hitLoc);
+		snprintf(msg, 512, "- origin: %s, direction: %s, hit: %s, location: %s",
+			vector_to_string(rayOrg).c_str(),
+			vector_to_string(rayDir).c_str(),
+			(hitRet ? "T" : "F"),
+			(hitRet ? vector_to_string(hitLoc).c_str() : "n/a"));
+		QDEBUG(msg);
+
+		QDEBUG("Raycast 2:");
+		rayOrg.setValue( 20, 0, 0);
+		rayDir.setValue( -1, 0, 0);
+		hitRet = raycast_bt(rayOrg, rayDir, &hitLoc);
+		snprintf(msg, 512, "- origin: %s, direction: %s, hit: %s, location: %s",
+			vector_to_string(rayOrg).c_str(),
+			vector_to_string(rayDir).c_str(),
+			(hitRet ? "T" : "F"),
+			(hitRet ? vector_to_string(hitLoc).c_str() : "n/a"));
+		QDEBUG(msg);
 
 		// Test overlapping pairs
 
-		collisionWorld->performDiscreteCollisionDetection();
+		/*collisionWorld->performDiscreteCollisionDetection();
 		btOverlappingPairCache* pairs = overlappingPairCache->getOverlappingPairCache();
 
 		QDEBUG("------------------------------");
@@ -500,7 +525,7 @@ namespace Engine {
 			obj = (btCollisionObject*)pair.m_pProxy1->m_clientObject;
 			snprintf(msg, 512, "  - object 2: %s", object_to_string(obj, true).c_str());
 			QDEBUG(msg);
-		}
+		}*/
 		
 
 	} // runTests_init()
