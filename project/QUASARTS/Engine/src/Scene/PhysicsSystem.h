@@ -100,6 +100,17 @@ namespace Engine {
 
 		// Util //
 	private:
+		/// <summary>
+		/// Get the index of a collision object in the collision object array from its pointer.
+		/// </summary>
+		/// <param name="obj">Pointer to a collision object.</param>
+		/// <returns>Index of the given collision object in the collision object array, or -1 if the object could not be found.</returns>
+		int get_object_index(btCollisionObject* obj);
+
+		/// <summary>
+		/// Get index of an object in the collision object array which is not assigned to a component.
+		/// </summary>
+		/// <returns>Index of an unassigned object in the collision object array.</returns>
 		int get_unassigned_collision_object_index();
 
 		/// <summary>

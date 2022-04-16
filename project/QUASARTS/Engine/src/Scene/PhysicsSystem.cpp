@@ -70,6 +70,19 @@ namespace Engine {
 	void PhysicsSystem::update()
 	{
 
+		collisionWorld->performDiscreteCollisionDetection();
+		auto* pairs = overlappingPairCache->getOverlappingPairCache();
+
+		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
+		{
+			auto pair = pairs->getOverlappingPairArray()[i];
+			btCollisionObject* obj;
+			
+			obj = (btCollisionObject*)pair.m_pProxy0->m_clientObject;
+
+			obj = (btCollisionObject*)pair.m_pProxy1->m_clientObject;
+		}
+
 	} // update()
 
 	int PhysicsSystem::stop()
@@ -193,6 +206,24 @@ namespace Engine {
 
 	// Util //
 
+	int PhysicsSystem::get_object_index(btCollisionObject* obj)
+	{
+		if (obj == nullptr)
+		{
+			char msg[128];
+			snprintf(msg, 128, "get_object_index() was passed a null pointer");
+			QERROR(msg);
+			return -1;
+		}
+		for (int i = 0; i < collisionWorld->getNumCollisionObjects(); ++i)
+		{
+			if (obj == collisionWorld->getCollisionObjectArray()[i])
+				return i;
+		}
+		return -1;
+	}
+
+
 	int PhysicsSystem::get_unassigned_collision_object_index()
 	{
 		// Return the index of the first available object.
@@ -244,7 +275,7 @@ namespace Engine {
 
 		btCollisionWorld::ClosestRayResultCallback closestRaycastResult(origin, end);
 		closestRaycastResult.m_collisionFilterGroup = Q_COLLISION_FILTER_VISIBLE;
-		closestRaycastResult.m_collisionFilterMask = Q_COLLISION_FILTER_VISIBLE;			/* TODO: test raycast filtering */
+		closestRaycastResult.m_collisionFilterMask = Q_COLLISION_FILTER_VISIBLE;
 
 		collisionWorld->rayTest(origin, end, closestRaycastResult);
 		if (closestRaycastResult.hasHit())
@@ -252,22 +283,6 @@ namespace Engine {
 			*hitLocation = closestRaycastResult.m_hitPointWorld;
 			return true;
 		}
-
-
-		/*btCollisionWorld::AllHitsRayResultCallback allRaycastResults(origin, end);
-
-		collisionWorld->rayTest(origin, end, allRaycastResults);
-
-		if (allRaycastResults.hasHit())
-		{
-			for (int i = 0; i < allRaycastResults.m_collisionObjects.size(); ++i)
-			{
-				char msg[128];
-				snprintf(msg, 128, ": %f", allRaycastResults.m[i]);
-				QDEBUG(msg);
-			}
-		}*/
-
 		return false;
 
 	} // raycast_bt()
@@ -282,7 +297,6 @@ namespace Engine {
 		ostr << ", collision group: " << obj->getBroadphaseHandle()->m_collisionFilterGroup;
 		return ostr.str();
 	} // object_to_string()
-
 
 	std::string PhysicsSystem::transform_to_string(const btTransform* trf, const bool angles_to_deg)
 	{
@@ -309,7 +323,6 @@ namespace Engine {
 		return ostr.str();
 	} // transform_to_string()
 
-
 	std::string PhysicsSystem::shape_to_string(const btCollisionShape* shape)
 	{
 		std::ostringstream ostr;
@@ -325,7 +338,6 @@ namespace Engine {
 
 		return ostr.str();
 	} // shape_to_string()
-
 
 	std::string PhysicsSystem::vector_to_string(const btVector3 vec)
 	{
@@ -343,10 +355,15 @@ namespace Engine {
 
 	void PhysicsSystem::runTests_init()
 	{
-		pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(10,0,0), 5.f) );		// component ID 0
-		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(20,0,0), 5.1f) );	// component ID 1
-		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(0,0,-25), 5.f) );	// component ID 2
-		// target overlap pairs: {0,1}, 
+		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(10,0,0), 5.f) );		// component ID 0
+		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(20,0,0), 5.1f) );		// component ID 1
+		//pretendComponents.push_back( assign_collision_sphere(pretendComponents.size(), glm::vec3(0,0,-25), 5.f) );		// component ID 2
+		// target overlapping pairs: {0,1}, 
+
+		for (int i = 0; i < 128; ++i)
+		{
+			pretendComponents.push_back(assign_collision_sphere(pretendComponents.size(), glm::vec3(i + 1, 0, 0), 0.1f));
+		}
 
 		char msg[512];
 
@@ -365,7 +382,20 @@ namespace Engine {
 			QDEBUG(msg);
 		}
 
-		QDEBUG("------------------------------");
+
+		// Test getting object by pointer
+
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			auto* objInfo = &collisionObjectArrayInfo[i];
+			if (objInfo->mUsage != Unassigned)
+				assert(i == get_object_index(objInfo->pObject));
+		}
+
+
+		// Test raytrace filtering
+
+		/*QDEBUG("------------------------------");
 		QDEBUG("Test raycasting:");
 		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
 		{
@@ -403,7 +433,7 @@ namespace Engine {
 			vector_to_string(rayDir).c_str(),
 			(hitRet ? "T" : "F"),
 			(hitRet ? vector_to_string(hitLoc).c_str() : "n/a"));
-		QDEBUG(msg);
+		QDEBUG(msg);*/
 
 		// Test overlapping pairs
 
