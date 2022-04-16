@@ -39,9 +39,18 @@ namespace Engine {
 		// Create default collision shape.
 		collisionSpheres.push_back(new btSphereShape(Q_DEFAULT_SPHERE_RADIUS));
 
-		// Initialise all collision object IDs to -1.
-		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i) { collisionObjectArrayUsage[i] = Unassigned; }
-
+		// Pre-create the default number of collision objects.
+		{
+			int temp[Q_DEFAULT_NUM_COLLISION_OBJS];
+			for (int i = 0; i < Q_DEFAULT_NUM_COLLISION_OBJS; ++i)
+			{
+				temp[i] = assign_collision_sphere(i, glm::vec3(0, 0, 0), Q_DEFAULT_SPHERE_RADIUS);
+			}
+			for (int i = 0; i < Q_DEFAULT_NUM_COLLISION_OBJS; ++i)
+			{
+				unassign_collision_object(temp[i]);
+			}
+		}
 
 		// Test collision world.
 		runTests_init();
@@ -71,6 +80,12 @@ namespace Engine {
 
 	void PhysicsSystem::release()
 	{
+		// Remove pointers to collision objects.
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			collisionObjectArrayInfo[i].pObject = nullptr;
+		}
+
 		// Delete collision objects in reverse order of creation.
 		for (int i = collisionWorld->getNumCollisionObjects() - 1; i >= 0; --i)
 		{
@@ -96,25 +111,33 @@ namespace Engine {
 	} // release()
 
 
-	int PhysicsSystem::assign_collision_sphere(const glm::vec3 worldPosition, const float radius)
+	int PhysicsSystem::assign_collision_sphere(const int aComponentId, const glm::vec3 worldPosition, const float radius)
 	{
 		// Find an unassigned collision object.
 		int obj_idx = get_unassigned_collision_object_index();
 		if (obj_idx != -1)
 		{
-			collisionObjectArrayUsage[obj_idx] = Sphere;
 			++numAssignedObjects;
-			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[obj_idx];
 
-			// Set its collision shape.
+			// Set bookkeeping data.
+			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[obj_idx];
+			objInfo->mComponentId = aComponentId;
+			objInfo->mUsage = Sphere;
+
+			// Get and set its collision shape.
 			btSphereShape* sphere = get_sphere_shape(radius);
-			obj->setCollisionShape(sphere);
+			objInfo->pObject->setCollisionShape(sphere);
+
+			// Activate collision detection.
+			objInfo->pObject->getBroadphaseHandle()->m_collisionFilterGroup = Q_COLLISION_FILTER_VISIBLE;
+			objInfo->pObject->getBroadphaseHandle()->m_collisionFilterMask = Q_COLLISION_FILTER_VISIBLE;
+			collisionWorld->refreshBroadphaseProxy(objInfo->pObject);
 
 			// Set its world transform.
 			float yaw = 0.f, pitch = 0.f, roll = 0.f;
 			btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
 			btVector3 pos = glm_to_btvec3(worldPosition);
-			obj->setWorldTransform(btTransform(orn, pos));
+			objInfo->pObject->setWorldTransform(btTransform(orn, pos));
 		}
 		return obj_idx;
 
@@ -123,16 +146,36 @@ namespace Engine {
 
 	void PhysicsSystem::unassign_collision_object(const int obj_idx)
 	{
-		if (collisionObjectArrayUsage[obj_idx] == Unassigned) QDEBUG("unassign_collision_sphere() was passed the index of an unassigned collision object.");
-		collisionObjectArrayUsage[obj_idx] = Unassigned;
+		if (collisionObjectArrayInfo[obj_idx].mUsage == Unassigned)
+		{
+			char msg[128];
+			snprintf(msg, 128, "unassign_collision_object() was passed the index of an unassigned collision object: %d", obj_idx);
+			QERROR(msg);
+			return;
+		}
 		--numAssignedObjects;
+
+		// Clear bookkeeping.
+		CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[obj_idx];
+		objInfo->mComponentId = -1;
+		objInfo->mUsage = Unassigned;
+
+		// Deactivate collision detection.
+		objInfo->pObject->getBroadphaseHandle()->m_collisionFilterGroup = Q_COLLISION_FILTER_HIDDEN;
+		objInfo->pObject->getBroadphaseHandle()->m_collisionFilterMask = Q_COLLISION_FILTER_HIDDEN;
+		collisionWorld->refreshBroadphaseProxy(objInfo->pObject);
 
 	} // unassign_collision_object()
 
 
 	void PhysicsSystem::set_collision_object_position(const int obj_idx, const glm::vec3 worldPosition)
 	{
-		if (collisionObjectArrayUsage[obj_idx] == Unassigned) QDEBUG("move_collision_object() was passed the index of an unassigned collision object.");
+		if (collisionObjectArrayInfo[obj_idx].mUsage == Unassigned)
+		{
+			char msg[128];
+			snprintf(msg, 128, "move_collision_object() was passed the index of an unassigned collision object: %d", obj_idx);
+			QERROR(msg);
+		}
 		collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform().setOrigin(glm_to_btvec3(worldPosition));
 
 	} // move_collision_object()
@@ -141,7 +184,7 @@ namespace Engine {
 	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
 	{
 		btVector3 hitLoc;
-		bool ret = raycast(glm_to_btvec3(origin), glm_to_btvec3(direction), &hitLoc);
+		bool ret = raycast_bt(glm_to_btvec3(origin), glm_to_btvec3(direction), &hitLoc);
 		*hitLocation = bt_to_glm_vec3(hitLoc);
 		return ret;
 
@@ -156,7 +199,7 @@ namespace Engine {
 		int numObjs = collisionWorld->getNumCollisionObjects();
 		for (int i = 0; i < numObjs; ++i)
 		{
-			if (collisionObjectArrayUsage[i] == Unassigned)
+			if (collisionObjectArrayInfo[i].mUsage == Unassigned)
 			{
 				return i;
 			}
@@ -164,9 +207,10 @@ namespace Engine {
 		// If none are available and there are fewer than the maximum, create new and return its index.
 		if (numObjs < Q_MAX_COLLISION_OBJS)
 		{
-			btCollisionObject* obj = new btCollisionObject();
-			obj->setCollisionShape(collisionSpheres[0]); // set shape to default collision sphere shape.
-			collisionWorld->addCollisionObject(obj);
+			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[numObjs];
+			objInfo->pObject = new btCollisionObject();
+			objInfo->pObject->setCollisionShape(get_sphere_shape(Q_DEFAULT_SPHERE_RADIUS));
+			collisionWorld->addCollisionObject(objInfo->pObject, Q_COLLISION_FILTER_HIDDEN, Q_COLLISION_FILTER_HIDDEN);
 			return numObjs;
 		}
 		return -1;
@@ -176,7 +220,7 @@ namespace Engine {
 
 	btSphereShape* PhysicsSystem::get_sphere_shape(float radius)
 	{
-		// Find an existing btSphereShape with same radius.
+		// Find an existing btSphereShape with (approximately) the required radius.
 		for (int i = 0; i < collisionSpheres.size(); ++i)
 		{
 			if (abs(collisionSpheres[i]->getRadius() - radius) < Q_COLLISION_EPSILON)
@@ -192,22 +236,41 @@ namespace Engine {
 	} // getSphereShape()
 
 
-	bool PhysicsSystem::raycast(const btVector3 origin, const btVector3 direction, btVector3* hitLocation)
+	bool PhysicsSystem::raycast_bt(const btVector3 origin, const btVector3 direction, btVector3* hitLocation)
 	{
 		btVector3 end = direction;
 		if (end.length() < Q_RAYCAST_RAY_MIN_LENGTH)
 			end.normalize() *= Q_RAYCAST_RAY_MIN_LENGTH;
 
 		btCollisionWorld::ClosestRayResultCallback closestRaycastResult(origin, end);
-		collisionWorld->rayTest(origin, end, closestRaycastResult);
+		closestRaycastResult.m_collisionFilterGroup = Q_COLLISION_FILTER_VISIBLE;
+		closestRaycastResult.m_collisionFilterMask = Q_COLLISION_FILTER_VISIBLE;			/* TODO: test raycast filtering */
 
+		collisionWorld->rayTest(origin, end, closestRaycastResult);
 		if (closestRaycastResult.hasHit())
 		{
 			*hitLocation = closestRaycastResult.m_hitPointWorld;
 			return true;
 		}
+
+
+		/*btCollisionWorld::AllHitsRayResultCallback allRaycastResults(origin, end);
+
+		collisionWorld->rayTest(origin, end, allRaycastResults);
+
+		if (allRaycastResults.hasHit())
+		{
+			for (int i = 0; i < allRaycastResults.m_collisionObjects.size(); ++i)
+			{
+				char msg[128];
+				snprintf(msg, 128, ": %f", allRaycastResults.m[i]);
+				QDEBUG(msg);
+			}
+		}*/
+
 		return false;
-	} // raycast()
+
+	} // raycast_bt()
 
 
 	std::string PhysicsSystem::object_to_string(const btCollisionObject* obj, const bool angles_to_deg)
@@ -215,7 +278,8 @@ namespace Engine {
 		std::ostringstream ostr;
 		ostr << "transform: " << transform_to_string(&obj->getWorldTransform(), angles_to_deg);
 		ostr << ", shape: " << shape_to_string(obj->getCollisionShape());
-		// TODO : collision shape
+		ostr << ", collision mask: " << obj->getBroadphaseHandle()->m_collisionFilterMask;
+		ostr << ", collision group: " << obj->getBroadphaseHandle()->m_collisionFilterGroup;
 		return ostr.str();
 	} // object_to_string()
 
@@ -279,12 +343,69 @@ namespace Engine {
 
 	void PhysicsSystem::runTests_init()
 	{
-		testObjIds.push_back( assign_collision_sphere(glm::vec3(10,0,0), 5.f) );
-		testObjIds.push_back( assign_collision_sphere(glm::vec3(0,0,0), 5.1f) );
-		testObjIds.push_back( assign_collision_sphere(glm::vec3(0,0,-25), 5.f) );
+		testObjIds.push_back( assign_collision_sphere(testObjIds.size(), glm::vec3(10,0,0), 5.f) );		// component ID 0
+		testObjIds.push_back( assign_collision_sphere(testObjIds.size(), glm::vec3(20,0,0), 5.1f) );	// component ID 1
+		testObjIds.push_back( assign_collision_sphere(testObjIds.size(), glm::vec3(0,0,-25), 5.f) );	// component ID 2
+		// target overlap pairs: {0,1}, 
 
 		char msg[512];
+
 		QDEBUG("------------------------------");
+		snprintf(msg, 512, "Test objects: %d", testObjIds.size());
+		QDEBUG(msg);
+		for (int i = 0; i < testObjIds.size(); ++i)
+		{
+			snprintf(msg, 512, "- object %d: ID %d", i, testObjIds[i]);
+			QDEBUG(msg);
+		}
+		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
+		QDEBUG(msg);
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[i];
+			if (objInfo->mUsage == Unassigned) continue;
+			snprintf(msg, 512, "- assigned object ID: %d, component ID: %d", i, objInfo->mComponentId);
+			QDEBUG(msg);
+		}
+
+		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
+		QDEBUG(msg);
+		snprintf(msg, 512, "Collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
+		QDEBUG(msg);
+		for (int i = 0; i < 3; ++i)
+		{
+			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
+			snprintf(msg, 512, "- collision object %d: %s", i, object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+		}
+
+
+		// Test overlapping pairs
+
+		collisionWorld->performDiscreteCollisionDetection();
+		btOverlappingPairCache* pairs = overlappingPairCache->getOverlappingPairCache();
+
+		QDEBUG("------------------------------");
+		snprintf(msg, 512, "Overlapping pairs: %d", pairs->getNumOverlappingPairs());
+		QDEBUG(msg);
+		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
+		{
+			snprintf(msg, 512, "- pair %d:", i);
+			QDEBUG(msg);
+			auto pair = pairs->getOverlappingPairArray()[i];
+			btCollisionObject* obj = (btCollisionObject*)pair.m_pProxy0->m_clientObject;
+			snprintf(msg, 512, "  - object 1: %s", object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+			obj = (btCollisionObject*)pair.m_pProxy1->m_clientObject;
+			snprintf(msg, 512, "  - object 2: %s", object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+		}
+
+
+		QDEBUG("------------------------------");
+		QDEBUG("Unassign testObjIds: idx 0");
+		unassign_collision_object(testObjIds[0]);
+		testObjIds[0] = -1;
 		snprintf(msg, 512, "Test objects: %d", testObjIds.size());
 		QDEBUG(msg);
 		for (int i = 0; i < testObjIds.size(); ++i)
@@ -294,52 +415,47 @@ namespace Engine {
 		}
 		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
 		QDEBUG(msg);
-
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[i];
+			if (objInfo->mUsage == Unassigned) continue;
+			snprintf(msg, 512, "- assigned object ID: %d, component ID: %d", i, objInfo->mComponentId);
+			QDEBUG(msg);
+		}
 		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
 		QDEBUG(msg);
 		snprintf(msg, 512, "Collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
 		QDEBUG(msg);
-
-		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		for (int i = 0; i < 3; ++i)
 		{
-			if (collisionObjectArrayUsage[i] == Unassigned) continue;
 			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
 			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
 			QDEBUG(msg);
 		}
 
+		collisionWorld->performDiscreteCollisionDetection();
+		pairs = overlappingPairCache->getOverlappingPairCache();
 		QDEBUG("------------------------------");
-		QDEBUG("Displace all objects by (10,10,10):");
-		for (int i = 0; i < testObjIds.size(); ++i)
+		snprintf(msg, 512, "Overlapping pairs: %d", pairs->getNumOverlappingPairs());
+		QDEBUG(msg);
+		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
 		{
-			set_collision_object_position(i, glm::vec3(10,10,10));
-		}
-		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
-		{
-			if (collisionObjectArrayUsage[i] == Unassigned) continue;
-			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
-			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
+			snprintf(msg, 512, "- pair %d:", i);
+			QDEBUG(msg);
+			auto pair = pairs->getOverlappingPairArray()[i];
+			btCollisionObject* obj = (btCollisionObject*)pair.m_pProxy0->m_clientObject;
+			snprintf(msg, 512, "  - object 1: %s", object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+			obj = (btCollisionObject*)pair.m_pProxy1->m_clientObject;
+			snprintf(msg, 512, "  - object 2: %s", object_to_string(obj, true).c_str());
 			QDEBUG(msg);
 		}
 
 
-		/*QDEBUG("------------------------------");
-		QDEBUG("Unassign testObjIds: idx 1, idx 2");
-		unassign_collision_object(testObjIds[2]);
-		testObjIds[2] = -1;
-		unassign_collision_object(testObjIds[1]);
-		testObjIds[1] = -1;
-		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
-		QDEBUG(msg);
-
 		QDEBUG("------------------------------");
-		QDEBUG("Re-assign testObjIds: idx 1, idx 2");
-		testObjIds[1] = assign_collision_sphere(glm::vec3(0, 51, 0), 5.f);
-		testObjIds[2] = assign_collision_sphere(glm::vec3(-40, 0, 0), 1.f);
-		QDEBUG("Assign testObjIds: idx 3");
-		testObjIds.push_back(assign_collision_sphere(glm::vec3(0, -200, 0), 0.5f));
-		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
-		QDEBUG(msg);
+		QDEBUG("Assign testObjIds: 3, Re-assign testObjIds: idx 0");
+		testObjIds.push_back( assign_collision_sphere( testObjIds.size(), glm::vec3(-0.5, -0.5, 0), 3.f) );
+		testObjIds[0] = assign_collision_sphere(0, glm::vec3(0, 51, 0), 5.f);
 		snprintf(msg, 512, "Test objects: %d", testObjIds.size());
 		QDEBUG(msg);
 		for (int i = 0; i < testObjIds.size(); ++i)
@@ -349,19 +465,43 @@ namespace Engine {
 		}
 		snprintf(msg, 512, "Number of assigned objects: %d", numAssignedObjects);
 		QDEBUG(msg);
-
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[i];
+			if (objInfo->mUsage == Unassigned) continue;
+			snprintf(msg, 512, "- assigned object ID: %d, component ID: %d", i, objInfo->mComponentId);
+			QDEBUG(msg);
+		}
 		snprintf(msg, 512, "Number of collision spheres : %d", collisionSpheres.size());
 		QDEBUG(msg);
 		snprintf(msg, 512, "Collision objects in collision world: %d", collisionWorld->getNumCollisionObjects());
 		QDEBUG(msg);
-
-		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		for (int i = 0; i < 3; ++i)
 		{
-			if (collisionObjectArrayUsage[i] == Unassigned) continue;
 			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
 			snprintf(msg, 512, "- object %d: %s", i, object_to_string(obj, true).c_str());
 			QDEBUG(msg);
-		}*/
+		}
+
+
+		collisionWorld->performDiscreteCollisionDetection();
+		pairs = overlappingPairCache->getOverlappingPairCache();
+		QDEBUG("------------------------------");
+		snprintf(msg, 512, "Overlapping pairs: %d", pairs->getNumOverlappingPairs());
+		QDEBUG(msg);
+		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
+		{
+			snprintf(msg, 512, "- pair %d:", i);
+			QDEBUG(msg);
+			auto pair = pairs->getOverlappingPairArray()[i];
+			btCollisionObject* obj = (btCollisionObject*)pair.m_pProxy0->m_clientObject;
+			snprintf(msg, 512, "  - object 1: %s", object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+			obj = (btCollisionObject*)pair.m_pProxy1->m_clientObject;
+			snprintf(msg, 512, "  - object 2: %s", object_to_string(obj, true).c_str());
+			QDEBUG(msg);
+		}
+		
 
 	} // runTests_init()
 
@@ -416,7 +556,7 @@ namespace Engine {
 		btVector3 hitLoc;
 		btVector3 rayOrigin = btVector3(10, 0, 0);
 		btVector3 rayDirection = btVector3(-10, 0, 0);
-		bool ret = raycast(rayOrigin, rayDirection, &hitLoc);
+		bool ret = raycast_bt(rayOrigin, rayDirection, &hitLoc);
 		snprintf(msg, 512, "Hit test, returned: %s, %s", (ret ? "true" : "false"), (ret ? vector_to_string(hitLoc).c_str() : ""));
 		QDEBUG(msg);
 		*/

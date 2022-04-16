@@ -7,10 +7,16 @@
 
 namespace Engine {
 
-#define Q_COLLISION_EPSILON			1e-3	// If using unit length = 1 metre, epsilon = 1e-3 is equivalent to 1 millimetre of collision tolerance.
-#define Q_RAYCAST_RAY_MIN_LENGTH	1e6
-#define Q_MAX_COLLISION_OBJS		1024
-#define Q_DEFAULT_SPHERE_RADIUS		1.f
+#define Q_COLLISION_EPSILON					1e-3	// If using unit length = 1 metre, epsilon = 1e-3 is equivalent to 1 millimetre of collision tolerance.
+#define Q_RAYCAST_RAY_MIN_LENGTH			1e6
+
+#define Q_DEFAULT_NUM_COLLISION_OBJS		16
+#define Q_MAX_COLLISION_OBJS				256
+
+#define Q_DEFAULT_SPHERE_RADIUS				1.f
+
+#define Q_COLLISION_FILTER_HIDDEN			0
+#define Q_COLLISION_FILTER_VISIBLE			1
 
 	class QS_API PhysicsSystem : public IManager
 	{
@@ -44,7 +50,7 @@ namespace Engine {
 		/// <param name="worldPosition">Position in world coordinates of the assigned collision object.</param>
 		/// <param name="radius">Radius of the assigned collision object's sphere shape.</param>
 		/// <returns>ID of the assigned collision object, or -1 if an object could not be assigned.</returns>
-		int assign_collision_sphere(const glm::vec3 worldPosition, const float radius);
+		int assign_collision_sphere(const int aComponentId, const glm::vec3 worldPosition, const float radius);
 
 		/// <summary>
 		/// Unassign a collision object from a collision component.
@@ -80,8 +86,16 @@ namespace Engine {
 		btAlignedObjectArray<btSphereShape*> collisionSpheres;
 
 		// Array describing the usage of each pre-constructed collision object in the collision world's collision object array.
-		CollisionObjectUsage collisionObjectArrayUsage[Q_MAX_COLLISION_OBJS];
 		int numAssignedObjects;
+
+		struct CollisionObjectInfo
+		{
+			CollisionObjectUsage mUsage;	// Describes the usage of the corresponding collision object in the collision world's collision object array.
+			btCollisionObject* pObject;
+			int mComponentId;
+			CollisionObjectInfo() : mUsage(Unassigned), pObject(nullptr), mComponentId(-1) {}
+		};
+		CollisionObjectInfo collisionObjectArrayInfo[Q_MAX_COLLISION_OBJS];
 
 
 		// Util //
@@ -102,7 +116,7 @@ namespace Engine {
 		/// <param name="direction">Ray world direction.</param>
 		/// <param name="hitLocation">Address of vector to store the world location of a detected hit.</param>
 		/// <returns>true is there is a hit, false otherwise.</returns>
-		bool raycast(const btVector3 origin, const btVector3 direction, btVector3* hitLocation);
+		bool raycast_bt(const btVector3 origin, const btVector3 direction, btVector3* hitLocation);
 
 		// Math lib conversions
 		static btVector3 glm_to_btvec3(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
