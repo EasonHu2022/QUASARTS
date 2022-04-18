@@ -74,11 +74,13 @@ namespace Engine {
             }
 
 
-            // TODO : handle collisions
-
             // Reset collision tracking before next physics update.
             for (int i = 0; i < mNumCollided; ++i)
             {
+
+                // TODO : additional collision handling
+
+                // Clear collision information.
                 unsigned int entityId = mCollidedEntityIds[i];
                 CollisionSphereComponent componentCopy = get_manager()->get_component<CollisionSphereComponent>(entityId, (unsigned)COMPONENT_COLLISION_SPHERE);
                 componentCopy.clear_overlaps();
@@ -114,39 +116,23 @@ namespace Engine {
 
             // component 0
             componentCopy = get_manager()->get_component<CollisionSphereComponent>((unsigned)entityId0, (unsigned)COMPONENT_COLLISION_SPHERE);
+            if (componentCopy.mNumOverlaps == 0)
+            {
+                mCollidedEntityIds[mNumCollided] = entityId0;
+                ++mNumCollided;
+            }
             componentCopy.add_overlap(entityId1, componentType1);
             get_manager()->replace_component((unsigned)entityId0, (unsigned)COMPONENT_COLLISION_SPHERE, componentCopy);
 
-            if (componentCopy.mNumOverlaps == 1) // did not have overlaps before this one, was not yet tracked
-            {
-                mCollidedEntityIds[mNumCollided] = entityId0;
-                ++mNumCollided;
-            }
-
-
             // component 1
             componentCopy = get_manager()->get_component<CollisionSphereComponent>((unsigned)entityId1, (unsigned)COMPONENT_COLLISION_SPHERE);
-            componentCopy.add_overlap(entityId0, componentType0);
-            get_manager()->replace_component((unsigned)entityId1, (unsigned)COMPONENT_COLLISION_SPHERE, componentCopy);
-
-
-            // Track which components have had collisions this frame.
-            bool alreadyCollided0 = false, alreadyCollided1 = false;
-            for (int i = 0; i < mNumCollided; ++i)
-            {
-                if (mCollidedEntityIds[i] == entityId0) alreadyCollided0 = true;
-                if (mCollidedEntityIds[i] == entityId1) alreadyCollided1 = true;
-            }
-            if (!alreadyCollided0)
-            {
-                mCollidedEntityIds[mNumCollided] = entityId0;
-                ++mNumCollided;
-            }
-            if (!alreadyCollided1)
+            if (componentCopy.mNumOverlaps == 0)
             {
                 mCollidedEntityIds[mNumCollided] = entityId1;
                 ++mNumCollided;
             }
+            componentCopy.add_overlap(entityId0, componentType0);
+            get_manager()->replace_component((unsigned)entityId1, (unsigned)COMPONENT_COLLISION_SPHERE, componentCopy);
         }
 
     };
