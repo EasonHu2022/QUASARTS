@@ -91,9 +91,9 @@ namespace Engine {
 	{	
 		script_name = file_name;
 		std::string sub_path = "\\Assets\\Scripts\\";
-		script_path = file_path + sub_path + file_name;
+		script_path = file_path + sub_path + file_name + ".lua";
 		std::ofstream ofs;
-		ofs.open(script_path + ".lua", std::ios::out);
+		ofs.open(script_path, std::ios::out);
 		if (ofs)
 		{
 			QDEBUG("created and added the script: {0}.lua , the path is {1}", script_name, script_path);
@@ -113,13 +113,13 @@ namespace Engine {
 	
 	void ScriptsSys::reloadScript()
 	{		
-		loadScript(script_path + ".lua");
+		loadScript(script_path);
 	}
 
 
 	void ScriptsSys::deleteScript()
 	{
-		std::string file_path = script_path + ".lua";
+		std::string file_path = script_path;
 
 		if (std::remove(file_path.c_str()) == 0)
 		{
@@ -133,6 +133,14 @@ namespace Engine {
 			lua_update = (*lua_state)["onUpdate"];
 			is_imported = true;
 		}
+	}
+	std::string ScriptsSys::getScriptPath()
+	{
+		return script_path;
+	}
+	std::string ScriptsSys::getScriptName()
+	{
+		return script_name;
 	}
 }
 

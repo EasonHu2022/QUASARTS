@@ -40,7 +40,8 @@ namespace Engine {
 		void reloadScript();
 		void deleteScript();
 		void importUpdate();
-
+		std::string getScriptPath();
+		std::string getScriptName();
 
 	private:
 		//lua virtual machine
