@@ -7,6 +7,7 @@
 #include "Core/Input.h"
 #include "Scripts/ScriptsSystem.h"
 #include "Render/Renderer.h"
+#include "ResourceManager/ResourceManager.h"
 
 namespace Engine
 {
@@ -27,6 +28,8 @@ namespace Engine
 		EventModule::Instance()->init();
 
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
+
+		ResourceManager::Instance();
 
 		ScriptsSys::Instance()->init();
 
