@@ -66,12 +66,14 @@ void GameSceneView::on_remove()
 void GameSceneView::get_drag()
 {
     if (io.MousePos.x > ImGui::GetWindowPos().x && io.MousePos.y > ImGui::GetWindowPos().y && io.MousePos.x < ImGui::GetWindowPos().x + ImGui::GetWindowWidth() && io.MousePos.y < ImGui::GetWindowPos().y + ImGui::GetWindowHeight()) {
-        if(io.MouseDelta.x != 0 || io.MouseDelta.y != 0)
+        if (io.MouseDelta.x != 0 || io.MouseDelta.y != 0)
+        {
             if (Engine::Input::get_mouse_combination({ Q_MOUSE_BUTTON_1 })) {
                 std::cout << io.MouseDelta.x << "" << io.MouseDelta.y << std::endl;
             }
             else if (Engine::Input::get_mouse_combination({ Q_MOUSE_BUTTON_2 })) {
                 std::cout << "left" << std::endl;
             }
+        }
     }
 }

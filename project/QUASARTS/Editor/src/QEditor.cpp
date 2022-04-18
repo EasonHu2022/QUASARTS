@@ -99,5 +99,4 @@ void QEditor::poll_input()
 	{
 		getGuiView<MenuBarView>()->new_scene = true;
 	}
-
 }

@@ -13,6 +13,8 @@
 #include "Core/miniECS.h"
 #include "ECS/ECSManager.h"
 
+#include "Core/Input.h"
+
 namespace Engine
 {
 
