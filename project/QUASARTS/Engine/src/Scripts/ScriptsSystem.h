@@ -8,7 +8,7 @@
 #include <cstdint>
 
 #include "Core/IManager.h"
-#include "ECS/Component/ScriptComponent.h"
+//#include "ECS/Component/ScriptComponent.h"
 
 
 
