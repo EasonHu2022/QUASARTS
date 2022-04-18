@@ -5,6 +5,7 @@
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
 #include "Scripts/ScriptsSystem.h"
+#include "Audio/AudioSystem.h"
 #include "Render/Renderer.h"
 
 namespace Engine
@@ -29,7 +30,7 @@ namespace Engine
 
 		ScriptsSys::Instance()->init();
 
-		//AudioSys::Instance()->init();
+		AudioSys::Instance()->init();
 
 		ECSManager::Instance()->init();
 
