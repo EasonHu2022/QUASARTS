@@ -1,15 +1,15 @@
 #pragma once
 #include <lua.hpp>
 #include <sol/sol.hpp>
+#include <iostream>
 #include <string>
 #include <memory>
+#include <unordered_map>
+#include <cstdint>
 
 #include "Core/IManager.h"
+//#include "ECS/Component/ScriptComponent.h"
 
-//export functions to lua
-//#include "Logger/LogModule.h"
-#include "Core/Input.h"
-//export functions to lua
 
 
 namespace Engine {
@@ -18,7 +18,7 @@ namespace Engine {
 		// singleton
 	private:
 		static ScriptsSys* instance;
-		ScriptsSys() {};
+		ScriptsSys() : script_name(""), script_path(""), is_imported(false) {};
 	public:
 		static ScriptsSys* Instance();
 		~ScriptsSys() {};
@@ -33,17 +33,23 @@ namespace Engine {
 		// Usage functions //
 	public:
 
-		void createContext();
-		void destroyContext();
+		void createState();
+		void destroyState();
 		void createScript(const std::string& file_name, const std::string& file_path);
 		void loadScript(const std::string& path);
 		void reloadScript();
 		void deleteScript();
+		void importUpdate();
+
 
 	private:
 		//lua virtual machine
 		std::unique_ptr<sol::state> lua_state;
-		std::string script_name = "";
-		std::string script_path = "";
+		sol::function lua_update;	//update function from lua side
+		std::string script_name;
+		std::string script_path;
+		bool is_imported;			//check if the update function is imported to C++ side
+
+		//std::unordered_map<std::string, ScriptComponent>;
 	};
 }

@@ -12,14 +12,18 @@ void GameSceneView::on_add()
 void GameSceneView::on_gui()
 {
 	if (FileModule::Instance()->get_root() != NULL) {
+
+
 	
         ImGui::SetNextWindowPos(ImVec2(window->get_width()*0.15625, 18));
         ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.7, window->get_height()*0.7));
         ImGui::Begin("viewTabs", NULL, ImGuiWindowFlags_NoTitleBar);
+
         if (ImGui::BeginTabBar("MyTabBar"))
         {
             if (ImGui::BeginTabItem("Scene"))
             {
+                get_drag();
                 ImVec2 uv_min = ImVec2(0.0f, 0.0f);                 // Top-left
                 ImVec2 uv_max = ImVec2(1.0f, 1.0f);                 // Lower-right
                 ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);   // No tint
@@ -57,4 +61,17 @@ void GameSceneView::on_gui()
 void GameSceneView::on_remove()
 {
 	QDEBUG("on remove view : MenuBar");
+}
+
+void GameSceneView::get_drag()
+{
+    if (io.MousePos.x > ImGui::GetWindowPos().x && io.MousePos.y > ImGui::GetWindowPos().y && io.MousePos.x < ImGui::GetWindowPos().x + ImGui::GetWindowWidth() && io.MousePos.y < ImGui::GetWindowPos().y + ImGui::GetWindowHeight()) {
+        if(io.MouseDelta.x != 0 || io.MouseDelta.y != 0)
+            if (Engine::Input::get_mouse_combination({ Q_MOUSE_BUTTON_1 })) {
+                std::cout << io.MouseDelta.x << "" << io.MouseDelta.y << std::endl;
+            }
+            else if (Engine::Input::get_mouse_combination({ Q_MOUSE_BUTTON_2 })) {
+                std::cout << "left" << std::endl;
+            }
+    }
 }

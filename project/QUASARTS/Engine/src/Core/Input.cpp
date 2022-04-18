@@ -11,6 +11,7 @@ namespace Engine
 	bool Input::mouseReleased[MAX_BUTTONS] = {};
 	bool Input::mouseHeld[MAX_BUTTONS] = {};
 	bool Input::mouseClicked[MAX_BUTTONS] = {};
+	int Input::numButtonsHeld = 0;
 
 	void Input::init()
 	{
@@ -59,15 +60,25 @@ namespace Engine
 	}
 	bool Input::get_mouse(int mouse)
 	{
-		return false;
+		return mouseHeld[mouse];
 	}
 	bool Input::get_mouse_clicked(int mouse)
 	{
-		return false;
+		return mouseClicked[mouse];
 	}
 	bool Input::get_mouse_released(int mouse)
 	{
-		return false;
+		return mouseReleased[mouse];
+	}
+	bool Input::get_mouse_combination(const std::vector<int>& buttons)
+	{
+		int numButtons = buttons.size();
+		if (numButtonsHeld == 0 || numButtonsHeld != numButtons) return false;
+		for (int i = 0; i < numButtons; ++i)
+		{
+			if (mouseHeld[buttons[i]] == false) return false;
+		}
+		return true;
 	}
 	void Input::reset_state()
 	{
@@ -123,7 +134,11 @@ namespace Engine
 		}
 
 		mouseClicked[button] = true;
-		mouseHeld[button] = true;
+		if (!mouseHeld[button])
+		{
+			mouseHeld[button] = true;
+			++numButtonsHeld;
+		}
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonReleased)
 	{
@@ -138,6 +153,7 @@ namespace Engine
 
 		mouseReleased[button] = true;
 		mouseHeld[button] = false;
+		--numButtonsHeld;
 	}
 };
 
