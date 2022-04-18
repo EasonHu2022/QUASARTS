@@ -38,7 +38,7 @@ project "Editor"
 		"../ThirdParty/Bullet3",
 		"../ThirdParty/tiny_obj_loader",
 		"../ThirdParty/glm",
-		"../ThirdParty/OpenAL/include/AL",
+		"../ThirdParty/OpenAL/include",
 		"../ThirdParty/sndfile/include",
 	}
 

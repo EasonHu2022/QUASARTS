@@ -40,3 +40,8 @@
 	Scripts
 */
 #include "Scripts/ScriptsSystem.h"
+
+/*
+	Audio
+*/
+#include "Audio/AudioSystem.h"
