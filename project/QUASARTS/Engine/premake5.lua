@@ -5,6 +5,14 @@ project "Engine"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
+	root_dir = os.getcwd()
+	dir = "%{wks.location}/bin/" .. outputdir .. "/%{prj.name}";
+	postbuildcommands { 
+		"powershell Copy-Item "..root_dir.."/../ThirdParty/OpenAL/libs/Win32/OpenAL32.dll "..""..dir,
+		"powershell Copy-Item "..root_dir.."/../ThirdParty/sndfile/lib/sndfile.dll "..""..dir
+	}
+	postbuildmessage "copying thirdparty"
+	
 	files
 	{
 		"src/*/**.h",
@@ -23,9 +31,13 @@ project "Engine"
 		"../ThirdParty/GLAD/**.c",
 		"../ThirdParty/GLAD/**.h",
 		"../ThirdParty/lua/**.c",
-		"../ThirdParty/lua/**.h"
+		"../ThirdParty/lua/**.h",
 	}
-	
+	libdirs
+	{
+		"../ThirdParty/OpenAL/libs/Win32",
+		"../ThirdParty/sndfile/lib"
+	}
 	links
 	{
 		
@@ -38,6 +50,8 @@ project "Engine"
 		"Bullet3Geometry",
 		"BulletCollision",
 		"LinearMath",
+		"OpenAL32",
+		"sndfile",
 	}
 	
 	includedirs
@@ -57,6 +71,8 @@ project "Engine"
 		"../ThirdParty/Bullet3",
 		"../ThirdParty/tiny_obj_loader",
 		"../ThirdParty/glm",
+		"../ThirdParty/OpenAL/include",
+		"../ThirdParty/sndfile/include",
 
 	}
 

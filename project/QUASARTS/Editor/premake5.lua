@@ -38,6 +38,8 @@ project "Editor"
 		"../ThirdParty/Bullet3",
 		"../ThirdParty/tiny_obj_loader",
 		"../ThirdParty/glm",
+		"../ThirdParty/OpenAL/include/AL",
+		"../ThirdParty/sndfile/include",
 	}
 
 	filter "system:windows"
