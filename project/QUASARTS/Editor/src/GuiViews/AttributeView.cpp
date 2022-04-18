@@ -32,7 +32,6 @@ void AttributeView::on_gui()
 					std::cout << mesh2.one <<std::endl;
 				}
 				
-			
 			}
 		
 		}
