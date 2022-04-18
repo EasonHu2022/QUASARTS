@@ -76,6 +76,7 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Play", "Ctrl+P")) {
 
                 Engine::ScriptsSys::Instance()->reloadScript();
+                Engine::ScriptsSys::Instance()->importUpdate();
             }
             if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
 

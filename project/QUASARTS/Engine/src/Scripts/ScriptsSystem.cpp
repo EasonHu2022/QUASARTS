@@ -1,6 +1,6 @@
 #include "ScriptsSystem.h"
 #include "ScriptsExporter.h"
-#include "Utilities/FileParser.h"
+#include "Logger/LogModule.h"
 
 #include <fstream>
 
@@ -25,7 +25,7 @@ namespace Engine {
 	/// </summary>
 	void ScriptsSys::init()
 	{
-		createContext();
+		createState();
 	}
 
 	/// <summary>
@@ -42,7 +42,14 @@ namespace Engine {
 	/// </summary>
 	void ScriptsSys::update()
 	{
-
+		//for (auto& aa : scs) 
+		//{
+		//	aa.update();
+		//}
+		if (lua_update)
+		{
+		lua_update();
+		}
 	}
 
 	/// <summary>
@@ -62,7 +69,7 @@ namespace Engine {
 
 	}
 	
-	void ScriptsSys::createContext()
+	void ScriptsSys::createState()
 	{
 		if (!lua_state)
 		{
@@ -72,7 +79,7 @@ namespace Engine {
 		}
 	}
 
-	void ScriptsSys::destroyContext()
+	void ScriptsSys::destroyState()
 	{
 		if (lua_state)
 		{
@@ -91,22 +98,24 @@ namespace Engine {
 		{
 			QDEBUG("created and added the script: {0}.lua , the path is {1}", script_name, script_path);
 		}
-		ofs << "--Scripts: we now can use the log function" << std::endl;
-		ofs << "--Hint: Qlog(), Qtrace(), Qerror()...etc" << std::endl;
+		ofs << "--Update the script here\n"
+			   "function onUpdate()\n" 
+			   "end"<< std::endl;
 		ofs.close();
 		
 	}
 
 	void ScriptsSys::loadScript(const std::string& path)
 	{
+		//auto ret = lua_state->script_file(path);
 		lua_state->script_file(path);
-		
 	}
 	
 	void ScriptsSys::reloadScript()
-	{
+	{		
 		loadScript(script_path + ".lua");
 	}
+
 
 	void ScriptsSys::deleteScript()
 	{
@@ -116,7 +125,14 @@ namespace Engine {
 		{
 			QDEBUG("Deleted the file: {0}.lua", script_name);
 		}
-
+	}
+	void ScriptsSys::importUpdate()
+	{
+		if (!is_imported)
+		{
+			lua_update = (*lua_state)["onUpdate"];
+			is_imported = true;
+		}
 	}
 }
 
