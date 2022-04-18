@@ -38,6 +38,7 @@ namespace Engine {
 		add_event_type("MouseMoved");
 		add_event_type("MouseButtonReleased");
 		add_event_type("Scrolled");
+		add_event_type("Collision");
 
 	} // init()
 

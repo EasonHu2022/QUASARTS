@@ -130,8 +130,8 @@ namespace Engine {
 		bool raycast_bt(const btVector3 origin, const btVector3 direction, btVector3* hitLocation);
 
 		// Math lib conversions
-		static btVector3 glm_to_btvec3(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
-		static glm::vec3 bt_to_glm_vec3(const btVector3 bt_vec) { return glm::vec3(bt_vec.x(), bt_vec.y(), bt_vec.z()); }
+		static btVector3 glmvec3_to_bt(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
+		static glm::vec3 btvector3_to_glm(const btVector3 bt_vec) { return glm::vec3(bt_vec.x(), bt_vec.y(), bt_vec.z()); }
 
 		// Debug
 		static std::string object_to_string(const btCollisionObject* obj, const bool angles_to_deg = true);

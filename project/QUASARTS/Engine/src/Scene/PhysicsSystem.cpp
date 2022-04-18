@@ -53,7 +53,7 @@ namespace Engine {
 		}
 
 		// Test collision world.
-		runTests_init();
+		//runTests_init();
 
 	} // init()
 
@@ -72,15 +72,26 @@ namespace Engine {
 
 		collisionWorld->performDiscreteCollisionDetection();
 		auto* pairs = overlappingPairCache->getOverlappingPairCache();
-
 		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
 		{
-			auto pair = pairs->getOverlappingPairArray()[i];
-			btCollisionObject* obj;
-			
-			obj = (btCollisionObject*)pair.m_pProxy0->m_clientObject;
+			auto pair = pairs->getOverlappingPairArray()[i];			
 
-			obj = (btCollisionObject*)pair.m_pProxy1->m_clientObject;
+			int objId0 = get_object_index((btCollisionObject*)pair.m_pProxy0->m_clientObject);
+			CollisionObjectInfo* objInfo0 = &collisionObjectArrayInfo[objId0];
+
+			int objId1 = get_object_index((btCollisionObject*)pair.m_pProxy0->m_clientObject);
+			CollisionObjectInfo* objInfo1 = &collisionObjectArrayInfo[objId1];
+
+			EventModule::Instance()->create_event(
+				"Collision", EventModule::EventPriority::Medium,
+				{
+					{ "entity0", EV_ARG_INT(objInfo0->mComponentId) },	// while entities are limited to 1 of each type of component, entity ID = component ID
+					{ "componentType0", EV_ARG_INT(objInfo0->mUsage) },
+
+					{ "entity1", EV_ARG_INT(objInfo1->mComponentId) },
+					{ "componentType1", EV_ARG_INT(objInfo1->mUsage) }	// while entities are limited to 1 of each type of component, entity ID = component ID
+				}
+			);
 		}
 
 	} // update()
@@ -149,7 +160,7 @@ namespace Engine {
 			// Set its world transform.
 			float yaw = 0.f, pitch = 0.f, roll = 0.f;
 			btQuaternion orn = btQuaternion(yaw * SIMD_RADS_PER_DEG, pitch * SIMD_RADS_PER_DEG, roll * SIMD_RADS_PER_DEG); // Constructing from Euler angles (yawZ, pitchY, rollX).
-			btVector3 pos = glm_to_btvec3(worldPosition);
+			btVector3 pos = glmvec3_to_bt(worldPosition);
 			objInfo->pObject->setWorldTransform(btTransform(orn, pos));
 		}
 		return obj_idx;
@@ -189,7 +200,7 @@ namespace Engine {
 			snprintf(msg, 128, "move_collision_object() was passed the index of an unassigned collision object: %d", obj_idx);
 			QERROR(msg);
 		}
-		collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform().setOrigin(glm_to_btvec3(worldPosition));
+		collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform().setOrigin(glmvec3_to_bt(worldPosition));
 
 	} // move_collision_object()
 
@@ -197,8 +208,8 @@ namespace Engine {
 	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
 	{
 		btVector3 hitLoc;
-		bool ret = raycast_bt(glm_to_btvec3(origin), glm_to_btvec3(direction), &hitLoc);
-		*hitLocation = bt_to_glm_vec3(hitLoc);
+		bool ret = raycast_bt(glmvec3_to_bt(origin), glmvec3_to_bt(direction), &hitLoc);
+		*hitLocation = btvector3_to_glm(hitLoc);
 		return ret;
 
 	} // raycast()
