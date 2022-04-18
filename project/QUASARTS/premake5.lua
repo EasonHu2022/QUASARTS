@@ -11,6 +11,8 @@ workspace "QUASARTS" --solution name
 	startproject "Editor"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+rootdir = os.getcwd()
+dir = rootdir.."/bin/"..outputdir
 	
 include "Game"	
 include "Editor"

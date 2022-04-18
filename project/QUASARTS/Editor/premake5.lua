@@ -5,6 +5,16 @@ project "Editor"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
+	postbuildcommands { 
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Editor/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/vorbisenc.dll' '"..dir.."/Editor/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/FLAC.dll' '"..dir.."/Editor/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/ogg.dll' '"..dir.."/Editor/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/opus.dll' '"..dir.."/Editor/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/vorbis.dll' '"..dir.."/Editor/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/lib/sndfile.dll' '"..dir.."/Editor/'".." -recurse -Force"
+	}
+	postbuildmessage "copying thirdparty"
 	
 	files
 	{
@@ -15,9 +25,22 @@ project "Editor"
 		"**.lua",
 	}
 	
+	libdirs
+	{
+		"../ThirdParty/OpenAL/libs/Win32",
+		"../ThirdParty/sndfile/lib"
+	}
+	
 	links
 	{
-		"Engine"
+		"Engine",
+		"OpenAL32",
+		"sndfile",
+		"vorbisenc",
+		"FLAC",
+		"ogg",
+		"opus",
+		"vorbis",
 	}
 
 	includedirs

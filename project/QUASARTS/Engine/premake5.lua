@@ -5,11 +5,15 @@ project "Engine"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
-	root_dir = os.getcwd()
-	dir = "%{wks.location}/bin/" .. outputdir .. "/%{prj.name}";
+	
 	postbuildcommands { 
-		"powershell Copy-Item "..root_dir.."/../ThirdParty/OpenAL/libs/Win32/OpenAL32.dll "..""..dir,
-		"powershell Copy-Item "..root_dir.."/../ThirdParty/sndfile/lib/sndfile.dll "..""..dir
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/lib/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force"
 	}
 	postbuildmessage "copying thirdparty"
 	
@@ -36,7 +40,7 @@ project "Engine"
 	libdirs
 	{
 		"../ThirdParty/OpenAL/libs/Win32",
-		"../ThirdParty/sndfile/lib"
+		"../ThirdParty/sndfile/lib",
 	}
 	links
 	{
@@ -52,6 +56,11 @@ project "Engine"
 		"LinearMath",
 		"OpenAL32",
 		"sndfile",
+		"vorbisenc",
+		"FLAC",
+		"ogg",
+		"opus",
+		"vorbis",
 	}
 	
 	includedirs
