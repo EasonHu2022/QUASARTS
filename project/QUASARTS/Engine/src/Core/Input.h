@@ -66,6 +66,8 @@ namespace Engine
 		/// <returns></returns>
 		static bool get_mouse_released(int mouse);
 
+		static bool get_mouse_combination(const std::vector<int>& buttons);
+
 		/// <summary>
 		/// reset pressed and released state per frame
 		/// </summary>
@@ -98,6 +100,8 @@ namespace Engine
 		static bool mouseHeld[MAX_BUTTONS];
 
 		static bool mouseClicked[MAX_BUTTONS];
+
+		static int numButtonsHeld;
 
 
 	};
