@@ -30,6 +30,8 @@ namespace Engine
 
 		ScriptsSys::Instance()->init();
 
+		//AudioSys::Instance()->init();
+
 		ECSManager::Instance()->init();
 
 		ECSManager::Instance()->set_scene(scene);
@@ -137,7 +139,7 @@ namespace Engine
 
 		EventModule::Instance()->update();
 
-
+		ScriptsSys::Instance()->update();
 		LogModule::Instance()->update();
 		PhysicsSystem::Instance()->update();
 
