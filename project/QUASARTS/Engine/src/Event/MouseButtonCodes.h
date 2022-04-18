@@ -5,7 +5,7 @@
 #define Q_MOUSE_BUTTON_UNKNOWN		-1
 
 #define Q_MOUSE_BUTTON_1			0
-#define Q_MOUSE_BUTTON_2			1
+#define Q_MOUSE_BUTTON_2			1					
 #define Q_MOUSE_BUTTON_3			2
 #define Q_MOUSE_BUTTON_4			3
 #define Q_MOUSE_BUTTON_5			4
