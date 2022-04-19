@@ -142,6 +142,7 @@ namespace Engine
 		ScriptsSys::Instance()->update();
 		LogModule::Instance()->update();
 		PhysicsSystem::Instance()->update();
+		AudioSys::Instance()->update();
 
 		on_gui();
 	}
@@ -158,6 +159,7 @@ namespace Engine
 		LogModule::Instance()->release();
 		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
+		AudioSys::Instance()->release();
 	}
 
 	void Application::EV_CALLBACK_SIGNATURE(WindowClosed)
