@@ -42,10 +42,7 @@ namespace Engine {
 	/// </summary>
 	void ScriptsSys::update()
 	{
-		//for (auto& aa : scs) 
-		//{
-		//	aa.update();
-		//}
+
 		if (lua_update)
 		{
 		lua_update();
@@ -136,11 +133,21 @@ namespace Engine {
 	}
 	std::string ScriptsSys::getScriptPath()
 	{
-		return script_path;
+		if (!script_path.empty())
+		{
+			return script_path;
+		}
+		QWARN("failed to get the script path");
+		return "";
 	}
 	std::string ScriptsSys::getScriptName()
 	{
-		return script_name;
+		if (!script_name.empty())
+		{
+			return script_name;
+		}
+		QWARN("failed to get the script name");
+		return "";
 	}
 }
 
