@@ -343,8 +343,11 @@ void MenuBarView::newScript() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
 
-            //create and add maybe?
+#if defined(_WIN32)
             std::string file_path = folder_path + "\\" + project_name;
+#else
+            std::string file_path = folder_path + "/" + project_name;
+#endif
             Engine::ScriptsSys::Instance()->createScript(buf1, file_path);
             new_script = false;
             show_window = true;

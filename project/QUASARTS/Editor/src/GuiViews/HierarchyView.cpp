@@ -13,7 +13,7 @@ void HierarchyView::on_gui()
 	if (FileModule::Instance()->get_root() != NULL) {
 
 		ImGui::SetNextWindowPos(ImVec2(0, 18));
-		ImGui::SetNextWindowSize(ImVec2(window->get_width() * 0.15625, window->get_height() * 0.7));
+		ImGui::SetNextWindowSize(ImVec2(window->get_width() * 0.15625, window->get_height() * 0.7+41));
 		ImGui::Begin("Asset Hierarchy", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 		//auto models = Engine::Application::Instance->entityWorld->models;
 		std::vector<unsigned int> entities = Engine::ECSManager::Instance()->get_entity_ID_match();
