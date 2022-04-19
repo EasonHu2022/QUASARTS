@@ -4,9 +4,6 @@
 class SoundDevice
 {
 public:
-	static SoundDevice* get();
-
-private:
 	SoundDevice();
 	~SoundDevice();
 

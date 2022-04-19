@@ -22,7 +22,7 @@ namespace Engine {
 	/// </summary>
 	void AudioSys::init()
 	{
-		sound_dev = SoundDevice::get();
+		sound_dev = new SoundDevice();
 		sound_src = new SoundSource();
 	}
 
@@ -62,11 +62,18 @@ namespace Engine {
 			delete sound_src;
 			sound_src = nullptr;
 		}
+
+		if (sound_dev != nullptr)
+		{
+			delete sound_dev;
+			sound_dev = nullptr;
+		}
 	}
 
 	void AudioSys::playSound(const std::string& name)
 	{
 		std::string file_path = "..\\Assets\\Audio\\" + name + ".ogg";
+		//std::string file_path = name + ".ogg";
 		ALuint audio = SoundBuffer::get()->addSoundEffect(file_path.c_str());
 		SoundSource src;
 		src.Play(audio);
