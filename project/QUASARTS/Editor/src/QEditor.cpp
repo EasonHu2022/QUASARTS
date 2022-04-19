@@ -114,4 +114,15 @@ void QEditor::poll_input()
 	{
 		getGuiView<MenuBarView>()->new_scene = true;
 	}
+
+	if (Engine::Input::get_key_combination({ Q_KEY_O, Q_KEY_LEFT_CONTROL }))
+	{
+		FileModule::Instance()->open_root(getGuiView<MenuBarView>()->OpenFileDialogue());
+	}
+
+	if (Engine::Input::get_key_combination({ Q_KEY_G }))
+	{
+		ImGui::SetWindowFocus("Asset Selection");
+	}
+
 }

@@ -26,11 +26,11 @@ void MenuBarView::on_gui()
             ImGui::MenuItem("New Project", NULL, &new_project);
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
-                std::cout << OpenFileDialogue().c_str() << std::endl;
+                //std::cout << OpenFileDialogue().c_str() << std::endl;
+                FileModule::Instance()->open_root(OpenFileDialogue());
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
-
 
             }
             ImGui::Separator();
@@ -180,7 +180,7 @@ std::string MenuBarView::OpenFileDialogue() {
 
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = NULL;
-    ofn.lpstrFilter = L"All Files (*.*)\0*.cpp\0";
+    ofn.lpstrFilter = L"All Files (*.*)\0*.q\0";
     ofn.lpstrFile = fileName;
     ofn.nMaxFile = 260;
     ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -247,6 +247,8 @@ std::string MenuBarView::OpenFolderDialogue() {
 
 void MenuBarView::newProject() {
 
+    ImGui::SetWindowFocus("Choose new porject directory");
+
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
@@ -276,6 +278,7 @@ void MenuBarView::newProject() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0 && strlen(buf2) != 0) {
             FileModule::Instance()->create_workdir(buf2, buf1);
+            FileModule::Instance()->save_root(buf2, buf1);
             new_project = false;
             show_window = true;
         }
@@ -291,6 +294,8 @@ void MenuBarView::newProject() {
 }
 
 void MenuBarView::newScene() {
+
+    ImGui::SetWindowFocus("Choose Scene Name");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Scene Name", &new_scene, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -321,6 +326,8 @@ void MenuBarView::newScene() {
 }
 
 void MenuBarView::newScript() {
+
+    ImGui::SetWindowFocus("Choose Script Name");
 
     ImGui::SetNextWindowSize(ImVec2(250, 80));
     ImGui::Begin("Choose Script Name", &new_script, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -355,6 +362,8 @@ void MenuBarView::newScript() {
 
 void MenuBarView::newEntity() {
 
+    ImGui::SetWindowFocus("Choose Entity Name");
+
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Entity Name", &new_entity, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
@@ -387,8 +396,10 @@ void MenuBarView::newEntity() {
 
 void MenuBarView::newChild() {
 
+    ImGui::SetWindowFocus("Choose Child Name");
+
     ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::Begin("Choose Entity Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Choose Child Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
 
@@ -421,6 +432,8 @@ void MenuBarView::newChild() {
 }
 
 void MenuBarView::newAttribute() {
+
+    ImGui::SetWindowFocus("Choose Attribute Type");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Attribute Type", &new_attribute, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);

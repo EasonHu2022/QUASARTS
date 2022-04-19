@@ -185,3 +185,33 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 	return 0;
 }
 
+void FileModule::open_root(std::string root) {
+
+	std::ifstream read(root);
+	getline(read, current_root);
+	cur_root = new QDirectoriesNode();
+	cur_root->path = (char*)current_root.c_str(); 
+	cur_root->name = "Assets"; 
+
+
+	read.close();
+}
+
+void FileModule::save_root(std::string root, std::string name) {
+
+	std::string project_file = root + "\\" + name + "\\" + name + ".q";
+	std::ofstream of(project_file);
+	if (of.is_open())
+	{
+		of << cur_root->path;
+		QDEBUG("Project Saved");
+	}
+	else
+	{
+		QDEBUG("Failed to save project");
+		
+	}
+
+	of.close();
+}
+
