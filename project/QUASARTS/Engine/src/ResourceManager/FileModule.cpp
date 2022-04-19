@@ -199,7 +199,11 @@ void FileModule::open_root(std::string root) {
 
 void FileModule::save_root(std::string root, std::string name) {
 
+#if defined(_WIN32)
 	std::string project_file = root + "\\" + name + "\\" + name + ".q";
+#else
+	std::string project_file = root + "/" + name + "/" + name + ".q";
+#endif
 	std::ofstream of(project_file);
 	if (of.is_open())
 	{
