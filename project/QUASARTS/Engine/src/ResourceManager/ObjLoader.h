@@ -1,14 +1,15 @@
 #pragma once
 #include "Core/Core.h"
-#include "ResourceManager/MeshLoader.h"
+#include "Core/ILoader.h"
+#include "ModelResource.h"
 namespace Engine
 {
 
-	class ObjLoader : public MeshLoader
+	class ObjLoader : public ILoader
 	{
 	public:
 		static constexpr char* EXTENSIONS[] = { "obj" };
-		void load(const std::string& obj, const std::string& extension, std::unordered_map<std::string, std::shared_ptr<Mesh>>&) override;
+		bool load(const std::string& filepath, const size_t handle, std::unordered_map<size_t, std::shared_ptr<IResource>>& resMap) override;
 
 	};
 

@@ -36,7 +36,10 @@ namespace Engine
 
 		ECSManager::Instance()->set_scene(scene);
 
-		loaderFactory = new MeshLoaderFactory();
+		//loaderFactory = new MeshLoaderFactory();
+
+		ResourceManager::Instance()->init();
+		
 		//create window for app
 		m_window = Window::create(WindowProps(name));
 

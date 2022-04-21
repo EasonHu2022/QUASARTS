@@ -28,6 +28,7 @@
 
 #include "ResourceManager/FileModule.h"
 #include "ResourceManager/ModelResource.h"
+#include "ResourceManager/ResourceManager.h"
 
 /*
 	entity
@@ -45,3 +46,8 @@
 	Audio
 */
 #include "Audio/AudioSystem.h"
+
+
+/*
+	Resource Loader
+*/

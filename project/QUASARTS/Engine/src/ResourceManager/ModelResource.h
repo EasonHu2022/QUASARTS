@@ -11,7 +11,7 @@
 namespace Engine
 {
 
-	class QS_API ModelResource
+	class QS_API ModelResource : public IResource
 	{
 	public:
 		ModelResource();
@@ -19,6 +19,8 @@ namespace Engine
 		std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes;
 		std::string name;
 		void render();
+
+		void reload() override {}
 	};
 
 

@@ -27,7 +27,7 @@ namespace Engine
 
 	public:
 		static Application* Instance;
-		MeshLoaderFactory* loaderFactory;
+		//MeshLoaderFactory* loaderFactory;
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
 		Scene* scene;

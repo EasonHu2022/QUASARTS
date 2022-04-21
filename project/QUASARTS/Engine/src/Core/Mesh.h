@@ -1,12 +1,13 @@
 #pragma once
 #include "Core/Core.h"
+#include "IResource.h"
 #include <vector>
 #include "Core/Vertex.h"
 #include <string>
 #include "glad/glad.h"
 namespace Engine
 {
-	class QS_API Mesh
+	class QS_API Mesh : public IResource
 	{
 	public:
 		Mesh() = default;
@@ -26,6 +27,8 @@ namespace Engine
 		unsigned int VAO, VBO, EBO;
 		void set_up_buffers();
 
+	public:
+		void reload() override {}; // From IResource
 	};
 }
 

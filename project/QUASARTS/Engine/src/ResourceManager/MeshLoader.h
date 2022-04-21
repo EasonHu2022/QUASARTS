@@ -6,17 +6,18 @@
 #include <unordered_set>
 #include <memory>
 #include "Core/Mesh.h"
+#include "Core/ILoader.h"
 namespace Engine
 {
 
-	class QS_API MeshLoader
+	class QS_API MeshLoader : public ILoader
 	{
 	public:
-		virtual void load(const std::string& obj, const std::string& extension, std::unordered_map<std::string, std::shared_ptr<Mesh>>&) = 0;
+		bool load(const std::string& filepath, const size_t handle, std::unordered_map<size_t, std::shared_ptr<IResource>>& resMap) override { return false; }
 
 	};
 
-	class QS_API MeshLoaderFactory
+	/*class QS_API MeshLoaderFactory
 	{
 	public:
 		MeshLoaderFactory();
@@ -46,7 +47,7 @@ namespace Engine
 			loaders.emplace(ext, loader);
 			supportExtensions.emplace(ext);
 		}
-	}
+	}*/
 
 
 
