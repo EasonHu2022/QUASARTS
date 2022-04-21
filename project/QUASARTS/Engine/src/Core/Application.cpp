@@ -30,7 +30,6 @@ namespace Engine
 
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
 
-		ScriptsSys::Instance()->init(); 
 		ScriptSystem::Instance()->init();
 		ResourceManager::Instance();
 
