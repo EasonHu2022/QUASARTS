@@ -9,7 +9,7 @@
 namespace Engine {
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
-    #define NUM_COMPONENT_TYPES 6
+    #define NUM_COMPONENT_TYPES 7
 
     // Maximum number of entities allowed:
     #define MAX_ENTITIES 1024
