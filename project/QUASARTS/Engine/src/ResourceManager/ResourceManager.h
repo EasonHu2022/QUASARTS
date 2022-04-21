@@ -1,59 +1,90 @@
 #pragma once
-#include "Core/IModule.h"
+
 #include "Core/Core.h"
-#include <string>
+#include "Core/IManager.h"
+#include "Core/IResource.h"
+#include "Core/ILoader.h"
+#include "Core/QUtil.h"
+#include "Logger/LogModule.h"
+
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
-#include "IResource.h"
-#include "Logger/LogModule.h"
+#include <string>
+
 namespace Engine
 {
-	class ResourceManager
+	class QS_API ResourceManager : public IManager
 	{
 	private:
 		static ResourceManager* instance;
-		std::unordered_map<size_t, std::shared_ptr<IResource>> resMap;
+		ResourceManager();
 	public:
 		static ResourceManager* Instance();
+		~ResourceManager() {}
 
-		template<class T>
+		void init();
+		int start();
+		void update();
+		int stop();
+		void release();
+
+
+	private:
+		static std::hash<std::string> hString;
+		std::unordered_map<size_t, std::shared_ptr<IResource>> resMap;
+		std::unordered_map<std::string, std::shared_ptr<ILoader>> loaders;
+		//std::unordered_set<std::string> supportedExtensions;
+
+	public:
+		/*template<class T>
 		size_t add_resource(std::shared_ptr<T> res)
 		{
-			
-			std::hash<std::string> h;
-			size_t handle = h(res.get()->path);
+			size_t handle = hString(res->path);
 			if (resMap.find(handle) == resMap.end())
 			{
 				resMap.emplace(handle, res);
 			}		
 			else
 			{
-				QERROR("Load the same resource at  path : {0}, please check", res.get()->path);
+				QERROR("ResourceManager::add_resource() was passed a clashing filepath: {0}", res.get()->path);
 			}
 			return handle;
-		}
+		}*/
 		
 		template<class T>
-		auto get_resource(size_t handle)
+		std::shared_ptr<T> get_resource(const size_t handle)
 		{
 			if (resMap.find(handle) == resMap.end())
 			{
-				QERROR("resource at  path : {0}  hasn't been loaded, please check", handle);
-				std::shared_ptr<T> nul;
-				return nul;
+				QERROR("Could not find a resource with the given key: {0}", handle);
+				return std::shared_ptr<T>();
 			}
 			return std::static_pointer_cast<T>(resMap[handle]);
 		}
 
-		void remove_resource(size_t handle)
+		void remove_resource(const size_t handle);
+
+		/// <summary>
+		/// Computes a handle from the given filepath, stores it at the address given by the pointer parameter, and checks if it is already in the resource map.
+		/// </summary>
+		/// <param name="filepath">Filepath of a resource data file.</param>
+		/// <param name="handle">Pointer to a variable which will store the computed resource handle.</param>
+		/// <returns>True if the resource at the given filepath is already loaded, false otherwise.</returns>
+		bool get_handle(const std::string& filepath, size_t* handle);
+
+		bool load_resource(const std::string& filepath, size_t* handle);
+
+	private:
+		template<typename T>
+		inline void add_loader()
 		{
-			if (resMap.find(handle) == resMap.end())
+			auto loader = std::make_shared<T>();
+			for (auto ext : T::EXTENSIONS)
 			{
-				QERROR("resource at  path : {0}  doesn't exist, please check", handle);
-				return ;
+				loaders.emplace(ext, loader);
+				//supportedExtensions.emplace(ext);
 			}
-			resMap.erase(handle);
 		}
 		
 	

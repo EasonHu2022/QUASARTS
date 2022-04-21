@@ -82,21 +82,26 @@ namespace Engine
 				pack* p = new pack();
 				//get mesh resource from component
 				/*************temp****************/
-				auto resId = Application::Instance->loaderFactory->load(mesh.path);
-				auto model = ResourceManager::Instance()->get_resource<ModelResource>(resId);
-				model->render(p);
+				if (size_t resId;
+					ResourceManager::Instance()->load_resource(mesh.path, &resId))
+				{
+					auto model = ResourceManager::Instance()->get_resource<ModelResource>(resId);
+					model->render(p);
+				}
 
 				p->set_model(transform.position, transform.rotation, transform.scale);
 
 				
 
 				//get mat resource from material component(todo)
-				std::shared_ptr<Material> mat;
 				if (material.material == NULL)
 				{
-					auto resId = Application::Instance->loaderFactory->load(material.path);
-					mat = ResourceManager::Instance()->get_resource<Material>(resId);
-					p->shader_program = mat.get()->shader;
+					if (size_t resId;
+						ResourceManager::Instance()->load_resource(material.path, &resId))
+					{
+						auto mat = ResourceManager::Instance()->get_resource<Material>(resId);
+						p->shader_program = mat->shader;
+					}
 				}
 				else
 				{

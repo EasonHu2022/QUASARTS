@@ -1,5 +1,5 @@
 #pragma once
-#include "IResource.h"
+#include "Core/IResource.h"
 #include <string>
 
 namespace Engine

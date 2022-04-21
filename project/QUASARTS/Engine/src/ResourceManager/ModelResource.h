@@ -8,7 +8,7 @@
 #include <string>
 #include <memory>
 #include "Render/RenderQueue.h"
-#include "ResourceManager/IResource.h"
+#include "Core/IResource.h"
 
 namespace Engine
 {
@@ -21,7 +21,7 @@ namespace Engine
 		std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes;
 		std::string name;
 		void render(pack* p);
-		void reload() override {};
+		void reload() override {}
 	};
 
 

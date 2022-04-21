@@ -6,7 +6,6 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "ResourceManager/MeshLoader.h"
 #include "Event/EventModule.h"
 #include "Scripts/ScriptsSystem.h"
 #include "Core/EntityWorld.h"
@@ -27,7 +26,6 @@ namespace Engine
 
 	public:
 		static Application* Instance;
-		MeshLoaderFactory* loaderFactory;
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
 		Scene* scene;

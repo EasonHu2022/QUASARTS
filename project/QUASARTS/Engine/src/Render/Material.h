@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/Core.h"
-#include "ResourceManager/IResource.h"
+#include "Core/IResource.h"
 #include <Render/Shader.h>
 #include <string>
 #include "glm/glm.hpp"
@@ -21,7 +21,7 @@ namespace Engine
 		glm::vec3 specular = { 0.2f,0.2f,0.2f };
 		float shininess = 0.4f;
 
-		void reload() override {};
+		void reload() override {}
 		//texture path
 
 
