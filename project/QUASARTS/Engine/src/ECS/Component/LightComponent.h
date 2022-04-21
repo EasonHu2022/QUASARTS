@@ -11,7 +11,7 @@
 namespace Engine {
     enum class LightType
     {
-        default = 0,
+        def = 0,
         spot,
         parallel,
         point,
@@ -21,7 +21,7 @@ namespace Engine {
         LightComponent() {
             
         };
-        LightType type = LightType::default;
+        LightType type = LightType::def;
         glm::vec3 ambient = {0.2f,0.2f,0.2f};
         glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
         glm::vec3 specular = { 0.2f,0.2f,0.2f };

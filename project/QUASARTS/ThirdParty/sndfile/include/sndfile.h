@@ -349,7 +349,7 @@ typedef	struct SNDFILE_tag	SNDFILE ;
 #if defined(_WIN32)
                 typedef __int64	sf_count_t ;
 #else
-                typedef int64	sf_count_t ;
+                typedef int64_t	sf_count_t ;
 #endif
 
 #ifndef SF_COUNT_MAX
