@@ -22,7 +22,7 @@ public:
 	void newEntity();
 	void newChild();
 	void newAttribute();
-	const char* components[3] = { "Transform", "Mesh", "Colision" };
+	const char* components[4] = { "Transform", "Mesh", "Colision", "Script"};
 public:
 	void on_add() override;
 	void on_gui() override;
