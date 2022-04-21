@@ -85,7 +85,6 @@ namespace Engine
 				loaders.emplace(ext, loader);
 				//supportedExtensions.emplace(ext);
 			}
-			resMap.erase(handle);
 		}
 		
 	

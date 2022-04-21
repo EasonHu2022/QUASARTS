@@ -1,22 +1,14 @@
 #pragma once
 #include "Core/Core.h"
-#include <string>
-#include "IResource.h"
+#include "Core/ILoader.h"
 #include "FileResource.h"
 namespace Engine
 {
-	
-
-
-	class QS_API FileLoader 
+	class QS_API FileLoader : public ILoader
 	{
 	public:
-		//static constexpr char* EXTENSIONS[] = { "VertShader" ,"FragShader", "GeoShader","Lua"};
-		size_t load(const std::string& obj);
+		static constexpr const char* EXTENSIONS[] = { "VertShader", "FragShader", "GeoShader", "Lua" };
+		bool load(const std::string& filepath, const size_t handle, std::unordered_map<size_t, std::shared_ptr<IResource>>& resMap) override;
 
 	};
-
 }
-
-
-

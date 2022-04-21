@@ -58,24 +58,21 @@ namespace Engine {
 
 		//LoadFactory::Instance()->load<>("C:/test/path/file.name.ext0");
 
-		//std::string filepath = "C:\\Users\\Computer\\Documents\\Uni\\Yr4\\COMP5530M_GrouPr\\Code\\cornell_box.obj";
-		////std::string filepath = "C:/Users/Computer/Documents/Uni/Yr4/COMP5530M_GrouPr/Code/cornell_box.obj";
-
-		//std::string directory = filepath.substr(0, filepath.find_last_of("/\\"));
-		//size_t handle = 0;
-		//bool ret = ResourceManager::Instance()->load_resource(filepath, &handle);
-		//std::shared_ptr<ModelResource> model;
-		//std::string modelname;
-		//size_t numMesh = 0;
-		//if (ret) {
-		//	model = ResourceManager::Instance()->get_resource<ModelResource>(handle);
-		//	if (model.get() != NULL)
-		//	{
-		//		modelname = model->name;
-		//		numMesh = model->meshes.size();
-		//	}
-		//}
-		//QDEBUG("filepath: {0}, ret: {1}, handle: {2}, modelname: {3}, no. meshes: {4}", filepath, (ret ? "true" : "false"), handle, modelname, numMesh);
+		/*std::string filepath = "C:\\Users\\Computer\\Documents\\Uni\\Yr4\\COMP5530M_GrouPr\\Code\\cornell_box.obj";
+		size_t handle = 0;
+		bool ret = ResourceManager::Instance()->load_resource(filepath, &handle);
+		std::shared_ptr<ModelResource> model;
+		std::string modelname;
+		size_t numMesh = 0;
+		if (ret) {
+			model = ResourceManager::Instance()->get_resource<ModelResource>(handle);
+			if (model.get() != NULL)
+			{
+				modelname = model->name;
+				numMesh = model->meshes.size();
+			}
+		}
+		QDEBUG("filepath: {0}, ret: {1}, handle: {2}, modelname: {3}, no. meshes: {4}", filepath, (ret ? "true" : "false"), handle, modelname, numMesh);*/
 
 	} // init()
 

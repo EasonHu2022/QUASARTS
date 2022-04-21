@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 
 #include "ObjLoader.h"
+#include "FileLoader.h"
 
 
 namespace Engine
@@ -22,6 +23,7 @@ namespace Engine
 
 		// Add loader.
 		add_loader<ObjLoader>();
+		add_loader<FileLoader>();
 
 	} // ResourceManager()
 
