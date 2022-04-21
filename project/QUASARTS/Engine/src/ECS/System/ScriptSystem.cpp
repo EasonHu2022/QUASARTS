@@ -160,6 +160,16 @@ namespace Engine {
 			is_imported = true;
 		}
 	}
+
+	void ScriptSystem::importUpdate(ScriptComponent* component)
+	{
+		if (!is_imported)
+		{
+			component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+			is_imported = true;
+		}
+	}
+
 	std::string ScriptSystem::getScriptPath()
 	{
 		if (!script_path.empty())

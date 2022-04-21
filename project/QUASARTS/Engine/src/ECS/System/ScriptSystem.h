@@ -41,6 +41,7 @@ namespace Engine {
 		void reloadScript();
 		void deleteScript();
 		void importUpdate();
+		void importUpdate(ScriptComponent* component);
 		std::string getScriptPath();
 		std::string getScriptName();
 
