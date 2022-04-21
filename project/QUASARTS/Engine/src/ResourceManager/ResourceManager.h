@@ -44,14 +44,14 @@ namespace Engine
 			if (resMap.find(handle) == resMap.end())
 			{
 				resMap.emplace(handle, res);
-			}
+			}		
 			else
 			{
 				QERROR("ResourceManager::add_resource() was passed a clashing filepath: {0}", res.get()->path);
 			}
 			return handle;
 		}*/
-
+		
 		template<class T>
 		std::shared_ptr<T> get_resource(const size_t handle)
 		{
@@ -85,7 +85,9 @@ namespace Engine
 				loaders.emplace(ext, loader);
 				//supportedExtensions.emplace(ext);
 			}
+			resMap.erase(handle);
 		}
-
+		
+	
 	};
 }

@@ -21,7 +21,7 @@ namespace Engine {
 	{
 		for (auto m : models)
 		{
-			m->render();
+			//m->render();
 		}
 	}
 

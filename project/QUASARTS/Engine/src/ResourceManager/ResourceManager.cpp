@@ -98,5 +98,5 @@ namespace Engine
 			resMap[*handle]->refs++;
 		}
 		return ret;
+		}
 	}
-}

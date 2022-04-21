@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "Render/RenderQueue.h"
+#include "ResourceManager/IResource.h"
 
 namespace Engine
 {
@@ -18,9 +20,8 @@ namespace Engine
 		~ModelResource();
 		std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes;
 		std::string name;
-		void render();
-
-		void reload() override {}
+		void render(pack* p);
+		void reload() override {};
 	};
 
 

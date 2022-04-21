@@ -62,8 +62,8 @@ void FileInputView::on_gui()
 
                             if (ImGui::IsMouseDoubleClicked(0)) {
                                 //std::cout << assetsFiles[i].path().string().c_str() << std::endl;
-                                std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes{};
-                                //Engine::Application::Instance -> loaderFactory->load(assetsFiles[i].path().string().c_str(), meshes);
+                               /* std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes{};
+                                Engine::Application::Instance -> loaderFactory->load(assetsFiles[i].path().string().c_str(), meshes);
                                 auto model = new Engine::ModelResource();
                                 auto ent = new Engine::AttributeVector();
                                 ent->attributes[0].x = 0;
@@ -75,7 +75,7 @@ void FileInputView::on_gui()
                                 model->meshes = meshes;
                                 model->name = assetsFiles[i].path().filename().string().c_str();
                                 Engine::Application::Instance->entityWorld->add_entity(model);
-                                Engine::Application::Instance->miniecs->add_entity(ent);
+                                Engine::Application::Instance->miniecs->add_entity(ent);*/
 
                             }
                                 

@@ -9,8 +9,12 @@
 
 // Component includes:
 #include "ECS/Component/TransformComponent.h"
+#include "ECS/Component/CameraComponent.h"
 #include "ECS/Component/MeshComponent.h"
+#include "ECS/Component/MaterialComponent.h"
 #include "ECS/Component/CollisionSphereComponent.h"
+#include "ECS/Component/LightComponent.h"
+#include "ECS/Component/ScriptComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
@@ -184,4 +188,8 @@ namespace Engine {
     template class QS_API ComponentArray<TransformComponent>;
     template class QS_API ComponentArray<MeshComponent>;
     template class QS_API ComponentArray<CollisionSphereComponent>;
+    template class QS_API ComponentArray<ScriptComponent>;
+    template class QS_API ComponentArray<CameraComponent>; 
+    template class QS_API ComponentArray<MaterialComponent>;
+    template class QS_API ComponentArray<LightComponent>;
 }

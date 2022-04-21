@@ -5,6 +5,7 @@
 #include "Core/Vertex.h"
 #include <string>
 #include "glad/glad.h"
+#include "Render/RenderQueue.h"
 namespace Engine
 {
 	class QS_API Mesh : public IResource
@@ -23,7 +24,7 @@ namespace Engine
 		std::string name;
 
 	public:
-		void render();
+		void render(pack* p);
 		unsigned int VAO, VBO, EBO;
 		void set_up_buffers();
 
