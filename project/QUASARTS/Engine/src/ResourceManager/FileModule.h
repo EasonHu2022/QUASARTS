@@ -3,6 +3,8 @@
 #include "Core/Core.h"
 #include <vector>
 #include <string>
+#include <fstream>
+
 class QS_API FileModule : public IModule
 {
 private:
@@ -68,6 +70,7 @@ public:
 private:
 	QDirectoriesNode* cur_root = nullptr;
 	const char* cur_workdir = NULL;
+	std::string current_root;
 	const char* cmd = "mkdir ";
 	//default add 2 folders(Resources and Scripts) under Assets
 	const char*  folders[5] = {"\\Assets","\\Release","\\ProjectSetting","\\Assets\\Scripts","\\Assets\\Resources"};
@@ -104,4 +107,14 @@ public:
 	/// now just for editor
 	/// </summary>
 	void build_file_vdb(std::string root_dir);
+
+	/// <summary>
+	/// open existing project
+	/// </summary>
+	void open_root(std::string root);
+
+	/// <summary>
+	/// save existing project
+	/// </summary>
+	void save_root(std::string root, std::string name);
 };

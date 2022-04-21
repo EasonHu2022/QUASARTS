@@ -4,8 +4,10 @@
 #include "GuiViews/GameSceneView.h"
 #include "GuiViews/HierarchyView.h"
 #include "GuiViews/AttributeView.h"
+#include "GuiViews/TextEditorView.h"
 #include "Core/Mesh.h"
 #include "Core/Input.h"
+#include "Audio/AudioSystem.h"
 
 QEditor::QEditor()
 {
@@ -26,6 +28,7 @@ void QEditor::init()
 	add_gui_view<GameSceneView>();
 	add_gui_view<HierarchyView>();
 	add_gui_view<AttributeView>();
+	add_gui_view<TextEditorView>();
 	//test_in_init();
 }
 
@@ -83,11 +86,25 @@ void QEditor::test_in_update()
 	if (Engine::Input::get_key_pressed(Q_KEY_W))
 	{
 		QDEBUG("Get Key from Editor : W");
+		Engine::AudioSys::playSound("laser1");
 	}
 
-	if (Engine::Input::get_key_released(Q_KEY_W))
+	if (Engine::Input::get_key_released(Q_KEY_D))
 	{
-		QDEBUG("Get Key from Editor : W");
+		QDEBUG("Get Key from Editor : D");
+		Engine::AudioSys::playSound("message1");
+	}
+
+	if (Engine::Input::get_key_released(Q_KEY_A))
+	{
+		QDEBUG("Get Key from Editor : A");
+		Engine::AudioSys::playSound("laser6");
+	}
+
+	if (Engine::Input::get_key_released(Q_KEY_S))
+	{
+		QDEBUG("Get Key from Editor : S");
+		Engine::AudioSys::playSound("explosion4");
 	}
 }
 
@@ -99,4 +116,15 @@ void QEditor::poll_input()
 	{
 		getGuiView<MenuBarView>()->new_scene = true;
 	}
+
+	if (Engine::Input::get_key_combination({ Q_KEY_O, Q_KEY_LEFT_CONTROL }))
+	{
+		FileModule::Instance()->open_root(getGuiView<MenuBarView>()->OpenFileDialogue());
+	}
+
+	if (Engine::Input::get_key_combination({ Q_KEY_G }))
+	{
+		ImGui::SetWindowFocus("Script Editor");
+	}
+
 }

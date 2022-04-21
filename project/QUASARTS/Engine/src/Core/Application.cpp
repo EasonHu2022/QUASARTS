@@ -4,7 +4,9 @@
 #include "Logger/LogModule.h"
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
-#include "Scripts/ScriptsSystem.h"
+//#include "Scripts/ScriptsSystem.h"
+#include "ECS/System/ScriptSystem.h"
+#include "Audio/AudioSystem.h"
 #include "Render/Renderer.h"
 #include "ResourceManager/ResourceManager.h"
 
@@ -28,11 +30,12 @@ namespace Engine
 
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
 
+		ScriptsSys::Instance()->init(); 
+		ScriptSystem::Instance()->init();
 		ResourceManager::Instance();
 
-		ScriptsSys::Instance()->init();
 
-		//AudioSys::Instance()->init();
+		AudioSys::Instance()->init();
 
 		ECSManager::Instance()->init();
 
@@ -86,7 +89,7 @@ namespace Engine
 		LogModule::Instance()->start();
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
-		ScriptsSys::Instance()->start();
+		ScriptSystem::Instance()->start();
 
 
 
@@ -141,9 +144,10 @@ namespace Engine
 
 		EventModule::Instance()->update();
 
-		ScriptsSys::Instance()->update();
+		ScriptSystem::Instance()->update();
 		LogModule::Instance()->update();
 		PhysicsSystem::Instance()->update();
+		AudioSys::Instance()->update();
 
 		on_gui();
 	}
@@ -160,6 +164,7 @@ namespace Engine
 		LogModule::Instance()->release();
 		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
+		AudioSys::Instance()->release();
 	}
 
 	void Application::EV_CALLBACK_SIGNATURE(WindowClosed)

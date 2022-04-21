@@ -12,8 +12,8 @@ void AttributeView::on_gui()
 {
 	if (FileModule::Instance()->get_root() != NULL) {
 
-		ImGui::SetNextWindowPos(ImVec2(window->get_width() * 0.85625, 18));
-		ImGui::SetNextWindowSize(ImVec2(window->get_width() * 0.34375, window->get_height() * 1.0922222222));
+		ImGui::SetNextWindowPos(ImVec2(window->get_width() * 0.85625+18, 18));
+		ImGui::SetNextWindowSize(ImVec2(window->get_width() * 0.34375, window->get_height() * 1.0922222222+41));
 		ImGui::Begin("Attribute Window", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 		
 		if (!game) {

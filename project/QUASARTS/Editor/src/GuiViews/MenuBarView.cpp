@@ -12,6 +12,7 @@ void MenuBarView::on_add()
     new_scene = false;
     new_entity = false;
     new_child = false;
+    new_script = false;
     folder_path = "";
     project_name = "";
     QDEBUG("on add view : MenuBar");
@@ -26,11 +27,11 @@ void MenuBarView::on_gui()
             ImGui::MenuItem("New Project", NULL, &new_project);
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
-                std::cout << OpenFileDialogue().c_str() << std::endl;
+                //std::cout << OpenFileDialogue().c_str() << std::endl;
+                FileModule::Instance()->open_root(OpenFileDialogue());
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
-
 
             }
             ImGui::Separator();
@@ -75,8 +76,8 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             if (ImGui::MenuItem("Play", "Ctrl+P")) {
 
-                Engine::ScriptsSys::Instance()->reloadScript();
-                Engine::ScriptsSys::Instance()->importUpdate();
+                Engine::ScriptSystem::Instance()->reloadScript();
+                Engine::ScriptSystem::Instance()->importUpdate();
             }
             if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
 
@@ -92,7 +93,7 @@ void MenuBarView::on_gui()
             ImGui::MenuItem("Add Script", NULL, &new_script);
             if (ImGui::MenuItem("Delete Script")) {
 
-                Engine::ScriptsSys::Instance()->deleteScript();
+                Engine::ScriptSystem::Instance()->deleteScript();
             }
             if (ImGui::MenuItem("Add Attribute")) {
                 if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
@@ -180,7 +181,7 @@ std::string MenuBarView::OpenFileDialogue() {
 
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = NULL;
-    ofn.lpstrFilter = L"All Files (*.*)\0*.cpp\0";
+    ofn.lpstrFilter = L"All Files (*.*)\0*.q\0";
     ofn.lpstrFile = fileName;
     ofn.nMaxFile = 260;
     ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -247,6 +248,8 @@ std::string MenuBarView::OpenFolderDialogue() {
 
 void MenuBarView::newProject() {
 
+    ImGui::SetWindowFocus("Choose new porject directory");
+
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
@@ -276,6 +279,7 @@ void MenuBarView::newProject() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0 && strlen(buf2) != 0) {
             FileModule::Instance()->create_workdir(buf2, buf1);
+            FileModule::Instance()->save_root(buf2, buf1);
             new_project = false;
             show_window = true;
         }
@@ -291,6 +295,8 @@ void MenuBarView::newProject() {
 }
 
 void MenuBarView::newScene() {
+
+    ImGui::SetWindowFocus("Choose Scene Name");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Scene Name", &new_scene, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -322,13 +328,15 @@ void MenuBarView::newScene() {
 
 void MenuBarView::newScript() {
 
+    ImGui::SetWindowFocus("Choose Script Name");
+
     ImGui::SetNextWindowSize(ImVec2(250, 80));
     ImGui::Begin("Choose Script Name", &new_script, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
 
     ImGui::PushItemWidth(-1);
-    ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
+    ImGui::InputTextWithHint("##pname", "Script Name(plz use test for now)", buf1, 64);
     ImGui::PopItemWidth();
 
 
@@ -336,9 +344,19 @@ void MenuBarView::newScript() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
 
-            //create and add maybe?
-            std::string file_path = folder_path + "\\" + project_name;
-            Engine::ScriptsSys::Instance()->createScript(buf1, file_path);
+            if (!(folder_path.empty() || project_name.empty()))
+            {
+#if defined(_WIN32)
+                std::string file_path = folder_path + "\\" + project_name;
+#else
+                std::string file_path = folder_path + "/" + project_name;
+#endif
+                Engine::ScriptSystem::Instance()->createScript(buf1, file_path);
+            }
+            else 
+            {
+                QWARN("Failed to create the script, Please create a project first");
+            }
             new_script = false;
             show_window = true;
         }
@@ -354,6 +372,8 @@ void MenuBarView::newScript() {
 }
 
 void MenuBarView::newEntity() {
+
+    ImGui::SetWindowFocus("Choose Entity Name");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Entity Name", &new_entity, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -387,8 +407,10 @@ void MenuBarView::newEntity() {
 
 void MenuBarView::newChild() {
 
+    ImGui::SetWindowFocus("Choose Child Name");
+
     ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::Begin("Choose Entity Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Choose Child Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
 
@@ -421,6 +443,8 @@ void MenuBarView::newChild() {
 }
 
 void MenuBarView::newAttribute() {
+
+    ImGui::SetWindowFocus("Choose Attribute Type");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
     ImGui::Begin("Choose Attribute Type", &new_attribute, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);

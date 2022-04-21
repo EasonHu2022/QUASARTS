@@ -11,8 +11,8 @@ void FileInputView::on_gui()
     if (FileModule::Instance()->get_root() != NULL) {
         
         
-        ImGui::SetNextWindowPos(ImVec2(0, window->get_height()*0.7188888889));
-        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.85625, window->get_height()*0.393333333));
+        ImGui::SetNextWindowPos(ImVec2(0, window->get_height()*0.7188888889+41));
+        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.85625+18, window->get_height()*0.393333333));
         
         std::string assetsPath = FileModule::Instance()->get_root()->path;
 

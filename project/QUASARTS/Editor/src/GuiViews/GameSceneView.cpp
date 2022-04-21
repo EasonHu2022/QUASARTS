@@ -16,7 +16,7 @@ void GameSceneView::on_gui()
 
 	
         ImGui::SetNextWindowPos(ImVec2(window->get_width()*0.15625, 18));
-        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.7, window->get_height()*0.7));
+        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.7+18, window->get_height()*0.7+41));
         ImGui::Begin("viewTabs", NULL, ImGuiWindowFlags_NoTitleBar);
 
         if (ImGui::BeginTabBar("MyTabBar"))

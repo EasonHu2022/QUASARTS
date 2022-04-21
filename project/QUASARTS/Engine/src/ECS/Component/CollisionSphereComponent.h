@@ -36,6 +36,7 @@ namespace Engine {
             {
                 /*QERROR("add_overlap() called on CollisionSphereComponent (with collision object ID {0}) with maximum overlaps;"
                     "collision with entity {1} could not be added in this frame.", mCollisionObjectId, mOverlapEntityId);*/
+                return;
             }
             mOverlapEntityId[mNumOverlaps] = aOtherEntityId;
             mOverlapComponentType[mNumOverlaps] = aOtherComponentType;
