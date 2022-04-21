@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cstring>
 inline char* char_merge(const char* a, const char* b)
 {
 	char* res = new char[strlen(a) + strlen(b) + 1];
