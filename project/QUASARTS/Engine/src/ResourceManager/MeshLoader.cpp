@@ -11,6 +11,7 @@
 #include "Core/QUtil.h"
 #include "Logger//LogModule.h"
 #include "Core/Application.h"
+#include "ResourceManager/ResourceManager.h"
 namespace Engine
 {
 
@@ -20,18 +21,37 @@ namespace Engine
 		//later add other loader like fbx/gltf...........
 	}
 
-	void MeshLoaderFactory::load(const std::string& obj, std::unordered_map<std::string, std::shared_ptr<Mesh>>& meshes)
+	size_t MeshLoaderFactory::load(const std::string& obj)
 	{
-		auto extension = getExtension(obj);
-		auto loader = loaders.find(extension);
-		if (loader != loaders.end())
+		ResourceManager* res = ResourceManager::Instance();
+
+		std::hash<std::string> h;
+		size_t handle = h(obj);
+
+		auto exist = res->get_resource<ModelResource>(handle);
+		if (exist.get() == NULL)
 		{
-			loader->second->load(obj, extension, meshes);
+			auto modelResource = std::make_shared<ModelResource>();
+			modelResource.get()->path = obj;
+			modelResource.get()->refs = 1;
+			auto extension = getExtension(obj);
+			auto loader = loaders.find(extension);
+			if (loader != loaders.end())
+			{
+				loader->second->load(obj, extension, modelResource->meshes);
+			}
+			else
+			{
+				QERROR(" Unknown file extension {0}", extension);
+			}
+
+
+			return res->add_resource<ModelResource>(modelResource);
 		}
-		else
-		{
-			QERROR( " Unknown file extension {0}", extension);
-		}
+
+		exist.get()->refs++;
+
+		return handle;
 	}
 
 	void MeshLoader::load(const std::string& obj, const std::string& extension, std::unordered_map<std::string, std::shared_ptr<Mesh>>& meshes)

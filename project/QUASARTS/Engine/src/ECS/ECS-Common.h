@@ -21,6 +21,7 @@ namespace Engine {
     #define COMPONENT_COLLISION_SPHERE  2
     #define COMPONENT_MATERIAL          3
     #define COMPONENT_LIGHTING          4
+    #define COMPONENT_CAMERA            5
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

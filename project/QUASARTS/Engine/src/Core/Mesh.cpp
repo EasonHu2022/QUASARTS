@@ -110,11 +110,10 @@ namespace Engine {
 	}
 
 
-	void Mesh::render()
+	void Mesh::render(pack* p)
 	{
-		auto p = pack(VAO,indices.size());
-
-		Renderer::Instance()->renderQueue->push(p);
+		p->_VAO = VAO;
+		p->size = indices.size();
 	}
 
 	void Mesh::set_up_buffers()

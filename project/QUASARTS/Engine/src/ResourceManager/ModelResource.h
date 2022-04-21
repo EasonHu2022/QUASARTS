@@ -7,18 +7,21 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "Render/RenderQueue.h"
+#include "ResourceManager/IResource.h"
 
 namespace Engine
 {
 
-	class QS_API ModelResource
+	class QS_API ModelResource : public IResource
 	{
 	public:
 		ModelResource();
 		~ModelResource();
 		std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes;
 		std::string name;
-		void render();
+		void render(pack* p);
+		void reload() override {};
 	};
 
 

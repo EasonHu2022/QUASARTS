@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <memory>
 #include "Core/Mesh.h"
+#include "ModelResource.h"
 namespace Engine
 {
 
@@ -24,7 +25,7 @@ namespace Engine
 		template<typename T>
 		void add_loader();
 
-		void load(const std::string& obj, std::unordered_map<std::string, std::shared_ptr<Mesh>>& meshes);
+		size_t load(const std::string& obj);
 
 		inline auto& get_support_extension() const
 		{
