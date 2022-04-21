@@ -8,12 +8,12 @@ project "Engine"
 	
 	postbuildcommands { 
 		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/lib/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force"
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force",
 	}
 	postbuildmessage "copying thirdparty"
 	
@@ -40,7 +40,7 @@ project "Engine"
 	libdirs
 	{
 		"../ThirdParty/OpenAL/libs/Win32",
-		"../ThirdParty/sndfile/lib",
+		"../ThirdParty/sndfile/libs/Win32",
 	}
 	links
 	{
