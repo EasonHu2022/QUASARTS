@@ -4,6 +4,7 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <commdlg.h>
+#include <direct.h>
 #include <ShlObj_core.h>
 #endif
 void MenuBarView::on_add()
@@ -278,10 +279,13 @@ void MenuBarView::newProject() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0 && strlen(buf2) != 0) {
+            
+            char* cur_work_dir = getcwd(nullptr, 0);
             FileModule::Instance()->create_workdir(buf2, buf1);
-            FileModule::Instance()->save_root(buf2, buf1);
+            FileModule::Instance()->save_root(buf2, buf1, cur_work_dir);
             new_project = false;
             show_window = true;
+            free(cur_work_dir);
         }
 
     }
