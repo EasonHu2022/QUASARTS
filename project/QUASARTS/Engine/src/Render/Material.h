@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 namespace Engine
 {
-	class Material : public IResource
+	class QS_API Material : public IResource
 	{
 	public:
 		Material(std::string vShaderPath, std::string fShaderPath, std::string gShaderPath = "", std::string texture = "");

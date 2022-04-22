@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 
 //data from application
 layout(location = 0) in vec3 aPos;
