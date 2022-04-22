@@ -98,6 +98,7 @@ namespace Engine
 		{
 			// Resource already loaded.
 			resMap[*handle]->refs++;
+			ret = true;
 		}
 		return ret;
 		}

@@ -12,12 +12,15 @@ namespace Engine
 	class RenderContext
 	{
 	public:
-		RenderContext() {};
+		RenderContext() {
+			view = glm::mat4(1.0f);
+			projection = glm::mat4(1.0f);
+		};
 		//view
-		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 view;
 		//projection
 		//later change a place because rarely update
-		glm::mat4 projection = glm::mat4(1.0f);
+		glm::mat4 projection;
 
 		inline void set_view(glm::vec3 offset, glm::vec3 rotation)
 		{

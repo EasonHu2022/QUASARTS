@@ -54,7 +54,7 @@ namespace Engine
 
 	void RenderSystem::update()
 	{
-		
+		update_camera();
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		// Get the entity ID mask:
@@ -66,10 +66,6 @@ namespace Engine
 		MeshComponent mesh;
 		MaterialComponent material;
 		
-		
-
-		
-
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
 			if (entitiesRenderable->mask[i] == 1)
@@ -111,9 +107,6 @@ namespace Engine
 				{
 					p->shader_program = material.material->shader;
 				}
-				
-				
-
 				//push p into renderQueue
 				Renderer::Instance()->renderQueue->push(p);
 			}

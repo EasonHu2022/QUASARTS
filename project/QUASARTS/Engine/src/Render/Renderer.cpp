@@ -95,7 +95,7 @@ namespace Engine
 	int Renderer::init()
 	{
 		renderQueue = new RenderQueue();
-		
+		context = new RenderContext();
 
 		Shader();
 		glGenFramebuffers(1, &fbo);
