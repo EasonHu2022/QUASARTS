@@ -89,7 +89,7 @@ namespace Engine
 		/// <summary>
 		/// release the memory module
 		/// </summary>
-		//void release();
+		void release() {};
 
 	
 

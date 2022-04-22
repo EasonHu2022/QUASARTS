@@ -116,48 +116,26 @@ namespace Engine
 	/// </summary>
 	int Renderer::render()
 	{
-
-
-
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-
-
 		//glEnable(GL_DEPTH_TEST);
 		//give a clear color of the window
 		glClearColor(0.45f, 0.55f, 0.6f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glViewport(0, 0, 400, 600);
-
 		while (renderQueue->get_size() != 0)
 		{
 			auto buffer = renderQueue->get();
-
 			//activate shader
 			buffer->shader_program->use();
-
-			//create transform
-			//view and projection : get from Camera
-			glm::mat4 view = context->view;
-			glm::mat4 projection = context->projection;
-
 			//model : get from transform component
 			glm::mat4 model = buffer->model;
-
-			buffer->shader_program->setMat4("projection", projection);
-			buffer->shader_program->setMat4("view", view);
 			buffer->shader_program->setMat4("model", model);
-
-
 			glBindVertexArray(buffer->_VAO);
-
 			glDrawElements(GL_TRIANGLES, buffer->size, GL_UNSIGNED_SHORT, 0);
 			glBindVertexArray(0);
 			renderQueue->pop();
 			delete buffer;
 		}
-
-
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return 0;
 	}

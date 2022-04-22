@@ -1,48 +1,42 @@
 #include "Shader.h"
 #include "Logger/LogModule.h"
+#include "ResourceManager/ResourceManager.h"
+#include "ResourceManager/FileResource.h"
 namespace Engine
 {
     Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
     {
+        ID = -1;
+
+        size_t vertexHandle = -1;
+        size_t fragmentHandle = -1;
+        size_t geometryHandle = -1;
+        if (!ResourceManager::Instance()->load_resource(vertexPath, &vertexHandle))
+        {
+            QERROR("fail to load shader file at {0}", vertexPath);
+            return;
+        }
+
+        if (!ResourceManager::Instance()->load_resource(fragmentPath, &fragmentHandle))
+        {
+            QERROR("fail to load shader file at {0}", fragmentPath);
+            return;
+        }
+
+        if (NULL != geometryPath)
+        {
+            if (!ResourceManager::Instance()->load_resource(vertexPath, &geometryHandle))
+            {
+                QERROR("fail to load shader file at {0}", vertexPath);
+                return;
+            }
+        }
         std::string vertexCode;
         std::string fragmentCode;
         std::string geometryCode;
-        std::ifstream vShaderFile;
-        std::ifstream fShaderFile;
-        std::ifstream gShaderFile;
-        // ensure ifstream objects can throw exceptions:
-        vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        try
-        {
-            // open files
-            vShaderFile.open(vertexPath);
-            fShaderFile.open(fragmentPath);
-            std::stringstream vShaderStream, fShaderStream;
-            // read file's buffer contents into streams
-            vShaderStream << vShaderFile.rdbuf();
-            fShaderStream << fShaderFile.rdbuf();
-            // close file handlers
-            vShaderFile.close();
-            fShaderFile.close();
-            // convert stream into string
-            vertexCode = vShaderStream.str();
-            fragmentCode = fShaderStream.str();
-            // if geometry shader path is present, also load a geometry shader
-            if (geometryPath != nullptr)
-            {
-                gShaderFile.open(geometryPath);
-                std::stringstream gShaderStream;
-                gShaderStream << gShaderFile.rdbuf();
-                gShaderFile.close();
-                geometryCode = gShaderStream.str();
-            }
-        }
-        catch (std::ifstream::failure& e)
-        {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
-        }
+        if (vertexHandle != -1)  vertexCode = ResourceManager::Instance()->get_resource<FileResource>(vertexHandle)->textContent;
+        if (fragmentHandle != -1) fragmentCode = ResourceManager::Instance()->get_resource<FileResource>(fragmentHandle)->textContent;
+        if (geometryHandle != -1)  geometryCode = ResourceManager::Instance()->get_resource<FileResource>(geometryHandle)->textContent;
         const char* vShaderCode = vertexCode.c_str();
         const char* fShaderCode = fragmentCode.c_str();
         // 2. compile shaders

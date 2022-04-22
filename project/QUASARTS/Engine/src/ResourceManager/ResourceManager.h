@@ -37,21 +37,6 @@ namespace Engine
 		//std::unordered_set<std::string> supportedExtensions;
 
 	public:
-		/*template<class T>
-		size_t add_resource(std::shared_ptr<T> res)
-		{
-			size_t handle = hString(res->path);
-			if (resMap.find(handle) == resMap.end())
-			{
-				resMap.emplace(handle, res);
-			}		
-			else
-			{
-				QERROR("ResourceManager::add_resource() was passed a clashing filepath: {0}", res.get()->path);
-			}
-			return handle;
-		}*/
-		
 		template<class T>
 		std::shared_ptr<T> get_resource(const size_t handle)
 		{

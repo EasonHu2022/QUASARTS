@@ -14,6 +14,8 @@ namespace Engine
     public:
         unsigned int ID;
         Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+
+
         // activate the shader
         // ------------------------------------------------------------------------
         void use();

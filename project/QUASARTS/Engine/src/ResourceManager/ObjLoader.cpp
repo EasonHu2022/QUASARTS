@@ -24,10 +24,10 @@ namespace Engine
 			return false;
 		}
 
-		auto meshes = std::make_shared<ModelResource>();
-		meshes->name = modelName;
-		meshes->path = filepath;
-		meshes->refs = 1;
+		auto model = std::make_shared<ModelResource>();
+		model->name = modelName;
+		model->path = filepath;
+		model->refs = 1;
 
 		for (const auto& shape : shapes)
 		{
@@ -73,10 +73,10 @@ namespace Engine
 			Mesh::generate_tangents(vertices, indices);
 			auto _mesh = std::make_shared<Mesh>(indices, vertices);
 			_mesh->set_name(shape.name);
-			meshes->meshes.emplace(shape.name, _mesh);
+			model->meshes.emplace(shape.name, _mesh);
 		}
 
-		resMap.emplace(handle, meshes);
+		resMap.emplace(handle, model);
 		return true;
 	}
 

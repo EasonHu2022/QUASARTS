@@ -11,6 +11,7 @@
 #include "Core/EntityWorld.h"
 #include "Core/miniECS.h"
 #include "ECS/ECSManager.h"
+#include "Render/RenderSystem.h"
 
 #include "Core/Input.h"
 
@@ -29,7 +30,7 @@ namespace Engine
 		EntityWorld* entityWorld;
 		miniECS* miniecs;
 		Scene* scene;
-
+		RenderSystem* renderSystem;
 
 	public:
 		Window* get_window() { return m_window; }

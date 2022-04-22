@@ -32,6 +32,9 @@ namespace Engine
 		// Add the Renderable mask to the System:
 		add_component_mask(mask2);
 	
+
+		matricesBuffer = NULL;
+		lightBuffer = NULL;
 	}
 
 
@@ -93,13 +96,14 @@ namespace Engine
 
 				
 
-				//get mat resource from material component(todo)
+				//get mat resource from material component
 				if (material.material == NULL)
 				{
 					if (size_t resId;
 						ResourceManager::Instance()->load_resource(material.path, &resId))
 					{
 						auto mat = ResourceManager::Instance()->get_resource<Material>(resId);
+						material.material = mat.get();
 						p->shader_program = mat->shader;
 					}
 				}
