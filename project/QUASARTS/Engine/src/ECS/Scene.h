@@ -26,9 +26,19 @@ namespace Engine {
             // Add Component arrays:
             ComponentArray<TransformComponent> *array_transform = new ComponentArray<TransformComponent>;
             ComponentArray<MeshComponent> *array_mesh = new ComponentArray<MeshComponent>;
+            ComponentArray<CollisionSphereComponent>* coli_sp = new ComponentArray<CollisionSphereComponent>;
+            ComponentArray<MaterialComponent>* array_mat = new ComponentArray<MaterialComponent>;
+            ComponentArray<LightComponent>* array_light = new ComponentArray<LightComponent>;
+            ComponentArray<ScriptComponent>* array_script = new ComponentArray<ScriptComponent>;
+            ComponentArray<CameraComponent>* array_camera = new ComponentArray<CameraComponent>;
 
             componentArrays.push_back(array_transform);
             componentArrays.push_back(array_mesh);
+            componentArrays.push_back(coli_sp);
+            componentArrays.push_back(array_mat);
+            componentArrays.push_back(array_light);
+            componentArrays.push_back(array_script);
+            componentArrays.push_back(array_camera);
         }
 
         // Destructor:
