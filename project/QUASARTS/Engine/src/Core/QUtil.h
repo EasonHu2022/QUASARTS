@@ -1,5 +1,6 @@
-#pragma 
+#pragma once
 #include <string>
+#include <cstring>
 inline char* char_merge(const char* a, const char* b)
 {
 	char* res = new char[strlen(a) + strlen(b) + 1];
@@ -18,4 +19,5 @@ inline std::string getExtension(const std::string& fileName)
 	auto pos = fileName.find_last_of('.');
 	if (pos != std::string::npos)
 		return fileName.substr(pos + 1);
+	return "";
 }

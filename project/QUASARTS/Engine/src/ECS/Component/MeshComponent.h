@@ -11,5 +11,9 @@ namespace Engine {
         float one;
         float two;
         float three;
+
+        int resId = -1;
+        std::string path;
+
     };
 }

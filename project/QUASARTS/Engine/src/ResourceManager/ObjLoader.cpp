@@ -4,23 +4,30 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 namespace Engine
 {
-	void ObjLoader::load(const std::string& obj, const std::string& extension, std::unordered_map<std::string, std::shared_ptr<Mesh>>& meshes)
+	bool ObjLoader::load(const std::string& filepath, const size_t handle, std::unordered_map<size_t, std::shared_ptr<IResource>>& resMap)
 	{
-		std::string path = obj;
-		auto directory = path.substr(0, path.find_last_of("\\"));
-		std::string name = directory.substr(directory.find_last_of("\\") + 1);
+		std::string path = filepath;
+		std::string directory = path.substr(0, path.find_last_of("/\\"));
+		std::string name = path.substr(path.find_last_of("/\\") + 1);
+		std::string modelName = name.substr(0, name.find_last_of("."));
 
 		tinyobj::attrib_t                attrib;
 		std::vector<tinyobj::shape_t>    shapes;
 		std::vector<tinyobj::material_t> materials;
 		std::string                      warn, err;
 
-		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, obj.c_str(), directory.c_str()))
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str(), directory.c_str()))
 		{
 			QWARN(warn);
 			QERROR(err);
-			return;
+			QERROR("LoadObj params: path: {0}, directory: {1}", path.c_str(), directory.c_str());
+			return false;
 		}
+
+		auto model = std::make_shared<ModelResource>();
+		model->name = modelName;
+		model->path = filepath;
+		model->refs = 1;
 
 		for (const auto& shape : shapes)
 		{
@@ -66,8 +73,11 @@ namespace Engine
 			Mesh::generate_tangents(vertices, indices);
 			auto _mesh = std::make_shared<Mesh>(indices, vertices);
 			_mesh->set_name(shape.name);
-			meshes.emplace(shape.name, _mesh);
+			model->meshes.emplace(shape.name, _mesh);
 		}
+
+		resMap.emplace(handle, model);
+		return true;
 	}
 
 }

@@ -1,4 +1,5 @@
 #include "ModelResource.h"
+
 namespace Engine
 {
 	ModelResource::ModelResource()
@@ -7,11 +8,11 @@ namespace Engine
 	ModelResource::~ModelResource()
 	{
 	}
-	void ModelResource::render()
+	void ModelResource::render(pack* p)
 	{
 		for (auto m : meshes)
 		{
-			m.second->render();
+			m.second->render(p);
 		}
 	}
 };

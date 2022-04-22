@@ -12,6 +12,7 @@ void MenuBarView::on_add()
     new_scene = false;
     new_entity = false;
     new_child = false;
+    new_script = false;
     folder_path = "";
     project_name = "";
     QDEBUG("on add view : MenuBar");
@@ -75,8 +76,8 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             if (ImGui::MenuItem("Play", "Ctrl+P")) {
 
-                Engine::ScriptsSys::Instance()->reloadScript();
-                Engine::ScriptsSys::Instance()->importUpdate();
+                Engine::ScriptSystem::Instance()->reloadScript();
+                Engine::ScriptSystem::Instance()->importFunc();
             }
             if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
 
@@ -92,7 +93,7 @@ void MenuBarView::on_gui()
             ImGui::MenuItem("Add Script", NULL, &new_script);
             if (ImGui::MenuItem("Delete Script")) {
 
-                Engine::ScriptsSys::Instance()->deleteScript();
+                Engine::ScriptSystem::Instance()->deleteScript();
             }
             if (ImGui::MenuItem("Add Attribute")) {
                 if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
@@ -335,7 +336,7 @@ void MenuBarView::newScript() {
 
 
     ImGui::PushItemWidth(-1);
-    ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
+    ImGui::InputTextWithHint("##pname", "Script Name(plz use test for now)", buf1, 64);
     ImGui::PopItemWidth();
 
 
@@ -343,12 +344,19 @@ void MenuBarView::newScript() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
 
+            if (!(folder_path.empty() || project_name.empty()))
+            {
 #if defined(_WIN32)
-            std::string file_path = folder_path + "\\" + project_name;
+                std::string file_path = folder_path + "\\" + project_name;
 #else
-            std::string file_path = folder_path + "/" + project_name;
+                std::string file_path = folder_path + "/" + project_name;
 #endif
-            Engine::ScriptsSys::Instance()->createScript(buf1, file_path);
+                Engine::ScriptSystem::Instance()->createScript(buf1, file_path);
+            }
+            else 
+            {
+                QWARN("Failed to create the script, Please create a project first");
+            }
             new_script = false;
             show_window = true;
         }

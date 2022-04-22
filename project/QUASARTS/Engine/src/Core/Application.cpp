@@ -4,9 +4,11 @@
 #include "Logger/LogModule.h"
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
-#include "Scripts/ScriptsSystem.h"
+//#include "Scripts/ScriptsSystem.h"
+#include "ECS/System/ScriptSystem.h"
 #include "Audio/AudioSystem.h"
 #include "Render/Renderer.h"
+#include "ResourceManager/ResourceManager.h"
 
 namespace Engine
 {
@@ -22,25 +24,22 @@ namespace Engine
 		miniecs = new miniECS();
 		scene = new Scene();
 
+
+		/*************************Create and Init********************************/
 		LogModule::Instance()->init();
-
 		EventModule::Instance()->init();
-
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
-
-		ScriptsSys::Instance()->init();
-
+		ScriptSystem::Instance()->init();
+		ResourceManager::Instance();
 		AudioSys::Instance()->init();
-
 		ECSManager::Instance()->init();
-
 		ECSManager::Instance()->set_scene(scene);
-
-		loaderFactory = new MeshLoaderFactory();
+		ResourceManager::Instance()->init();
 		//create window for app
 		m_window = Window::create(WindowProps(name));
-
-		Renderer::Instance()->init();
+		renderSystem = new RenderSystem();
+		Renderer::Instance(); 
+		/*************************Create and Init********************************/
 
 	}
 	Application:: ~Application()
@@ -55,20 +54,16 @@ namespace Engine
 	void Application::init()
 	{
 
-
-		/*
-			later change to ECS mode
-			later remove instance
-		*/
-
+		/***************later init things*************************/
 		PhysicsSystem::Instance()->init();
-
 		/*Renderer::Instance()->init();*/
-
+		Renderer::Instance()->init();
+		renderSystem->init();
 		//do init things
 		GuiWrapper::init();
-
 		Input::init();
+		/***************later init things*************************/
+
 
 	}
 
@@ -78,21 +73,11 @@ namespace Engine
 
 		bIs_Running = true;
 
-		/*
-			temp
-		*/
+		/***************later start things*************************/
 		LogModule::Instance()->start();
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
-		ScriptsSys::Instance()->start();
-
-
-
-
-		/// <summary>
-		/// for test
-		/// </summary>
-
+		ScriptSystem::Instance()->start();
 
 		//main loop
 		while (bIs_Running)
@@ -108,9 +93,6 @@ namespace Engine
 			}
 			GuiWrapper::end();
 
-			/*
-				System Manager Update
-			*/
 			if (bIs_Running)
 				m_window->swap_buffer();
 		}
@@ -121,9 +103,9 @@ namespace Engine
 
 	void Application::on_render()
 	{
-		//Renderer::Instance()->render_loop();
-		//Renderer::Instance()->render_loop();
+		/**************render update render frame***********************/
 		Renderer::Instance()->render();
+		/**************render update render frame***********************/
 	}
 
 	void Application::on_gui()
@@ -133,18 +115,16 @@ namespace Engine
 
 	void Application::on_update()
 	{
-		//reset input
+		/***************logic update logic frame************************/
 		Input::reset_state();
 		m_window->on_update();
-
 		EventModule::Instance()->update();
-
-		ScriptsSys::Instance()->update();
-		LogModule::Instance()->update();
+		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
+		renderSystem->update();
 		AudioSys::Instance()->update();
-
 		on_gui();
+		/***************logic update logic frame************************/
 	}
 
 
@@ -155,11 +135,14 @@ namespace Engine
 
 	void Application::on_release()
 	{
-		//release everything
+		/*********************release things**********************************/
 		LogModule::Instance()->release();
 		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
 		AudioSys::Instance()->release();
+		renderSystem->release();
+		Renderer::Instance()->release();
+		/*********************release things**********************************/
 	}
 
 	void Application::EV_CALLBACK_SIGNATURE(WindowClosed)

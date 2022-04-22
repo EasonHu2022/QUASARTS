@@ -9,14 +9,19 @@
 
 // Component includes:
 #include "ECS/Component/TransformComponent.h"
+#include "ECS/Component/CameraComponent.h"
 #include "ECS/Component/MeshComponent.h"
+#include "ECS/Component/MaterialComponent.h"
 #include "ECS/Component/CollisionSphereComponent.h"
+#include "ECS/Component/LightComponent.h"
+#include "ECS/Component/ScriptComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
  * Add a template class declaration here (at the bottom).
  * Add a new definition in ECS-Common.h.
- * Update NUM_COMPONENT_TYPES in ECS-Common.h */
+ * Update NUM_COMPONENT_TYPES in ECS-Common.h
+ * Add a ComponentArray initialization to the Scene.h constructor */
 
 /* Functions:
  * T get_data(unsigned int entityID)
@@ -112,12 +117,13 @@ namespace Engine {
                 return;
             }
 
+            // Decrement num_entries:
+            num_entries--;
+
             // Replace the data with the entry from the end of the array:
             componentData[index] = componentData[num_entries];
             entityIDs[index] = entityIDs[num_entries];
-            
-            // Now the array is packed again. Decrement num_entries:
-            num_entries--;
+            // The array is now packed again.
         }
 
         // Replace data in the component array:
@@ -184,4 +190,8 @@ namespace Engine {
     template class QS_API ComponentArray<TransformComponent>;
     template class QS_API ComponentArray<MeshComponent>;
     template class QS_API ComponentArray<CollisionSphereComponent>;
+    template class QS_API ComponentArray<ScriptComponent>;
+    template class QS_API ComponentArray<CameraComponent>; 
+    template class QS_API ComponentArray<MaterialComponent>;
+    template class QS_API ComponentArray<LightComponent>;
 }

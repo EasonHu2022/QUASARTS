@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <sys/types.h>
+#include <cstdlib>
+#include <climits>
 
 #ifdef __cplusplus
 extern "C" {
@@ -344,8 +346,12 @@ typedef	struct SNDFILE_tag	SNDFILE ;
 ** On windows, we need to allow the same header file to be compiler by both GCC
 ** and the Microsoft compiler.
 */
+#if defined(_WIN32)
+                typedef __int64	sf_count_t ;
+#else
+                typedef int64_t	sf_count_t ;
+#endif
 
-typedef __int64	sf_count_t ;
 #ifndef SF_COUNT_MAX
 #define SF_COUNT_MAX		0x7FFFFFFFFFFFFFFFLL
 #endif
