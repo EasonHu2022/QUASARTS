@@ -7,7 +7,6 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "Event/EventModule.h"
-#include "Scripts/ScriptsSystem.h"
 #include "Core/EntityWorld.h"
 #include "Core/miniECS.h"
 #include "ECS/ECSManager.h"
