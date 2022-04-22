@@ -40,8 +40,9 @@ namespace Engine {
 		void loadScript(const std::string& path, ScriptComponent* component);
 		void reloadScript();
 		void deleteScript();
-		void importUpdate();
-		void importUpdate(ScriptComponent* component);
+		void importFunc();
+		void onUpdate();
+		void importFunc(ScriptComponent* component);
 		std::string getScriptPath();
 		std::string getScriptName();
 

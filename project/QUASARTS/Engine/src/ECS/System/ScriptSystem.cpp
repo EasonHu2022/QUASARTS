@@ -47,11 +47,26 @@ namespace Engine {
 	/// </summary>
 	void ScriptSystem::update()
 	{
+		//call the imported function from lua side
+		onUpdate();
 
-		if (script_component->update_function)
+		//get manager
+		ECSManager* mgr = get_manager();
+
+		//get entity mask
+		quasarts_entity_ID_mask* ent = get_entity_ID_mask(0);
+
+		ScriptComponent script;
+		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
-			(*(script_component->update_function))();
+			if (ent->mask[i] == 1)
+			{
+				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
+
+				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, script);
+			}
 		}
+
 	}
 
 	/// <summary>
@@ -123,6 +138,7 @@ namespace Engine {
 	void ScriptSystem::loadScript(const std::string& path, ScriptComponent* component)
 	{
 		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
+		//script_component = component;
 	}
 
 	void ScriptSystem::reloadScript()
@@ -152,7 +168,7 @@ namespace Engine {
 		}
 
 	}
-	void ScriptSystem::importUpdate()
+	void ScriptSystem::importFunc()
 	{
 		if (!is_imported)
 		{
@@ -161,7 +177,15 @@ namespace Engine {
 		}
 	}
 
-	void ScriptSystem::importUpdate(ScriptComponent* component)
+	void ScriptSystem::onUpdate()
+	{
+		if (script_component->update_function)
+		{
+			(*(script_component->update_function))();
+		}
+	}
+
+	void ScriptSystem::importFunc(ScriptComponent* component)
 	{
 		if (!is_imported)
 		{
