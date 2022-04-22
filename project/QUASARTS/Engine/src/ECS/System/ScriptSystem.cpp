@@ -200,8 +200,9 @@ namespace Engine {
 		{
 			return script_path;
 		}
-		QWARN("failed to get the script path");
-		return "";
+
+		//QWARN("failed to get the script path");
+		return ".\\Assets\\Scripts\\test.lua";
 	}
 	std::string ScriptSystem::getScriptName()
 	{
@@ -209,8 +210,8 @@ namespace Engine {
 		{
 			return script_name;
 		}
-		QWARN("failed to get the script name");
-		return "";
+		//QWARN("failed to get the script name");
+		return "test.lua";
 	}
 
 }
