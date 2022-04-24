@@ -4,7 +4,6 @@
 #include "Logger/LogModule.h"
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
-//#include "Scripts/ScriptsSystem.h"
 #include "ECS/System/ScriptSystem.h"
 #include "Audio/AudioSystem.h"
 #include "Render/Renderer.h"
@@ -122,6 +121,7 @@ namespace Engine
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
 		renderSystem->update();
+		ECSManager::Instance()->register_system(0, renderSystem);
 		AudioSys::Instance()->update();
 		on_gui();
 		/***************logic update logic frame************************/

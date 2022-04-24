@@ -18,7 +18,6 @@ namespace Engine
 		glBindBuffer(GL_UNIFORM_BUFFER, handle);
 		glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
 		glBindBufferBase(GL_UNIFORM_BUFFER, (GLuint)slot, handle);
 	}
 	void UniformBufferObject::set_data(uint32_t offset, uint32_t _size, const void* data)

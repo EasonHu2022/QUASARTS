@@ -70,12 +70,26 @@ namespace Engine {
 		}
 	}
 
+	void AudioSys::getWorkPath(const std::string& path)
+	{
+		cur_work_dir = path;
+	}
+
 	void AudioSys::playSound(const std::string& name)
 	{
-		std::string file_path = "..\\Assets\\Audio\\" + name + ".ogg";
-		//std::string file_path = name + ".ogg";
+
+		std::string file_path;
+		if (cur_work_dir.empty())
+		{
+			file_path = "..\\Assets\\Audio\\" + name + ".ogg";
+		}
+		else
+		{
+			auto temp = cur_work_dir.substr(0, cur_work_dir.find_last_of("E"));
+			file_path = temp + "\\Assets\\Audio\\" + name + ".ogg";
+		}
+		
 		ALuint audio = SoundBuffer::get()->addSoundEffect(file_path.c_str());
-		SoundSource src;
-		src.Play(audio);
+		sound_src->Play(audio);
 	}
 }

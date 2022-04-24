@@ -48,13 +48,13 @@ namespace Engine
 
 		matricesBuffer->init();
 		lightBuffer->init();
-		update_camera();
+		update_projection();
 		update_light();
 	}
 
 	void RenderSystem::update()
 	{
-		
+		update_projection();
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		// Get the entity ID mask:
@@ -66,10 +66,6 @@ namespace Engine
 		MeshComponent mesh;
 		MaterialComponent material;
 		
-		
-
-		
-
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
 			if (entitiesRenderable->mask[i] == 1)
@@ -111,9 +107,6 @@ namespace Engine
 				{
 					p->shader_program = material.material->shader;
 				}
-				
-				
-
 				//push p into renderQueue
 				Renderer::Instance()->renderQueue->push(p);
 			}
@@ -124,7 +117,7 @@ namespace Engine
 
 	}
 
-	void RenderSystem::update_camera()
+	void RenderSystem::update_projection()
 	{
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
@@ -135,12 +128,7 @@ namespace Engine
 		//set camera
 		int cameras = 0;
 		for (int i = 0; i < MAX_ENTITIES; i++)
-		{
-			if (cameras != 0)
-			{
-				cameras++;
-				break;
-			}			
+		{		
 			if (cameraEnt->mask[i] == 1)
 			{
 				camera = active_manager->get_component

@@ -211,7 +211,7 @@ namespace Engine {
 			return script_name;
 		}
 		//QWARN("failed to get the script name");
-		return "test.lua";
+		return "test";
 	}
 
 }

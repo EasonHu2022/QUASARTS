@@ -7,7 +7,7 @@ namespace Engine
 	class QS_API FileLoader : public ILoader
 	{
 	public:
-		static constexpr const char* EXTENSIONS[] = { "vsh", "fsh", "gsh", "Lua" };
+		static constexpr const char* EXTENSIONS[] = { "vsh", "fsh", "gsh", "lua" };
 		bool load(const std::string& filepath, const size_t handle, std::unordered_map<size_t, std::shared_ptr<IResource>>& resMap) override;
 
 	};

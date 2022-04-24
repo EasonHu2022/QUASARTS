@@ -7,7 +7,12 @@ namespace Engine
 		fShaderPath = _fShaderPath;
 		gShaderPath = _gShaderPath;
 		texture = _texture;
-		shader = new Shader(vShaderPath.data(), fShaderPath.data(), fShaderPath.data());
+		char* gPath;
+		if (_gShaderPath == "")
+			gPath = NULL;
+		else
+			gPath = _gShaderPath.data();
+		shader = new Shader(vShaderPath.data(), fShaderPath.data(), gPath);
 	}
 
 

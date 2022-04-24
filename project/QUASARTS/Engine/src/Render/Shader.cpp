@@ -23,11 +23,11 @@ namespace Engine
             return;
         }
 
-        if (NULL != geometryPath)
+        if (NULL != geometryPath )
         {
-            if (!ResourceManager::Instance()->load_resource(vertexPath, &geometryHandle))
+            if (!ResourceManager::Instance()->load_resource(geometryPath, &geometryHandle))
             {
-                QERROR("fail to load shader file at {0}", vertexPath);
+                QERROR("fail to load shader file at {0}", geometryPath);
                 return;
             }
         }
