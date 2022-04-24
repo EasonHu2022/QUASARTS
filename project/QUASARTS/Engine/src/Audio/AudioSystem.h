@@ -4,7 +4,6 @@
 #include "SndBuffer.h"
 #include "SndDev.h"
 #include "SndSrc.h"
-
 #include <string>
 
 namespace Engine {
@@ -14,7 +13,7 @@ namespace Engine {
 		// singleton
 	private:
 		static AudioSys* instance;
-		AudioSys() : sound_path(""), sound_dev(nullptr), sound_src(nullptr) {};
+		AudioSys() : sound_path(""), sound_dev(nullptr), sound_src(nullptr), cur_work_dir("") {};
 	public:
 		static AudioSys* Instance();
 		~AudioSys() {};
@@ -27,9 +26,12 @@ namespace Engine {
 		void release();
 
 		// Usage functions //
-		static void playSound(const std::string& name);
+		void playSound(const std::string& name);
+		void getWorkPath(const std::string& path);
+
 
 	private:
+		std::string cur_work_dir;
 		std::string sound_path;
 		SoundDevice* sound_dev;
 		SoundSource* sound_src;

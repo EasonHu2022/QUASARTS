@@ -4,7 +4,6 @@
 #include "Logger/LogModule.h"
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
-//#include "Scripts/ScriptsSystem.h"
 #include "ECS/System/ScriptSystem.h"
 #include "Audio/AudioSystem.h"
 #include "Render/Renderer.h"
