@@ -26,7 +26,7 @@ namespace Engine
 
 		void update() override;
 		//update camera
-		void update_camera();
+		void update_projection();
 
 		//update light
 		void update_light();

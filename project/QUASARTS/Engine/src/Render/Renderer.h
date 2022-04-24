@@ -24,7 +24,8 @@ namespace Engine
 
 		inline void set_view(glm::vec3 offset, glm::vec3 rotation)
 		{
-
+			view = glm::mat4(1.0f);
+			auto dir = glm::vec3(.0f) - offset;
 			view = glm::translate(view, offset);
 			//x
 			view = glm::rotate(view, rotation.x, glm::vec3(1, 0, 0));
@@ -32,11 +33,13 @@ namespace Engine
 			view = glm::rotate(view, rotation.y, glm::vec3(0, 1, 0));
 			//z
 			view = glm::rotate(view, rotation.z, glm::vec3(0, 0, 1));
+
 		}
 
 		inline void set_projection(float fov, float ratio, float nearClip, float farClip)
 		{
-			projection = glm::perspective(fov, ratio, nearClip, farClip);
+			projection = glm::mat4(1.0f);
+			projection = glm::perspective(glm::radians(fov), ratio, nearClip, farClip);
 
 		}
 

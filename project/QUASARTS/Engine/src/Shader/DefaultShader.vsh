@@ -25,8 +25,11 @@ void main()
     vs_out.FragPos = aPos;
     vs_out.Normal = aNormal;
     vs_out.TexCoords = aTexCoords;
-    //gl_Position = projection * view * vec4(aPos, 1.0);
-    gl_Position = vec4(aPos, 1.0);
+
+    //gl_Position = projection ;
+      gl_Position = projection * view * model * vec4(aPos, 1.0);
+    //gl_Position = view * model * vec4(aPos, 1.0);
+    //gl_Position =  vec4(aPos, 1.0);
 }
 
 //#version 420 core
