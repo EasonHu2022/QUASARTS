@@ -30,6 +30,7 @@ namespace Engine
             // convert stream into string
             fileResource->textContent = txtStream.str();
 
+            fileResource->path = filepath;
 
         }
         catch (std::ifstream::failure& e)

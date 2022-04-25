@@ -21,6 +21,7 @@ void MenuBarView::on_add()
 
 void MenuBarView::on_gui()
 {
+    //QDEBUG("hi - {0}", new_project);
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -271,10 +272,10 @@ std::string MenuBarView::OpenFolderDialogue() {
 
 void MenuBarView::newProject() {
 
-    ImGui::SetWindowFocus("Choose new porject directory");
+    ImGui::SetWindowFocus("Choose new project directory");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Choose new project directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
     static char buf2[260] = "";
     for (int i = 0; i < folder_path.length(); i++) {

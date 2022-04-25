@@ -1,6 +1,5 @@
 #include "QuasartsEngine.h"
 
-
 /*
 	Entry point
 */

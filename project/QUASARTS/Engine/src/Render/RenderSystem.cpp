@@ -145,7 +145,7 @@ namespace Engine
 		}
 		if (cameras != 1)
 		{
-			QERROR("can't support no camera or multi camera, use the first camera");
+			//QERROR("can't support no camera or multi camera, use the first camera");
 		}
 	}
 

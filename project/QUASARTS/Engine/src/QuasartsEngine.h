@@ -27,6 +27,7 @@
 */
 
 #include "ResourceManager/FileModule.h"
+#include "ResourceManager/FileResource.h"
 #include "ResourceManager/ModelResource.h"
 #include "ResourceManager/ResourceManager.h"
 
