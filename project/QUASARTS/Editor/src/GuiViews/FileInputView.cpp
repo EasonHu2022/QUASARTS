@@ -42,7 +42,10 @@ void FileInputView::on_gui()
 
                 for (auto const& dir_entry : std::filesystem::directory_iterator{ tempAssetsPath })
                 {
-                    assetsFiles.push_back(dir_entry);
+                    if(i == 0 && dir_entry.path().extension().compare(".obj") == 0)
+                        assetsFiles.push_back(dir_entry);
+                    if (i == 1 && dir_entry.path().extension().compare(".lua") == 0)
+                        assetsFiles.push_back(dir_entry);
                 }
 
                 ImGuiTreeNodeFlags node_flags = base_flags;
@@ -61,22 +64,26 @@ void FileInputView::on_gui()
                         if (ImGui::Selectable(assetsFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
 
                             if (ImGui::IsMouseDoubleClicked(0)) {
-                                //std::cout << assetsFiles[i].path().string().c_str() << std::endl;
-                               /* std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes{};
-                                Engine::Application::Instance -> loaderFactory->load(assetsFiles[i].path().string().c_str(), meshes);
-                                auto model = new Engine::ModelResource();
-                                auto ent = new Engine::AttributeVector();
-                                ent->attributes[0].x = 0;
-                                ent->attributes[0].y = 0;
-                                ent->attributes[0].z = 0;
-                                ent->attributes[1].x = 0;
-                                ent->attributes[1].y = 0;
-                                ent->attributes[1].z = 0;
-                                model->meshes = meshes;
-                                model->name = assetsFiles[i].path().filename().string().c_str();
-                                Engine::Application::Instance->entityWorld->add_entity(model);
-                                Engine::Application::Instance->miniecs->add_entity(ent);*/
+                                if (i == 0) {
+                                    unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                                    Engine::ECSManager::Instance()->set_entityName(entityID, "object");
+                                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                                    Engine::TransformComponent transform;
+                                    transform.position = { 0.0f,0.0f, 0.0f };
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
 
+
+                                    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
+                                    Engine::MeshComponent mesh;
+                                    mesh.path = assetsFiles[i].path().string();
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
+
+                                    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
+                                    Engine::MaterialComponent material;
+                                    material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
+                                }
+                                else {}
                             }
                                 
                         }
@@ -85,59 +92,8 @@ void FileInputView::on_gui()
                 }
 
             }
-            if (node_clicked != -1)
-            {
-                // Update selection state
-                // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
-                if (ImGui::GetIO().KeyCtrl)
-                    selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-                else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
-                    selection_mask = (1 << node_clicked);           // Click to single-select
-            }
             ImGui::TreePop();
         }
-
-        /*if (ImGui::TreeNode("ProjectSetting"))
-        {
-            std::string projectSettingPath = "D:\\Q2\\QUASARTS\\testing_input\\ProjectSetting";
-            std::vector<std::filesystem::directory_entry> projectSettingFiles;
-            for (auto const& dir_entry : std::filesystem::directory_iterator{ projectSettingPath })
-            {
-                projectSettingFiles.push_back(dir_entry);
-            }
-            static int selected = -1;
-            for (int i = 0; i < projectSettingFiles.size(); i++)
-            {
-                if (ImGui::Selectable(projectSettingFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
-
-                    if (ImGui::IsMouseDoubleClicked(0))
-                        std::cout << projectSettingFiles[i].path().string() << '\n';
-                }
-            }
-
-            ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Release"))
-        {
-            std::string releasePath = "D:\\Q2\\QUASARTS\\testing_input\\Release";
-            std::vector<std::filesystem::directory_entry> releaseFiles;
-            for (auto const& dir_entry : std::filesystem::directory_iterator{ releasePath })
-            {
-                releaseFiles.push_back(dir_entry);
-            }
-            static int selected = -1;
-            for (int i = 0; i < releaseFiles.size(); i++)
-            {
-                if (ImGui::Selectable(releaseFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
-
-                    if (ImGui::IsMouseDoubleClicked(0))
-                        std::cout << releaseFiles[i].path().string() << '\n';
-                }
-            }
-
-            ImGui::TreePop();
-        }*/
 
         ImGui::End();
     
