@@ -126,8 +126,9 @@ void QEditor::poll_input()
 		FileModule::Instance()->open_root(getGuiView<MenuBarView>()->OpenFileDialogue());
 	}
 
-	if (Engine::Input::get_key_combination({ Q_KEY_G }))
+	if (Engine::Input::get_key_combination({ Q_KEY_G, Q_KEY_LEFT_SHIFT }))
 	{
+		QDEBUG("Get Key from Editor : G");
 		ImGui::SetWindowFocus("Script Editor");
 	}
 

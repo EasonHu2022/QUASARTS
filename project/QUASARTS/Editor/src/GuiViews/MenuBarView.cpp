@@ -21,6 +21,7 @@ void MenuBarView::on_add()
 
 void MenuBarView::on_gui()
 {
+    //QDEBUG("hi - {0}", new_project);
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -119,12 +120,12 @@ void MenuBarView::on_gui()
                     Engine::ECSManager::Instance()->set_entityName(entityID, "camera");
                     Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
                     Engine::TransformComponent transform;
-                    transform.position = { 0.0f,0.1f, -2.0f };
+                    transform.position = { 0.0f,0.9f, -2.0f };
                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
                     Engine::ECSManager::Instance()->create_component<Engine::CameraComponent>(entityID, COMPONENT_CAMERA); */
                 }
-                if (ImGui::MenuItem("Pane")) {
-                  /*  unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                if (ImGui::MenuItem("Plane")) {
+                    unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
                     Engine::ECSManager::Instance()->set_entityName(entityID, "object");
                     Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
                     Engine::TransformComponent transform;
@@ -134,13 +135,13 @@ void MenuBarView::on_gui()
 
                     Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
                     Engine::MeshComponent mesh;
-                    mesh.path = "F:\\WorkSpace\\LEEDS\\Graphics and Render\\Assignment2\\objects\\sphere20x20.obj";
+                    mesh.path = "D:\\Q6\\zz\\sphere20x20.obj";
                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
 
                     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
                     Engine::MaterialComponent material;
-                    material.material = new Engine::Material("F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);*/
+                    material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
+                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
                 }
                 if (ImGui::MenuItem("Pyramid")) {
 
@@ -271,10 +272,10 @@ std::string MenuBarView::OpenFolderDialogue() {
 
 void MenuBarView::newProject() {
 
-    ImGui::SetWindowFocus("Choose new porject directory");
+    ImGui::SetWindowFocus("Choose new project directory");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Choose new project directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
     static char buf2[260] = "";
     for (int i = 0; i < folder_path.length(); i++) {
