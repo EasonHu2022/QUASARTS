@@ -43,35 +43,35 @@ void AttributeView::on_remove()
 }
 
 void AttributeView::show_mesh() {
-	Engine::MeshComponent mesh = Engine::ECSManager::Instance()->get_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH);
-	std::string obj_name = "Name of mesh file: " + mesh.path.substr(mesh.path.find_last_of("\\") + 1);
+	Engine::MeshComponent* mesh = Engine::ECSManager::Instance()->get_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH);
+	std::string obj_name = "Name of mesh file: " + mesh->path.substr(mesh->path.find_last_of("\\") + 1);
 	ImGui::Separator();
 	ImGui::Text(obj_name.c_str());
 }
 
 void AttributeView::show_transform() {
 	ImGui::Separator();
-	Engine::TransformComponent transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
-	static float pos[3] = { transform.position.x ,transform.position.y, transform.position.z };
-	static float rot[3] = { transform.rotation.x ,transform.rotation.y, transform.rotation.z };
-	static float scal[3] = { transform.scale.x ,transform.scale.y, transform.scale.z };
+	Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
+	static float pos[3] = { transform->position.x ,transform->position.y, transform->position.z };
+	static float rot[3] = { transform->rotation.x ,transform->rotation.y, transform->rotation.z };
+	static float scal[3] = { transform->scale.x ,transform->scale.y, transform->scale.z };
 
 	ImGui::InputFloat3(" Position", pos);
-	transform.position.x = pos[0];
-	transform.position.y = pos[1];
-	transform.position.z = pos[2];
-	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, transform);
+	transform->position.x = pos[0];
+	transform->position.y = pos[1];
+	transform->position.z = pos[2];
+	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, *transform);
 
 	ImGui::InputFloat3(" Rotation", rot);
-	transform.rotation.x = rot[0];
-	transform.rotation.y = rot[1];
-	transform.rotation.z = rot[2];
-	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, transform);
+	transform->rotation.x = rot[0];
+	transform->rotation.y = rot[1];
+	transform->rotation.z = rot[2];
+	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, *transform);
 
 	ImGui::InputFloat3(" Scale", scal);
-	transform.scale.x = scal[0];
-	transform.scale.y = scal[1];
-	transform.scale.z = scal[2];
-	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, transform);
+	transform->scale.x = scal[0];
+	transform->scale.y = scal[1];
+	transform->scale.z = scal[2];
+	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, *transform);
 	
 }

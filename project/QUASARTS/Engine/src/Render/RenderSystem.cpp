@@ -120,13 +120,12 @@ namespace Engine
 	void RenderSystem::update_projection()
 	{
 		auto cameraID = Application::Instance->scene->get_camera();
-		if (cameraID == -1)
+		if (cameraID == TOO_MANY_ENTITIES)
 			return;
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		TransformComponent *transform;
 		CameraComponent *camera;
-		
 	
 		camera = active_manager->get_component
 			<CameraComponent>(cameraID, COMPONENT_CAMERA);
