@@ -21,10 +21,10 @@ namespace Engine
 		/******temp*********/
 		entityWorld = new EntityWorld();
 		miniecs = new miniECS();
-		scene = new Scene();
-
+		/******temp*********/
 
 		/*************************Create and Init********************************/
+		
 		LogModule::Instance()->init();
 		EventModule::Instance()->init();
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
@@ -32,6 +32,7 @@ namespace Engine
 		ResourceManager::Instance();
 		AudioSys::Instance()->init();
 		ECSManager::Instance()->init();
+		scene = new Scene();
 		ECSManager::Instance()->set_scene(scene);
 		ResourceManager::Instance()->init();
 		//create window for app
@@ -61,6 +62,8 @@ namespace Engine
 		//do init things
 		GuiWrapper::init();
 		Input::init();
+		ECSManager::Instance()->register_system(0, renderSystem);
+		scene->init();
 		/***************later init things*************************/
 
 
@@ -77,6 +80,7 @@ namespace Engine
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
 		ScriptSystem::Instance()->start();
+		/***************later start things*************************/
 
 		//main loop
 		while (bIs_Running)
@@ -121,7 +125,6 @@ namespace Engine
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
 		renderSystem->update();
-		ECSManager::Instance()->register_system(0, renderSystem);
 		AudioSys::Instance()->update();
 		on_gui();
 		/***************logic update logic frame************************/

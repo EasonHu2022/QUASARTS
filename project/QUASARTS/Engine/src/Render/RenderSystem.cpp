@@ -119,34 +119,23 @@ namespace Engine
 
 	void RenderSystem::update_projection()
 	{
+		auto cameraID = Application::Instance->scene->get_camera();
+		if (cameraID == -1)
+			return;
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		TransformComponent transform;
 		CameraComponent camera;
 		
-		quasarts_entity_ID_mask* cameraEnt = get_entity_ID_mask(2);
-		//set camera
-		int cameras = 0;
-		for (int i = 0; i < MAX_ENTITIES; i++)
-		{		
-			if (cameraEnt->mask[i] == 1)
-			{
-				camera = active_manager->get_component
-					<CameraComponent>(i, COMPONENT_CAMERA);
-				transform = active_manager->get_component
-					<TransformComponent>(i, COMPONENT_TRANSFORM);
-				Renderer::Instance()->context->set_view(transform.position, transform.rotation);
-				Renderer::Instance()->context->set_projection(camera.fov, camera.ratio, camera.nearClip, camera.farClip);
-				matricesBuffer->set_data(0,sizeof(glm::mat4), Renderer::Instance()->context->get_projection_data());
-				matricesBuffer->set_data(sizeof(glm::mat4), sizeof(glm::mat4), Renderer::Instance()->context->get_view_data());
-
-				cameras++;
-			}
-		}
-		if (cameras != 1)
-		{
-			QERROR("can't support no camera or multi camera, use the first camera");
-		}
+	
+		camera = active_manager->get_component
+			<CameraComponent>(cameraID, COMPONENT_CAMERA);
+		transform = active_manager->get_component
+			<TransformComponent>(cameraID, COMPONENT_TRANSFORM);
+		Renderer::Instance()->context->set_view(transform.position, transform.rotation);
+		Renderer::Instance()->context->set_projection(camera.fov, camera.ratio, camera.nearClip, camera.farClip);
+		matricesBuffer->set_data(0, sizeof(glm::mat4), Renderer::Instance()->context->get_projection_data());
+		matricesBuffer->set_data(sizeof(glm::mat4), sizeof(glm::mat4), Renderer::Instance()->context->get_view_data());
 	}
 
 	void RenderSystem::update_light()

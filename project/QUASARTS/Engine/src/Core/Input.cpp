@@ -12,6 +12,9 @@ namespace Engine
 	bool Input::mouseHeld[MAX_BUTTONS] = {};
 	bool Input::mouseClicked[MAX_BUTTONS] = {};
 	int Input::numButtonsHeld = 0;
+	glm::vec2 Input::mousePosition = { -1.0f,-1.0f };
+	glm::vec2 Input::mouseMotion = { 0.0f,0.0f };
+	bool Input::mouseMoving = false;
 
 	void Input::init()
 	{
@@ -28,6 +31,8 @@ namespace Engine
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(KeyReleased));
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(MouseButtonPressed));
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(MouseButtonReleased));
+		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(MouseMoved));
+		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(Scrolled));
 	}
 
 	Input::~Input()
@@ -88,6 +93,7 @@ namespace Engine
 		//memset(mouseHeld, 0, MAX_BUTTONS);
 		memset(mouseClicked, 0, MAX_BUTTONS);
 		memset(mouseReleased,0, MAX_BUTTONS);
+		mouseMoving = false;
 	}
 	void Input::EV_CALLBACK_SIGNATURE(KeyPressed)
 	{
@@ -99,13 +105,16 @@ namespace Engine
 			QDEBUG("No args named {0} in event 'Keypressed',please check !", name);
 			return;
 		}			
-		
-		keyPressed[keycode] = true;
+			
+
 		if (!keyHeld[keycode])
 		{
+			keyPressed[keycode] = true;
 			keyHeld[keycode] = true;
 			++numKeysHeld;
+			QDEBUG("key pressed");
 		}
+		
 	}
 	void Input::EV_CALLBACK_SIGNATURE(KeyReleased)
 	{
@@ -121,6 +130,7 @@ namespace Engine
 		keyReleased[keycode] = true;
 		keyHeld[keycode] = false;
 		--numKeysHeld;
+		QDEBUG("key released");
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonPressed)
 	{
@@ -139,6 +149,7 @@ namespace Engine
 			mouseHeld[button] = true;
 			++numButtonsHeld;
 		}
+		QDEBUG("mouse pressed");
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonReleased)
 	{
@@ -154,5 +165,52 @@ namespace Engine
 		mouseReleased[button] = true;
 		mouseHeld[button] = false;
 		--numButtonsHeld;
+		QDEBUG("mouse released");
 	}
+
+	void Input::EV_CALLBACK_SIGNATURE(MouseMoved)
+	{
+		float x = -1;
+		std::string name = "xPos";
+		auto ret = evt.find_argument(&x, name);
+		if (!ret)
+		{
+			QDEBUG("No args named {0} in event 'MouseMoved', please check !", name);
+			return;
+		}
+
+		float y = -1;
+		name = "yPos";
+		ret = evt.find_argument(&y, name);
+		if (!ret)
+		{
+			QDEBUG("No args named {0} in event 'MouseMoved', please check !", name);
+			return;
+		}
+
+		glm::vec2 newPos = {x,y};
+		if (mousePosition.x >=0 && mousePosition.y >= 0)
+			mouseMotion = newPos - mousePosition;
+		mousePosition = newPos;
+		mouseMoving = true;
+		QDEBUG("mouse moving");
+	}
+
+	void Input::EV_CALLBACK_SIGNATURE(Scrolled)
+	{
+		/*int button = -1;
+		std::string name = "button";
+		auto ret = evt.find_argument(&button, name);
+		if (!ret)
+		{
+			QDEBUG("No args named {0} in event 'Scrolled', please check !", name);
+			return;
+		}
+
+		mouseReleased[button] = true;
+		mouseHeld[button] = false;
+		--numButtonsHeld;*/
+	}
+
+
 };
