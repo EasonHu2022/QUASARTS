@@ -80,14 +80,33 @@ namespace Engine {
             children.push_back({});
         }
 
-        // Get scene camera:
-        unsigned int get_camera() {
-            return camera;
-        }
+        void clear_data() {
+            // Clear Component array data:
+            for (int i = 0; i < componentArrays.size(); i++) {
+                componentArrays[i]->clear_data();
+            }
 
-        // Set scene camera:
-        void set_camera(unsigned int cameraID) {
-            camera = cameraID;
+            // Reset name:
+            name = "Default Scene";
+
+            // Clear Entity data:
+            entities.clear();
+            entity_ID_match.clear();
+
+            // Clear Entity groups:
+            entity_groups.clear();
+
+            // Clear Entity ID mask:
+            for (int i = 0; i < MAX_ENTITIES; i++) {
+                entity_IDs.mask[i] = 0;
+            }
+
+            // Clear parent-child relationships:
+            children.clear();
+            parents.clear();
+
+            // Reset the camera Entity:
+            camera = TOO_MANY_ENTITIES;
         }
 
         private:

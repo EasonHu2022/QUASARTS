@@ -32,8 +32,6 @@ namespace Engine
 		ResourceManager::Instance();
 		AudioSys::Instance()->init();
 		ECSManager::Instance()->init();
-		scene = new Scene();
-		ECSManager::Instance()->set_scene(scene);
 		ResourceManager::Instance()->init();
 		//create window for app
 		m_window = Window::create(WindowProps(name));

@@ -21,11 +21,17 @@ namespace Engine {
         private:
         // Singleton:
         static ECSManager *instance;
-        ECSManager() { current_entity = TOO_MANY_ENTITIES; }
+        ECSManager() {
+            scene = new Scene();
+            create_camera();
+            current_entity = TOO_MANY_ENTITIES;
+        }
 
         public:
         static ECSManager *Instance();
-        ~ECSManager();
+        ~ECSManager() {
+            delete scene;
+        }
 
         // Functions inherited from IManager:
         void init();
@@ -222,17 +228,17 @@ namespace Engine {
         // Set the scene camera:
         void set_camera(unsigned int cameraID);
 
-        // Get the name of the current scene:
+        // Get the name of the scene:
         std::string get_scene_name();
 
-        // Set the pointer to the current scene:
-        void set_scene(Scene *scene_ptr);
+        // Set the name of the scene:
+        void set_scene_name(std::string name);
 
         // Save the whole scene to file:
         bool save_scene(char *filename);
 
         // Load a scene from file:
-        Scene *load_scene(char *filename);
+        bool load_scene(char *filename);
 
         // Get an index for an Entity by ID:
         unsigned int get_index_from_ID(unsigned int entityID);

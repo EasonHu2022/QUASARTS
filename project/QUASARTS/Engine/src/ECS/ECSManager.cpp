@@ -311,12 +311,12 @@ namespace Engine {
 
     // Get the scene camera:
     unsigned int ECSManager::get_camera() {
-        return scene->get_camera();
+        return scene->camera;
     }
 
     // Set the scene camera:
     void ECSManager::set_camera(unsigned int cameraID) {
-        scene->set_camera(cameraID);
+        scene->camera = cameraID;
     }
 
     // Get the name of the current scene:
@@ -324,14 +324,9 @@ namespace Engine {
         return scene->name;
     }
 
-    // Set the pointer to the current scene:
-    void ECSManager::set_scene(Scene *scene_ptr) {
-        scene = scene_ptr;
-        // Set up camera if there is none:
-        if (scene->get_camera() == TOO_MANY_ENTITIES) {
-            create_camera();
-        }
-        // TODO: Proper scene swap behaviour (re-testing Systems for example).
+    // Set the name of the scene:
+    void ECSManager::set_scene_name(std::string name) {
+        scene->name = name;
     }
 
     // Save the whole scene to file:
@@ -411,18 +406,18 @@ namespace Engine {
     }
 
     // Load a scene from file:
-    Scene *ECSManager::load_scene(char *filename) {/*
+    bool ECSManager::load_scene(char *filename) {/*
         // This will load the contents of the file into a new Scene object.
         std::ifstream sceneFile(filename);
         // Check if the file is open:
         if (!(sceneFile.good())) {
             std::cerr << "Function ECSManager::load_scene: Warning: Cannot \
                                                     open file for reading!";
-            return nullptr;
-        }*/
+            return false;
+        }
 
-        // Create a new Scene instance:
-        Scene *new_scene = new Scene();/*
+        // Clear the scene data:
+        scene->clear_data();
 
         // Create a buffer for reading in lines:
         char lineBuffer[MAX_SCENE_LINE_LENGTH];
@@ -440,7 +435,7 @@ namespace Engine {
                 continue;
             // NAME //
             } else if (line[0] == 'N') {
-                new_scene->name = line.substr(2, line.length());
+                scene->name = line.substr(2, line.length());
             // ENTITY //
             } else if (line[0] == 'E') {
                 std::stringstream parser(line.substr(2, line.length()));
@@ -460,11 +455,11 @@ namespace Engine {
                 }
                 Entity new_entity = Entity(entityID);
                 new_entity.set_name(name);
-                new_scene->entities.push_back(new_entity);
-                new_scene->entity_ID_match.push_back(entityID);
-                new_scene->entity_IDs.mask[entityID] = 1;
-                new_scene->parents.push_back(TOO_MANY_ENTITIES);
-                new_scene->children.push_back({});
+                scene->entities.push_back(new_entity);
+                scene->entity_ID_match.push_back(entityID);
+                scene->entity_IDs.mask[entityID] = 1;
+                scene->parents.push_back(TOO_MANY_ENTITIES);
+                scene->children.push_back({});
             // COMPONENT //
             } else if (line[0] == 'C') {
                 unsigned int entityID;
@@ -515,7 +510,7 @@ namespace Engine {
             }
         }*/
 
-        return new_scene;
+        return true;
     }
 
     // Get an index for an Entity by ID:
