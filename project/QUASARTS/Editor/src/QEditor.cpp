@@ -123,7 +123,10 @@ void QEditor::poll_input()
 
 	if (Engine::Input::get_key_combination({ Q_KEY_O, Q_KEY_LEFT_CONTROL }))
 	{
-		FileModule::Instance()->open_root(getGuiView<MenuBarView>()->OpenFileDialogue());
+		std::string proj_file = getGuiView<MenuBarView>()->OpenFileDialogue();
+		if (proj_file.compare("N/A") != 0)
+			FileModule::Instance()->open_root(proj_file);
+		
 	}
 
 	if (Engine::Input::get_key_combination({ Q_KEY_G, Q_KEY_LEFT_SHIFT }))

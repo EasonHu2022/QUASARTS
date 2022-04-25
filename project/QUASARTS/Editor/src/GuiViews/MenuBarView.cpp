@@ -30,7 +30,9 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
-                FileModule::Instance()->open_root(OpenFileDialogue());
+                std::string proj_file = OpenFileDialogue();
+                if(proj_file.compare("N/A")!=0)
+                    FileModule::Instance()->open_root(proj_file);
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
@@ -205,6 +207,7 @@ std::string MenuBarView::OpenFileDialogue() {
     ofn.lpstrDefExt = L"";
 
     if (GetOpenFileName(&ofn)) {
+
         std::wstring ws(fileName);
         // your new String
         std::string fileNameStr(ws.begin(), ws.end());
