@@ -170,11 +170,20 @@ namespace Engine {
 	}
 	void ScriptSystem::importFunc()
 	{
-		if (!is_imported)
-		{
+		//if (!is_imported)
+		//{
 			script_component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
-			is_imported = true;
-		}
+			//is_imported = true;
+		//}		
+	}
+
+	void ScriptSystem::importFunc(ScriptComponent* component)
+	{
+		//if (!is_imported)
+		//{
+			component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+			//is_imported = true;
+		//}
 	}
 
 	void ScriptSystem::onUpdate()
@@ -185,12 +194,11 @@ namespace Engine {
 		}
 	}
 
-	void ScriptSystem::importFunc(ScriptComponent* component)
+	void ScriptSystem::onUpdate(ScriptComponent* component)
 	{
-		if (!is_imported)
+		if (component->update_function)
 		{
-			component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
-			is_imported = true;
+			(*(component->update_function))();
 		}
 	}
 
@@ -200,9 +208,12 @@ namespace Engine {
 		{
 			return script_path;
 		}
+		//temp
+		else {
 
+			return ".\\Assets\\Scripts\\test.lua";
+		}
 		//QWARN("failed to get the script path");
-		return ".\\Assets\\Scripts\\test.lua";
 	}
 	std::string ScriptSystem::getScriptName()
 	{
@@ -210,8 +221,12 @@ namespace Engine {
 		{
 			return script_name;
 		}
+		//temp
+		else {
+
+			return "test";
+		}
 		//QWARN("failed to get the script name");
-		return "test";
 	}
 
 }
