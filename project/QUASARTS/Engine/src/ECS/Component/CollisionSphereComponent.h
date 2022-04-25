@@ -52,4 +52,36 @@ namespace Engine {
             mNumOverlaps = 0;
         }
     };
+
+    // Input stream operator:
+    inline std::istream & operator >> (std::istream &inStream, CollisionSphereComponent &collisionSphere) {
+        inStream
+        >> collisionSphere.mLocalOffset[0] >> collisionSphere.mLocalOffset[1]
+        >> collisionSphere.mLocalOffset[2] >> collisionSphere.mRadius
+        >> collisionSphere.mCollisionObjectId >> collisionSphere.mNumOverlaps;
+        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
+            inStream >> collisionSphere.mOverlapEntityId[i];
+        }
+        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
+            inStream >> collisionSphere.mOverlapComponentType[i];
+        }
+
+        return inStream;
+    }
+            
+    // Output stream operator:
+    inline std::ostream & operator << (std::ostream &outStream, const CollisionSphereComponent &collisionSphere) {
+        outStream
+        << collisionSphere.mLocalOffset[0] << collisionSphere.mLocalOffset[1]
+        << collisionSphere.mLocalOffset[2] << collisionSphere.mRadius
+        << collisionSphere.mCollisionObjectId << collisionSphere.mNumOverlaps;
+        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
+            outStream << collisionSphere.mOverlapEntityId[i];
+        }
+        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
+            outStream << collisionSphere.mOverlapComponentType[i];
+        }
+        
+        return outStream;
+    }
 }

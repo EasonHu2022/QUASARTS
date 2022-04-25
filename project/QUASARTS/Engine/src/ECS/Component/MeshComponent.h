@@ -16,4 +16,18 @@ namespace Engine {
         std::string path;
 
     };
+
+    // Input stream operator:
+    inline std::istream & operator >> (std::istream &inStream, MeshComponent &mesh) {
+        inStream >> mesh.resId >> mesh.path;
+
+        return inStream;
+    }
+            
+    // Output stream operator:
+    inline std::ostream & operator << (std::ostream &outStream, const MeshComponent &mesh) {
+        outStream << mesh.resId << " " << mesh.path;
+        
+        return outStream;
+    }
 }

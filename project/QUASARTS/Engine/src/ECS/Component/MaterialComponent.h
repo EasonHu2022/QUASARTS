@@ -15,4 +15,20 @@ namespace Engine {
         //for created in memory
         Material* material = NULL;
     };
+
+    // Input stream operator:
+    inline std::istream & operator >> (std::istream &inStream, MaterialComponent &material) {
+        // Don't bother with the pointer, just the path:
+        inStream >> material.path;
+
+        return inStream;
+    }
+            
+    // Output stream operator:
+    inline std::ostream & operator << (std::ostream &outStream, const MaterialComponent &material) {
+        // Don't bother with the pointer, just the path:
+        outStream << material.path;
+        
+        return outStream;
+    }
 }
