@@ -61,11 +61,12 @@ void FileInputView::on_gui()
                     node_clicked = i;
                 if (node_open) {
                     static int selected = -1;
-                    for (int i = 0; i < assetsFiles.size(); i++)
+                    for (int j = 0; j < assetsFiles.size(); j++)
                     {
-                        if (ImGui::Selectable(assetsFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
+                        if (ImGui::Selectable(assetsFiles[j].path().filename().string().c_str(), selected == j, ImGuiSelectableFlags_AllowDoubleClick)) {
 
                             if (ImGui::IsMouseDoubleClicked(0)) {
+                                QDEBUG("Double clicked: AssetsFiles.size() = {0}, i = {1}, j = {2}", assetsFiles.size(), i, j);
                                 if (i == 0) {
                                     unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
                                     Engine::ECSManager::Instance()->set_entityName(entityID, "object");
@@ -77,7 +78,7 @@ void FileInputView::on_gui()
 
                                     Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
                                     Engine::MeshComponent mesh;
-                                    mesh.path = assetsFiles[i].path().string();
+                                    mesh.path = assetsFiles[j].path().string();
                                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
 
                                     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
@@ -87,7 +88,7 @@ void FileInputView::on_gui()
                                 }
                                 else if (i == 1) 
                                 {
-                                    if (size_t idk; Engine::ResourceManager::Instance()->load_resource(assetsFiles[i].path().string().c_str(), &idk))
+                                    if (size_t idk; Engine::ResourceManager::Instance()->load_resource(assetsFiles[j].path().string().c_str(), &idk))
                                     {
                                         auto luaFile = Engine::ResourceManager::Instance()->get_resource<Engine::FileResource>(idk);
                                         QDEBUG("Load File - {0}", luaFile->path);
