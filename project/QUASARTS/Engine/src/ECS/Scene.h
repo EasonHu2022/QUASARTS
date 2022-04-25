@@ -72,7 +72,7 @@ namespace Engine {
             transformCompArray->add_data(cameraID, transform);
 
             // Update scene data:
-            set_camera(cameraID);
+            scene->camera = cameraID;
             entities.push_back(camera_entity);
             entity_ID_match.push_back(cameraID);
             entity_IDs.mask[cameraID] = 1;
