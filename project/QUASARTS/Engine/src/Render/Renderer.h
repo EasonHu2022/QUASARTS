@@ -17,13 +17,14 @@ namespace Engine
 		//projection
 		//later change a place because rarely update
 		glm::mat4 projection;
-
+		
 		glm::vec3 front;
 		glm::vec3 up;
 		glm::vec3 right;
 		glm::vec3 worldUp;
 
 	public:
+		glm::vec3 pos = { 0.0f,0.0f,0.0f };
 		CameraContext() {
 			view = glm::mat4(1.0f);
 			projection = glm::mat4(1.0f);
@@ -36,7 +37,7 @@ namespace Engine
 		inline void set_view(glm::vec3 offset, glm::vec3 rotation)
 		{
 			view = glm::mat4(1.0f);
-			auto pos = offset;
+			pos = offset;
 			auto pitch = rotation.x;
 			auto yaw =  rotation.y;
 			//world up

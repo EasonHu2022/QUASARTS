@@ -40,6 +40,17 @@ void GameSceneView::on_gui()
                 ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("Text Edit"))
+            {
+                static TextEditor editor;
+
+                editor.SetShowWhitespaces(false);
+                editor.SetReadOnly(false);
+                editor.SetPalette(TextEditor::GetDarkPalette());
+                editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+                editor.Render("##EditorWindow", ImVec2(1120, 630));
+                ImGui::EndTabItem();
+            }
             ImGui::EndTabBar();
         }
         ImGui::End();

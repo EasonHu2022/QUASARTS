@@ -58,7 +58,7 @@ namespace Engine {
             // Add relevant Components to the camera:
             CameraComponent camera;
             TransformComponent transform;
-            transform.position = { 0.0f, 0.1f, 2.0f };
+            transform.position = { 0.0f, 0.1f, 5.0f };
             transform.rotation = { 0.0f, -90.0f, 0.0f };
             camera_entity.add_component_type(COMPONENT_CAMERA);
             camera_entity.add_component_type(COMPONENT_TRANSFORM);

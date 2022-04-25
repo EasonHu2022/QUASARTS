@@ -107,6 +107,8 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tbo, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 		return 0;
 	}
 
@@ -117,10 +119,10 @@ namespace Engine
 	int Renderer::render()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		//give a clear color of the window
 		glClearColor(0.45f, 0.55f, 0.6f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, 400, 600);
 		while (renderQueue->get_size() != 0)
 		{
@@ -130,6 +132,7 @@ namespace Engine
 			//model : get from transform component
 			glm::mat4 model = buffer->model;
 			buffer->shader_program->setMat4("model", model);
+			buffer->shader_program->setVec3("viewPos", context->pos);
 			glBindVertexArray(buffer->_VAO);
 			glDrawElements(GL_TRIANGLES, buffer->size, GL_UNSIGNED_SHORT, 0);
 			glBindVertexArray(0);
