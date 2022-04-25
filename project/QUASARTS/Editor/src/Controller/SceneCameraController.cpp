@@ -3,7 +3,7 @@
 void SceneCameraController::on_update()
 {
 	auto camera = Engine::Application::Instance->scene->get_camera();
-	if (camera != -1)
+	if (camera != TOO_MANY_ENTITIES)
 	{
 		if (Engine::Input::mouseMoving)
 		{

@@ -140,6 +140,18 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Light")) {
 
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                Engine::ECSManager::Instance()->set_entityName(entityID, "light");
+                Engine::ECSManager::Instance()->create_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
+                Engine::LightComponent light;
+                light.ambient = { 1.0f,0.0f, 0.0f };
+                light.type = Engine::LightType::point;
+                Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_LIGHTING, light);
+
+                Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                Engine::TransformComponent transform;
+                transform.position = { 1.0f,2.5f, 0.0f };
+                Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
             }
             if (ImGui::MenuItem("Particle Emitter")) {
 
