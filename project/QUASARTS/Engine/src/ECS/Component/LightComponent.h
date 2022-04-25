@@ -22,7 +22,7 @@ namespace Engine {
         glm::vec3 ambient = {0.2f,0.2f,0.2f};
         glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
         glm::vec3 specular = { 0.2f,0.2f,0.2f };   
-        int type = 0;
+        LightType type = LightType::def;
     };
 
     struct alignas(16) lightBuffer
@@ -31,7 +31,7 @@ namespace Engine {
         glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
         glm::vec3 specular = { 0.2f,0.2f,0.2f };
         glm::vec3 positon = { 0.0f,0.0f,0.0f };
-        float type = 0;
+        float type = 0.0f;
 
     };
 

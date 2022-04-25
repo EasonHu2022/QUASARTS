@@ -173,12 +173,13 @@ namespace Engine
 					<LightComponent>(i, COMPONENT_LIGHTING);
 				
 		
-				info->lights[info->countLight].type = light->type;
-				info->lights[info->countLight].ambient = light->ambient;
-				info->lights[info->countLight].diffuse = light->diffuse;
-				info->lights[info->countLight].specular = light->specular;
-				info->lights[info->countLight].positon = transform->position;
-				info->countLight++;				
+				info.lights[ind].type = (float) light->type;
+				info.lights[ind].ambient = light->ambient;
+				info.lights[ind].diffuse = light->diffuse;
+				info.lights[ind].specular = light->specular;
+				info.lights[ind].positon = transform->position;
+				ind++;
+				info.countLight = ind;
 			}
 		}
 		lightBuffer->set_data(0,sizeof(Lightinfo),&info);
