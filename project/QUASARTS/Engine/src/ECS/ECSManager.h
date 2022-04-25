@@ -5,6 +5,7 @@
 #include <set>
 #include <map>
 #include <iostream>
+#include <sstream>
 
 // Local includes:
 #include "Core/Core.h"
@@ -121,7 +122,7 @@ namespace Engine {
 
         // Get a Component from the Component array:
         template <typename T>
-        T get_component(unsigned int entityID, unsigned int componentType) {
+        T *get_component(unsigned int entityID, unsigned int componentType) {
                 ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
                 return compArray->get_data(entityID);
         }
@@ -212,6 +213,15 @@ namespace Engine {
         // Set the current Entity ID:
         void set_current_entity(unsigned int entityID);
 
+        // Create the scene camera:
+        void create_camera();
+
+        // Get the scene camera:
+        unsigned int get_camera();
+
+        // Set the scene camera:
+        void set_camera(unsigned int cameraID);
+
         // Get the name of the current scene:
         std::string get_scene_name();
 
@@ -222,7 +232,7 @@ namespace Engine {
         bool save_scene(char *filename);
 
         // Load a scene from file:
-        bool load_scene(char *filename);
+        Scene *load_scene(char *filename);
 
         // Get an index for an Entity by ID:
         unsigned int get_index_from_ID(unsigned int entityID);

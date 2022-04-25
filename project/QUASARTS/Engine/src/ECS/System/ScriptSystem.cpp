@@ -56,14 +56,14 @@ namespace Engine {
 		//get entity mask
 		quasarts_entity_ID_mask* ent = get_entity_ID_mask(0);
 
-		ScriptComponent script;
+		ScriptComponent *script;
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
 			if (ent->mask[i] == 1)
 			{
 				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
 
-				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, script);
+				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, *script);
 			}
 		}
 

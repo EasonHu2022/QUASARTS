@@ -14,13 +14,13 @@ void SceneCameraController::on_update()
 				auto transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(camera, COMPONENT_TRANSFORM);
 				
 				auto mouseMotion = Engine::Input::mouseMotion;
-				auto x = transform.rotation.x;
-				auto y = transform.rotation.y;
+				auto x = transform->rotation.x;
+				auto y = transform->rotation.y;
 				x += MouseSensitivity * mouseMotion.y;
 				y += MouseSensitivity * mouseMotion.x;
 				//QDEBUG("rot camera");
-				transform.rotation = { x,y,0.0f };
-				Engine::ECSManager::Instance()->replace_component(camera, COMPONENT_TRANSFORM, transform);
+				transform->rotation = { x,y,0.0f };
+				Engine::ECSManager::Instance()->replace_component(camera, COMPONENT_TRANSFORM, *transform);
 			}
 		}
 		
