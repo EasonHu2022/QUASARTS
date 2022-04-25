@@ -127,8 +127,7 @@ namespace Engine
 
 	void RenderSystem::update_projection()
 	{
-		auto cameraID = Engine::ECSManager::Instance()->get_camera();
-		if (cameraID == TOO_MANY_ENTITIES)
+		auto cameraID = Engine::ECSManager::Instance()->get_camera();		if (cameraID == TOO_MANY_ENTITIES)
 			return;
 		// Get the manager:
 		ECSManager* active_manager = get_manager();

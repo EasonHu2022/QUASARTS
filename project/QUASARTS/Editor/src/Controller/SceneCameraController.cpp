@@ -2,7 +2,7 @@
 
 void SceneCameraController::on_update()
 {
-	auto camera = Engine::Application::Instance->scene->get_camera();
+	auto camera = Engine::ECSManager::Instance()->get_camera();
 	if (camera != TOO_MANY_ENTITIES)
 	{
 		if (Engine::Input::mouseMoving)

@@ -48,7 +48,7 @@ namespace Engine {
         virtual void remove_entity(unsigned int entityID) = 0;
 
         // Clear all component array data:
-        virtual void clear_data() = 0;
+        virtual void clear_component_data() = 0;
 
         // Print out the state of the component array for debugging:
         virtual void print_state() = 0;
@@ -168,7 +168,7 @@ namespace Engine {
         }
 
         // Clear all component array data:
-        virtual void clear_data() {
+        virtual void clear_component_data() {
             num_entries = 0;
         }
 

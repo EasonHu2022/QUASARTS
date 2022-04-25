@@ -56,7 +56,6 @@ namespace Engine {
             camera_entity.set_name("Camera");
 
             // Add relevant Components to the camera:
-            CameraComponent camera;
             TransformComponent transform;
             transform.position = { 0.0f, 0.1f, 5.0f };
             transform.rotation = { 0.0f, -90.0f, 0.0f };
@@ -72,7 +71,7 @@ namespace Engine {
             transformCompArray->add_data(cameraID, transform);
 
             // Update scene data:
-            scene->camera = cameraID;
+            camera = cameraID;
             entities.push_back(camera_entity);
             entity_ID_match.push_back(cameraID);
             entity_IDs.mask[cameraID] = 1;
@@ -83,7 +82,7 @@ namespace Engine {
         void clear_data() {
             // Clear Component array data:
             for (int i = 0; i < componentArrays.size(); i++) {
-                componentArrays[i]->clear_data();
+                componentArrays[i]->clear_component_data();
             }
 
             // Reset name:
