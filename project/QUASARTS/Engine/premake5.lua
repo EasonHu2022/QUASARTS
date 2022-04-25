@@ -5,17 +5,29 @@ project "Engine"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
-	
-	postbuildcommands { 
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force",
-	}
-	postbuildmessage "copying thirdparty"
+	filter "system:windows"
+		postbuildcommands {
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		}
+		postbuildmessage "copying thirdparty"
+
+	filter "system:linux"
+		postbuildcommands {
+			"cp -rf '"..rootdir.."/ThirdParty/OpenAL/libs/Linux/openal.so' '"..dir.."/Engine/openal.so'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbisenc.a' '"..dir.."/Engine/vorbisenc.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/FLAC.a' '"..dir.."/Engine/FLAC.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/ogg.a' '"..dir.."/Engine/ogg.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/opus.a' '"..dir.."/Engine/opus.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbis.a' '"..dir.."/Engine/vorbis.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/sndfile.a' '"..dir.."/Engine/sndfile.a'"
+		}
+		postbuildmessage "copying thirdparty"
 	
 	files
 	{
@@ -40,11 +52,18 @@ project "Engine"
 		"../ThirdParty/lua/**.c",
 		"../ThirdParty/lua/**.h",
 	}
-	libdirs
-	{
-		"../ThirdParty/OpenAL/libs/Win32",
-		"../ThirdParty/sndfile/libs/Win32",
-	}
+	filter "system:windows"
+		libdirs
+		{
+			"../ThirdParty/OpenAL/libs/Win32",
+			"../ThirdParty/sndfile/libs/Win32",
+		}
+	filter "system:linux"
+		libdirs
+		{
+			"../ThirdParty/OpenAL/libs/Linux",
+			"../ThirdParty/sndfile/libs/Linux",
+		}
 	links
 	{
 		

@@ -71,7 +71,6 @@ namespace Engine {
             transformCompArray->add_data(cameraID, transform);
 
             // Update scene data:
-
             camera = cameraID;
             entities.push_back(camera_entity);
             entity_ID_match.push_back(cameraID);
@@ -83,7 +82,7 @@ namespace Engine {
         void clear_data() {
             // Clear Component array data:
             for (int i = 0; i < componentArrays.size(); i++) {
-                componentArrays[i]->clear_comp_data();
+                componentArrays[i]->clear_component_data();
             }
 
             // Reset name:
