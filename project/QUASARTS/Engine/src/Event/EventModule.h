@@ -5,7 +5,7 @@
 #include "MouseButtonCodes.h"
 #include "GLFW/glfw3.h"
 
-#include <forward_list>
+#include <list>
 #include <functional>
 #include <unordered_map>
 #include <vector>
@@ -137,7 +137,7 @@ namespace Engine {
 		// Event queue:
 		// The Event struct has an operator< overload to customise the behaviour of forward_list::sort(), i.e.,
 		// queue.sort() will sort the events on the queue in 'ascending' order.
-		std::forward_list<Event> queue;
+		std::list<Event> queue;
 		// Mapping of each event type to a corresponding list of handlers interested in that type.
 		std::unordered_map< std::string, std::vector< std::function<void(const Event&)> > > registeredHandlers;
 		// Set of recognised events types.

@@ -92,8 +92,8 @@ namespace Engine {
 			return 1;
 		}
 
-		// Create event and push to queue.
-		queue.emplace_front(Event(eventType, priority, args));
+		// Create event and push to back of queue.		
+		queue.emplace_back(Event(eventType, priority, args));
 
 		return 0;
 	} // submit_event()
