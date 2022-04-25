@@ -60,16 +60,15 @@ namespace Engine {
         }
 
         // Get a data element from the array:
-        T get_data(unsigned int entityID) {
+        T *get_data(unsigned int entityID) {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
                 std::cerr << "Function ComponentArray::get_data(): Warning: \
                             Entity " << entityID << " not found!" << std::endl;
-                T result{};
-                return result;
+                return nullptr;
             }
-            return componentData[index];
+            return &(componentData[index]);
         }
 
         // Add data (zero initialized) to the component array:

@@ -116,32 +116,10 @@ void MenuBarView::on_gui()
             }
             if (ImGui::BeginMenu("Insert Basic Object")) {
                 if (ImGui::MenuItem("Triangle")) {
-                    /*unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                    Engine::ECSManager::Instance()->set_entityName(entityID, "camera");
-                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                    Engine::TransformComponent transform;
-                    transform.position = { 0.0f,0.9f, -2.0f };
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
-                    Engine::ECSManager::Instance()->create_component<Engine::CameraComponent>(entityID, COMPONENT_CAMERA); */
+                    
                 }
                 if (ImGui::MenuItem("Plane")) {
-                    unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                    Engine::ECSManager::Instance()->set_entityName(entityID, "object");
-                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                    Engine::TransformComponent transform;
-                    transform.position = { 0.0f,0.0f, 0.0f };
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
                   
-
-                    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
-                    Engine::MeshComponent mesh;
-                    mesh.path = "D:\\Q6\\zz\\sphere20x20.obj";
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
-
-                    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
-                    Engine::MaterialComponent material;
-                    material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
                 }
                 if (ImGui::MenuItem("Pyramid")) {
 
