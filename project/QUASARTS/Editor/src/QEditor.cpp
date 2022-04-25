@@ -30,6 +30,8 @@ void QEditor::init()
 	add_gui_view<AttributeView>();
 	add_gui_view<TextEditorView>();
 	//test_in_init();
+
+	cameraController = new SceneCameraController();
 }
 
 void QEditor::on_update()
@@ -41,6 +43,8 @@ void QEditor::on_update()
 
 	// Handle relevant input.
 	poll_input();
+
+	cameraController->on_update();
 }
 
 void QEditor::on_gui()

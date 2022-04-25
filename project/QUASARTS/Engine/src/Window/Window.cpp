@@ -121,14 +121,14 @@ void Window::init(const WindowProps& props)
 				}
 				case GLFW_REPEAT:
 				{
-					EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
-						{
-							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
-							//{ "scancode",	EV_ARG_INT(scancode)	},
-							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
-							{ "repeat",		EV_ARG_BOOL(true)		}
-						}
-					);
+					//EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
+					//	{
+					//		{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
+					//		//{ "scancode",	EV_ARG_INT(scancode)	},
+					//		{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	},
+					//		{ "repeat",		EV_ARG_BOOL(true)		}
+					//	}
+					//);
 					break;
 				}
 				}
