@@ -55,6 +55,7 @@ namespace Engine
 	void RenderSystem::update()
 	{
 		update_projection();
+		update_light();
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		// Get the entity ID mask:
@@ -147,7 +148,8 @@ namespace Engine
 		quasarts_entity_ID_mask* lightingSources = get_entity_ID_mask(1);
 
 		//later test if can release
-		Lightinfo* info = new Lightinfo();
+		Lightinfo info ;
+		int ind = 0;
 		//set the light resource of this frame
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
@@ -160,14 +162,17 @@ namespace Engine
 				light = active_manager->get_component
 					<LightComponent>(i, COMPONENT_LIGHTING);
 				
-				info->lights[info->countLight].type = light.type;
-				info->lights[info->countLight].ambient = light.ambient;
-				info->lights[info->countLight].diffuse = light.diffuse;
-				info->lights[info->countLight].specular = light.specular;
-				info->countLight++;				
+				
+				info.lights[ind].ambient = light.ambient;
+				info.lights[ind].diffuse = light.diffuse;
+				info.lights[ind].specular = light.specular;
+				info.lights[ind].positon = transform.position;
+				info.lights[ind].type = light.type;
+				info.countLight = ind + 1;
+				ind++;
 			}
 		}
-		lightBuffer->set_data(0,sizeof(Lightinfo),info);
+		lightBuffer->set_data(0,sizeof(Lightinfo),&info);
 	}
 
 

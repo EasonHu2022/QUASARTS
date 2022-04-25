@@ -58,7 +58,7 @@ namespace Engine {
 
             ECSManager::Instance()->create_component<TransformComponent>(entityID, COMPONENT_TRANSFORM);
             TransformComponent transform;
-            transform.position = { 0.0f,0.1f, 2.0f };
+            transform.position = { 0.0f,0.1f, 5.0f };
             transform.rotation = { 0.0f,-90.0f,0.0f };
             ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
             ECSManager::Instance()->create_component<CameraComponent>(entityID, COMPONENT_CAMERA);
