@@ -69,5 +69,11 @@ namespace Engine {
         // Parents and children:
         std::vector<std::set<unsigned int>> children;
         std::vector<unsigned int> parents;
+
+
+    private:
+        unsigned int camera = -1;
+    public:
+        int get_camera() { return this->camera; }
     };
 }
