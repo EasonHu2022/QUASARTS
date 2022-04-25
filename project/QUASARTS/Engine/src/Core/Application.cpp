@@ -63,7 +63,6 @@ namespace Engine
 		GuiWrapper::init();
 		Input::init();
 		ECSManager::Instance()->register_system(0, renderSystem);
-		scene->init();
 		/***************later init things*************************/
 
 
