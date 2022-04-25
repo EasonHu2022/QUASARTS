@@ -193,7 +193,7 @@ namespace Engine
 			mouseMotion = newPos - mousePosition;
 		mousePosition = newPos;
 		mouseMoving = true;
-		QDEBUG("mouse moving");
+		//QDEBUG("mouse moving");
 	}
 
 	void Input::EV_CALLBACK_SIGNATURE(Scrolled)
