@@ -127,7 +127,7 @@ namespace Engine
 
 	void RenderSystem::update_projection()
 	{
-		auto cameraID = Application::Instance->scene->get_camera();
+		auto cameraID = Engine::ECSManager::Instance()->get_camera();
 		if (cameraID == TOO_MANY_ENTITIES)
 			return;
 		// Get the manager:
@@ -174,10 +174,10 @@ namespace Engine
 				
 		
 				info.lights[ind].type = (float) light->type;
-				info.lights[ind].ambient = light->ambient;
-				info.lights[ind].diffuse = light->diffuse;
-				info.lights[ind].specular = light->specular;
-				info.lights[ind].positon = transform->position;
+				info.lights[ind].ambient = glm::vec4(light->ambient,1.0f);
+				info.lights[ind].diffuse = glm::vec4(light->diffuse,1.0f);
+				info.lights[ind].specular = glm::vec4(light->specular,1.0f);
+				info.lights[ind].positon = glm::vec4(transform->position,1.0f);
 				ind++;
 				info.countLight = ind;
 			}

@@ -15,10 +15,10 @@ uniform vec3 viewPos;
 
 struct LightData
 {   
-     vec3 ambient;
-     vec3 diffuse;
-     vec3 specular ;
-     vec3 positon;
+     vec4 ambient;
+     vec4 diffuse;
+     vec4 specular ;
+     vec4 positon;
      float type;
 };
 
@@ -38,11 +38,10 @@ void main()
     vec3 normal = normalize(fs_in.Normal);
 
     //per light attribution
-    vec4 colorPerLight;
     FragColor = vec4(0.0f,0.0f,0.0f,1.0f);
     for(int i = 0;i < countLight;i++)
     {
-        vec3 lightPos = lights[0].positon;
+        vec3 lightPos = lights[0].positon.xyz;
         // diffuse
         vec3 lightDir = normalize(lightPos - fs_in.FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
@@ -58,7 +57,7 @@ void main()
         vec3 specular = vec3(0.3) * spec; // assuming bright white light color
         FragColor += vec4(ambient + diffuse + specular, 0.0);
         //FragColor = vec4(0.2f,0.2f,0.2f,1.0f);
-        //FragColor += vec4(normal, 1.0);
+        //FragColor += vec4(lightPos, 1.0);
     }
     FragColor.w = 1.0f;
 } 

@@ -27,10 +27,10 @@ namespace Engine {
 
     struct alignas(16) lightBuffer
     {
-        glm::vec3 ambient = { 0.2f,0.2f,0.2f };
-        glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
-        glm::vec3 specular = { 0.2f,0.2f,0.2f };
-        glm::vec3 positon = { 0.0f,0.0f,0.0f };
+        glm::vec4 ambient = { 0.2f,0.2f,0.2f,1.0f };
+        glm::vec4 diffuse = { 0.2f,0.2f,0.2f,1.0f };
+        glm::vec4 specular = { 0.2f,0.2f,0.2f,1.0f };
+        glm::vec4 positon = { 0.0f,0.0f,0.0f ,1.0f };
         float type = 0.0f;
 
     };
@@ -40,7 +40,7 @@ namespace Engine {
         /*count of all of the lights in the scene, max = 10*/
        
         lightBuffer lights[10];
-        float countLight = 0;
+        float countLight = 0.0f;
     };
 
     // Input stream operator:

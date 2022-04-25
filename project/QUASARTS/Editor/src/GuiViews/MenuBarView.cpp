@@ -167,7 +167,7 @@ void MenuBarView::on_gui()
 
                 Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
                 Engine::TransformComponent *transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                transform->position = { 1.0f,2.5f, 2.0f };
+                transform->position = { 1.0f,2.5f, 0.0f };
                 
             }
             if (ImGui::MenuItem("Particle Emitter")) {
