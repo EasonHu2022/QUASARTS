@@ -56,7 +56,7 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Select All", "Ctrl+A")) {
 
             }
-            if (ImGui::MenuItem("Deselect All", "Ctrl+D")) {
+            if (ImGui::MenuItem("Deselect All", "Ctrl+Shift+D")) {
 
             }
             if (ImGui::MenuItem("Select Children", "Shift+C")) {
@@ -83,6 +83,21 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
 
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("Delete", "Ctrl+D")) {
+                Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
+                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+            }
+            if (ImGui::MenuItem("Delete All")) {
+                std::vector<unsigned int> entities = Engine::ECSManager::Instance()->get_entity_ID_match();
+                unsigned int cameraID = Engine::ECSManager::Instance()->get_camera();
+                for (int i = 1; i < entities.size(); i++) {
+                    if (entities[i] == cameraID)
+                        continue;
+                    Engine::ECSManager::Instance()->destroy_entity(entities[i]);
+                }
+                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
             }
             ImGui::EndMenu();
         }
