@@ -36,7 +36,7 @@ namespace Engine
 		//create window for app
 		m_window = Window::create(WindowProps(name));
 		renderSystem = new RenderSystem();
-		ECSManager::Instance()->register_system(0, renderSystem);
+		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
 		Renderer::Instance(); 
 		/*************************Create and Init********************************/
 
@@ -61,7 +61,7 @@ namespace Engine
 		//do init things
 		GuiWrapper::init();
 		Input::init();
-		ECSManager::Instance()->register_system(0, renderSystem);
+		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
 		/***************later init things*************************/
 
 

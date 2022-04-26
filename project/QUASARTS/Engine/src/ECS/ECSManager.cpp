@@ -97,8 +97,8 @@ namespace Engine {
         }
 
         // Change the entity mask in all Systems:
-        for (int i = 0; i < systems.size(); i++) {
-            systems[i]->clear_entity(entityID);
+        for (const auto &[key, val] : systems) {
+            val->clear_entity(entityID);
         }
 
         // Remove the Entity from the manager:
@@ -168,7 +168,7 @@ namespace Engine {
     // Get a pointer to an Entity:
     Entity *ECSManager::get_entity(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
-        if (index == TOO_MANY_ENTITIES) { return NULL; }
+        if (index == TOO_MANY_ENTITIES) { return nullptr; }
         return &(scene->entities[index]);
     }
 
@@ -305,8 +305,21 @@ namespace Engine {
 
     // Create the scene camera:
     void ECSManager::create_camera() {
+        // Create the camera:
         unsigned int cameraID = get_free_entity_ID();
+        if (cameraID == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::create_camera(): Warning: \
+                            unable to create new entity. Maximum number of \
+                            entities reached." << std::endl;
+            return;
+        }
         scene->create_camera(cameraID);
+
+        // Update each System:
+        unsigned int index = get_index_from_ID(cameraID);
+        for (const auto &[key, val] : systems) {
+            val->test_entity(this, cameraID, scene->entities[index].get_componentMask());
+        }
     }
 
     // Get the scene camera:
@@ -326,6 +339,31 @@ namespace Engine {
 
     // Set the name of the scene:
     void ECSManager::set_scene_name(std::string name) {
+        scene->name = name;
+    }
+
+    // Create new blank scene:
+    void ECSManager::new_scene() {
+        // Clear the scene data:
+        scene->clear_data();
+
+        // Clear the System entity masks:
+        for (const auto &[key, val] : systems) {
+            val->clear_all_entity_masks();
+        }
+    }
+
+    // Create new blank scene with a name:
+    void ECSManager::new_scene(std::string name) {
+        // Clear the scene data:
+        scene->clear_data();
+
+        // Clear the System entity masks:
+        for (const auto &[key, val] : systems) {
+            val->clear_all_entity_masks();
+        }
+
+        // Set the scene name:
         scene->name = name;
     }
 
@@ -438,6 +476,11 @@ namespace Engine {
         // Clear the scene data:
         scene->clear_data();
 
+        // Clear the System entity masks:
+        for (const auto &[key, val] : systems) {
+            val->clear_all_entity_masks();
+        }
+
         // Create a buffer for reading in lines:
         char lineBuffer[MAX_SCENE_LINE_LENGTH];
 
@@ -526,6 +569,15 @@ namespace Engine {
                     scene->parents[child] = parent;
                     scene->children[parent].emplace(child);
                 }
+            }
+        }
+
+        // Update all the Systems:
+        unsigned int index;
+        for (int i = 0; i < scene->entities.size(); i++) {
+            index = get_index_from_ID(scene->entity_ID_match[i]);
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, scene->entity_ID_match[i], scene->entities[index].get_componentMask());
             }
         }
 

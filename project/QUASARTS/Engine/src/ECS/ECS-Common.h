@@ -27,6 +27,12 @@ namespace Engine {
     #define COMPONENT_SCRIPT            5
     #define COMPONENT_CAMERA            6
 
+    // System types:
+    #define SYSTEM_SCRIPT       0
+    #define SYSTEM_RENDER       1
+    #define SYSTEM_PHYSICS      2
+    #define SYSTEM_COLLISION    3
+
     // Bit field structure for component types:
     struct quasarts_component_mask {
         uint64_t mask : MAX_COMPONENT_TYPES;

@@ -68,8 +68,8 @@ namespace Engine {
             scene->entities[index].add_component_type(componentType);
 
             // Update each System:
-            for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
             // Add the data to the relevant component array:
@@ -91,8 +91,8 @@ namespace Engine {
             scene->entities[index].add_component_type(componentType);
 
             // Update each System:
-            for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
             // Add the data to the relevant component array:
@@ -154,9 +154,10 @@ namespace Engine {
             scene->entities[index].remove_component_type(componentType);
 
             // Update each System:
-            for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
+
             // Remove the data from the relevant component array:
             ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->remove_data(entityID);
@@ -233,6 +234,12 @@ namespace Engine {
 
         // Set the name of the scene:
         void set_scene_name(std::string name);
+
+        // Create new blank scene:
+        void new_scene();
+
+        // Create new blank scene with a name:
+        void new_scene(std::string name);
 
         // Save the whole scene to file:
         bool save_scene(char *filename);
