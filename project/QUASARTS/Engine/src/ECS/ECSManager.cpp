@@ -347,7 +347,7 @@ namespace Engine {
         sceneFile << "# P = Parent-child (entity ID of parent, then a list of children)" << std::endl;
 
         // Write the scene data. Start with the name:
-        sceneFile << "N " << scene->name << std::endl;;
+        sceneFile << "N " << scene->name << std::endl;
 
         // Entities with their IDs and names:
         for (int i = 0; i < scene->entities.size(); i++) {
@@ -358,7 +358,7 @@ namespace Engine {
             } else {
                 sceneFile << 0 << " ";
             }
-                sceneFile << scene->entities[i].get_name() << std::endl;;
+                sceneFile << scene->entities[i].get_name() << std::endl;
         }
 
         // Components:
@@ -369,44 +369,54 @@ namespace Engine {
                 sceneFile << "C " << entityID << " ";
                 TransformComponent *transform = get_component<TransformComponent>
                                                 (entityID, COMPONENT_TRANSFORM);
-                sceneFile << COMPONENT_TRANSFORM << " " << *transform << std::endl;;
+                sceneFile << COMPONENT_TRANSFORM << " " << *transform << std::endl;
             }
             if (has_component(entityID, COMPONENT_MESH) == true) {
                 sceneFile << "C " << entityID << " ";
                 MeshComponent *mesh = get_component<MeshComponent>
                                                 (entityID, COMPONENT_MESH);
-                sceneFile << COMPONENT_MESH << " " << *mesh << std::endl;;
+                sceneFile << COMPONENT_MESH << " " << *mesh << std::endl;
             }
             if (has_component(entityID, COMPONENT_COLLISION_SPHERE) == true) {
                 sceneFile << "C " << entityID << " ";
                 CollisionSphereComponent *collisionSphere = get_component<CollisionSphereComponent>
                                                 (entityID, COMPONENT_COLLISION_SPHERE);
-                sceneFile << COMPONENT_COLLISION_SPHERE << " " << *collisionSphere << std::endl;;
+                sceneFile << COMPONENT_COLLISION_SPHERE << " " << *collisionSphere << std::endl;
             }
             if (has_component(entityID, COMPONENT_MATERIAL) == true) {
                 sceneFile << "C " << entityID << " ";
                 MaterialComponent *material = get_component<MaterialComponent>
                                                 (entityID, COMPONENT_MATERIAL);
-                sceneFile << COMPONENT_MATERIAL << " " << *material << std::endl;;
+                sceneFile << COMPONENT_MATERIAL << " " << *material << std::endl;
             }
             if (has_component(entityID, COMPONENT_LIGHTING) == true) {
                 sceneFile << "C " << entityID << " ";
                 LightComponent *light = get_component<LightComponent>
                                                 (entityID, COMPONENT_LIGHTING);
-                sceneFile << COMPONENT_LIGHTING << " " << *light << std::endl;;
+                sceneFile << COMPONENT_LIGHTING << " " << *light << std::endl;
             }
             if (has_component(entityID, COMPONENT_SCRIPT) == true) {
                 sceneFile << "C " << entityID << " ";
                 ScriptComponent *script = get_component<ScriptComponent>
                                                 (entityID, COMPONENT_SCRIPT);
-                sceneFile << COMPONENT_SCRIPT << " " << *script << std::endl;;
+                sceneFile << COMPONENT_SCRIPT << " " << *script << std::endl;
             }
             if (has_component(entityID, COMPONENT_CAMERA) == true) {
                 sceneFile << "C " << entityID << " ";
                 CameraComponent *camera = get_component<CameraComponent>
                                                 (entityID, COMPONENT_CAMERA);
-                sceneFile << COMPONENT_CAMERA << " " << *camera << std::endl;;
+                sceneFile << COMPONENT_CAMERA << " " << *camera << std::endl;
             }
+        }
+
+        // Parent-child relationships:
+        for (int i = 0; i < scene->parents.size(); i++) {
+            if (scene->parents[i] == TOO_MANY_ENTITIES) { continue; }
+            sceneFile << "P " << scene->parents[i];
+            for (int j = 0; j < scene->children[i].size(); j++) {
+                sceneFile << " " << scene->children[i][j];
+            }
+            sceneFile << std::endl;
         }
 
         return true;
