@@ -330,7 +330,7 @@ namespace Engine {
     }
 
     // Save the whole scene to file:
-    bool ECSManager::save_scene(char *filename) {/*
+    bool ECSManager::save_scene(char *filename) {
         std::ofstream sceneFile(filename);
         // Check if the file is open:
         if (!(sceneFile.good())) {
@@ -400,13 +400,13 @@ namespace Engine {
                                                 (entityID, COMPONENT_CAMERA);
                 sceneFile << COMPONENT_CAMERA << " " << *camera << '\n';
             }
-        }*/
+        }
 
         return true;
     }
 
     // Load a scene from file:
-    bool ECSManager::load_scene(char *filename) {/*
+    bool ECSManager::load_scene(char *filename) {
         // This will load the contents of the file into a new Scene object.
         std::ifstream sceneFile(filename);
         // Check if the file is open:
@@ -508,7 +508,7 @@ namespace Engine {
                     scene->children[parent].emplace(child);
                 }
             }
-        }*/
+        }
 
         return true;
     }
