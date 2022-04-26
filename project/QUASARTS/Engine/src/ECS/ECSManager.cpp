@@ -415,7 +415,7 @@ namespace Engine {
             sceneFile << "P " << scene->parents[i];
             set<unsigned int>::iterator iter;
             for (iter = scene->children[i].begin();
-                    iter != scene=>children[i].end(); iter++) {
+                    iter != scene->children[i].end(); iter++) {
                 sceneFile << " " << *iter;
             }
             sceneFile << std::endl;
