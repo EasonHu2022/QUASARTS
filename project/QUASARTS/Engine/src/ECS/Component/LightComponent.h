@@ -68,9 +68,9 @@ namespace Engine {
         else { outStream << 0; }
 
         outStream
-        << light.ambient[0] << light.ambient[1] << light.ambient[2]
-        << light.diffuse[0] << light.diffuse[1] << light.diffuse[2]
-        << light.specular[0] << light.specular[1] << light.specular[2];
+        << " " << light.ambient[0] << " " << light.ambient[1] << " " << light.ambient[2]
+        << " " << light.diffuse[0] << " " << light.diffuse[1] << " " << light.diffuse[2]
+        << " " << light.specular[0] << " " << light.specular[1] << " " << light.specular[2];
         
         return outStream;
     }

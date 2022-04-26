@@ -30,7 +30,7 @@ namespace Engine {
     // Output stream operator:
     inline std::ostream & operator << (std::ostream &outStream, const ScriptComponent &script) {
 		// Use the name and path, nothing else:
-        outStream << script.script_name << script.script_path;
+        outStream << script.script_name << " " << script.script_path;
         
         return outStream;
     }
