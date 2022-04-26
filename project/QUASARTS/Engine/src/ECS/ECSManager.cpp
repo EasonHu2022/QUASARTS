@@ -340,24 +340,25 @@ namespace Engine {
         }
 
         // Write the header:
-        sceneFile << "# Quasarts Orbit Engine Scene\n# N = Name\n# E = Entity \
-            (followed by ID, a flag to indicate scene camera, and name)\n# C = \
-            Component (followed by Component type, Entity ID and data)\n# P = \
-            Parent-child (entity ID of parent, then a list of children)\n";
+        sceneFile << "# Quasarts Orbit Engine Scene" << std::endl;
+        sceneFile << "# N = Name" << std::endl;
+        sceneFile << "# E = Entity (followed by ID, a flag to indicate scene camera, and name)" << std::endl;
+        sceneFile << "# C = Component (followed by Component type, Entity ID and data)" << std::endl;
+        sceneFile << "# P = Parent-child (entity ID of parent, then a list of children)" << std::endl;
 
         // Write the scene data. Start with the name:
-        sceneFile << 'N' << scene->name << '\n';
+        sceneFile << "N " << scene->name << std::endl;;
 
         // Entities with their IDs and names:
         for (int i = 0; i < scene->entities.size(); i++) {
-            sceneFile << 'E' << scene->entities[i].get_entityID() << " ";
+            sceneFile << "E " << scene->entities[i].get_entityID() << " ";
             // Check if the Entity is the scene camera:
             if (get_camera() == scene->entities[i].get_entityID()) {
                 sceneFile << 1 << " ";
             } else {
                 sceneFile << 0 << " ";
             }
-                sceneFile << scene->entities[i].get_name() << '\n';
+                sceneFile << scene->entities[i].get_name() << std::endl;;
         }
 
         // Components:
@@ -368,37 +369,37 @@ namespace Engine {
             if (has_component(entityID, COMPONENT_TRANSFORM) == true) {
                 TransformComponent *transform = get_component<TransformComponent>
                                                 (entityID, COMPONENT_TRANSFORM);
-                sceneFile << COMPONENT_TRANSFORM << " " << *transform << '\n';
+                sceneFile << COMPONENT_TRANSFORM << " " << *transform << std::endl;;
             }
             if (has_component(entityID, COMPONENT_MESH) == true) {
                 MeshComponent *mesh = get_component<MeshComponent>
                                                 (entityID, COMPONENT_MESH);
-                sceneFile << COMPONENT_MESH << " " << *mesh << '\n';
+                sceneFile << COMPONENT_MESH << " " << *mesh << std::endl;;
             }
             if (has_component(entityID, COMPONENT_COLLISION_SPHERE) == true) {
                 CollisionSphereComponent *collisionSphere = get_component<CollisionSphereComponent>
                                                 (entityID, COMPONENT_COLLISION_SPHERE);
-                sceneFile << COMPONENT_COLLISION_SPHERE << " " << *collisionSphere << '\n';
+                sceneFile << COMPONENT_COLLISION_SPHERE << " " << *collisionSphere << std::endl;;
             }
             if (has_component(entityID, COMPONENT_MATERIAL) == true) {
                 MaterialComponent *material = get_component<MaterialComponent>
                                                 (entityID, COMPONENT_MATERIAL);
-                sceneFile << COMPONENT_MATERIAL << " " << *material << '\n';
+                sceneFile << COMPONENT_MATERIAL << " " << *material << std::endl;;
             }
             if (has_component(entityID, COMPONENT_LIGHTING) == true) {
                 LightComponent *light = get_component<LightComponent>
                                                 (entityID, COMPONENT_LIGHTING);
-                sceneFile << COMPONENT_LIGHTING << " " << *light << '\n';
+                sceneFile << COMPONENT_LIGHTING << " " << *light << std::endl;;
             }
             if (has_component(entityID, COMPONENT_SCRIPT) == true) {
                 ScriptComponent *script = get_component<ScriptComponent>
                                                 (entityID, COMPONENT_SCRIPT);
-                sceneFile << COMPONENT_SCRIPT << " " << *script << '\n';
+                sceneFile << COMPONENT_SCRIPT << " " << *script << std::endl;;
             }
             if (has_component(entityID, COMPONENT_CAMERA) == true) {
                 CameraComponent *camera = get_component<CameraComponent>
                                                 (entityID, COMPONENT_CAMERA);
-                sceneFile << COMPONENT_CAMERA << " " << *camera << '\n';
+                sceneFile << COMPONENT_CAMERA << " " << *camera << std::endl;;
             }
         }
 
