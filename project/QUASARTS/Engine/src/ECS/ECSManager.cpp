@@ -413,8 +413,10 @@ namespace Engine {
         for (int i = 0; i < scene->parents.size(); i++) {
             if (scene->parents[i] == TOO_MANY_ENTITIES) { continue; }
             sceneFile << "P " << scene->parents[i];
-            for (int j = 0; j < scene->children[i].size(); j++) {
-                sceneFile << " " << scene->children[i][j];
+            set<unsigned int>::iterator iter;
+            for (iter = scene->children[i].begin();
+                    iter != scene=>children[i].end(); iter++) {
+                sceneFile << " " << *iter;
             }
             sceneFile << std::endl;
         }
