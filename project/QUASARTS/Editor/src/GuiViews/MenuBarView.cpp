@@ -41,14 +41,12 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);
             if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
-
-
-
+                std::string file_name = "./ProjectSetting/scene.scn";
+                Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
-
-
-
+                std::string file_name = "./ProjectSetting/scene.scn";
+                Engine::ECSManager::Instance()->save_scene((char*)file_name.c_str());
             }
             ImGui::EndMenu();
         }
