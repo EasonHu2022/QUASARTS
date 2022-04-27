@@ -7,7 +7,6 @@
 #include <cstdint>
 
 #include "System.h"
-#include "Core/IManager.h"
 #include "ECS/Component/ScriptComponent.h"
 #include "QuasartsEngine.h"
 
@@ -45,6 +44,10 @@ namespace Engine {
 		void onUpdate(ScriptComponent* component);
 		std::string getScriptPath();
 		std::string getScriptName();
+		void setScriptPath(const std::string& path);
+		void setScriptPath(ScriptComponent* component);
+		void setScriptName(const std::string& name);
+		void setScriptName(ScriptComponent* component);
 
 	private:
 		std::unique_ptr<sol::state> lua_state; 		//lua virtual machine
