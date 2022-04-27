@@ -32,6 +32,7 @@ namespace Engine {
     #define SYSTEM_RENDER       1
     #define SYSTEM_PHYSICS      2
     #define SYSTEM_COLLISION    3
+    #define SYSTEM_AUDIO        4
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

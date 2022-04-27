@@ -5,7 +5,7 @@
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
 #include "ECS/System/ScriptSystem.h"
-#include "Audio/AudioSystem.h"
+#include "ECS/System/AudioSystem.h"
 #include "Render/Renderer.h"
 #include "ResourceManager/ResourceManager.h"
 
@@ -30,7 +30,7 @@ namespace Engine
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
 		ScriptSystem::Instance()->init();
 		ResourceManager::Instance();
-		AudioSys::Instance()->init();
+		AudioSystem::Instance()->init();
 		ECSManager::Instance()->init();
 		ResourceManager::Instance()->init();
 		//create window for app
@@ -123,7 +123,7 @@ namespace Engine
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
 		renderSystem->update();
-		AudioSys::Instance()->update();
+		AudioSystem::Instance()->update();
 		on_gui();
 		/***************logic update logic frame************************/
 	}
@@ -140,7 +140,7 @@ namespace Engine
 		LogModule::Instance()->release();
 		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
-		AudioSys::Instance()->release();
+		AudioSystem::Instance()->release();
 		renderSystem->release();
 		Renderer::Instance()->release();
 		/*********************release things**********************************/
