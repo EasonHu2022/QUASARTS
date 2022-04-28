@@ -63,7 +63,7 @@ namespace Engine {
 		AudioDevice* audio_dev;
 		ClipBuffer* clip_buffer;
 		ClipSource* clip_src;
-		//TrackSource* track_src;
+		TrackSource* track_src;
 
 	};
 }

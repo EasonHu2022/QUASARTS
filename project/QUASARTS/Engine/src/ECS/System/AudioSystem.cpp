@@ -77,6 +77,12 @@ namespace Engine {
 			delete clip_buffer;
 			clip_buffer = nullptr;
 		}
+
+		if (track_src != nullptr)
+		{
+			delete track_src;
+			track_src = nullptr;
+		}
 	}
 
 	void AudioSystem::getWorkPath(const std::string& path)
