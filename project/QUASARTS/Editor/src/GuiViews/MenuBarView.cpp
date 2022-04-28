@@ -81,7 +81,8 @@ void MenuBarView::on_gui()
                 Engine::ScriptSystem::Instance()->reloadScript();
                 Engine::ScriptSystem::Instance()->importFunc();
             }
-            if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
+            if (ImGui::MenuItem("Stop", "Ctrl+Shift+P")) {
+                Engine::ScriptSystem::Instance()->refreshScript();
 
             }
             ImGui::Separator();

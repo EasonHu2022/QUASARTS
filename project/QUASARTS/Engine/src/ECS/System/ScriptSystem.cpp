@@ -168,6 +168,11 @@ namespace Engine {
 		}
 
 	}
+	void ScriptSystem::refreshScript()
+	{
+		destroyState();
+		createState();
+	}
 	void ScriptSystem::importFunc()
 	{
 		//if (!is_imported)
