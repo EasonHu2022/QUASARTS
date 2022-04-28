@@ -56,9 +56,8 @@ namespace Engine {
             camera_entity.set_name("Camera");
 
             // Add relevant Components to the camera:
-            CameraComponent camera;
             TransformComponent transform;
-            transform.position = { 0.0f, 0.1f, 2.0f };
+            transform.position = { 0.0f, 0.1f, 5.0f };
             transform.rotation = { 0.0f, -90.0f, 0.0f };
             camera_entity.add_component_type(COMPONENT_CAMERA);
             camera_entity.add_component_type(COMPONENT_TRANSFORM);
@@ -72,7 +71,7 @@ namespace Engine {
             transformCompArray->add_data(cameraID, transform);
 
             // Update scene data:
-            set_camera(cameraID);
+            camera = cameraID;
             entities.push_back(camera_entity);
             entity_ID_match.push_back(cameraID);
             entity_IDs.mask[cameraID] = 1;
@@ -80,14 +79,33 @@ namespace Engine {
             children.push_back({});
         }
 
-        // Get scene camera:
-        unsigned int get_camera() {
-            return camera;
-        }
+        void clear_data() {
+            // Clear Component array data:
+            for (int i = 0; i < componentArrays.size(); i++) {
+                componentArrays[i]->clear_component_data();
+            }
 
-        // Set scene camera:
-        void set_camera(unsigned int cameraID) {
-            camera = cameraID;
+            // Reset name:
+            name = "Default Scene";
+
+            // Clear Entity data:
+            entities.clear();
+            entity_ID_match.clear();
+
+            // Clear Entity groups:
+            entity_groups.clear();
+
+            // Clear Entity ID mask:
+            for (int i = 0; i < MAX_ENTITIES; i++) {
+                entity_IDs.mask[i] = 0;
+            }
+
+            // Clear parent-child relationships:
+            children.clear();
+            parents.clear();
+
+            // Reset the camera Entity:
+            camera = TOO_MANY_ENTITIES;
         }
 
         private:

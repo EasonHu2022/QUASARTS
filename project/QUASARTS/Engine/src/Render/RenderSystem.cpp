@@ -55,6 +55,7 @@ namespace Engine
 	void RenderSystem::update()
 	{
 		update_projection();
+		update_light();
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		// Get the entity ID mask:
@@ -62,6 +63,7 @@ namespace Engine
 		
 
 		//pass data to renderQueue
+
 		TransformComponent *transform;
 		MeshComponent *mesh;
 		MaterialComponent *material;
@@ -82,29 +84,35 @@ namespace Engine
 				//get mesh resource from component
 				/*************temp****************/
 				if (size_t resId;
+
 					ResourceManager::Instance()->load_resource(mesh->path, &resId))
 				{
 					auto model = ResourceManager::Instance()->get_resource<ModelResource>(resId);
 					model->render(p);
 				}
 
+
 				p->set_model(transform->position, transform->rotation, transform->scale);
 
 				
 
 				//get mat resource from material component
+
 				if (material->material == NULL)
 				{
 					if (size_t resId;
+
 						ResourceManager::Instance()->load_resource(material->path, &resId))
 					{
 						auto mat = ResourceManager::Instance()->get_resource<Material>(resId);
+
 						material->material = mat.get();
 						p->shader_program = mat->shader;
 					}
 				}
 				else
 				{
+
 					p->shader_program = material->material->shader;
 				}
 				//push p into renderQueue
@@ -119,11 +127,11 @@ namespace Engine
 
 	void RenderSystem::update_projection()
 	{
-		auto cameraID = Application::Instance->scene->get_camera();
-		if (cameraID == TOO_MANY_ENTITIES)
+		auto cameraID = Engine::ECSManager::Instance()->get_camera();		if (cameraID == TOO_MANY_ENTITIES)
 			return;
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
+
 		TransformComponent *transform;
 		CameraComponent *camera;
 	
@@ -131,6 +139,7 @@ namespace Engine
 			<CameraComponent>(cameraID, COMPONENT_CAMERA);
 		transform = active_manager->get_component
 			<TransformComponent>(cameraID, COMPONENT_TRANSFORM);
+
 		Renderer::Instance()->context->set_view(transform->position, transform->rotation);
 		Renderer::Instance()->context->set_projection(camera->fov, camera->ratio, camera->nearClip, camera->farClip);
 		matricesBuffer->set_data(0, sizeof(glm::mat4), Renderer::Instance()->context->get_projection_data());
@@ -141,12 +150,15 @@ namespace Engine
 	{
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
+
 		TransformComponent *transform;
 		LightComponent *light;
 		quasarts_entity_ID_mask* lightingSources = get_entity_ID_mask(1);
 
 		//later test if can release
-		Lightinfo* info = new Lightinfo();
+
+		Lightinfo info ;
+		int ind = 0;
 		//set the light resource of this frame
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
@@ -159,14 +171,17 @@ namespace Engine
 				light = active_manager->get_component
 					<LightComponent>(i, COMPONENT_LIGHTING);
 				
-				info->lights[info->countLight].type = light->type;
-				info->lights[info->countLight].ambient = light->ambient;
-				info->lights[info->countLight].diffuse = light->diffuse;
-				info->lights[info->countLight].specular = light->specular;
-				info->countLight++;				
+		
+				info.lights[ind].type = (float) light->type;
+				info.lights[ind].ambient = glm::vec4(light->ambient,1.0f);
+				info.lights[ind].diffuse = glm::vec4(light->diffuse,1.0f);
+				info.lights[ind].specular = glm::vec4(light->specular,1.0f);
+				info.lights[ind].positon = glm::vec4(transform->position,1.0f);
+				ind++;
+				info.countLight = ind;
 			}
 		}
-		lightBuffer->set_data(0,sizeof(Lightinfo),info);
+		lightBuffer->set_data(0,sizeof(Lightinfo),&info);
 	}
 
 

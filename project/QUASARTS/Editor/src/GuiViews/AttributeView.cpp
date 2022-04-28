@@ -18,10 +18,10 @@ void AttributeView::on_gui()
 		
 		if (!game) {
 		
-			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
+			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_LIGHTING)) {
 			
 				/**/
-				show_mesh();
+				//show_mesh();
 				show_transform();
 			}
 		

@@ -21,7 +21,7 @@ namespace Engine {
             
     // Output stream operator:
     inline std::ostream & operator << (std::ostream &outStream, const CameraComponent &camera) {
-        outStream << camera.fov << camera.ratio << camera.nearClip << camera.farClip;
+        outStream << camera.fov << " " << camera.ratio << " " << camera.nearClip << " " << camera.farClip;
         
         return outStream;
     }

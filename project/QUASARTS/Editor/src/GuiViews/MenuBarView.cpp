@@ -30,7 +30,9 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
-                FileModule::Instance()->open_root(OpenFileDialogue());
+                std::string proj_file = OpenFileDialogue();
+                if(proj_file.compare("N/A")!=0)
+                    FileModule::Instance()->open_root(proj_file);
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
@@ -39,14 +41,12 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);
             if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
-
-
-
+                std::string file_name = "./ProjectSetting/scene.scn";
+                Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
-
-
-
+                std::string file_name = "./ProjectSetting/scene.scn";
+                Engine::ECSManager::Instance()->save_scene((char*)file_name.c_str());
             }
             ImGui::EndMenu();
         }
@@ -56,7 +56,7 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Select All", "Ctrl+A")) {
 
             }
-            if (ImGui::MenuItem("Deselect All", "Ctrl+D")) {
+            if (ImGui::MenuItem("Deselect All", "Ctrl+Shift+D")) {
 
             }
             if (ImGui::MenuItem("Select Children", "Shift+C")) {
@@ -83,6 +83,21 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
 
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("Delete", "Ctrl+D")) {
+                Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
+                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+            }
+            if (ImGui::MenuItem("Delete All")) {
+                std::vector<unsigned int> entities = Engine::ECSManager::Instance()->get_entity_ID_match();
+                unsigned int cameraID = Engine::ECSManager::Instance()->get_camera();
+                for (int i = 1; i < entities.size(); i++) {
+                    if (entities[i] == cameraID)
+                        continue;
+                    Engine::ECSManager::Instance()->destroy_entity(entities[i]);
+                }
+                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
             }
             ImGui::EndMenu();
         }
@@ -140,6 +155,18 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Light")) {
 
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                Engine::ECSManager::Instance()->set_entityName(entityID, "light");
+                Engine::ECSManager::Instance()->create_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
+                Engine::LightComponent *light = Engine::ECSManager::Instance()->get_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
+                light->ambient = { 1.0f,0.0f, 0.0f };
+                light->type = Engine::LightType::point;
+               
+
+                Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                Engine::TransformComponent *transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                transform->position = { 1.0f,2.5f, 0.0f };
+                
             }
             if (ImGui::MenuItem("Particle Emitter")) {
 
@@ -190,6 +217,7 @@ std::string MenuBarView::OpenFileDialogue() {
     ofn.lpstrDefExt = L"";
 
     if (GetOpenFileName(&ofn)) {
+
         std::wstring ws(fileName);
         // your new String
         std::string fileNameStr(ws.begin(), ws.end());

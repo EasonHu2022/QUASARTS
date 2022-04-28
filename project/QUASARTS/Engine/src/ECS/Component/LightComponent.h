@@ -18,24 +18,29 @@ namespace Engine {
     }; 
 
     struct QS_API LightComponent {
-        LightComponent() {
-            
-        };
-        LightType type = LightType::def;
+       
         glm::vec3 ambient = {0.2f,0.2f,0.2f};
         glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
-        glm::vec3 specular = { 0.2f,0.2f,0.2f };
-        
-        
+        glm::vec3 specular = { 0.2f,0.2f,0.2f };   
+        LightType type = LightType::def;
     };
 
-    struct Lightinfo// aligned with std140
+    struct alignas(16) lightBuffer
     {
-        Lightinfo() {}
-        /*count of all of the lights in the scene, max = 10*/
-        int countLight = 0;
-        LightComponent lights[50];
+        glm::vec4 ambient = { 0.2f,0.2f,0.2f,1.0f };
+        glm::vec4 diffuse = { 0.2f,0.2f,0.2f,1.0f };
+        glm::vec4 specular = { 0.2f,0.2f,0.2f,1.0f };
+        glm::vec4 positon = { 0.0f,0.0f,0.0f ,1.0f };
+        float type = 0.0f;
 
+    };
+
+    struct alignas(16) Lightinfo// aligned with std140
+    {
+        /*count of all of the lights in the scene, max = 10*/
+       
+        lightBuffer lights[10];
+        float countLight = 0.0f;
     };
 
     // Input stream operator:
@@ -63,9 +68,9 @@ namespace Engine {
         else { outStream << 0; }
 
         outStream
-        << light.ambient[0] << light.ambient[1] << light.ambient[2]
-        << light.diffuse[0] << light.diffuse[1] << light.diffuse[2]
-        << light.specular[0] << light.specular[1] << light.specular[2];
+        << " " << light.ambient[0] << " " << light.ambient[1] << " " << light.ambient[2]
+        << " " << light.diffuse[0] << " " << light.diffuse[1] << " " << light.diffuse[2]
+        << " " << light.specular[0] << " " << light.specular[1] << " " << light.specular[2];
         
         return outStream;
     }

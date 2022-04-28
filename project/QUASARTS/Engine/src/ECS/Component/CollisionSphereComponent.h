@@ -72,9 +72,9 @@ namespace Engine {
     // Output stream operator:
     inline std::ostream & operator << (std::ostream &outStream, const CollisionSphereComponent &collisionSphere) {
         outStream
-        << collisionSphere.mLocalOffset[0] << collisionSphere.mLocalOffset[1]
-        << collisionSphere.mLocalOffset[2] << collisionSphere.mRadius
-        << collisionSphere.mCollisionObjectId << collisionSphere.mNumOverlaps;
+        << collisionSphere.mLocalOffset[0] << " " << collisionSphere.mLocalOffset[1]
+        << " " << collisionSphere.mLocalOffset[2] << " " << collisionSphere.mRadius
+        << " " << collisionSphere.mCollisionObjectId << " " << collisionSphere.mNumOverlaps;
         for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
             outStream << collisionSphere.mOverlapEntityId[i];
         }
