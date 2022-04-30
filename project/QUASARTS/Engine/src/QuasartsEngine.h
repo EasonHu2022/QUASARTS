@@ -18,7 +18,7 @@
 /*
 	Renderer
 */
-#include "Render/Renderer.h"
+
 #include "Logger/LogModule.h"
 #include "Gui/GuiWrapper.h"
 

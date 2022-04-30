@@ -11,7 +11,10 @@
 #include "Core/miniECS.h"
 #include "ECS/ECSManager.h"
 #include "Render/RenderSystem.h"
-
+#include "Render/RenderContext.h"
+#include "Render/MeshRenderer.h"
+#include "Render/ShadowRenderer.h"
+#include "Render/SkyboxRenderer.h"
 #include "Core/Input.h"
 
 namespace Engine
@@ -30,6 +33,12 @@ namespace Engine
 		miniECS* miniecs;
 		Scene* scene;
 		RenderSystem* renderSystem;
+		
+
+		RenderContext* renderContext;
+		MeshRenderer* meshRenderer;
+		ShadowRenderer* shadowRenderer;
+		//SkyboxRenderer* skyboxRenderer;
 
 	public:
 		Window* get_window() { return m_window; }

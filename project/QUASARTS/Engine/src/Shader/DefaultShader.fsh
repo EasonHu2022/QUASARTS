@@ -51,7 +51,7 @@ void main()
 
     vec3 color = vec3(1.0f,1.0f,1.0f);//texture(floorTexture, fs_in.TexCoords).rgb;
     // ambient
-    vec3 ambient = 0.05 * color;
+    vec3 ambient = 0.1 * color;
     vec3 normal = normalize(fs_in.Normal);
 
     //per light attribution

@@ -28,7 +28,7 @@ void GameSceneView::on_gui()
                 ImVec2 uv_max = ImVec2(1.0f, 0.0f);                 // top-right
                 ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);   // No tint
                 ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 0.5f); // 50% opaque white
-                unsigned int texture = Engine::Renderer::Instance()->get_renderTexture();
+                unsigned int texture = Engine::Application::Instance->renderContext->get_renderTexture();
                 ImGui::Image((ImTextureID)texture, ImVec2(1120, 630), uv_min, uv_max, tint_col, border_col);
                 //So, if you have the tex_id, just put it in the first argument and see what happens.
                 //If you have the sizes, that's great, but if you don't, the size of the window is 1120 by 630, so try that.
