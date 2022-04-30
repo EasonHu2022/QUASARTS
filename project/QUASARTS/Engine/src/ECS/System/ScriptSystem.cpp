@@ -135,10 +135,9 @@ namespace Engine {
 		script_component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
 	}
 
-	void ScriptSystem::loadScript(const std::string& path, ScriptComponent* component)
+	void ScriptSystem::loadScript(ScriptComponent* component)
 	{
-		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
-		//script_component = component;
+		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(component->script_path));
 	}
 
 	void ScriptSystem::reloadScript()
@@ -239,7 +238,7 @@ namespace Engine {
 		script_path = path;
 	}
 
-	void ScriptSystem::setScriptPath(ScriptComponent* component)
+	void ScriptSystem::setComponentPath(ScriptComponent* component)
 	{
 		component->script_path = this->script_path;
 	}
@@ -249,7 +248,7 @@ namespace Engine {
 		script_name = name;
 	}
 
-	void ScriptSystem::setScriptName(ScriptComponent* component)
+	void ScriptSystem::setComponentName(ScriptComponent* component)
 	{
 		component->script_name = this->script_name;
 	}
