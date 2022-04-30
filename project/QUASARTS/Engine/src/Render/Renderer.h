@@ -2,13 +2,12 @@
 #include "glfw3.h"
 #include "glad.h"
 #include "Core/Core.h"
+#include "Render/UniformBufferObject.h"
 #include "Render/RenderQueue.h"
-
-
-//#include "GL.h"
+#define MAX_LIGHTING_COUNT 5
 
 namespace Engine
-{
+{     
 	class CameraContext
 	{
 	private:
@@ -40,17 +39,13 @@ namespace Engine
 			pos = offset;
 			auto pitch = rotation.x;
 			auto yaw =  rotation.y;
-			//world up
-			auto up = glm::vec3(0.0f, 1.0f, 0.0f);
-
-			// calculate the new Front vector
-			glm::vec3 front;
+			
 			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 			front.y = sin(glm::radians(pitch));
 			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 			front = glm::normalize(front);
 			// also re-calculate the Right and Up vector
-			right = glm::normalize(glm::cross(front, up));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+			right = glm::normalize(glm::cross(front, worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 			up = glm::normalize(glm::cross(right, front));
 			
 			view = glm::lookAt(pos,pos+front,up);
@@ -78,23 +73,79 @@ namespace Engine
 
 	};
 
+	struct alignas(16) lightBuffer
+	{
+		glm::vec4 ambient = { 0.2f,0.2f,0.2f,1.0f };
+		glm::vec4 diffuse = { 0.2f,0.2f,0.2f,1.0f };
+		glm::vec4 specular = { 0.2f,0.2f,0.2f,1.0f };
+		glm::vec4 positon = { 0.0f,0.0f,0.0f ,1.0f };		
+		glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+		float type = 0.0f;
+	};
+
+
+	struct alignas(16) LightingContext// aligned with std140
+	{
+		/*count of all of the lights in the scene, max = 10*/
+
+		lightBuffer lights[MAX_LIGHTING_COUNT];
+		float countLight = 0.0f;
+	};
+
 	class QS_API Renderer
 	{
-
-
-
 	private:
 		static Renderer* instance;
 
 	public:
 		static Renderer* Instance();
-	public:
-		unsigned int tbo;
-		unsigned int fbo;
-	public:
-		CameraContext* context;
-		RenderQueue* renderQueue;
+		Renderer();
+		~Renderer();
 
+	private:
+		//texture object for scene window
+		unsigned int tbo;
+
+		//render texture
+		unsigned int fbo;
+
+		//depth and stencil buffer
+		unsigned int rbo;
+
+		//shadow mapping vertex shader path
+		const std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.vsh";
+		//shadow mapping fragment shader path
+		const std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.fsh";
+		//shadow mapping shader
+		Shader* shadow_mapping_shader = nullptr;
+
+		//depth map buffer for shadow mapping
+		unsigned int depthMapFBO[MAX_LIGHTING_COUNT];
+		unsigned int depthTextureArray;
+		
+
+
+		//shadow depth resolution
+		const GLuint SHADOW_WIDTH = 1024;
+		const GLuint SHADOW_HEIGHT = 1024;
+		//rendertexture resolution
+		const GLuint RT_WIDTH = 1024;
+		const GLuint RT_HEIGHT = 1024;
+
+		//.render shadow map
+		void render_shadow_map();
+		//render to texture
+		void render_texture();
+
+	private:
+		UniformBufferObject* matricesBuffer;
+		UniformBufferObject* lightBuffer;
+
+	public:
+		CameraContext* cameraContext;
+		LightingContext* lightingContext;
+		RenderQueue* renderQueue;
+		
 	public:
 		/// <summary>
 		/// init the memoryModule
@@ -120,13 +171,8 @@ namespace Engine
 
 	
 
-
-		unsigned int get_rt();
-
-
-	private:
-
-		void Shader();
+		//get the rendertexture 
+		unsigned int get_renderTexture();
 	};
 
 };

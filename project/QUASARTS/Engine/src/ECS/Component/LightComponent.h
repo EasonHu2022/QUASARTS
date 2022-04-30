@@ -25,23 +25,7 @@ namespace Engine {
         LightType type = LightType::def;
     };
 
-    struct alignas(16) lightBuffer
-    {
-        glm::vec4 ambient = { 0.2f,0.2f,0.2f,1.0f };
-        glm::vec4 diffuse = { 0.2f,0.2f,0.2f,1.0f };
-        glm::vec4 specular = { 0.2f,0.2f,0.2f,1.0f };
-        glm::vec4 positon = { 0.0f,0.0f,0.0f ,1.0f };
-        float type = 0.0f;
 
-    };
-
-    struct alignas(16) Lightinfo// aligned with std140
-    {
-        /*count of all of the lights in the scene, max = 10*/
-       
-        lightBuffer lights[10];
-        float countLight = 0.0f;
-    };
 
     // Input stream operator:
     inline std::istream & operator >> (std::istream &inStream, LightComponent &light) {
