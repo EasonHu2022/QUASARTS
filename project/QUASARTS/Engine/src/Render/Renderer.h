@@ -71,6 +71,16 @@ namespace Engine
 			return data;
 		}
 
+		inline glm::mat4 get_projection_matrix()
+		{
+			return projection;
+		}
+
+		inline glm::mat4 get_view_matrix()
+		{
+			return view;
+		}
+
 	};
 
 	struct alignas(16) lightBuffer
@@ -113,9 +123,9 @@ namespace Engine
 		unsigned int rbo;
 
 		//shadow mapping vertex shader path
-		const std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.vsh";
+		const std::string vshPath = "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.vsh";
 		//shadow mapping fragment shader path
-		const std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.fsh";
+		const std::string fshPath = "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.fsh";
 		//shadow mapping shader
 		Shader* shadow_mapping_shader = nullptr;
 

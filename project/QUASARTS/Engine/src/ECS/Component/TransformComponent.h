@@ -47,7 +47,6 @@ namespace Engine {
         model = glm::rotate(model, rotation.y, glm::vec3(0, 1, 0));
         //z
         model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));
-
         model = glm::scale(model, scale);
         auto data = glm::value_ptr(model);
         return data;

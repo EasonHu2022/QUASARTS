@@ -39,15 +39,15 @@ void GameSceneView::on_gui()
                     float windowHeight = (float)ImGui::GetWindowHeight();
                     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-                    auto projection = Engine::Renderer::Instance()->context->get_projection_data();
-                    auto view = Engine::Renderer::Instance()->context->get_view_data();
+                    auto projection = Engine::Renderer::Instance()->cameraContext->get_projection_data();
+                    auto view = Engine::Renderer::Instance()->cameraContext->get_view_matrix();
 
                     glm::mat4 actual = glm::inverse(glm::make_mat4(view));
 
                     Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
                     auto obj_transform = Engine::get_transform_data(transform->position, transform->rotation, transform->scale);
-
-                    ImGuizmo::Manipulate(glm::value_ptr(actual), projection, ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, obj_transform);
+                    //printf("%f\n", obj_transform[0]);
+                    ImGuizmo::Manipulate(view, projection, ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, obj_transform);
                 }
                 ImGui::EndTabItem();
             }
