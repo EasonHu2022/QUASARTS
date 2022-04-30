@@ -51,6 +51,7 @@ project "Editor"
 	{
 		"../Engine/src",
 		"../ThirdParty/ImGui",
+		"../ThirdParty/ImGuizmo",
 		"./src",
 		"../ThirdParty/GLFW/include/GLFW",
 		"../ThirdParty/GLFW/include",

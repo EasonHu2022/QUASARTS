@@ -71,6 +71,16 @@ namespace Engine
 			return data;
 		}
 
+		inline glm::mat4 get_projection_matrix()
+		{
+			return projection;
+		}
+
+		inline glm::mat4 get_view_matrix()
+		{
+			return view;
+		}
+
 	};
 
 	struct alignas(16) lightBuffer

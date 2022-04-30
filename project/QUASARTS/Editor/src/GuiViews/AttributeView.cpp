@@ -18,7 +18,7 @@ void AttributeView::on_gui()
 		
 		if (!game) {
 		
-			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_LIGHTING)) {
+			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
 			
 				/**/
 				//show_mesh();
