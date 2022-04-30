@@ -30,9 +30,25 @@ void GameSceneView::on_gui()
                 ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 0.5f); // 50% opaque white
                 unsigned int texture = Engine::Renderer::Instance()->get_rt();
                 ImGui::Image((ImTextureID)texture, ImVec2(1120, 630), uv_min, uv_max, tint_col, border_col);
-                //So, if you have the tex_id, just put it in the first argument and see what happens.
-                //If you have the sizes, that's great, but if you don't, the size of the window is 1120 by 630, so try that.
-                //If that doesn't work, then I'll be a bit sad.
+                
+                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {
+
+                    ImGuizmo::SetOrthographic(false);
+                    ImGuizmo::SetDrawlist();
+                    float windowWidth = (float)ImGui::GetWindowWidth();
+                    float windowHeight = (float)ImGui::GetWindowHeight();
+                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+                    auto projection = Engine::Renderer::Instance()->context->get_projection_data();
+                    auto view = Engine::Renderer::Instance()->context->get_view_data();
+
+                    glm::mat4 actual = glm::inverse(glm::make_mat4(view));
+
+                    Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
+                    auto obj_transform = Engine::get_transform_data(transform->position, transform->rotation, transform->scale);
+
+                    ImGuizmo::Manipulate(glm::value_ptr(actual), projection, ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, obj_transform);
+                }
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Game"))

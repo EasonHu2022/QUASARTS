@@ -4,6 +4,7 @@
 #include "Window/Window.h"
 #include "Gui/GuiWrapper.h"
 #include "imgui.h"
+#include "ImGuizmo.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "Event/EventModule.h"

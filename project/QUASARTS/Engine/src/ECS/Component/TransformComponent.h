@@ -3,6 +3,7 @@
 // Local includes:
 #include "ECS/ECS-Common.h"
 #include "glm/glm.hpp"
+#include "glm/ext.hpp"
 
 namespace Engine {
     struct QS_API TransformComponent {
@@ -34,5 +35,21 @@ namespace Engine {
         << " " << transform.scale[0] << " " << transform.scale[1] << " " << transform.scale[2];
         
         return outStream;
+    }
+
+    inline auto get_transform_data(glm::vec3 offset, glm::vec3 rotation, glm::vec3 scale)
+    {
+        glm::mat4 model = glm::mat4(1);
+        model = glm::translate(model, offset);
+        //x
+        model = glm::rotate(model, rotation.x, glm::vec3(1, 0, 0));
+        //y
+        model = glm::rotate(model, rotation.y, glm::vec3(0, 1, 0));
+        //z
+        model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));
+
+        model = glm::scale(model, scale);
+        auto data = glm::value_ptr(model);
+        return data;
     }
 }
