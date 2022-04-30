@@ -8,7 +8,7 @@ namespace Engine
 	RenderSystem::RenderSystem()
 	{
 		// Set the Component mask 0 :
-		quasarts_component_mask mask;
+		quasarts_component_mask mask{};
 		mask.mask = 0;
 		mask.mask += (uint64_t)1 << COMPONENT_TRANSFORM;
 		mask.mask += (uint64_t)1 << COMPONENT_MESH;
@@ -16,7 +16,7 @@ namespace Engine
 		// Add the Renderable mask to the System:
 		add_component_mask(mask);
 
-		quasarts_component_mask mask1;
+		quasarts_component_mask mask1{};
 		// Set the Component mask 1 :
 		mask1.mask = 0;
 		mask1.mask += (uint64_t)1 << COMPONENT_TRANSFORM;
@@ -24,7 +24,7 @@ namespace Engine
 		// Add the Renderable mask to the System:
 		add_component_mask(mask1);
 
-		quasarts_component_mask mask2;
+		quasarts_component_mask mask2{};
 		// Set the Component mask 2 :
 		mask2.mask = 0;
 		mask2.mask += (uint64_t)1 << COMPONENT_TRANSFORM;
