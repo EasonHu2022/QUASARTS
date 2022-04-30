@@ -39,10 +39,10 @@ void GameSceneView::on_gui()
                     float windowHeight = (float)ImGui::GetWindowHeight();
                     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-                    auto projection = Engine::Renderer::Instance()->cameraContext->get_projection_data();
-                    auto view = Engine::Renderer::Instance()->cameraContext->get_view_matrix();
+                    auto projection = Engine::Application::Instance->renderContext->cameraContext->get_projection_data();
+                    auto view = Engine::Application::Instance->renderContext->cameraContext->get_view_data();
 
-                    glm::mat4 actual = glm::inverse(glm::make_mat4(view));
+                   // glm::mat4 actual = glm::inverse(glm::make_mat4(view));
 
                     Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
                     auto obj_transform = Engine::get_transform_data(transform->position, transform->rotation, transform->scale);
