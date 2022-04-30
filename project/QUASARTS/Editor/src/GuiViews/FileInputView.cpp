@@ -1,10 +1,16 @@
 #pragma once
 #include "GuiViews/FileInputView.h"
+#include "GuiViews/TextEditor.h"
 #include "QuasartsEngine.h"
+#include <iostream>
+#include <fstream>
 
 void FileInputView::on_add()
 {
     bool text_edit = false;
+    TextEditor editor;
+    std::string filePath = "";
+    std::string fileText = "";
     QDEBUG("on add view : FileInput");
 }
 
@@ -66,7 +72,6 @@ void FileInputView::on_gui()
                         if (ImGui::Selectable(assetsFiles[j].path().filename().string().c_str(), selected == j, ImGuiSelectableFlags_AllowDoubleClick)) {
 
                             if (ImGui::IsMouseDoubleClicked(0)) {
-                                QDEBUG("Double clicked: AssetsFiles.size() = {0}, i = {1}, j = {2}", assetsFiles.size(), i, j);
                                 if (i == 0) {
                                     unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
                                     Engine::ECSManager::Instance()->set_entityName(entityID, "object");
@@ -94,10 +99,10 @@ void FileInputView::on_gui()
                                         auto luaFile = Engine::ResourceManager::Instance()->get_resource<Engine::FileResource>(idk);
                                         QDEBUG("Load File - {0}", luaFile->path);
                                         text_edit = true;
-                                        //static cast 
-                                        //QEditor* editor = (QEditor*)QEditor::Instance;
-                                        //editor->getGuiView<TextEditorView>()->text_edit = true;
-                                        //getGuiView<TextEditorView>()->text_edit = true;
+                                        filePath = luaFile->path;
+                                        fileText = luaFile->textContent;
+                                        QDEBUG("Current Text: {0}", fileText);
+                                        editor.SetText(fileText);
                                     }
                                 }
                             }
@@ -121,80 +126,36 @@ void FileInputView::on_gui()
 
 void FileInputView::show_text()
 {
-    //QDEBUG("hi - {0}", new_project);
     if (text_edit == true) {
-        ImGui::SetWindowFocus("Choose new project directory");
 
-        ImGui::SetNextWindowSize(ImVec2(300, 100));
-        ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoCollapse);
-        static char buf1[64] = "";
-        static char buf2[260] = "";
-        //for (int i = 0; i < folder_path.length(); i++) {
-        //    buf2[i] = folder_path[i];
-        //}
-
-        ImGui::PushItemWidth(-1);
-        if (ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64))
-        {
-            //project_name = buf1;
-        }
-        ImGui::PopItemWidth();
-        if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 64)) {
-            //folder_path = buf2;
-        }
-        ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2);
-        if (ImGui::Button("  Browse  ")) {
-            //std::string temp_path = OpenFolderDialogue();
-            //if (temp_path.compare("N/A") != 0)
-            //    folder_path = temp_path;
-
-        }
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
-        if (ImGui::Button("Confirm")) {
-            //if (strlen(buf1) != 0 && strlen(buf2) != 0) {
-
-            //    char* cur_work_dir = getcwd(nullptr, 0);
-            //    FileModule::Instance()->create_workdir(buf2, buf1);
-            //    FileModule::Instance()->save_root(buf2, buf1, cur_work_dir);
-            //    new_project = false;
-            //    show_window = true;
-            //    free(cur_work_dir);
-            //}
-
-        }
-        ImGui::SameLine(ImGui::GetWindowWidth() - 59);
-        if (ImGui::Button("Cancel")) {
-            text_edit = false;
-        }
-        ImGui::End();
-    }
-
-
-    /*if (FileModule::Instance()->get_root() != NULL) {
-
-        ImGui::SetNextWindowPos(ImVec2(window->get_width()*0.15625, 48));
-        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.5+18, window->get_height()*0.5+11));
-        ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoTitleBar);
-
-        static TextEditor editor;
-
-        //std::ifstream t(fileToEdit);
-        //if (t.good())
-        //{
-        //    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-        //    editor.SetText(str);
-        //}
+        ImGui::SetNextWindowSize(ImVec2(750, 750));
+        ImGui::Begin(filePath.c_str(), 0);
 
         editor.SetShowWhitespaces(false);
         editor.SetReadOnly(false);
         editor.SetPalette(TextEditor::GetDarkPalette());
         editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
-        editor.Render("##EditorWindow", ImVec2(1120, 630));
+        editor.Render("##EditorWindow", ImVec2(700, 650));
+
+        ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+        if (ImGui::Button("Cancel")) {
+            QDEBUG("File Closed: {0}", filePath.c_str());
+            filePath = "";
+            fileText = "";
+            auto luaFile = NULL;
+            text_edit = false;
+            QDEBUG("Current Text: {0}", fileText);
+        }
+        if (ImGui::Button("Save")) {
+            std::ofstream saveFile(filePath.c_str());
+            saveFile << editor.GetText();
+            saveFile.close();
+            QDEBUG("File Saved: {0}", filePath.c_str());
+            QDEBUG("Current Text: {0}", editor.GetText());
+        }
 
         ImGui::End();
-
-    }*/
+    }
 }
 
 void FileInputView::on_remove()
