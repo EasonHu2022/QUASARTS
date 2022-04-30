@@ -40,13 +40,12 @@
 /*
 	Scripts
 */
-//#include "Scripts/ScriptsSystem.h"
 #include "ECS/System/ScriptSystem.h"
 
 /*
 	Audio
 */
-#include "Audio/AudioSystem.h"
+#include "ECS/System/AudioSystem.h"
 
 
 /*

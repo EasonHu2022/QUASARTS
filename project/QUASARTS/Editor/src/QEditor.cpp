@@ -7,7 +7,6 @@
 #include "GuiViews/TextEditorView.h"
 #include "Core/Mesh.h"
 #include "Core/Input.h"
-#include "Audio/AudioSystem.h"
 
 QEditor::QEditor()
 {
@@ -90,25 +89,22 @@ void QEditor::test_in_update()
 	if (Engine::Input::get_key_pressed(Q_KEY_W))
 	{
 		QDEBUG("Get Key from Editor : W");
-		//Engine::AudioSys::Instance()->playSound("laser1");
 	}
 
 	if (Engine::Input::get_key_released(Q_KEY_D))
 	{
 		QDEBUG("Get Key from Editor : D");
-		//Engine::AudioSys::Instance()->playSound("message1");
+
 	}
 
 	if (Engine::Input::get_key_released(Q_KEY_A))
 	{
 		QDEBUG("Get Key from Editor : A");
-		//Engine::AudioSys::Instance()->playSound("laser6");
 	}
 
 	if (Engine::Input::get_key_released(Q_KEY_S))
 	{
 		QDEBUG("Get Key from Editor : S");
-		//Engine::AudioSys::Instance()->playSound("explosion4");
 	}
 }
 
@@ -132,7 +128,7 @@ void QEditor::poll_input()
 	if (Engine::Input::get_key_combination({ Q_KEY_G, Q_KEY_LEFT_SHIFT }))
 	{
 		QDEBUG("Get Key from Editor : G");
-		ImGui::SetWindowFocus("Script Editor");
+		//ImGui::SetWindowFocus("Script Editor");
 	}
 
 	if (Engine::Input::get_key_combination({ Q_KEY_D, Q_KEY_LEFT_CONTROL }))

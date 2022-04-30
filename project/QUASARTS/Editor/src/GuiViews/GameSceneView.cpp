@@ -24,11 +24,11 @@ void GameSceneView::on_gui()
             if (ImGui::BeginTabItem("Scene"))
             {
                 get_drag();
-                ImVec2 uv_min = ImVec2(0.0f, 0.0f);                 // Top-left
-                ImVec2 uv_max = ImVec2(1.0f, 1.0f);                 // Lower-right
+                ImVec2 uv_min = ImVec2(0.0f, 1.0f);                 // bottom-left
+                ImVec2 uv_max = ImVec2(1.0f, 0.0f);                 // top-right
                 ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);   // No tint
                 ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 0.5f); // 50% opaque white
-                unsigned int texture = Engine::Renderer::Instance()->get_rt();
+                unsigned int texture = Engine::Renderer::Instance()->get_renderTexture();
                 ImGui::Image((ImTextureID)texture, ImVec2(1120, 630), uv_min, uv_max, tint_col, border_col);
                 
                 if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {

@@ -16,7 +16,7 @@ void SceneCameraController::on_update()
 				auto mouseMotion = Engine::Input::mouseMotion;
 				auto x = transform->rotation.x;
 				auto y = transform->rotation.y;
-				x += MouseSensitivity * mouseMotion.y;
+				x -= MouseSensitivity * mouseMotion.y;
 				y += MouseSensitivity * mouseMotion.x;
 				//QDEBUG("rot camera");
 				transform->rotation = { x,y,0.0f };

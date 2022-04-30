@@ -63,7 +63,7 @@ namespace Engine {
 			{
 				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
 
-				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, *script);
+				//mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, *script);
 			}
 		}
 
@@ -168,6 +168,11 @@ namespace Engine {
 		}
 
 	}
+	void ScriptSystem::refreshScript()
+	{
+		destroyState();
+		createState();
+	}
 	void ScriptSystem::importFunc()
 	{
 		//if (!is_imported)
@@ -227,6 +232,26 @@ namespace Engine {
 			return "test";
 		}
 		//QWARN("failed to get the script name");
+	}
+
+	void ScriptSystem::setScriptPath(const std::string& path)
+	{
+		script_path = path;
+	}
+
+	void ScriptSystem::setScriptPath(ScriptComponent* component)
+	{
+		component->script_path = this->script_path;
+	}
+
+	void ScriptSystem::setScriptName(const std::string& name)
+	{
+		script_name = name;
+	}
+
+	void ScriptSystem::setScriptName(ScriptComponent* component)
+	{
+		component->script_name = this->script_name;
 	}
 
 }
