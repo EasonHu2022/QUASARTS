@@ -4,6 +4,7 @@
 #include "LogExporter.h"
 #include "MathExporter.h"
 #include "InputExporter.h"
+#include "AudioExporter.h"
 #include "ComponentsExporter.h"
 //export
 
@@ -15,7 +16,8 @@ namespace Engine {
 		LogExporter::exportLog(L);
 		MathExporter::exportMath(L);
 		InputExporter::exportInput(L);
-		ComponentsExporter::exportComp(L);		
+		ComponentsExporter::exportComp(L);	
+		AudioExporter::exportAudio(L);
 	}
 
 }

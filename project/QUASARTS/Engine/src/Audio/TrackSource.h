@@ -8,27 +8,30 @@ namespace Engine {
 	class QS_API TrackSource
 	{
 	public:	
-		TrackSource(const char* file_name);
+		TrackSource();
 		~TrackSource();
 
+		void loadTrack(const char* file_name);
 		void play();
 		bool isPlaying();
 		void stop();
 		void pause();
 		void resume();
 		void isLooping();	
-		void updateBuffer();	
+		void updateBuffer();
 	
 	private:
-		TrackSource() = delete;
-	
-	private:
+
+		//track source
 		ALuint source;
 		ALuint buffers[4];
-		SNDFILE* sndfile;
+
+		//track buffer
+		SNDFILE* sndfile = nullptr;
+		short* buf = nullptr;
 		SF_INFO sf_info;
-		short* buf;
 		ALenum format;
+
 		bool is_paused = false;
 		bool is_looping = true;
 	};

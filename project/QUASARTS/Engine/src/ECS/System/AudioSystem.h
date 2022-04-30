@@ -16,13 +16,13 @@ namespace Engine {
 		// singleton
 	private:
 		static AudioSystem* instance;
-		AudioSystem() : 
-			sound_path(""), 
+		AudioSystem() :
+			sound_path(""),
+			audio_dev(nullptr),
 			clip_src(nullptr),
-			audio_dev(nullptr), 
 			clip_buffer(nullptr),
 			track_src(nullptr),
-			cur_work_dir("") 
+			cur_work_dir("")
 		{}
 	public:
 		static AudioSystem* Instance();
@@ -43,6 +43,7 @@ namespace Engine {
 		void stopClip();
 		void pauseClip();
 		void resumeClip();
+		void playAllClips();
 		//--------------------------
 
 		//--------------------------
@@ -64,6 +65,5 @@ namespace Engine {
 		ClipBuffer* clip_buffer;
 		ClipSource* clip_src;
 		TrackSource* track_src;
-
 	};
 }
