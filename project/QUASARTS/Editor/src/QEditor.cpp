@@ -86,26 +86,26 @@ void QEditor::on_gui()
 
 void QEditor::test_in_update()
 {
-	if (Engine::Input::get_key_pressed(Q_KEY_W))
-	{
-		QDEBUG("Get Key from Editor : W");
-	}
+	//if (Engine::Input::get_key_pressed(Q_KEY_W))
+	//{
+	//	QDEBUG("Get Key from Editor : W");
+	//}
 
-	if (Engine::Input::get_key_released(Q_KEY_D))
-	{
-		QDEBUG("Get Key from Editor : D");
+	//if (Engine::Input::get_key_released(Q_KEY_D))
+	//{
+	//	QDEBUG("Get Key from Editor : D");
 
-	}
+	//}
 
-	if (Engine::Input::get_key_released(Q_KEY_A))
-	{
-		QDEBUG("Get Key from Editor : A");
-	}
+	//if (Engine::Input::get_key_released(Q_KEY_A))
+	//{
+	//	QDEBUG("Get Key from Editor : A");
+	//}
 
-	if (Engine::Input::get_key_released(Q_KEY_S))
-	{
-		QDEBUG("Get Key from Editor : S");
-	}
+	//if (Engine::Input::get_key_released(Q_KEY_S))
+	//{
+	//	QDEBUG("Get Key from Editor : S");
+	//}
 }
 
 
