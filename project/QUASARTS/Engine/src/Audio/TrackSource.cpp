@@ -6,11 +6,28 @@
 
 namespace Engine {
 
-	TrackSource::TrackSource(const char* file_name)
+	TrackSource::TrackSource()
 	{
 		alGenSources(1, &source);
 		alGenBuffers(4, buffers);
+	}
 
+	TrackSource::~TrackSource()
+	{
+		alDeleteSources(1, &source);
+
+		if (sndfile)
+		{
+			sf_close(sndfile);
+			sndfile = nullptr;
+		}
+		free(buf);
+		alDeleteBuffers(4, buffers);
+
+	}
+
+	void TrackSource::loadTrack(const char* file_name)
+	{
 		//open the file 
 		sndfile = sf_open(file_name, SFM_READ, &sf_info);
 
@@ -45,20 +62,6 @@ namespace Engine {
 		buf = static_cast<short*>(malloc(frame_size));
 	}
 
-	TrackSource::~TrackSource()
-	{
-		alDeleteSources(1, &source);
-
-		if (sndfile)
-		{
-			sf_close(sndfile);
-		}
-		sndfile = nullptr;
-		free(buf);
-		alDeleteBuffers(4, buffers);
-
-	}
-
 	void TrackSource::play()
 	{		
 		alGetError();
@@ -66,23 +69,24 @@ namespace Engine {
 		alSourcei(source, AL_BUFFER, 0);
 	
 		//fill the buffer queue
-		ALsizei i;
-		for (i = 0; i < 4; i++)
+		ALsizei idx;
+		for (idx = 0; idx < 4; idx++)
 		{
 			//get data and fill the buffer
 			sf_count_t slen = sf_readf_short(sndfile, buf, 8192);
-			if (slen < 1) break;
-	
-			slen *= sf_info.channels * (sf_count_t)sizeof(short);
-			alBufferData(buffers[i], format, buf, (ALsizei)slen, sf_info.samplerate);
+			if (slen > 0)
+			{
+				slen *= sf_info.channels * (sf_count_t)sizeof(short);
+				alBufferData(buffers[idx], format, buf, (ALsizei)slen, sf_info.samplerate);
+			}	
 		}
 		if (alGetError() != AL_NO_ERROR)
 		{
 			QERROR("can't load the track");
 		}
 	
-		/* Now queue and start playback! */
-		alSourceQueueBuffers(source, i, buffers);
+		//get queue and play buffers
+		alSourceQueueBuffers(source, idx, buffers);
 		alSourcePlay(source);
 		if (alGetError() != AL_NO_ERROR)
 		{
@@ -131,20 +135,19 @@ namespace Engine {
 	
 		while (processed > 0)
 		{
-			ALuint buffer_id;
-			sf_count_t slen;
+			ALuint idx;
 		
 			//unqueue buffer 
-			alSourceUnqueueBuffers(source, 1, &buffer_id);
+			alSourceUnqueueBuffers(source, 1, &idx);
 			processed--;
 
 			//read next block, reset the buffer queue
-			slen = sf_readf_short(sndfile, buf, 8192);
+			sf_count_t slen = sf_readf_short(sndfile, buf, 8192);
 			if (slen > 0)
 			{
 				slen *= sf_info.channels * (sf_count_t)sizeof(short);
-				alBufferData(buffer_id, format, buf, (ALsizei)slen, sf_info.samplerate);
-				alSourceQueueBuffers(source, 1, &buffer_id);
+				alBufferData(idx, format, buf, (ALsizei)slen, sf_info.samplerate);
+				alSourceQueueBuffers(source, 1, &idx);
 			}
 		}
 	

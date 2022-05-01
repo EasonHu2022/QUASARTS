@@ -35,7 +35,7 @@ namespace Engine {
 		void destroyState();
 		void createScript(const std::string& file_name, const std::string& file_path);
 		void loadScript(const std::string& path);
-		void loadScript(const std::string& path, ScriptComponent* component);
+		void loadScript(ScriptComponent* component);
 		void reloadScript();
 		void deleteScript();
 		void refreshScript();
@@ -46,9 +46,9 @@ namespace Engine {
 		std::string getScriptPath();
 		std::string getScriptName();
 		void setScriptPath(const std::string& path);
-		void setScriptPath(ScriptComponent* component);
+		void setComponentPath(ScriptComponent* component);
 		void setScriptName(const std::string& name);
-		void setScriptName(ScriptComponent* component);
+		void setComponentName(ScriptComponent* component);
 
 	private:
 		std::unique_ptr<sol::state> lua_state; 		//lua virtual machine

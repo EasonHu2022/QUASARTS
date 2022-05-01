@@ -77,8 +77,20 @@ void MenuBarView::on_gui()
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Play", "Ctrl+P")) {
-
+                
+                //use script directly, worked
                 Engine::ScriptSystem::Instance()->reloadScript();
+                
+
+                //script component(second way),  hope it can work 
+
+                /* pseudo code here  
+                auto sc_comp = current_entity.getComponent<script mask>;  //can we ? 
+                Engine::ScriptSystem::Instance()->setComponentPath(sc_comp);
+                Engine::ScriptSystem::Instance()->loadScript(sc_comp);
+                */
+                
+
                 Engine::ScriptSystem::Instance()->importFunc();
             }
             if (ImGui::MenuItem("Stop", "Ctrl+Shift+P")) {
