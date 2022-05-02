@@ -35,11 +35,11 @@ namespace Engine
 		Scene* scene;
 		RenderSystem* renderSystem;
 		
-
+		/*******render*********/
 		RenderContext* renderContext;
 		MeshRenderer* meshRenderer;
 		ShadowRenderer* shadowRenderer;
-		//SkyboxRenderer* skyboxRenderer;
+		SkyBoxRenderer* skyboxRenderer;
 
 	public:
 		Window* get_window() { return m_window; }

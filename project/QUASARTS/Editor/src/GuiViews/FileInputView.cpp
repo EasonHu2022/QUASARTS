@@ -93,9 +93,9 @@ void FileInputView::on_gui()
                                     auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
                                     //init
                                     script->entity_id = entityID;
-                                    Engine::ScriptSystem::Instance()->setComponentPath(script);
+                                   /* Engine::ScriptSystem::Instance()->setComponentPath(script);
                                     Engine::ScriptSystem::Instance()->setScriptState(script);
-                                    Engine::ScriptSystem::Instance()->addScriptComponent(script);
+                                    Engine::ScriptSystem::Instance()->addScriptComponent(script);*/
                                     
                                     
                                     Engine::MaterialComponent material;

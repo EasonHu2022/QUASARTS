@@ -12,10 +12,10 @@ namespace Engine
 	class QS_API MeshRenderer : public IRenderer
 	{
 	private:
-		static MeshRenderer* instance;
+
 
 	public:
-		static MeshRenderer* Instance();
+
 		MeshRenderer(RenderContext *renderContext);
 		~MeshRenderer();
 

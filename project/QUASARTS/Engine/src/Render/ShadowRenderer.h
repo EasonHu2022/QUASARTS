@@ -11,19 +11,16 @@ namespace Engine
 
 	class QS_API ShadowRenderer : public IRenderer
 	{
-	private:
-		static ShadowRenderer* instance;
-
+	
 	public:
-		static ShadowRenderer* Instance();
 		ShadowRenderer(RenderContext* renderContext);
 		~ShadowRenderer();
 
 	private:
 		//shadow mapping vertex shader path
-		const std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.vsh";
+		const std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\ShadowMapping.vsh";
 		//shadow mapping fragment shader path
-		const std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.fsh";
+		const std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\ShadowMapping.fsh";
 		//shadow mapping shader
 		Shader* shadow_mapping_shader = nullptr;
 	public:

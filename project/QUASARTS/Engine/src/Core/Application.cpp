@@ -38,6 +38,7 @@ namespace Engine
 		renderContext = new RenderContext();
 		shadowRenderer = new ShadowRenderer(renderContext);
 		meshRenderer = new MeshRenderer(renderContext);
+		skyboxRenderer = new SkyBoxRenderer(renderContext);
 		/*************************Create and Init********************************/
 
 	}
@@ -59,7 +60,7 @@ namespace Engine
 		renderContext->init();
 		shadowRenderer->init();
 		meshRenderer->init();
-
+		skyboxRenderer->init();
 		renderSystem->init();
 		//do init things
 		GuiWrapper::init();
@@ -111,6 +112,8 @@ namespace Engine
 		shadowRenderer->render();
 
 		meshRenderer->render();
+
+		skyboxRenderer->render();
 		/**************render update render frame***********************/
 	}
 
@@ -148,6 +151,8 @@ namespace Engine
 		AudioSystem::Instance()->release();
 		renderSystem->release();
 		meshRenderer->release();
+		shadowRenderer->release();
+		skyboxRenderer->release();
 		/*********************release things**********************************/
 	}
 

@@ -5,20 +5,6 @@
 
 namespace Engine
 {
-	//singleton
-	MeshRenderer* MeshRenderer::instance = nullptr;
-	/// <summary>
-	/// return an instance
-	/// </summary>
-	/// <returns></returns>
-	MeshRenderer* MeshRenderer::Instance()
-	{
-		if (nullptr == instance)
-			//instance = new MeshRenderer();
-
-		return instance;
-
-	}
 
 	MeshRenderer::MeshRenderer(RenderContext *_renderContext) :  IRenderer(_renderContext)
 	{
