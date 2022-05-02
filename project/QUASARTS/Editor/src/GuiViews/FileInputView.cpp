@@ -106,7 +106,8 @@ void FileInputView::on_gui()
                                     std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\DefaultShader.fsh";
                                     std::string gshPth = "";
                                     std::string texturePath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\floor.jpg";
-                                    material.material = new Engine::Material(vshPath, fshPath,gshPth,texturePath);                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
+                                    material.material = new Engine::Material(vshPath, fshPath,gshPth,texturePath);                                  
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
 
                                 }
                                 else if (i == 1) 
