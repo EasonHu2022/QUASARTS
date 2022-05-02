@@ -92,12 +92,14 @@ namespace Engine
 
 						material->material = mat.get();
 						p->shader_program = mat->shader;
+						p->texture2d = mat->texture;
 					}
 				}
 				else
 				{
 
 					p->shader_program = material->material->shader;
+					p->texture2d = material->material->texture;
 				}
 				//push p into renderQueue
 				Application::Instance->renderContext->renderQueue->push(p);

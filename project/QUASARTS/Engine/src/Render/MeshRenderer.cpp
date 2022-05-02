@@ -63,6 +63,12 @@ namespace Engine
 		while (renderContext->renderQueue->get_size() != 0)
 		{
 			auto buffer = renderContext->renderQueue->get();
+			if (buffer->shader_program == NULL)
+			{
+				renderContext->renderQueue->pop();
+				continue;
+			}
+				
 			//activate shader
 			buffer->shader_program->use();
 			//model : get from transform component
@@ -73,6 +79,15 @@ namespace Engine
 			//buffer->shader_program->setInt("shadowMap", depthTextureArray);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D_ARRAY, renderContext->depthTextureArray);
+
+
+
+			if (buffer->texture2d != NULL)
+			{				
+				buffer->texture2d->use(GL_TEXTURE1);
+				GLint iTextureUniform = glGetUniformLocation(buffer->shader_program->ID, "colorTexure");
+				glUniform1i(iTextureUniform, 1);
+			}
 
 			glBindVertexArray(buffer->_VAO);
 			glDrawElements(GL_TRIANGLES, buffer->size, GL_UNSIGNED_INT, 0);
