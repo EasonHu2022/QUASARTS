@@ -15,13 +15,14 @@ namespace Engine {
 		std::shared_ptr<sol::protected_function_result> L;	// state handle
 		std::shared_ptr<sol::function> update_function;		// control the onUpdate function in Lua side
 		std::string script_name;							
-		std::string script_path;																					 
+		std::string script_path;
+        unsigned int entity_id;     //track the entity
 	};
 
 	// Input stream operator:
     inline std::istream & operator >> (std::istream &inStream, ScriptComponent &script) {
 		// Use the name and path, nothing else:
-        inStream >> script.script_name >> script.script_path;
+        inStream >> script.script_name >> script.script_path >> script.entity_id;
 
         return inStream;
     }
@@ -29,7 +30,7 @@ namespace Engine {
     // Output stream operator:
     inline std::ostream & operator << (std::ostream &outStream, const ScriptComponent &script) {
 		// Use the name and path, nothing else:
-        outStream << script.script_name << " " << script.script_path;
+        outStream << script.script_name << " " << script.script_path << " " << script.entity_id;
         
         return outStream;
     }

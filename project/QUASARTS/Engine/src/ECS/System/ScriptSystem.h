@@ -5,9 +5,11 @@
 #include <string>
 #include <memory>
 #include <cstdint>
+#include <vector>
 
 #include "System.h"
 #include "ECS/Component/ScriptComponent.h"
+#include "ECS/ECSManager.h"
 #include "QuasartsEngine.h"
 
 namespace Engine {
@@ -16,7 +18,7 @@ namespace Engine {
 		// singleton
 	private:
 		static ScriptSystem* instance;
-		ScriptSystem() : script_name(""), script_path(""), script_component(nullptr) {};
+		ScriptSystem() : script_name(""), script_path("") {};
 	public:
 		static ScriptSystem* Instance();
 		~ScriptSystem() {};
@@ -35,9 +37,11 @@ namespace Engine {
 		void destroyState();
 		void createScript(const std::string& file_name, const std::string& file_path);
 		void loadScript(const std::string& path);
-		void loadScript(ScriptComponent* component);
+		void loadScripts();
+		void setScriptState(ScriptComponent* component);
 		void reloadScript();
 		void deleteScript();
+		void deleteAllScripts();
 		void refreshScript();
 		void importFunc();
 		void importFunc(ScriptComponent* component);
@@ -49,15 +53,14 @@ namespace Engine {
 		void setComponentPath(ScriptComponent* component);
 		void setScriptName(const std::string& name);
 		void setComponentName(ScriptComponent* component);
+		void addScriptComponent(ScriptComponent* component);
 
 	private:
-		std::unique_ptr<sol::state> lua_state; 		//lua virtual machine
+		std::unique_ptr<sol::state> lua_state; 		    //lua virtual machine
 		std::string script_name;
 		std::string script_path;
-		//bool is_imported;							//check if the update function is imported to C++ side
-		ScriptComponent* script_component;
-
-		//std::unordered_map<std::string, ScriptComponent>;
+		//bool is_imported;							    //check if the update function is imported to C++ side
+		std::vector<ScriptComponent*> script_components; //store all components
 	};
 
 }
