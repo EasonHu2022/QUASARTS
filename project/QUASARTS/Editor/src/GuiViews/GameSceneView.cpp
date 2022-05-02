@@ -30,31 +30,52 @@ void GameSceneView::on_gui()
                 ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 0.5f); // 50% opaque white
                 unsigned int texture = Engine::Application::Instance->renderContext->get_renderTexture();
                 ImGui::Image((ImTextureID)texture, ImVec2(1120, 630), uv_min, uv_max, tint_col, border_col);
-                
-                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {
 
-                    ImGuizmo::SetOrthographic(false);
-                    ImGuizmo::SetDrawlist();
-                    float windowWidth = (float)ImGui::GetWindowWidth();
-                    float windowHeight = (float)ImGui::GetWindowHeight();
-                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-                    auto projection = Engine::Application::Instance->renderContext->cameraContext->get_projection_data();
-                    auto view = Engine::Application::Instance->renderContext->cameraContext->get_view_data();
+                //imguizmo
 
-                   // glm::mat4 actual = glm::inverse(glm::make_mat4(view));
+                ImGuizmo::SetOrthographic(false);
+                ImGuizmo::BeginFrame();
+                ImGuizmo::SetDrawlist();
+                float windowWidth = (float)ImGui::GetWindowWidth();
+                float windowHeight = (float)ImGui::GetWindowHeight();
+                ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
+                auto projection = Engine::Application::Instance->renderContext->cameraContext->get_projection_data();
+                auto view = Engine::Application::Instance->renderContext->cameraContext->get_view_data();
+
+                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {                              
                     Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
-                    auto obj_transform = Engine::get_transform_data(transform->position, transform->rotation, transform->scale);
-                    //printf("%f\n", obj_transform[0]);
-                    ImGuizmo::Manipulate(view, projection, ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, obj_transform);
+                    //auto obj_transform = Engine::get_transform_data(transform->position, transform->rotation, transform->scale);
+                    //printf("%f\n", obj_transform[0]);                 
+                    //ImGuizmo::DrawCubes(view, projection, &objectMatrix[0][0], gizmoCount);
+
+                    float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+                    float matrix[] = {1.f, 0.f, 0.f, 0.f,
+    0.f, 1.f, 0.f, 0.f,
+    0.f, 0.f, 1.f, 0.f,
+    0.f, 0.f, 0.f, 1.f };
+                    ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
+                    matrixTranslation[0] = transform->position.x;
+                    matrixTranslation[1] = transform->position.y;
+                    matrixTranslation[2] = transform->position.z;
+                    matrixRotation[0] = transform->rotation.x;
+                    matrixRotation[1] = transform->rotation.y;
+                    matrixRotation[2] = transform->rotation.z;
+                    matrixScale[0] = transform->scale.x;
+                    matrixScale[1] = transform->scale.y;
+                    matrixScale[2] = transform->scale.z;
+                    ImGuizmo::Manipulate(view, projection, ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, matrix);
+                    ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
+                    //update transform
+                  
                 }
+                ImGuizmo::DrawGrid(view, projection, &glm::mat4(1.0)[0][0], 100.f);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Game"))
             {
-                ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-                ImGui::EndTabItem();
+              
             }
             if (ImGui::BeginTabItem("Text Edit"))
             {
