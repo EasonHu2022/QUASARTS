@@ -40,7 +40,7 @@ void GameSceneView::on_gui()
                     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
                     auto projection = Engine::Renderer::Instance()->cameraContext->get_projection_data();
-                    auto view = Engine::Renderer::Instance()->cameraContext->get_view_matrix();
+                    auto view = Engine::Renderer::Instance()->cameraContext->get_view_data();
 
                     glm::mat4 actual = glm::inverse(glm::make_mat4(view));
 

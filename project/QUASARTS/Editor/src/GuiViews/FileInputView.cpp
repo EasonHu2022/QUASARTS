@@ -91,6 +91,8 @@ void FileInputView::on_gui()
                                     material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
                                     //material.material = new Engine::Material("F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
                                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
+
+                                    Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
                                 }
                                 else if (i == 1) 
                                 {
