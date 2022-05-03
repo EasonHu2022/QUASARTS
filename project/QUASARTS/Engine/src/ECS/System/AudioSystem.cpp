@@ -1,4 +1,5 @@
 #include "AudioSystem.h"
+#include "ResourceManager/FileModule.h"
 #include <AL/al.h>
 
 namespace Engine {
@@ -97,17 +98,10 @@ namespace Engine {
 	void AudioSystem::playSoundClip(const std::string& name)
 	{
 
-		std::string file_path;
-		if (cur_work_dir.empty())
-		{
-			file_path = "..\\Assets\\Audio\\" + name + ".ogg";
-		}
-		else
-		{
-			auto temp = cur_work_dir.substr(0, cur_work_dir.find_last_of("E"));
-			file_path = temp + "\\Assets\\Audio\\" + name + ".ogg";
-		}
-		
+		//get default engine assets path
+		std::string path = FileModule::Instance()->get_internal_assets_path();
+		std::string file_path = path + "Audio\\" + name + ".ogg";
+
 		ALuint clip = clip_buffer->loadSoundClip(file_path.c_str());
 		clip_src->play(clip);
 
@@ -141,34 +135,13 @@ namespace Engine {
 			clip_src->play(it);
 		}
 	}
-	void AudioSystem::playTrack()
-	{
-		std::string file_path;
-		if (cur_work_dir.empty())
-		{
-			file_path = "..\\Assets\\Audio\\TownTheme.wav";
-		}
-		else
-		{
-			auto temp = cur_work_dir.substr(0, cur_work_dir.find_last_of("E"));
-			file_path = temp + "\\Assets\\Audio\\TownTheme.wav";
-		}
 
-		track_src->loadTrack(file_path.c_str());
-		track_src->play();
-	}
 	void AudioSystem::playTrack(const std::string& name)
 	{
-		std::string file_path;
-		if (cur_work_dir.empty())
-		{
-			file_path = "..\\Assets\\Audio\\TownTheme.wav";
-		}
-		else
-		{
-			auto temp = cur_work_dir.substr(0, cur_work_dir.find_last_of("E"));
-			file_path = temp + "\\Assets\\Audio\\" + name + ".wav";
-		}
+		//get default engine assets path
+		std::string path = FileModule::Instance()->get_internal_assets_path();
+		std::string file_path = path + "Audio\\" + name + ".wav";
+
 		track_src->loadTrack(file_path.c_str());
 		track_src->play();
 	}

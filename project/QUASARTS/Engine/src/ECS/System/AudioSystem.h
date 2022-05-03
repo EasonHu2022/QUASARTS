@@ -48,7 +48,6 @@ namespace Engine {
 
 		//--------------------------
 		//track
-		void playTrack();
 		void playTrack(const std::string& name);
 		void stopTrack();
 		void pauseTrack();

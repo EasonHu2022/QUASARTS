@@ -1,9 +1,25 @@
 #include "SkyboxRenderer.h"
+#include "ResourceManager/FileModule.h"
 
 namespace Engine
 {
 	SkyBoxRenderer::SkyBoxRenderer(RenderContext* renderContext) : IRenderer(renderContext)
 	{
+		//get default engine assets path
+		std::string path = FileModule::Instance()->get_internal_assets_path();
+
+		vshPath = path + "Shader\\SkyBox.vsh";
+		fshPath = path + "Shader\\SkyBox.fsh";
+
+		 paths = std::vector<std::string>
+		{
+			path + "Texture\\right.jpg",
+			path + "Texture\\left.jpg",
+			path + "Texture\\top.jpg",
+			path + "Texture\\bottom.jpg",
+			path + "Texture\\front.jpg",
+			path + "Texture\\back.jpg",
+		};
 	}
 	SkyBoxRenderer::~SkyBoxRenderer()
 	{

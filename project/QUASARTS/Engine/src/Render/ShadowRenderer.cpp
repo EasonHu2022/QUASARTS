@@ -1,9 +1,16 @@
 #include "ShadowRenderer.h"
+#include "ResourceManager/FileModule.h"
 
 namespace Engine
 {
 	ShadowRenderer::ShadowRenderer(RenderContext* renderContext) : IRenderer(renderContext)
 	{
+		//get default engine assets path
+		auto path = FileModule::Instance()->get_internal_assets_path();
+		//shadow mapping vertex shader path
+		vshPath = path + "Shader\\ShadowMapping.vsh";
+		//shadow mapping fragment shader path
+		fshPath = path + "Shader\\ShadowMapping.fsh";
 	}
 	ShadowRenderer::~ShadowRenderer()
 	{

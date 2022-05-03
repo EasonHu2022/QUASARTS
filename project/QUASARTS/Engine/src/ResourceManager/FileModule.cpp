@@ -240,7 +240,7 @@ std::string FileModule::get_internal_assets_path()
 		path = path.Left(pos);		
 	}
 	auto str = WChar2Ansi(path.GetBuffer());
-	str += "\\Assets";
+	str += "\\Assets\\";
 	return str;
 }
 
