@@ -11,9 +11,10 @@ in VS_OUT {
 
 uniform vec3 viewPos;
 
-uniform sampler2DArray shadowMap;
 
-//uniform sampler2D singleShadowMap;
+
+uniform sampler2DArray shadowMap;
+uniform sampler2D colorTexure;
 
 struct LightData
 {   
@@ -49,9 +50,9 @@ void main()
 {  
     //now only support point light
 
-    vec3 color = vec3(1.0f,1.0f,1.0f);//texture(floorTexture, fs_in.TexCoords).rgb;
+    vec3 color = texture(colorTexure, fs_in.TexCoords).rgb;
     // ambient
-    vec3 ambient = 0.05 * color;
+    vec3 ambient = 0.2 * color;
     vec3 normal = normalize(fs_in.Normal);
 
     //per light attribution

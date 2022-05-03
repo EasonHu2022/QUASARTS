@@ -1,9 +1,9 @@
 #include "ClipBuffer.h"
 #include "QuasartsEngine.h"
+#include <sndfile.h>
 #include <inttypes.h>
 #include <cstdint>
 #include <AL/alext.h>
-#include <sndfile.h>
 
 
 namespace Engine {
@@ -20,26 +20,17 @@ namespace Engine {
 
 	ALuint ClipBuffer::loadSoundClip(const char* file_name)
 	{
-		ALenum	format;
-		SNDFILE* sndfile;
-		SF_INFO sf_info;
-		short* buf;
-		sf_count_t num_frames;
-		ALsizei num_bytes;
-		ALuint buffer;
-	
 		//open the file 
-		sndfile = sf_open(file_name, SFM_READ, &sf_info);
-
+		SF_INFO sf_info;
+		SNDFILE* sndfile = sf_open(file_name, SFM_READ, &sf_info);
 		//check if the file can be opened
 		if (!sndfile)
 		{
 			QERROR("Can't open the clip in {0}", file_name);
 			return 0;
-		}
-			
+		}			
 		//identify the clip format
-		format = AL_NONE;  // init format
+		ALenum format = AL_NONE;  // init format
 		if (sf_info.channels == 1)
 			format = AL_FORMAT_MONO16; // mono audio
 		else if (sf_info.channels == 2)
@@ -60,20 +51,19 @@ namespace Engine {
 			sf_close(sndfile);
 			return 0;
 		}
-	
 		//decode the clip and transfer to buffer
+		short* buf;
 		buf = static_cast<short*>(malloc((size_t)(sf_info.frames * sf_info.channels) * sizeof(short)));
-		num_frames = sf_readf_short(sndfile, buf, sf_info.frames);
-		num_bytes = (ALsizei)(num_frames * sf_info.channels) * (ALsizei)sizeof(short);
+		sf_count_t num_frames = sf_readf_short(sndfile, buf, sf_info.frames);
+		ALsizei num_bytes = (ALsizei)(num_frames * sf_info.channels) * (ALsizei)sizeof(short);
 		
 		//transfer the buffer and then close the file
-		buffer = 0;
+		ALuint buffer = 0;
 		alGenBuffers(1, &buffer);
 		alBufferData(buffer, format, buf, num_bytes, sf_info.samplerate);
 		free(buf);
 		sf_close(sndfile);
 	
-
 		ALenum error_msg = alGetError();
 		if (error_msg != AL_NO_ERROR)
 		{

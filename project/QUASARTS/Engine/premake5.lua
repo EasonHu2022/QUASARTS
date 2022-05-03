@@ -13,9 +13,9 @@ project "Engine"
 		"src/**.h",
 		"src/**.cpp",
 		"**.lua",
-		"src/**.vsh",
-		"src/**.fsh",
-		"src/**.gsh",
+		"../Assets/**.vsh",
+		"../Assets/**.fsh",
+		"../Assets/**.gsh",
 		"../ThirdParty/ImGui/*.cpp",
 		"../ThirdParty/ImGui/*.h",
 		"../ThirdParty/ImGuizmo/*.cpp",
@@ -30,6 +30,8 @@ project "Engine"
 		"../ThirdParty/GLAD/**.h",
 		"../ThirdParty/lua/**.c",
 		"../ThirdParty/lua/**.h",
+		"../ThirdParty/stb_image/**.h",
+		"../ThirdParty/stb_image/**.cpp",
 	}
 	
 	links
@@ -73,6 +75,7 @@ project "Engine"
 		"../ThirdParty/glm",
 		"../ThirdParty/OpenAL/include",
 		"../ThirdParty/sndfile/include",
+		"../ThirdParty/stb_image",
 
 	}
 	

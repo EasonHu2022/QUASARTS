@@ -1,12 +1,10 @@
 #include "Application.h"
 #include "Gui/GuiWrapper.h"
-#include "Render/Renderer.h"
 #include "Logger/LogModule.h"
 #include "Scene/PhysicsSystem.h"
 #include "Event/EventModule.h"
 #include "ECS/System/ScriptSystem.h"
 #include "ECS/System/AudioSystem.h"
-#include "Render/Renderer.h"
 #include "ResourceManager/ResourceManager.h"
 
 namespace Engine
@@ -37,7 +35,10 @@ namespace Engine
 		m_window = Window::create(WindowProps(name));
 		renderSystem = new RenderSystem();
 		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
-		Renderer::Instance(); 
+		renderContext = new RenderContext();
+		shadowRenderer = new ShadowRenderer(renderContext);
+		meshRenderer = new MeshRenderer(renderContext);
+		skyboxRenderer = new SkyBoxRenderer(renderContext);
 		/*************************Create and Init********************************/
 
 	}
@@ -56,7 +57,10 @@ namespace Engine
 		/***************later init things*************************/
 		PhysicsSystem::Instance()->init();
 		/*Renderer::Instance()->init();*/
-		Renderer::Instance()->init();
+		renderContext->init();
+		shadowRenderer->init();
+		meshRenderer->init();
+		skyboxRenderer->init();
 		renderSystem->init();
 		//do init things
 		GuiWrapper::init();
@@ -105,7 +109,11 @@ namespace Engine
 	void Application::on_render()
 	{
 		/**************render update render frame***********************/
-		Renderer::Instance()->render();
+		shadowRenderer->render();
+
+		meshRenderer->render();
+
+		skyboxRenderer->render();
 		/**************render update render frame***********************/
 	}
 
@@ -142,7 +150,9 @@ namespace Engine
 		EventModule::Instance()->release();
 		AudioSystem::Instance()->release();
 		renderSystem->release();
-		Renderer::Instance()->release();
+		meshRenderer->release();
+		shadowRenderer->release();
+		skyboxRenderer->release();
 		/*********************release things**********************************/
 	}
 

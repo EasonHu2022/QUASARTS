@@ -16,7 +16,7 @@ namespace Engine
 		//projection
 		//later change a place because rarely update
 		glm::mat4 projection;
-		
+
 		glm::vec3 front;
 		glm::vec3 up;
 		glm::vec3 right;
@@ -31,15 +31,15 @@ namespace Engine
 			front = { 0.0f,0.0f,-1.0f };
 			worldUp = up;
 		};
-	
+
 
 		inline void set_view(glm::vec3 offset, glm::vec3 rotation)
 		{
 			view = glm::mat4(1.0f);
 			pos = offset;
 			auto pitch = rotation.x;
-			auto yaw =  rotation.y;
-			
+			auto yaw = rotation.y;
+
 			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 			front.y = sin(glm::radians(pitch));
 			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -47,8 +47,8 @@ namespace Engine
 			// also re-calculate the Right and Up vector
 			right = glm::normalize(glm::cross(front, worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 			up = glm::normalize(glm::cross(right, front));
-			
-			view = glm::lookAt(pos,pos+front,up);
+
+			view = glm::lookAt(pos, pos + front, up);
 
 		}
 
@@ -88,7 +88,7 @@ namespace Engine
 		glm::vec4 ambient = { 0.2f,0.2f,0.2f,1.0f };
 		glm::vec4 diffuse = { 0.2f,0.2f,0.2f,1.0f };
 		glm::vec4 specular = { 0.2f,0.2f,0.2f,1.0f };
-		glm::vec4 positon = { 0.0f,0.0f,0.0f ,1.0f };		
+		glm::vec4 positon = { 0.0f,0.0f,0.0f ,1.0f };
 		glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
 		float type = 0.0f;
 	};
@@ -102,87 +102,58 @@ namespace Engine
 		float countLight = 0.0f;
 	};
 
-	class QS_API Renderer
+	class QS_API RenderContext
 	{
-	private:
-		static Renderer* instance;
+	public :
+		RenderContext();
+		~RenderContext();
 
 	public:
-		static Renderer* Instance();
-		Renderer();
-		~Renderer();
+		void init();
+		//push camera data to gpu
+		void commit_camera_data();
+		//push lighting data to gpu
+		void commit_lighting_data();
 
-	private:
+	public:
+		/*****************************commonData********************************/
+		UniformBufferObject* matricesBuffer;
+		UniformBufferObject* lightBuffer;
+		CameraContext* cameraContext;
+		LightingContext* lightingContext;
+		RenderQueue* renderQueue;
+		/*****************************commonData********************************/
+
+
+		/***************************** for scene ********************************/
 		//texture object for scene window
-		unsigned int tbo;
+		unsigned int textureBufferObject;
+		unsigned int get_renderTexture()
+		{
+			return textureBufferObject;
+		}
+		//frameBuffer object of scene window
+		unsigned int frameBufferObject;
 
-		//render texture
-		unsigned int fbo;
+		//depth and stencil buffer of scene window
+		unsigned int renderBufferObject;
 
-		//depth and stencil buffer
-		unsigned int rbo;
+		//rendertexture resolution
+		const GLuint RT_WIDTH = 1024;
+		const GLuint RT_HEIGHT = 1024;
+		/***************************** for scene ********************************/
 
-		//shadow mapping vertex shader path
-		const std::string vshPath = "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.vsh";
-		//shadow mapping fragment shader path
-		const std::string fshPath = "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\ShadowMapping.fsh";
-		//shadow mapping shader
-		Shader* shadow_mapping_shader = nullptr;
+
+		/***************************** for shadow ********************************/
+		//shadow depth resolution
+		const GLuint SHADOW_WIDTH = 1024;
+		const GLuint SHADOW_HEIGHT = 1024;
+		
 
 		//depth map buffer for shadow mapping
 		unsigned int depthMapFBO[MAX_LIGHTING_COUNT];
 		unsigned int depthTextureArray;
-		
-
-
-		//shadow depth resolution
-		const GLuint SHADOW_WIDTH = 1024;
-		const GLuint SHADOW_HEIGHT = 1024;
-		//rendertexture resolution
-		const GLuint RT_WIDTH = 1024;
-		const GLuint RT_HEIGHT = 1024;
-
-		//.render shadow map
-		void render_shadow_map();
-		//render to texture
-		void render_texture();
-
-	private:
-		UniformBufferObject* matricesBuffer;
-		UniformBufferObject* lightBuffer;
-
-	public:
-		CameraContext* cameraContext;
-		LightingContext* lightingContext;
-		RenderQueue* renderQueue;
-		
-	public:
-		/// <summary>
-		/// init the memoryModule
-		/// </summary>
-		//int init(int width, int height, char* title);
-		int init();
-
-		/// <summary>
-		/// update
-		/// </summary>
-		int render();
-
-		/// <summary>
-		/// stop the Memory module
-		/// </summary>
-		/// <returns></returns>
-		int stop();
-
-		/// <summary>
-		/// release the memory module
-		/// </summary>
-		void release() {};
-
-	
-
-		//get the rendertexture 
-		unsigned int get_renderTexture();
+		/***************************** for shadow ********************************/
 	};
 
 };

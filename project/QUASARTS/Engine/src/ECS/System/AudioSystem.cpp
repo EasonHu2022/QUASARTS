@@ -3,6 +3,7 @@
 
 namespace Engine {
 
+
 	// singleton
 	AudioSystem* AudioSystem::instance = nullptr;
 
@@ -25,7 +26,7 @@ namespace Engine {
 		audio_dev = new AudioDevice(); // init the audio device
 		clip_buffer = new ClipBuffer();
 		clip_src = new ClipSource();
-		
+		track_src = new TrackSource();
 	}
 
 	/// <summary>
@@ -42,7 +43,10 @@ namespace Engine {
 	/// </summary>
 	void AudioSystem::update()
 	{
-
+		if (track_src != nullptr)
+		{
+			track_src->updateBuffer();
+		}
 	}
 
 	/// <summary>
@@ -110,46 +114,83 @@ namespace Engine {
 	}
 	void AudioSystem::stopClip()
 	{
-		this->clip_src->stop();
+		if (clip_src != nullptr)
+		{
+			clip_src->stop();
+		}
 	}
 	void AudioSystem::pauseClip()
 	{
-		this->clip_src->pause();
+		if (clip_src != nullptr)
+		{
+			clip_src->pause();
+		}
 	}
 	void AudioSystem::resumeClip()
 	{
-		this->clip_src->resume();
+		if (clip_src != nullptr)
+		{
+			clip_src->resume();
+		}
+	}
+	void AudioSystem::playAllClips()
+	{
+		auto buffers = clip_buffer->getAllClips();
+		for (auto it : buffers)
+		{
+			clip_src->play(it);
+		}
 	}
 	void AudioSystem::playTrack()
 	{
-		TrackSource buf("..\\Assets\\Audio\\TownTheme.wav");
-		buf.play();
-		while (buf.isPlaying())
+		std::string file_path;
+		if (cur_work_dir.empty())
 		{
-			buf.updateBuffer();
+			file_path = "..\\Assets\\Audio\\TownTheme.wav";
 		}
+		else
+		{
+			auto temp = cur_work_dir.substr(0, cur_work_dir.find_last_of("E"));
+			file_path = temp + "\\Assets\\Audio\\TownTheme.wav";
+		}
+
+		track_src->loadTrack(file_path.c_str());
+		track_src->play();
 	}
 	void AudioSystem::playTrack(const std::string& name)
 	{
-		std::string file_path = "..\\Assets\\Audio\\" + name + ".wav";
-		TrackSource buf(file_path.c_str());
-		buf.play();
-		while (buf.isPlaying())
+		std::string file_path;
+		if (cur_work_dir.empty())
 		{
-			buf.updateBuffer();
+			file_path = "..\\Assets\\Audio\\TownTheme.wav";
 		}
-
+		else
+		{
+			auto temp = cur_work_dir.substr(0, cur_work_dir.find_last_of("E"));
+			file_path = temp + "\\Assets\\Audio\\" + name + ".wav";
+		}
+		track_src->loadTrack(file_path.c_str());
+		track_src->play();
 	}
 	void AudioSystem::stopTrack()
 	{
-		this->track_src->stop();
+		if (track_src != nullptr)
+		{
+			track_src->stop();
+		}
 	}
 	void AudioSystem::pauseTrack()
 	{
-		this->track_src->pause();
+		if (track_src != nullptr)
+		{
+			track_src->pause();
+		}
 	}
 	void AudioSystem::resumeTrack()
 	{
-		this->track_src->resume();
+		if (track_src != nullptr)
+		{
+			track_src->resume();
+		}
 	}
 }

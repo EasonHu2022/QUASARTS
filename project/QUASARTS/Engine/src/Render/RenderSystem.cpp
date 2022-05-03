@@ -1,6 +1,5 @@
 #include "RenderSystem.h"
 #include "Core/Application.h"
-#include "Render/Renderer.h"
 #include "ResourceManager/ResourceManager.h"
 #include "ECS/ECSManager.h"	
 namespace Engine
@@ -93,15 +92,17 @@ namespace Engine
 
 						material->material = mat.get();
 						p->shader_program = mat->shader;
+						p->texture2d = mat->texture;
 					}
 				}
 				else
 				{
 
 					p->shader_program = material->material->shader;
+					p->texture2d = material->material->texture;
 				}
 				//push p into renderQueue
-				Renderer::Instance()->renderQueue->push(p);
+				Application::Instance->renderContext->renderQueue->push(p);
 			}
 		}
 
@@ -125,8 +126,8 @@ namespace Engine
 		transform = active_manager->get_component
 			<TransformComponent>(cameraID, COMPONENT_TRANSFORM);
 
-		Renderer::Instance()->cameraContext->set_view(transform->position, transform->rotation);
-		Renderer::Instance()->cameraContext->set_projection(camera->fov, camera->ratio, camera->nearClip, camera->farClip);
+		Application::Instance->renderContext->cameraContext->set_view(transform->position, transform->rotation);
+		Application::Instance->renderContext->cameraContext->set_projection(camera->fov, camera->ratio, camera->nearClip, camera->farClip);
 		
 	}
 
@@ -141,7 +142,7 @@ namespace Engine
 
 		//later test if can release
 
-		auto info = Renderer::Instance()->lightingContext;
+		auto info = Application::Instance->renderContext->lightingContext;
 		int ind = 0;
 		//set the light resource of this frame
 		for (int i = 0; i < MAX_ENTITIES; i++)

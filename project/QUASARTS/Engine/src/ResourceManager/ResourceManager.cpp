@@ -2,7 +2,7 @@
 
 #include "ObjLoader.h"
 #include "FileLoader.h"
-
+#include "TextureLoader.h"
 
 namespace Engine
 {
@@ -24,7 +24,7 @@ namespace Engine
 		// Add loader.
 		add_loader<ObjLoader>();
 		add_loader<FileLoader>();
-
+		add_loader<TextureLoader>();
 	} // ResourceManager()
 
 	std::hash<std::string> ResourceManager::hString = std::hash<std::string>();

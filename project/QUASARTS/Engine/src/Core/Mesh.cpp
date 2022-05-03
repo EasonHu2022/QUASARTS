@@ -1,5 +1,6 @@
 #include "Mesh.h"
-#include "Render/Renderer.h"
+#include "glfw3.h"
+#include "glad.h"
 #pragma once
 namespace Engine {
 

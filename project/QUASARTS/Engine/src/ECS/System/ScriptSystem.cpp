@@ -25,6 +25,7 @@ namespace Engine {
 	void ScriptSystem::init()
 	{
 		createState();
+		script_components.clear();
 
 		//add script component mask
 		quasarts_component_mask temp;
@@ -62,8 +63,7 @@ namespace Engine {
 			if (ent->mask[i] == 1)
 			{
 				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
-
-				//mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, *script);
+				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, *script);
 			}
 		}
 
@@ -83,11 +83,6 @@ namespace Engine {
 	/// </summary>
 	void ScriptSystem::release()
 	{
-		if (script_component)
-		{
-			delete script_component;
-			script_component = nullptr;
-		}
 
 	}
 
@@ -100,8 +95,6 @@ namespace Engine {
 			lua_state->open_libraries();  //get all libraries
 			ScriptsExporter::exportScripts(*lua_state);
 		}
-
-		script_component = new ScriptComponent();
 	}
 
 	void ScriptSystem::destroyState()
@@ -124,7 +117,8 @@ namespace Engine {
 			QDEBUG("created and added the script: {0}.lua , the path is {1}", script_name, script_path);
 		}
 		ofs << "--Update the script here\n"
-			"function onUpdate()\n"
+			"-- thiz: current entity id\n"
+			"function onUpdate(thiz)\n"
 			"end" << std::endl;
 		ofs.close();
 
@@ -132,13 +126,21 @@ namespace Engine {
 
 	void ScriptSystem::loadScript(const std::string& path)
 	{
-		script_component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
+		//script_component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
 	}
 
-	void ScriptSystem::loadScript(const std::string& path, ScriptComponent* component)
+	void ScriptSystem::loadScripts()
 	{
-		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
-		//script_component = component;
+		for (auto sc : script_components)
+		{
+			lua_state->script_file(sc->script_path);
+		}
+	}
+
+	void ScriptSystem::setScriptState(ScriptComponent* component)
+	{
+		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(component->script_path));
+		importFunc(component);
 	}
 
 	void ScriptSystem::reloadScript()
@@ -168,6 +170,14 @@ namespace Engine {
 		}
 
 	}
+	void ScriptSystem::deleteAllScripts()
+	{
+		for (auto& sc : script_components)
+		{
+			if (std::remove(sc->script_path.c_str()) == 0);
+			QDEBUG("Deleted the file: {0}", sc->script_path);
+		}
+	}
 	void ScriptSystem::refreshScript()
 	{
 		destroyState();
@@ -177,7 +187,7 @@ namespace Engine {
 	{
 		//if (!is_imported)
 		//{
-			script_component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+			//script_component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
 			//is_imported = true;
 		//}		
 	}
@@ -193,10 +203,30 @@ namespace Engine {
 
 	void ScriptSystem::onUpdate()
 	{
-		if (script_component->update_function)
+		//if (script_component->update_function)
+		//{
+		//	(*(script_component->update_function))();
+		//}
+
+		//if (Engine::ECSManager::Instance()->get_current_entity() == 1)
+		//{
+		//	Engine::ScriptComponent* sc = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_SCRIPT);
+		//	if (sc->update_function)
+		//	{
+		//		(*(sc->update_function))();
+		//	}
+		//}
+
+		//loop all
+		for (auto sc : script_components)
 		{
-			(*(script_component->update_function))();
+			if (sc->update_function)
+			{
+				(*(sc->update_function))(sc->entity_id);
+			}
 		}
+
+
 	}
 
 	void ScriptSystem::onUpdate(ScriptComponent* component)
@@ -239,9 +269,10 @@ namespace Engine {
 		script_path = path;
 	}
 
-	void ScriptSystem::setScriptPath(ScriptComponent* component)
+	void ScriptSystem::setComponentPath(ScriptComponent* component)
 	{
-		component->script_path = this->script_path;
+		//component->script_path = this->script_path;
+		component->script_path = ".//Assets//Scripts//test.lua";
 	}
 
 	void ScriptSystem::setScriptName(const std::string& name)
@@ -249,9 +280,14 @@ namespace Engine {
 		script_name = name;
 	}
 
-	void ScriptSystem::setScriptName(ScriptComponent* component)
+	void ScriptSystem::setComponentName(ScriptComponent* component)
 	{
 		component->script_name = this->script_name;
+	}
+
+	void ScriptSystem::addScriptComponent(ScriptComponent* component)
+	{
+		script_components.push_back(component);
 	}
 
 }
