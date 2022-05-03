@@ -88,14 +88,14 @@ void FileInputView::on_gui()
 
                                     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
 
-                                    //Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+                                    Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
 
-                                    //auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+                                    auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
                                     //init
-                                    //script->entity_id = entityID;
-                                    //Engine::ScriptSystem::Instance()->setComponentPath(script);
-                                    //Engine::ScriptSystem::Instance()->setScriptState(script);
-                                    //Engine::ScriptSystem::Instance()->addScriptComponent(script);
+                                    script->entity_id = entityID;
+                                    Engine::ScriptSystem::Instance()->setComponentPath(script);
+                                    Engine::ScriptSystem::Instance()->setScriptState(script);
+                                    Engine::ScriptSystem::Instance()->addScriptComponent(script);
                                     
                                     
                                     Engine::MaterialComponent material;
