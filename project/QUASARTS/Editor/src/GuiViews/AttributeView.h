@@ -16,6 +16,7 @@ public:
 
 private:
 	void show_transform();
+	void change_transform(Engine::TransformComponent*, float[], float[], float[]);
 	void show_mesh();
 	void show_collision_sphere();
 	void show_material();
