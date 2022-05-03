@@ -100,10 +100,7 @@ namespace Engine {
 
 	void ScriptSystem::destroyState()
 	{
-		if (lua_state)
-		{
-			lua_state.reset();
-		}
+		lua_state.reset();
 	}
 
 	void ScriptSystem::createScript(const std::string& file_name, const std::string& file_path)
@@ -120,7 +117,6 @@ namespace Engine {
 		ofs << "--Update the script here\n"
 			"-- thiz: current entity id\n"
 			"function onUpdate(thiz)\n"
-			"\n"
 			"end" << std::endl;
 		ofs.close();
 
@@ -138,6 +134,7 @@ namespace Engine {
 			if(isScriptExists(sc->script_path))
 			{
 				lua_state->script_file(sc->script_path);
+				importFunc(sc);
 			}
 			else
 			{
@@ -155,7 +152,7 @@ namespace Engine {
 			return;
 		}		
 		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(component->script_path));
-		importFunc(component);
+		//importFunc(component);
 	}
 
 	void ScriptSystem::reloadScript()
@@ -195,8 +192,10 @@ namespace Engine {
 	}
 	void ScriptSystem::refreshScript()
 	{
-		destroyState();
-		createState();
+		//bug here
+		// 
+		//destroyState();
+		//createState();
 	}
 	void ScriptSystem::importFunc()
 	{
@@ -293,7 +292,14 @@ namespace Engine {
 	void ScriptSystem::setComponentPath(ScriptComponent* component)
 	{
 		//component->script_path = this->script_path;
-		component->script_path = ".//Assets//Scripts//test.lua";
+		if (!script_path.empty())
+		{
+			component->script_path = script_path;
+		}
+		else
+		{
+			component->script_path = ".//Assets//Scripts//test.lua";
+		}
 	}
 
 	void ScriptSystem::setScriptName(const std::string& name)
