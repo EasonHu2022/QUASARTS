@@ -233,10 +233,14 @@ std::string FileModule::get_internal_assets_path()
 	GetModuleFileName(NULL, path.GetBufferSetLength(MAX_PATH + 1), MAX_PATH);
 	path.ReleaseBuffer();
 	
-	//int pos = path.ReverseFind('\\');
-	int pos = path.FindOneOf((LPCWSTR)"project");
-	auto str = WChar2Ansi(path.Left(pos + 1).GetBuffer());
-	str += "\\QUASARTS\\Assets";
+	for (int i = 0; i < 4; i++)
+	{
+		//int pos = path.ReverseFind('\\');
+		int pos = path.ReverseFind('\\');
+		path = path.Left(pos);		
+	}
+	auto str = WChar2Ansi(path.GetBuffer());
+	str += "\\Assets";
 	return str;
 }
 
