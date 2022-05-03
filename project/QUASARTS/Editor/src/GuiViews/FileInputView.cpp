@@ -99,16 +99,14 @@ void FileInputView::on_gui()
                                     
                                     
                                     Engine::MaterialComponent material;
-                                    //material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
-                                    //material.material = new Engine::Material("F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
-                                    //material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
-                                    std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\DefaultShader.vsh";
-                                    std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\DefaultShader.fsh";
+                                    //get default engine assets path
+                                    auto path = FileModule::Instance()->get_internal_assets_path();
+                                    std::string vshPath = path + "Shader\\DefaultShader.vsh";
+                                    std::string fshPath = path +"Shader\\DefaultShader.fsh";
                                     std::string gshPth = "";
-                                    std::string texturePath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\floor.jpg";
+                                    std::string texturePath = path + "Texture\\floor.jpg";
                                     material.material = new Engine::Material(vshPath, fshPath,gshPth,texturePath);                                  
                                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
-
                                 }
                                 else if (i == 1) 
                                 {

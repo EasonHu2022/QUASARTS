@@ -2,6 +2,7 @@
 #include "Scripts/ScriptsExporter.h"
 
 #include <fstream>
+#include <sys/stat.h>
 
 namespace Engine {
 
@@ -119,6 +120,7 @@ namespace Engine {
 		ofs << "--Update the script here\n"
 			"-- thiz: current entity id\n"
 			"function onUpdate(thiz)\n"
+			"\n"
 			"end" << std::endl;
 		ofs.close();
 
@@ -133,12 +135,25 @@ namespace Engine {
 	{
 		for (auto sc : script_components)
 		{
-			lua_state->script_file(sc->script_path);
+			if(isScriptExists(sc->script_path))
+			{
+				lua_state->script_file(sc->script_path);
+			}
+			else
+			{
+				QWARN("failed to run the script, check if the script exists");
+			}
 		}
 	}
 
 	void ScriptSystem::setScriptState(ScriptComponent* component)
 	{
+			
+		if (!isScriptExists(component->script_path))
+		{
+			QWARN("failed to load script component, check if the file exists");
+			return;
+		}		
 		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(component->script_path));
 		importFunc(component);
 	}
@@ -235,6 +250,12 @@ namespace Engine {
 		{
 			(*(component->update_function))();
 		}
+	}
+
+	bool ScriptSystem::isScriptExists(std::string path)
+	{
+		struct stat buffer;
+		return(stat(path.c_str(), &buffer) == 0);
 	}
 
 	std::string ScriptSystem::getScriptPath()
