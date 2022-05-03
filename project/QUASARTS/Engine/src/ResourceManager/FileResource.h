@@ -8,7 +8,8 @@ namespace Engine
 	{
 	public:
 		std::string textContent;
-
+		std::string fileShortname;
+		std::string extension;
 		void reload() override {};
 	};	
 }
