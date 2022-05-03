@@ -6,6 +6,9 @@
 #include <io.h>
 #include "Core/QUtil.h"
 
+#include <cstring>
+#include "atlstr.h"
+
 FileModule* FileModule::instance = nullptr;
 /// <summary>
 /// return an instance
@@ -221,5 +224,19 @@ void FileModule::save_root(std::string root, std::string name, std::string cwd) 
 	}
 
 	of.close();
+}
+
+std::string FileModule::get_internal_assets_path()
+{
+
+	CString path;
+	GetModuleFileName(NULL, path.GetBufferSetLength(MAX_PATH + 1), MAX_PATH);
+	path.ReleaseBuffer();
+	
+	//int pos = path.ReverseFind('\\');
+	int pos = path.FindOneOf((LPCWSTR)"project");
+	auto str = WChar2Ansi(path.Left(pos + 1).GetBuffer());
+	str += "\\QUASARTS\\Assets";
+	return str;
 }
 

@@ -15,6 +15,6 @@ public:
 	void on_update();
 	void on_init();
 	void on_stop();
-
+	char   buffer[MAX_PATH];
 
 };

@@ -1,5 +1,10 @@
 #include "SceneCameraController.h"
-
+#include  <direct.h>  
+#include  <stdio.h> 
+#include <cstring>
+#include "atlstr.h"
+#include <string>
+#include "QuasartsEngine.h"
 void SceneCameraController::on_update()
 {
 	auto camera = Engine::ECSManager::Instance()->get_camera();
@@ -22,12 +27,12 @@ void SceneCameraController::on_update()
 				transform->rotation = { x,y,0.0f };
 				Engine::ECSManager::Instance()->replace_component(camera, COMPONENT_TRANSFORM, *transform);
 			}
-		}
-		
-		
+		}		
 	}
 
 }
+
+
 
 void SceneCameraController::on_init()
 {
