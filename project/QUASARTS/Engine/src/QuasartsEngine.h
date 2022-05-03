@@ -51,3 +51,9 @@
 /*
 	Resource Loader
 */
+
+
+/*
+	Time Module
+*/
+#include "Time/TimeModule.h"

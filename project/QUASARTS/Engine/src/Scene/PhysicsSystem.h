@@ -4,6 +4,7 @@
 #include "Core/IManager.h"
 #include "btBulletCollisionCommon.h"
 #include "glm/vec3.hpp"
+#include "Time/QTime.h"
 
 namespace Engine {
 

@@ -6,6 +6,7 @@
 #include "ECS/System/ScriptSystem.h"
 #include "ECS/System/AudioSystem.h"
 #include "ResourceManager/ResourceManager.h"
+#include "Time/TimeModule.h"
 
 namespace Engine
 {
@@ -23,6 +24,7 @@ namespace Engine
 
 		/*************************Create and Init********************************/
 		
+		TimeModule::Instance()->init();
 		LogModule::Instance()->init();
 		EventModule::Instance()->init();
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
@@ -78,6 +80,7 @@ namespace Engine
 		bIs_Running = true;
 
 		/***************later start things*************************/
+		TimeModule::Instance()->start();
 		LogModule::Instance()->start();
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
@@ -125,6 +128,7 @@ namespace Engine
 	void Application::on_update()
 	{
 		/***************logic update logic frame************************/
+		TimeModule::Instance()->update();
 		Input::reset_state();
 		m_window->on_update();
 		EventModule::Instance()->update();
@@ -145,6 +149,7 @@ namespace Engine
 	void Application::on_release()
 	{
 		/*********************release things**********************************/
+		TimeModule::Instance()->release();
 		LogModule::Instance()->release();
 		PhysicsSystem::Instance()->release();
 		EventModule::Instance()->release();
