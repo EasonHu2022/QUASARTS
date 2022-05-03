@@ -16,6 +16,12 @@ namespace Engine
 
         auto fileResource = std::make_shared<FileResource>();
 
+        std::string shortName = filepath.substr(filepath.find_last_of("/\\") + 1, filepath.find_last_of("."));
+        std::string extension = filepath.substr(filepath.find_last_of(".") + 1);
+
+        fileResource->fileShortname = shortName;
+        fileResource->extension = extension;
+
         try
         {
             // open files

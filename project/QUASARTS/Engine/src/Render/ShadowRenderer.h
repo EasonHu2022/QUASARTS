@@ -18,9 +18,13 @@ namespace Engine
 
 	private:
 		//shadow mapping vertex shader path
-		const std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\ShadowMapping.vsh";
+		//const std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\ShadowMapping.vsh";
 		//shadow mapping fragment shader path
-		const std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\ShadowMapping.fsh";
+		//const std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\ShadowMapping.fsh";
+		//shadow mapping vertex shader path
+		const std::string vshPath = "..\\Assets\\Shader\\ShadowMapping.vsh";
+		//shadow mapping fragment shader path
+		const std::string fshPath = "..\\Assets\\Shader\\ShadowMapping.fsh";
 		//shadow mapping shader
 		Shader* shadow_mapping_shader = nullptr;
 	public:

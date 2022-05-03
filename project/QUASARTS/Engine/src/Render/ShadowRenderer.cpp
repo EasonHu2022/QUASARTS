@@ -1,4 +1,5 @@
 #include "ShadowRenderer.h"
+
 namespace Engine
 {
 	ShadowRenderer::ShadowRenderer(RenderContext* renderContext) : IRenderer(renderContext)
@@ -11,6 +12,7 @@ namespace Engine
 	{
 		// create shadow mapping shader
 		shadow_mapping_shader = new Shader(vshPath.data(), fshPath.data());
+		
 		return 0;
 	}
 	int ShadowRenderer::render()

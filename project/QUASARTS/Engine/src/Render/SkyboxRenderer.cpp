@@ -19,6 +19,7 @@ namespace Engine
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		cubeMapTexture = new CubeMap(paths);
 		skyBoxShader = new Shader(vshPath.data(), fshPath.data());
+		
 		return 0;
 	}
 

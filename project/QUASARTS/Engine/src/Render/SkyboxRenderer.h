@@ -22,8 +22,10 @@ namespace Engine
 		void release() override;
 
     private:
-        std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\SkyBox.vsh";
-        std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\SkyBox.fsh";
+        //std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\SkyBox.vsh";
+        //std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\SkyBox.fsh";
+        std::string vshPath = "..\\Assets\\Shader\\SkyBox.vsh";
+        std::string fshPath = "..\\Assets\\Shader\\SkyBox.fsh";
         unsigned int skyboxVAO, skyboxVBO;
         float skyboxVertices[108] = {
             // positions          
@@ -73,12 +75,12 @@ namespace Engine
         CubeMap* cubeMapTexture = NULL;
         std::vector<std::string> paths
         {
-            "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\right.jpg",
-            "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\left.jpg",
-            "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\top.jpg",
-            "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\bottom.jpg",
-            "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\front.jpg",
-            "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\back.jpg",
+            "..\\Assets\\Texture\\right.jpg",
+            "..\\Assets\\Texture\\left.jpg",
+            "..\\Assets\\Texture\\top.jpg",
+            "..\\Assets\\Texture\\bottom.jpg",
+            "..\\Assets\\Texture\\front.jpg",
+            "..\\Assets\\Texture\\back.jpg",
         };
 	};
 };
