@@ -7,6 +7,9 @@
 #include "Core/Core.h"
 
 namespace Engine {
+    // Maximum length of a Scene file line:
+    #define MAX_SCENE_LINE_LENGTH 150
+
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
     #define NUM_COMPONENT_TYPES 7
@@ -23,6 +26,13 @@ namespace Engine {
     #define COMPONENT_LIGHTING          4
     #define COMPONENT_SCRIPT            5
     #define COMPONENT_CAMERA            6
+
+    // System types:
+    #define SYSTEM_SCRIPT       0
+    #define SYSTEM_RENDER       1
+    #define SYSTEM_PHYSICS      2
+    #define SYSTEM_COLLISION    3
+    #define SYSTEM_AUDIO        4
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

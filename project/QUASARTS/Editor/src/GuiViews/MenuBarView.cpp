@@ -21,6 +21,7 @@ void MenuBarView::on_add()
 
 void MenuBarView::on_gui()
 {
+    //QDEBUG("hi - {0}", new_project);
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -29,7 +30,9 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
-                FileModule::Instance()->open_root(OpenFileDialogue());
+                std::string proj_file = OpenFileDialogue();
+                if(proj_file.compare("N/A")!=0)
+                    FileModule::Instance()->open_root(proj_file);
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
@@ -38,14 +41,12 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);
             if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
-
-
-
+                std::string file_name = "./ProjectSetting/scene.scn";
+                Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
-
-
-
+                std::string file_name = "./ProjectSetting/scene.scn";
+                Engine::ECSManager::Instance()->save_scene((char*)file_name.c_str());
             }
             ImGui::EndMenu();
         }
@@ -55,7 +56,7 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Select All", "Ctrl+A")) {
 
             }
-            if (ImGui::MenuItem("Deselect All", "Ctrl+D")) {
+            if (ImGui::MenuItem("Deselect All", "Ctrl+Shift+D")) {
 
             }
             if (ImGui::MenuItem("Select Children", "Shift+C")) {
@@ -76,12 +77,32 @@ void MenuBarView::on_gui()
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Play", "Ctrl+P")) {
+                
+                //use script directly, worked
+                //Engine::ScriptSystem::Instance()->reloadScript();
+                Engine::ScriptSystem::Instance()->loadScripts();
+                
 
-                Engine::ScriptSystem::Instance()->reloadScript();
                 Engine::ScriptSystem::Instance()->importFunc();
             }
-            if (ImGui::MenuItem("Pause", "Ctrl+Shift+P")) {
+            if (ImGui::MenuItem("Stop", "Ctrl+Shift+P")) {
+                Engine::ScriptSystem::Instance()->refreshScript();
 
+            }
+            ImGui::Separator();
+            if (ImGui::MenuItem("Delete", "Ctrl+D")) {
+                Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
+                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+            }
+            if (ImGui::MenuItem("Delete All")) {
+                std::vector<unsigned int> entities = Engine::ECSManager::Instance()->get_entity_ID_match();
+                unsigned int cameraID = Engine::ECSManager::Instance()->get_camera();
+                for (int i = 1; i < entities.size(); i++) {
+                    if (entities[i] == cameraID)
+                        continue;
+                    Engine::ECSManager::Instance()->destroy_entity(entities[i]);
+                }
+                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
             }
             ImGui::EndMenu();
         }
@@ -115,32 +136,10 @@ void MenuBarView::on_gui()
             }
             if (ImGui::BeginMenu("Insert Basic Object")) {
                 if (ImGui::MenuItem("Triangle")) {
-                    /*unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                    Engine::ECSManager::Instance()->set_entityName(entityID, "camera");
-                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                    Engine::TransformComponent transform;
-                    transform.position = { 0.0f,0.1f, -2.0f };
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
-                    Engine::ECSManager::Instance()->create_component<Engine::CameraComponent>(entityID, COMPONENT_CAMERA); */
+                    
                 }
-                if (ImGui::MenuItem("Pane")) {
-                  /*  unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                    Engine::ECSManager::Instance()->set_entityName(entityID, "object");
-                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
-                    Engine::TransformComponent transform;
-                    transform.position = { 0.0f,0.0f, 0.0f };
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
+                if (ImGui::MenuItem("Plane")) {
                   
-
-                    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
-                    Engine::MeshComponent mesh;
-                    mesh.path = "F:\\WorkSpace\\LEEDS\\Graphics and Render\\Assignment2\\objects\\sphere20x20.obj";
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
-
-                    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
-                    Engine::MaterialComponent material;
-                    material.material = new Engine::Material("F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
-                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);*/
                 }
                 if (ImGui::MenuItem("Pyramid")) {
 
@@ -161,6 +160,18 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Light")) {
 
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                Engine::ECSManager::Instance()->set_entityName(entityID, "light");
+                Engine::ECSManager::Instance()->create_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
+                Engine::LightComponent *light = Engine::ECSManager::Instance()->get_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
+                light->ambient = { 1.0f,0.0f, 0.0f };
+                light->type = Engine::LightType::point;
+               
+
+                Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                Engine::TransformComponent *transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                transform->position = { 1.0f,2.5f, 0.0f };
+                
             }
             if (ImGui::MenuItem("Particle Emitter")) {
 
@@ -211,6 +222,7 @@ std::string MenuBarView::OpenFileDialogue() {
     ofn.lpstrDefExt = L"";
 
     if (GetOpenFileName(&ofn)) {
+
         std::wstring ws(fileName);
         // your new String
         std::string fileNameStr(ws.begin(), ws.end());
@@ -271,10 +283,10 @@ std::string MenuBarView::OpenFolderDialogue() {
 
 void MenuBarView::newProject() {
 
-    ImGui::SetWindowFocus("Choose new porject directory");
+    ImGui::SetWindowFocus("Choose new project directory");
 
     ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::Begin("Choose new porject directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Choose new project directory", &new_project, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
     static char buf2[260] = "";
     for (int i = 0; i < folder_path.length(); i++) {

@@ -1,6 +1,5 @@
 #include "RenderSystem.h"
 #include "Core/Application.h"
-#include "Render/Renderer.h"
 #include "ResourceManager/ResourceManager.h"
 #include "ECS/ECSManager.h"	
 namespace Engine
@@ -8,7 +7,7 @@ namespace Engine
 	RenderSystem::RenderSystem()
 	{
 		// Set the Component mask 0 :
-		quasarts_component_mask mask;
+		quasarts_component_mask mask{};
 		mask.mask = 0;
 		mask.mask += (uint64_t)1 << COMPONENT_TRANSFORM;
 		mask.mask += (uint64_t)1 << COMPONENT_MESH;
@@ -16,7 +15,7 @@ namespace Engine
 		// Add the Renderable mask to the System:
 		add_component_mask(mask);
 
-		quasarts_component_mask mask1;
+		quasarts_component_mask mask1{};
 		// Set the Component mask 1 :
 		mask1.mask = 0;
 		mask1.mask += (uint64_t)1 << COMPONENT_TRANSFORM;
@@ -24,7 +23,7 @@ namespace Engine
 		// Add the Renderable mask to the System:
 		add_component_mask(mask1);
 
-		quasarts_component_mask mask2;
+		quasarts_component_mask mask2{};
 		// Set the Component mask 2 :
 		mask2.mask = 0;
 		mask2.mask += (uint64_t)1 << COMPONENT_TRANSFORM;
@@ -33,21 +32,13 @@ namespace Engine
 		add_component_mask(mask2);
 	
 
-		matricesBuffer = NULL;
-		lightBuffer = NULL;
+	
 	}
 
 
 	void RenderSystem::init()
 	{
-		//initialize databuffers
-		matricesBuffer = new UniformBufferObject(UniformBlockIndex::matrices, 2 * sizeof(glm::mat4));
-		//carefully allocate memory for light buffer
-
-		lightBuffer = new UniformBufferObject(UniformBlockIndex::light, sizeof(Lightinfo));
-
-		matricesBuffer->init();
-		lightBuffer->init();
+		
 		update_projection();
 		update_light();
 	}
@@ -55,6 +46,7 @@ namespace Engine
 	void RenderSystem::update()
 	{
 		update_projection();
+		update_light();
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
 		// Get the entity ID mask:
@@ -62,9 +54,10 @@ namespace Engine
 		
 
 		//pass data to renderQueue
-		TransformComponent transform;
-		MeshComponent mesh;
-		MaterialComponent material;
+
+		TransformComponent *transform;
+		MeshComponent *mesh;
+		MaterialComponent *material;
 		
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
@@ -76,39 +69,40 @@ namespace Engine
 					<MeshComponent>(i, COMPONENT_MESH);
 				material = active_manager->get_component
 					 <MaterialComponent>(i, COMPONENT_MATERIAL);
-
-
 				pack* p = new pack();
 				//get mesh resource from component
 				/*************temp****************/
 				if (size_t resId;
-					ResourceManager::Instance()->load_resource(mesh.path, &resId))
+
+					ResourceManager::Instance()->load_resource(mesh->path, &resId))
 				{
 					auto model = ResourceManager::Instance()->get_resource<ModelResource>(resId);
 					model->render(p);
 				}
-
-				p->set_model(transform.position, transform.rotation, transform.scale);
-
-				
-
+				p->set_model(transform->position, transform->rotation, transform->scale);
 				//get mat resource from material component
-				if (material.material == NULL)
+
+				if (material->material == NULL)
 				{
 					if (size_t resId;
-						ResourceManager::Instance()->load_resource(material.path, &resId))
+
+						ResourceManager::Instance()->load_resource(material->path, &resId))
 					{
 						auto mat = ResourceManager::Instance()->get_resource<Material>(resId);
-						material.material = mat.get();
+
+						material->material = mat.get();
 						p->shader_program = mat->shader;
+						p->texture2d = mat->texture;
 					}
 				}
 				else
 				{
-					p->shader_program = material.material->shader;
+
+					p->shader_program = material->material->shader;
+					p->texture2d = material->material->texture;
 				}
 				//push p into renderQueue
-				Renderer::Instance()->renderQueue->push(p);
+				Application::Instance->renderContext->renderQueue->push(p);
 			}
 		}
 
@@ -119,46 +113,37 @@ namespace Engine
 
 	void RenderSystem::update_projection()
 	{
+		auto cameraID = Engine::ECSManager::Instance()->get_camera();		if (cameraID == TOO_MANY_ENTITIES)
+			return;
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
-		TransformComponent transform;
-		CameraComponent camera;
-		
-		quasarts_entity_ID_mask* cameraEnt = get_entity_ID_mask(2);
-		//set camera
-		int cameras = 0;
-		for (int i = 0; i < MAX_ENTITIES; i++)
-		{		
-			if (cameraEnt->mask[i] == 1)
-			{
-				camera = active_manager->get_component
-					<CameraComponent>(i, COMPONENT_CAMERA);
-				transform = active_manager->get_component
-					<TransformComponent>(i, COMPONENT_TRANSFORM);
-				Renderer::Instance()->context->set_view(transform.position, transform.rotation);
-				Renderer::Instance()->context->set_projection(camera.fov, camera.ratio, camera.nearClip, camera.farClip);
-				matricesBuffer->set_data(0,sizeof(glm::mat4), Renderer::Instance()->context->get_projection_data());
-				matricesBuffer->set_data(sizeof(glm::mat4), sizeof(glm::mat4), Renderer::Instance()->context->get_view_data());
 
-				cameras++;
-			}
-		}
-		if (cameras != 1)
-		{
-			QERROR("can't support no camera or multi camera, use the first camera");
-		}
+		TransformComponent *transform;
+		CameraComponent *camera;
+	
+		camera = active_manager->get_component
+			<CameraComponent>(cameraID, COMPONENT_CAMERA);
+		transform = active_manager->get_component
+			<TransformComponent>(cameraID, COMPONENT_TRANSFORM);
+
+		Application::Instance->renderContext->cameraContext->set_view(transform->position, transform->rotation);
+		Application::Instance->renderContext->cameraContext->set_projection(camera->fov, camera->ratio, camera->nearClip, camera->farClip);
+		
 	}
 
 	void RenderSystem::update_light()
 	{
 		// Get the manager:
 		ECSManager* active_manager = get_manager();
-		TransformComponent transform;
-		LightComponent light;
+
+		TransformComponent *transform;
+		LightComponent *light;
 		quasarts_entity_ID_mask* lightingSources = get_entity_ID_mask(1);
 
 		//later test if can release
-		Lightinfo* info = new Lightinfo();
+
+		auto info = Application::Instance->renderContext->lightingContext;
+		int ind = 0;
 		//set the light resource of this frame
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
@@ -171,14 +156,35 @@ namespace Engine
 				light = active_manager->get_component
 					<LightComponent>(i, COMPONENT_LIGHTING);
 				
-				info->lights[info->countLight].type = light.type;
-				info->lights[info->countLight].ambient = light.ambient;
-				info->lights[info->countLight].diffuse = light.diffuse;
-				info->lights[info->countLight].specular = light.specular;
-				info->countLight++;				
+		
+				info->lights[ind].type = (float) light->type;
+				info->lights[ind].ambient = glm::vec4(light->ambient,1.0f);
+				info->lights[ind].diffuse = glm::vec4(light->diffuse,1.0f);
+				info->lights[ind].specular = glm::vec4(light->specular,1.0f);
+				info->lights[ind].positon = glm::vec4(transform->position,1.0f);
+
+				/******************calculate light matrix*****************************/
+				auto lightPos = transform->position;
+				glm::mat4 lightProjection;
+				glm::mat4 lightView;
+				//temp
+				//these param should be in the light component
+				if (light->type == LightType::parallel)//parallel light
+					lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+				else
+					lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+					//lightProjection = glm::perspective(glm::radians(85.0f), 1.0f, 0.1f, 100.0f);
+				lightView = glm::lookAt(lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+				info->lights[ind].lightSpaceMatrix = lightProjection * lightView;
+				/******************calculate light matrix*****************************/
+
+
+
+				ind++;
+				info->countLight = ind;
 			}
 		}
-		lightBuffer->set_data(0,sizeof(Lightinfo),info);
+		
 	}
 
 

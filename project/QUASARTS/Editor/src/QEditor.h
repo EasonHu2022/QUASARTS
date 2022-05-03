@@ -1,6 +1,5 @@
 #include "QuasartsEngine.h"
 
-
 /*
 	Entry point
 */
@@ -8,6 +7,7 @@
 #include <memory>
 #include <map>
 #include <unordered_map>
+#include "Controller/SceneCameraController.h"
 
 
 class GuiView;
@@ -40,7 +40,7 @@ private:
 	std::unordered_map<size_t, std::shared_ptr<GuiView>> guiViews;
 
 	void poll_input();
-
+	SceneCameraController* cameraController;
 };
 template<class T>
 inline void QEditor::add_gui_view()

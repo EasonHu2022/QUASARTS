@@ -1,10 +1,11 @@
 #pragma once
 #include "Core/IResource.h"
+#include "Core/Core.h"
 #include <string>
 
 namespace Engine
 {
-	class FileResource : public IResource
+	class QS_API FileResource : public IResource
 	{
 	public:
 		std::string textContent;

@@ -23,6 +23,10 @@ project "Editor"
 		"src/*/**.h",
 		"src/*/**.cpp",
 		"**.lua",
+		"../ThirdParty/glm/glm/*.hpp",
+		"../ThirdParty/glm/glm/*.inl",
+		"../ThirdParty/glm/glm/*/*.hpp",
+		"../ThirdParty/glm/glm/*/*.inl",
 	}
 	
 	libdirs
@@ -47,6 +51,7 @@ project "Editor"
 	{
 		"../Engine/src",
 		"../ThirdParty/ImGui",
+		"../ThirdParty/ImGuizmo",
 		"./src",
 		"../ThirdParty/GLFW/include/GLFW",
 		"../ThirdParty/GLFW/include",

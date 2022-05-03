@@ -1,5 +1,6 @@
 #include "Mesh.h"
-#include "Render/Renderer.h"
+#include "glfw3.h"
+#include "glad.h"
 #pragma once
 namespace Engine {
 
@@ -130,7 +131,9 @@ namespace Engine {
 		// Copy vertex data to the vertex buffer.
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-
+		// Bind element buffer and copy vertex indices to it.
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
 
 		// Enable and copy vertex attributes:
 		// "pos"
@@ -155,9 +158,7 @@ namespace Engine {
 
 
 
-		// Bind element buffer and copy vertex indices to it.
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
+		
 
 		// Unbind.
 		glBindVertexArray(0);

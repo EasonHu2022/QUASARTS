@@ -6,17 +6,6 @@ project "Engine"
 	objdir ("%{wks.location}/bin_obj/" .. outputdir .. "/%{prj.name}")
 	
 	
-	postbuildcommands { 
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
-		"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force",
-	}
-	postbuildmessage "copying thirdparty"
-	
 	files
 	{
 		"src/*/**.h",
@@ -24,11 +13,13 @@ project "Engine"
 		"src/**.h",
 		"src/**.cpp",
 		"**.lua",
-		"src/**.vsh",
-		"src/**.fsh",
-		"src/**.gsh",
+		"../Assets/**.vsh",
+		"../Assets/**.fsh",
+		"../Assets/**.gsh",
 		"../ThirdParty/ImGui/*.cpp",
 		"../ThirdParty/ImGui/*.h",
+		"../ThirdParty/ImGuizmo/*.cpp",
+		"../ThirdParty/ImGuizmo/*.h",
 		"../ThirdParty/tiny_obj_loader/*.h",
 		"../ThirdParty/tiny_obj_loader/*.cc",
 		"../ThirdParty/glm/glm/*.hpp",
@@ -39,12 +30,10 @@ project "Engine"
 		"../ThirdParty/GLAD/**.h",
 		"../ThirdParty/lua/**.c",
 		"../ThirdParty/lua/**.h",
+		"../ThirdParty/stb_image/**.h",
+		"../ThirdParty/stb_image/**.cpp",
 	}
-	libdirs
-	{
-		"../ThirdParty/OpenAL/libs/Win32",
-		"../ThirdParty/sndfile/libs/Win32",
-	}
+	
 	links
 	{
 		
@@ -75,6 +64,7 @@ project "Engine"
 		"../ThirdParty/GLAD/include/glad",
 		"../ThirdParty/GLAD/include",
 		"../ThirdParty/ImGui",
+		"../ThirdParty/ImGuizmo",
 		"../ThirdParty/lua/src",
 		"../ThirdParty/sol2/include",
 		"../ThirdParty/Bullet3/Bullet3Collision",
@@ -85,8 +75,50 @@ project "Engine"
 		"../ThirdParty/glm",
 		"../ThirdParty/OpenAL/include",
 		"../ThirdParty/sndfile/include",
+		"../ThirdParty/stb_image",
 
 	}
+	
+	
+	
+	filter "system:windows"
+		postbuildcommands {
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/OpenAL/libs/Win32/OpenAL32.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbisenc.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/FLAC.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/ogg.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/opus.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/vorbis.dll' '"..dir.."/Engine/'".." -recurse -Force",
+			"powershell Copy-Item '"..rootdir.."/ThirdParty/sndfile/libs/Win32/sndfile.dll' '"..dir.."/Engine/'".." -recurse -Force",
+		}
+		postbuildmessage "copying thirdparty"
+
+	filter "system:linux"
+		postbuildcommands {
+			"cp -rf '"..rootdir.."/ThirdParty/OpenAL/libs/Linux/openal.so' '"..dir.."/Engine/openal.so'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbisenc.a' '"..dir.."/Engine/vorbisenc.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/FLAC.a' '"..dir.."/Engine/FLAC.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/ogg.a' '"..dir.."/Engine/ogg.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/opus.a' '"..dir.."/Engine/opus.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbis.a' '"..dir.."/Engine/vorbis.a'",
+			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/sndfile.a' '"..dir.."/Engine/sndfile.a'"
+		}
+		postbuildmessage "copying thirdparty"
+	
+	
+	filter "system:windows"
+		libdirs
+		{
+			"../ThirdParty/OpenAL/libs/Win32",
+			"../ThirdParty/sndfile/libs/Win32",
+		}
+	filter "system:linux"
+		libdirs
+		{
+			"../ThirdParty/OpenAL/libs/Linux",
+			"../ThirdParty/sndfile/libs/Linux",
+		}
+	
 
 	filter "system:windows"
 		system "Windows"

@@ -67,6 +67,9 @@ namespace Engine {
         scene->parents.push_back(TOO_MANY_ENTITIES);
         scene->children.push_back({});
 
+        // Add a transform Component to the Entity:
+        create_component<TransformComponent>(entityID, COMPONENT_TRANSFORM);
+
         return entityID;
     }
 
@@ -94,8 +97,8 @@ namespace Engine {
         }
 
         // Change the entity mask in all Systems:
-        for (int i = 0; i < systems.size(); i++) {
-            systems[i]->clear_entity(entityID);
+        for (const auto &[key, val] : systems) {
+            val->clear_entity(entityID);
         }
 
         // Remove the Entity from the manager:
@@ -165,7 +168,7 @@ namespace Engine {
     // Get a pointer to an Entity:
     Entity *ECSManager::get_entity(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
-        if (index == TOO_MANY_ENTITIES) { return NULL; }
+        if (index == TOO_MANY_ENTITIES) { return nullptr; }
         return &(scene->entities[index]);
     }
 
@@ -300,23 +303,284 @@ namespace Engine {
         current_entity = entityID;
     }
 
+    // Create the scene camera:
+    void ECSManager::create_camera() {
+        // Create the camera:
+        unsigned int cameraID = get_free_entity_ID();
+        if (cameraID == TOO_MANY_ENTITIES) {
+            std::cerr << "Function ECSManager::create_camera(): Warning: \
+                            unable to create new entity. Maximum number of \
+                            entities reached." << std::endl;
+            return;
+        }
+        scene->create_camera(cameraID);
+
+        // Update each System:
+        unsigned int index = get_index_from_ID(cameraID);
+        for (const auto &[key, val] : systems) {
+            val->test_entity(this, cameraID, scene->entities[index].get_componentMask());
+        }
+    }
+
+    // Get the scene camera:
+    unsigned int ECSManager::get_camera() {
+        return scene->camera;
+    }
+
+    // Set the scene camera:
+    void ECSManager::set_camera(unsigned int cameraID) {
+        scene->camera = cameraID;
+    }
+
     // Get the name of the current scene:
     std::string ECSManager::get_scene_name() {
         return scene->name;
     }
 
-    // Set the pointer to the current scene:
-    void ECSManager::set_scene(Scene *scene_ptr) {
-        scene = scene_ptr;
+    // Set the name of the scene:
+    void ECSManager::set_scene_name(std::string name) {
+        scene->name = name;
+    }
+
+    // Create new blank scene:
+    void ECSManager::new_scene() {
+        // Clear the scene data:
+        scene->clear_data();
+
+        // Clear the System entity masks:
+        for (const auto &[key, val] : systems) {
+            val->clear_all_entity_masks();
+        }
+    }
+
+    // Create new blank scene with a name:
+    void ECSManager::new_scene(std::string name) {
+        // Clear the scene data:
+        scene->clear_data();
+
+        // Clear the System entity masks:
+        for (const auto &[key, val] : systems) {
+            val->clear_all_entity_masks();
+        }
+
+        // Set the scene name:
+        scene->name = name;
     }
 
     // Save the whole scene to file:
     bool ECSManager::save_scene(char *filename) {
+        std::ofstream sceneFile(filename);
+        // Check if the file is open:
+        if (!(sceneFile.good())) {
+            std::cerr << "Function ECSManager::save_scene: Warning: Cannot \
+                                                    open file for writing!";
+            return false;
+        }
+
+        // Write the header:
+        sceneFile << "# Quasarts Orbit Engine Scene" << std::endl;
+        sceneFile << "# N = Name" << std::endl;
+        sceneFile << "# E = Entity (followed by ID, a flag to indicate scene camera, and name)" << std::endl;
+        sceneFile << "# C = Component (followed by Component type, Entity ID and data)" << std::endl;
+        sceneFile << "# P = Parent-child (entity ID of parent, then a list of children)" << std::endl;
+
+        // Write the scene data. Start with the name:
+        sceneFile << "N " << scene->name << std::endl;
+
+        // Entities with their IDs and names:
+        for (int i = 0; i < scene->entities.size(); i++) {
+            sceneFile << "E " << scene->entities[i].get_entityID() << " ";
+            // Check if the Entity is the scene camera:
+            if (get_camera() == scene->entities[i].get_entityID()) {
+                sceneFile << 1 << " ";
+            } else {
+                sceneFile << 0 << " ";
+            }
+                sceneFile << scene->entities[i].get_name() << std::endl;
+        }
+
+        // Components:
+        for (int i = 0; i < scene->entities.size(); i++) {
+            unsigned int entityID = scene->entities[i].get_entityID();
+            // Cycle through component types:
+            if (has_component(entityID, COMPONENT_TRANSFORM) == true) {
+                sceneFile << "C " << entityID << " ";
+                TransformComponent *transform = get_component<TransformComponent>
+                                                (entityID, COMPONENT_TRANSFORM);
+                sceneFile << COMPONENT_TRANSFORM << " " << *transform << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_MESH) == true) {
+                sceneFile << "C " << entityID << " ";
+                MeshComponent *mesh = get_component<MeshComponent>
+                                                (entityID, COMPONENT_MESH);
+                sceneFile << COMPONENT_MESH << " " << *mesh << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_COLLISION_SPHERE) == true) {
+                sceneFile << "C " << entityID << " ";
+                CollisionSphereComponent *collisionSphere = get_component<CollisionSphereComponent>
+                                                (entityID, COMPONENT_COLLISION_SPHERE);
+                sceneFile << COMPONENT_COLLISION_SPHERE << " " << *collisionSphere << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_MATERIAL) == true) {
+                sceneFile << "C " << entityID << " ";
+                MaterialComponent *material = get_component<MaterialComponent>
+                                                (entityID, COMPONENT_MATERIAL);
+                sceneFile << COMPONENT_MATERIAL << " " << *material << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_LIGHTING) == true) {
+                sceneFile << "C " << entityID << " ";
+                LightComponent *light = get_component<LightComponent>
+                                                (entityID, COMPONENT_LIGHTING);
+                sceneFile << COMPONENT_LIGHTING << " " << *light << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_SCRIPT) == true) {
+                sceneFile << "C " << entityID << " ";
+                ScriptComponent *script = get_component<ScriptComponent>
+                                                (entityID, COMPONENT_SCRIPT);
+                sceneFile << COMPONENT_SCRIPT << " " << *script << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_CAMERA) == true) {
+                sceneFile << "C " << entityID << " ";
+                CameraComponent *camera = get_component<CameraComponent>
+                                                (entityID, COMPONENT_CAMERA);
+                sceneFile << COMPONENT_CAMERA << " " << *camera << std::endl;
+            }
+        }
+
+        // Parent-child relationships:
+        for (int i = 0; i < scene->parents.size(); i++) {
+            if (scene->parents[i] == TOO_MANY_ENTITIES) { continue; }
+            sceneFile << "P " << scene->parents[i];
+            std::set<unsigned int>::iterator iter;
+            for (iter = scene->children[scene->parents[i]].begin();
+                    iter != scene->children[scene->parents[i]].end(); iter++) {
+                sceneFile << " " << *iter;
+            }
+            sceneFile << std::endl;
+        }
+
         return true;
     }
 
     // Load a scene from file:
     bool ECSManager::load_scene(char *filename) {
+        // This will load the contents of the file into a new Scene object.
+        std::ifstream sceneFile(filename);
+        // Check if the file is open:
+        if (!(sceneFile.good())) {
+            std::cerr << "Function ECSManager::load_scene: Warning: Cannot \
+                                                    open file for reading!";
+            return false;
+        }
+
+        // Clear the scene data:
+        scene->clear_data();
+
+        // Clear the System entity masks:
+        for (const auto &[key, val] : systems) {
+            val->clear_all_entity_masks();
+        }
+
+        // Create a buffer for reading in lines:
+        char lineBuffer[MAX_SCENE_LINE_LENGTH];
+
+        // Begin reading the file:
+        while (true) {
+            // Read the line and check for EOF:
+            sceneFile.getline(lineBuffer, MAX_SCENE_LINE_LENGTH);
+            std::string line = std::string(lineBuffer);
+            if (sceneFile.eof()) { break; }
+
+            // Test first character:
+            // COMMENT //
+            if (line[0] == '#') {
+                continue;
+            // NAME //
+            } else if (line[0] == 'N') {
+                scene->name = line.substr(2, line.length());
+            // ENTITY //
+            } else if (line[0] == 'E') {
+                std::stringstream parser(line.substr(2, line.length()));
+                unsigned int entityID;
+                unsigned int cameraFlag;
+                std::string name;
+                std::string tmp;
+                parser >> entityID;
+                parser >> cameraFlag;
+                parser >> name;
+                while (parser >> tmp) {
+                    name = name + " " + tmp;
+                }
+                if (cameraFlag == 1) {
+                    // This is the camera:
+                    set_camera(entityID);
+                }
+                Entity new_entity = Entity(entityID);
+                new_entity.set_name(name);
+                scene->entities.push_back(new_entity);
+                scene->entity_ID_match.push_back(entityID);
+                scene->entity_IDs.mask[entityID] = 1;
+                scene->parents.push_back(TOO_MANY_ENTITIES);
+                scene->children.push_back({});
+            // COMPONENT //
+            } else if (line[0] == 'C') {
+                unsigned int entityID;
+                unsigned int componentType;
+                std::stringstream parser(line.substr(2, line.length()));
+                parser >> entityID;
+                parser >> componentType;
+                // Separate code for each component type:
+                if (componentType == COMPONENT_TRANSFORM) {
+                    TransformComponent transform{};
+                    parser >> transform;
+                    create_component(entityID, componentType, transform);
+                } else if (componentType == COMPONENT_MESH) {
+                    MeshComponent mesh{};
+                    parser >> mesh;
+                    create_component(entityID, componentType, mesh);
+                } else if (componentType == COMPONENT_COLLISION_SPHERE) {
+                    CollisionSphereComponent collisionSphere{};
+                    parser >> collisionSphere;
+                    create_component(entityID, componentType, collisionSphere);
+                } else if (componentType == COMPONENT_MATERIAL) {
+                    MaterialComponent material{};
+                    parser >> material;
+                    create_component(entityID, componentType, material);
+                } else if (componentType == COMPONENT_LIGHTING) {
+                    LightComponent light{};
+                    parser >> light;
+                    create_component(entityID, componentType, light);
+                } else if (componentType == COMPONENT_SCRIPT) {
+                    ScriptComponent script{};
+                    parser >> script;
+                    create_component(entityID, componentType, script);
+                } else if (componentType == COMPONENT_CAMERA) {
+                    CameraComponent camera{};
+                    parser >> camera;
+                    create_component(entityID, componentType, camera);
+                }
+            // PARENT-CHILD //
+            } else if (line[0] == 'P') {
+                std::stringstream parser(line.substr(2, line.length()));
+                unsigned int parent;
+                unsigned int child;
+                parser >> parent;
+                while (parser >> child) {
+                    scene->parents[child] = parent;
+                    scene->children[parent].emplace(child);
+                }
+            }
+        }
+
+        // Update all the Systems:
+        unsigned int index;
+        for (int i = 0; i < scene->entities.size(); i++) {
+            index = get_index_from_ID(scene->entity_ID_match[i]);
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, scene->entity_ID_match[i], scene->entities[index].get_componentMask());
+            }
+        }
+
         return true;
     }
 

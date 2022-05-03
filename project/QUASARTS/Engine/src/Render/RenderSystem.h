@@ -2,7 +2,7 @@
 #include "ECS/System/System.h"
 #include "Render/RenderQueue.h"
 #include "Core/Core.h"
-#include "Render/UniformBufferObject.h"
+
 namespace Engine
 {
 	class QS_API RenderSystem : public System
@@ -11,9 +11,7 @@ namespace Engine
 		RenderSystem() ;
 		~RenderSystem() {};
 	
-	private:
-		UniformBufferObject* matricesBuffer;
-		UniformBufferObject* lightBuffer;
+	
 
 	public:
 		void init() override;

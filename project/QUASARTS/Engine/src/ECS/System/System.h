@@ -46,6 +46,13 @@ namespace Engine {
             }
         }
 
+        // Function to clear all entity masks:
+        void clear_all_entity_masks() {
+            for (int i = 0; i < entity_masks.size(); i++) {
+                clear_entity_mask(i);
+            }
+        }
+
         // Function to clear a specific entity from all masks:
         void clear_entity(unsigned int entityID) {
             for (int i = 0; i < component_masks.size(); i++) {

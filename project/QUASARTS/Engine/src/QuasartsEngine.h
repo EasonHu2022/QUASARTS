@@ -18,7 +18,7 @@
 /*
 	Renderer
 */
-#include "Render/Renderer.h"
+
 #include "Logger/LogModule.h"
 #include "Gui/GuiWrapper.h"
 
@@ -27,6 +27,7 @@
 */
 
 #include "ResourceManager/FileModule.h"
+#include "ResourceManager/FileResource.h"
 #include "ResourceManager/ModelResource.h"
 #include "ResourceManager/ResourceManager.h"
 
@@ -36,17 +37,15 @@
 #include "Core/EntityWorld.h"
 #include "ECS/ECSManager.h"
 
-
 /*
 	Scripts
 */
-//#include "Scripts/ScriptsSystem.h"
 #include "ECS/System/ScriptSystem.h"
 
 /*
 	Audio
 */
-#include "Audio/AudioSystem.h"
+#include "ECS/System/AudioSystem.h"
 
 
 /*

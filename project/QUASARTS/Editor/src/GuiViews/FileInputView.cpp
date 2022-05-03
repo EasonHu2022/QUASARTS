@@ -1,8 +1,16 @@
 #pragma once
 #include "GuiViews/FileInputView.h"
+#include "GuiViews/TextEditor.h"
+#include "QuasartsEngine.h"
+#include <iostream>
+#include <fstream>
 
 void FileInputView::on_add()
 {
+    bool text_edit = false;
+    TextEditor editor;
+    std::string filePath = "";
+    std::string fileText = "";
     QDEBUG("on add view : FileInput");
 }
 
@@ -42,7 +50,10 @@ void FileInputView::on_gui()
 
                 for (auto const& dir_entry : std::filesystem::directory_iterator{ tempAssetsPath })
                 {
-                    assetsFiles.push_back(dir_entry);
+                    if(i == 0 && dir_entry.path().extension().compare(".obj") == 0)
+                        assetsFiles.push_back(dir_entry);
+                    if (i == 1 && dir_entry.path().extension().compare(".lua") == 0)
+                        assetsFiles.push_back(dir_entry);
                 }
 
                 ImGuiTreeNodeFlags node_flags = base_flags;
@@ -56,27 +67,62 @@ void FileInputView::on_gui()
                     node_clicked = i;
                 if (node_open) {
                     static int selected = -1;
-                    for (int i = 0; i < assetsFiles.size(); i++)
+                    for (int j = 0; j < assetsFiles.size(); j++)
                     {
-                        if (ImGui::Selectable(assetsFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
+                        if (ImGui::Selectable(assetsFiles[j].path().filename().string().c_str(), selected == j, ImGuiSelectableFlags_AllowDoubleClick)) {
 
                             if (ImGui::IsMouseDoubleClicked(0)) {
-                                //std::cout << assetsFiles[i].path().string().c_str() << std::endl;
-                               /* std::unordered_map<std::string, std::shared_ptr<Engine::Mesh>> meshes{};
-                                Engine::Application::Instance -> loaderFactory->load(assetsFiles[i].path().string().c_str(), meshes);
-                                auto model = new Engine::ModelResource();
-                                auto ent = new Engine::AttributeVector();
-                                ent->attributes[0].x = 0;
-                                ent->attributes[0].y = 0;
-                                ent->attributes[0].z = 0;
-                                ent->attributes[1].x = 0;
-                                ent->attributes[1].y = 0;
-                                ent->attributes[1].z = 0;
-                                model->meshes = meshes;
-                                model->name = assetsFiles[i].path().filename().string().c_str();
-                                Engine::Application::Instance->entityWorld->add_entity(model);
-                                Engine::Application::Instance->miniecs->add_entity(ent);*/
+                                if (i == 0) {
+                                    unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                                    Engine::ECSManager::Instance()->set_entityName(entityID, "object");
+                                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                                    Engine::TransformComponent transform;
+                                    transform.position = { 0.0f,0.0f, 0.0f };
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
 
+
+                                    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
+                                    Engine::MeshComponent mesh;
+                                    mesh.path = assetsFiles[j].path().string();
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
+
+                                    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
+
+                                    Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+
+                                    auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+                                    //init
+                                    script->entity_id = entityID;
+                                    Engine::ScriptSystem::Instance()->setComponentPath(script);
+                                    Engine::ScriptSystem::Instance()->setScriptState(script);
+                                    Engine::ScriptSystem::Instance()->addScriptComponent(script);
+                                    
+                                    
+                                    Engine::MaterialComponent material;
+                                    //material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
+                                    //material.material = new Engine::Material("F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
+                                    //material.material = new Engine::Material("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.vsh", "D:\\Q6\\QUASARTS\\project\\QUASARTS\\Engine\\src\\Shader\\DefaultShader.fsh");
+                                    std::string vshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\DefaultShader.vsh";
+                                    std::string fshPath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Shader\\DefaultShader.fsh";
+                                    std::string gshPth = "";
+                                    std::string texturePath = "F:\\WorkSpace\\QSEngine\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\floor.jpg";
+                                    material.material = new Engine::Material(vshPath, fshPath,gshPth,texturePath);                                  
+                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
+
+                                }
+                                else if (i == 1) 
+                                {
+                                    if (size_t idk; Engine::ResourceManager::Instance()->load_resource(assetsFiles[j].path().string().c_str(), &idk))
+                                    {
+                                        auto luaFile = Engine::ResourceManager::Instance()->get_resource<Engine::FileResource>(idk);
+                                        QDEBUG("Load File - {0}", luaFile->path);
+                                        text_edit = true;
+                                        filePath = luaFile->path;
+                                        fileText = luaFile->textContent;
+                                        QDEBUG("Current Text: {0}", fileText);
+                                        editor.SetText(fileText);
+                                    }
+                                }
                             }
                                 
                         }
@@ -85,62 +131,48 @@ void FileInputView::on_gui()
                 }
 
             }
-            if (node_clicked != -1)
-            {
-                // Update selection state
-                // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
-                if (ImGui::GetIO().KeyCtrl)
-                    selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-                else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
-                    selection_mask = (1 << node_clicked);           // Click to single-select
-            }
             ImGui::TreePop();
         }
 
-        /*if (ImGui::TreeNode("ProjectSetting"))
-        {
-            std::string projectSettingPath = "D:\\Q2\\QUASARTS\\testing_input\\ProjectSetting";
-            std::vector<std::filesystem::directory_entry> projectSettingFiles;
-            for (auto const& dir_entry : std::filesystem::directory_iterator{ projectSettingPath })
-            {
-                projectSettingFiles.push_back(dir_entry);
-            }
-            static int selected = -1;
-            for (int i = 0; i < projectSettingFiles.size(); i++)
-            {
-                if (ImGui::Selectable(projectSettingFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
-
-                    if (ImGui::IsMouseDoubleClicked(0))
-                        std::cout << projectSettingFiles[i].path().string() << '\n';
-                }
-            }
-
-            ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Release"))
-        {
-            std::string releasePath = "D:\\Q2\\QUASARTS\\testing_input\\Release";
-            std::vector<std::filesystem::directory_entry> releaseFiles;
-            for (auto const& dir_entry : std::filesystem::directory_iterator{ releasePath })
-            {
-                releaseFiles.push_back(dir_entry);
-            }
-            static int selected = -1;
-            for (int i = 0; i < releaseFiles.size(); i++)
-            {
-                if (ImGui::Selectable(releaseFiles[i].path().filename().string().c_str(), selected == i, ImGuiSelectableFlags_AllowDoubleClick)) {
-
-                    if (ImGui::IsMouseDoubleClicked(0))
-                        std::cout << releaseFiles[i].path().string() << '\n';
-                }
-            }
-
-            ImGui::TreePop();
-        }*/
+        if (text_edit)
+            show_text();
 
         ImGui::End();
     
+    }
+}
+
+void FileInputView::show_text()
+{
+    if (text_edit == true) {
+
+        ImGui::SetNextWindowSize(ImVec2(750, 750));
+        ImGui::Begin(filePath.c_str(), 0);
+
+        editor.SetShowWhitespaces(false);
+        editor.SetReadOnly(false);
+        editor.SetPalette(TextEditor::GetDarkPalette());
+        editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+        editor.Render("##EditorWindow", ImVec2(700, 650));
+
+        ImGui::SameLine(ImGui::GetWindowWidth() - 59);
+        if (ImGui::Button("Cancel")) {
+            QDEBUG("File Closed: {0}", filePath.c_str());
+            filePath = "";
+            fileText = "";
+            auto luaFile = NULL;
+            text_edit = false;
+            QDEBUG("Current Text: {0}", fileText);
+        }
+        if (ImGui::Button("Save")) {
+            std::ofstream saveFile(filePath.c_str());
+            saveFile << editor.GetText();
+            saveFile.close();
+            QDEBUG("File Saved: {0}", filePath.c_str());
+            QDEBUG("Current Text: {0}", editor.GetText());
+        }
+
+        ImGui::End();
     }
 }
 

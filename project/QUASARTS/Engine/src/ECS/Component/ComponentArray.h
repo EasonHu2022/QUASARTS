@@ -47,6 +47,9 @@ namespace Engine {
         // Remove the entry for an Entity from the array:
         virtual void remove_entity(unsigned int entityID) = 0;
 
+        // Clear all component array data:
+        virtual void clear_component_data() = 0;
+
         // Print out the state of the component array for debugging:
         virtual void print_state() = 0;
     };
@@ -60,16 +63,15 @@ namespace Engine {
         }
 
         // Get a data element from the array:
-        T get_data(unsigned int entityID) {
+        T *get_data(unsigned int entityID) {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
                 std::cerr << "Function ComponentArray::get_data(): Warning: \
                             Entity " << entityID << " not found!" << std::endl;
-                T result{};
-                return result;
+                return nullptr;
             }
-            return componentData[index];
+            return &(componentData[index]);
         }
 
         // Add data (zero initialized) to the component array:
@@ -163,6 +165,11 @@ namespace Engine {
         // Remove the entry for an Entity from the array:
         virtual void remove_entity(unsigned int entityID) override {
             remove_data(entityID);
+        }
+
+        // Clear all component array data:
+        virtual void clear_component_data() {
+            num_entries = 0;
         }
 
         // Print out the state of the component array for debugging:

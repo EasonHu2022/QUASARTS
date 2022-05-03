@@ -49,6 +49,65 @@ namespace Engine {
             }
         }
 
+        // Create scene camera:
+        void create_camera(unsigned int cameraID) {
+            // Create a new Entity with a name:
+            Entity camera_entity = Entity(cameraID);
+            camera_entity.set_name("Camera");
+
+            // Add relevant Components to the camera:
+            TransformComponent transform;
+            transform.position = { 0.0f, 1.0f, 5.0f };
+            transform.rotation = { 0.0f,-90.0, 0.0f };
+            camera_entity.add_component_type(COMPONENT_CAMERA);
+            camera_entity.add_component_type(COMPONENT_TRANSFORM);
+
+            // Add the data to the relevant Component arrays:
+            ComponentArray<CameraComponent> *cameraCompArray =
+                                (ComponentArray<CameraComponent> *)componentArrays[COMPONENT_CAMERA];
+            cameraCompArray->add_data(cameraID);
+            ComponentArray<TransformComponent> *transformCompArray =
+                                (ComponentArray<TransformComponent> *)componentArrays[COMPONENT_TRANSFORM];
+            transformCompArray->add_data(cameraID, transform);
+
+            // Update scene data:
+            camera = cameraID;
+            entities.push_back(camera_entity);
+            entity_ID_match.push_back(cameraID);
+            entity_IDs.mask[cameraID] = 1;
+            parents.push_back(TOO_MANY_ENTITIES);
+            children.push_back({});
+        }
+
+        void clear_data() {
+            // Clear Component array data:
+            for (int i = 0; i < componentArrays.size(); i++) {
+                componentArrays[i]->clear_component_data();
+            }
+
+            // Reset name:
+            name = "Default Scene";
+
+            // Clear Entity data:
+            entities.clear();
+            entity_ID_match.clear();
+
+            // Clear Entity groups:
+            entity_groups.clear();
+
+            // Clear Entity ID mask:
+            for (int i = 0; i < MAX_ENTITIES; i++) {
+                entity_IDs.mask[i] = 0;
+            }
+
+            // Clear parent-child relationships:
+            children.clear();
+            parents.clear();
+
+            // Reset the camera Entity:
+            camera = TOO_MANY_ENTITIES;
+        }
+
         private:
         // Scene name:
         std::string name;
@@ -70,10 +129,7 @@ namespace Engine {
         std::vector<std::set<unsigned int>> children;
         std::vector<unsigned int> parents;
 
-
-    private:
-        unsigned int camera = -1;
-    public:
-        int get_camera() { return this->camera; }
+        // Scene camera:
+        unsigned int camera = TOO_MANY_ENTITIES;
     };
 }

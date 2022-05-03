@@ -5,6 +5,7 @@
 #include <set>
 #include <map>
 #include <iostream>
+#include <sstream>
 
 // Local includes:
 #include "Core/Core.h"
@@ -20,11 +21,17 @@ namespace Engine {
         private:
         // Singleton:
         static ECSManager *instance;
-        ECSManager() { current_entity = TOO_MANY_ENTITIES; }
+        ECSManager() {
+            scene = new Scene();
+            create_camera();
+            current_entity = TOO_MANY_ENTITIES;
+        }
 
         public:
         static ECSManager *Instance();
-        ~ECSManager();
+        ~ECSManager() {
+            delete scene;
+        }
 
         // Functions inherited from IManager:
         void init();
@@ -61,8 +68,8 @@ namespace Engine {
             scene->entities[index].add_component_type(componentType);
 
             // Update each System:
-            for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
             // Add the data to the relevant component array:
@@ -84,8 +91,8 @@ namespace Engine {
             scene->entities[index].add_component_type(componentType);
 
             // Update each System:
-            for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
             // Add the data to the relevant component array:
@@ -121,7 +128,7 @@ namespace Engine {
 
         // Get a Component from the Component array:
         template <typename T>
-        T get_component(unsigned int entityID, unsigned int componentType) {
+        T *get_component(unsigned int entityID, unsigned int componentType) {
                 ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
                 return compArray->get_data(entityID);
         }
@@ -147,9 +154,10 @@ namespace Engine {
             scene->entities[index].remove_component_type(componentType);
 
             // Update each System:
-            for (int i = 0; i < systems.size(); i++) {
-                systems[i]->test_entity(this, entityID, scene->entities[index].get_componentMask());
+            for (const auto &[key, val] : systems) {
+                val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
+
             // Remove the data from the relevant component array:
             ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->remove_data(entityID);
@@ -212,11 +220,26 @@ namespace Engine {
         // Set the current Entity ID:
         void set_current_entity(unsigned int entityID);
 
-        // Get the name of the current scene:
+        // Create the scene camera:
+        void create_camera();
+
+        // Get the scene camera:
+        unsigned int get_camera();
+
+        // Set the scene camera:
+        void set_camera(unsigned int cameraID);
+
+        // Get the name of the scene:
         std::string get_scene_name();
 
-        // Set the pointer to the current scene:
-        void set_scene(Scene *scene_ptr);
+        // Set the name of the scene:
+        void set_scene_name(std::string name);
+
+        // Create new blank scene:
+        void new_scene();
+
+        // Create new blank scene with a name:
+        void new_scene(std::string name);
 
         // Save the whole scene to file:
         bool save_scene(char *filename);

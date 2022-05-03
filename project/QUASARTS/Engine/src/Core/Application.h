@@ -4,6 +4,7 @@
 #include "Window/Window.h"
 #include "Gui/GuiWrapper.h"
 #include "imgui.h"
+#include "ImGuizmo.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "Event/EventModule.h"
@@ -11,7 +12,10 @@
 #include "Core/miniECS.h"
 #include "ECS/ECSManager.h"
 #include "Render/RenderSystem.h"
-
+#include "Render/RenderContext.h"
+#include "Render/MeshRenderer.h"
+#include "Render/ShadowRenderer.h"
+#include "Render/SkyboxRenderer.h"
 #include "Core/Input.h"
 
 namespace Engine
@@ -30,6 +34,12 @@ namespace Engine
 		miniECS* miniecs;
 		Scene* scene;
 		RenderSystem* renderSystem;
+		
+		/*******render*********/
+		RenderContext* renderContext;
+		MeshRenderer* meshRenderer;
+		ShadowRenderer* shadowRenderer;
+		SkyBoxRenderer* skyboxRenderer;
 
 	public:
 		Window* get_window() { return m_window; }

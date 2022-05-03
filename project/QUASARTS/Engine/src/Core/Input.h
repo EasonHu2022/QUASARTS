@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Event/KeyCodes.h"
 #include "Event/EventModule.h"
+#include "glm/glm.hpp"
 #define MAX_KEYS	1024
 #define MAX_BUTTONS	32
 
@@ -84,6 +85,14 @@ namespace Engine
 		void EV_CALLBACK_SIGNATURE(KeyReleased);
 		void EV_CALLBACK_SIGNATURE(MouseButtonPressed);
 		void EV_CALLBACK_SIGNATURE(MouseButtonReleased);
+		void EV_CALLBACK_SIGNATURE(MouseMoved);
+		void EV_CALLBACK_SIGNATURE(Scrolled);
+
+		static glm::vec2 mousePosition;
+
+		static glm::vec2 mouseMotion;
+
+		static bool mouseMoving;
 
 	private:
 		static bool keyPressed[MAX_KEYS];
@@ -103,6 +112,7 @@ namespace Engine
 
 		static int numButtonsHeld;
 
+		
 
 	};
 };

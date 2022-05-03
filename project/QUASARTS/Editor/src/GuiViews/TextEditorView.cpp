@@ -1,25 +1,32 @@
-#include "MenuBarView.h"
 #include <iostream>
+#include <cstring>
 // Decide OS
-#include "TextEditorView.h"
-#include "TextEditor.h"
+#include "GuiViews/TextEditorView.h"
+#include "GuiViews/TextEditor.h"
 
 void TextEditorView::on_add()
 {
+    text_edit = false;
 	QDEBUG("on add view : MenuBar");
+    QDEBUG("on add view : TextEditorView");
 }
 
 void TextEditorView::on_gui()
 {
-	if (FileModule::Instance()->get_root() != NULL) {
-
-
+    /*if (FileModule::Instance()->get_root() != NULL) {
 	
         ImGui::SetNextWindowPos(ImVec2(window->get_width()*0.15625, 48));
-        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.7+18, window->get_height()*0.7+11));
-        ImGui::Begin("Script Editor", NULL, ImGuiWindowFlags_NoTitleBar);
+        ImGui::SetNextWindowSize(ImVec2(window->get_width()*0.5+18, window->get_height()*0.5+11));
+        ImGui::Begin("Script Editor", NULL);
 
         static TextEditor editor;
+
+        std::ifstream t("C://Users//alexc//Documents//Graphics//Project//EngineGenerates//Test_25_04_17//Assets//Resources//cube.obj");
+        if (t.good())
+        {
+            std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+            editor.SetText(str);
+        }
 
         editor.SetShowWhitespaces(false);
         editor.SetReadOnly(false);
@@ -29,7 +36,12 @@ void TextEditorView::on_gui()
 
         ImGui::End();
 	
-	}
+	}*/
+}
+
+void TextEditorView::edit_text(bool value)
+{
+    text_edit = value;
 }
 
 void TextEditorView::on_remove()

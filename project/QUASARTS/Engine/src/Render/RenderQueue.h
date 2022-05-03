@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "Shader.h"
+#include "Texture2D.h"
 class pack
 {
 public:
@@ -11,7 +12,7 @@ public:
 	uint32_t _VAO = -1;
 	uint32_t size = 0;
 	Engine::Shader *shader_program = NULL;
-	uint32_t tex = -1;
+	Engine::Texture2D* texture2d = NULL;
 	glm::mat4 model = glm::mat4(1.0f);
 	
 

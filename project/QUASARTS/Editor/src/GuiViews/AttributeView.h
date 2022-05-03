@@ -14,4 +14,12 @@ public:
 
 	bool game = false;
 
+private:
+	void show_transform();
+	void show_mesh();
+	void show_collision_sphere();
+	void show_material();
+	void show_lighting();
+	void show_script();
+
 };

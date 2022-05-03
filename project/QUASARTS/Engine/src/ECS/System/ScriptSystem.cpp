@@ -25,6 +25,7 @@ namespace Engine {
 	void ScriptSystem::init()
 	{
 		createState();
+		script_components.clear();
 
 		//add script component mask
 		quasarts_component_mask temp;
@@ -56,14 +57,13 @@ namespace Engine {
 		//get entity mask
 		quasarts_entity_ID_mask* ent = get_entity_ID_mask(0);
 
-		ScriptComponent script;
+		ScriptComponent *script;
 		for (int i = 0; i < MAX_ENTITIES; i++)
 		{
 			if (ent->mask[i] == 1)
 			{
 				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
-
-				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, script);
+				mgr->replace_component<ScriptComponent>(i, COMPONENT_SCRIPT, *script);
 			}
 		}
 
@@ -83,11 +83,6 @@ namespace Engine {
 	/// </summary>
 	void ScriptSystem::release()
 	{
-		if (script_component)
-		{
-			delete script_component;
-			script_component = nullptr;
-		}
 
 	}
 
@@ -100,8 +95,6 @@ namespace Engine {
 			lua_state->open_libraries();  //get all libraries
 			ScriptsExporter::exportScripts(*lua_state);
 		}
-
-		script_component = new ScriptComponent();
 	}
 
 	void ScriptSystem::destroyState()
@@ -124,7 +117,8 @@ namespace Engine {
 			QDEBUG("created and added the script: {0}.lua , the path is {1}", script_name, script_path);
 		}
 		ofs << "--Update the script here\n"
-			"function onUpdate()\n"
+			"-- thiz: current entity id\n"
+			"function onUpdate(thiz)\n"
 			"end" << std::endl;
 		ofs.close();
 
@@ -132,13 +126,21 @@ namespace Engine {
 
 	void ScriptSystem::loadScript(const std::string& path)
 	{
-		script_component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
+		//script_component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
 	}
 
-	void ScriptSystem::loadScript(const std::string& path, ScriptComponent* component)
+	void ScriptSystem::loadScripts()
 	{
-		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(path));
-		//script_component = component;
+		for (auto sc : script_components)
+		{
+			lua_state->script_file(sc->script_path);
+		}
+	}
+
+	void ScriptSystem::setScriptState(ScriptComponent* component)
+	{
+		component->L = std::make_shared<sol::protected_function_result>(lua_state->script_file(component->script_path));
+		importFunc(component);
 	}
 
 	void ScriptSystem::reloadScript()
@@ -168,29 +170,70 @@ namespace Engine {
 		}
 
 	}
-	void ScriptSystem::importFunc()
+	void ScriptSystem::deleteAllScripts()
 	{
-		if (!is_imported)
+		for (auto& sc : script_components)
 		{
-			script_component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
-			is_imported = true;
+			if (std::remove(sc->script_path.c_str()) == 0);
+			QDEBUG("Deleted the file: {0}", sc->script_path);
 		}
 	}
-
-	void ScriptSystem::onUpdate()
+	void ScriptSystem::refreshScript()
 	{
-		if (script_component->update_function)
-		{
-			(*(script_component->update_function))();
-		}
+		destroyState();
+		createState();
+	}
+	void ScriptSystem::importFunc()
+	{
+		//if (!is_imported)
+		//{
+			//script_component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+			//is_imported = true;
+		//}		
 	}
 
 	void ScriptSystem::importFunc(ScriptComponent* component)
 	{
-		if (!is_imported)
-		{
+		//if (!is_imported)
+		//{
 			component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
-			is_imported = true;
+			//is_imported = true;
+		//}
+	}
+
+	void ScriptSystem::onUpdate()
+	{
+		//if (script_component->update_function)
+		//{
+		//	(*(script_component->update_function))();
+		//}
+
+		//if (Engine::ECSManager::Instance()->get_current_entity() == 1)
+		//{
+		//	Engine::ScriptComponent* sc = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_SCRIPT);
+		//	if (sc->update_function)
+		//	{
+		//		(*(sc->update_function))();
+		//	}
+		//}
+
+		//loop all
+		for (auto sc : script_components)
+		{
+			if (sc->update_function)
+			{
+				(*(sc->update_function))(sc->entity_id);
+			}
+		}
+
+
+	}
+
+	void ScriptSystem::onUpdate(ScriptComponent* component)
+	{
+		if (component->update_function)
+		{
+			(*(component->update_function))();
 		}
 	}
 
@@ -200,9 +243,12 @@ namespace Engine {
 		{
 			return script_path;
 		}
+		//temp
+		else {
 
+			return ".\\Assets\\Scripts\\test.lua";
+		}
 		//QWARN("failed to get the script path");
-		return ".\\Assets\\Scripts\\test.lua";
 	}
 	std::string ScriptSystem::getScriptName()
 	{
@@ -210,8 +256,38 @@ namespace Engine {
 		{
 			return script_name;
 		}
+		//temp
+		else {
+
+			return "test";
+		}
 		//QWARN("failed to get the script name");
-		return "test";
+	}
+
+	void ScriptSystem::setScriptPath(const std::string& path)
+	{
+		script_path = path;
+	}
+
+	void ScriptSystem::setComponentPath(ScriptComponent* component)
+	{
+		//component->script_path = this->script_path;
+		component->script_path = ".//Assets//Scripts//test.lua";
+	}
+
+	void ScriptSystem::setScriptName(const std::string& name)
+	{
+		script_name = name;
+	}
+
+	void ScriptSystem::setComponentName(ScriptComponent* component)
+	{
+		component->script_name = this->script_name;
+	}
+
+	void ScriptSystem::addScriptComponent(ScriptComponent* component)
+	{
+		script_components.push_back(component);
 	}
 
 }
