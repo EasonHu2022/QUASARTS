@@ -19,7 +19,7 @@ void AttributeView::on_gui()
 		if (!game) {
 		
 			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
-			
+				
 				/**/
 				//show_mesh();
 				show_transform();
@@ -57,21 +57,37 @@ void AttributeView::show_transform() {
 	static float scal[3] = { transform->scale.x ,transform->scale.y, transform->scale.z };
 
 	ImGui::InputFloat3(" Position", pos);
-	transform->position.x = pos[0];
-	transform->position.y = pos[1];
-	transform->position.z = pos[2];
-	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, *transform);
-
 	ImGui::InputFloat3(" Rotation", rot);
-	transform->rotation.x = rot[0];
-	transform->rotation.y = rot[1];
-	transform->rotation.z = rot[2];
-	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, *transform);
-
 	ImGui::InputFloat3(" Scale", scal);
-	transform->scale.x = scal[0];
-	transform->scale.y = scal[1];
-	transform->scale.z = scal[2];
-	Engine::ECSManager::Instance()->replace_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM, *transform);
+
+
+	if (ImGui::IsWindowFocused()) {
+		transform->position.x = pos[0];
+		transform->position.y = pos[1];
+		transform->position.z = pos[2];
+
+		transform->rotation.x = rot[0];
+		transform->rotation.y = rot[1];
+		transform->rotation.z = rot[2];
+
+		transform->scale.x = scal[0];
+		transform->scale.y = scal[1];
+		transform->scale.z = scal[2];
+	}
+	else {
+		pos[0] = transform->position.x;
+		pos[1] = transform->position.y;
+		pos[2] = transform->position.z;
+		rot[0] = transform->rotation.x;
+		rot[1] = transform->rotation.y;
+		rot[2] = transform->rotation.z;
+		scal[0] = transform->scale.x;
+		scal[1] = transform->scale.y;
+		scal[2] = transform->scale.z;
+	}
 	
+}
+
+void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {
+
 }
