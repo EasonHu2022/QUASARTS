@@ -196,14 +196,10 @@ void FileModule::open_root(std::string root) {
 	cur_root = new QDirectoriesNode();
 	cur_root->path = (char*)current_root.c_str(); 
 	cur_root->name = "Assets"; 
-	std::string cwd; 
-	getline(read, cwd);
-	Engine::AudioSystem::Instance()->getWorkPath(cwd);
-
 	read.close();
 }
 
-void FileModule::save_root(std::string root, std::string name, std::string cwd) {
+void FileModule::save_root(std::string root, std::string name) {
 
 #if defined(_WIN32)
 	std::string project_file = root + "\\" + name + "\\" + name + ".q";
@@ -214,7 +210,6 @@ void FileModule::save_root(std::string root, std::string name, std::string cwd) 
 	if (of.is_open())
 	{
 		of << cur_root->path << std::endl;
-		of << cwd << std::endl;
 		QDEBUG("Project Saved");
 	}
 	else
@@ -235,7 +230,6 @@ std::string FileModule::get_internal_assets_path()
 	
 	for (int i = 0; i < 4; i++)
 	{
-		//int pos = path.ReverseFind('\\');
 		int pos = path.ReverseFind('\\');
 		path = path.Left(pos);		
 	}

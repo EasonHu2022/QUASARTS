@@ -14,7 +14,7 @@ public:
 	Engine::Shader *shader_program = NULL;
 	Engine::Texture2D* texture2d = NULL;
 	glm::mat4 model = glm::mat4(1.0f);
-	
+	glm::mat4 normalM = glm::mat4(1.0f);
 
 	inline void set_model(glm::vec3 offset, glm::vec3 rotation, glm::vec3 scale)
 	{
@@ -26,6 +26,8 @@ public:
 		model = glm::rotate(model, rotation.y, glm::vec3(0, 1, 0));
 		//z
 		model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));		
+
+		normalM = glm::transpose(glm::inverse(model));
 	}
 
 	

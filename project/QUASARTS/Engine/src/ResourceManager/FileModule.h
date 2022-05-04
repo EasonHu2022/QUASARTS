@@ -116,7 +116,7 @@ public:
 	/// <summary>
 	/// save existing project
 	/// </summary>
-	void save_root(std::string root, std::string name, std::string cwd);
+	void save_root(std::string root, std::string name);
 
 	/// <summary>
 	/// return the internal assets path of our project

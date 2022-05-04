@@ -13,12 +13,12 @@ namespace Engine
 
 		 paths = std::vector<std::string>
 		{
-			path + "Texture\\right.jpg",
-			path + "Texture\\left.jpg",
-			path + "Texture\\top.jpg",
-			path + "Texture\\bottom.jpg",
-			path + "Texture\\front.jpg",
-			path + "Texture\\back.jpg",
+			path + "Texture\\Skybox\\right.jpg",
+			path + "Texture\\Skybox\\left.jpg",
+			path + "Texture\\Skybox\\top.jpg",
+			path + "Texture\\Skybox\\bottom.jpg",
+			path + "Texture\\Skybox\\front.jpg",
+			path + "Texture\\Skybox\\back.jpg",
 		};
 	}
 	SkyBoxRenderer::~SkyBoxRenderer()

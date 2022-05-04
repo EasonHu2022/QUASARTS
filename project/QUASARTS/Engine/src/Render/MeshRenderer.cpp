@@ -59,7 +59,9 @@ namespace Engine
 			buffer->shader_program->use();
 			//model : get from transform component
 			glm::mat4 model = buffer->model;
+			glm::mat4 normalM = buffer->normalM;
 			buffer->shader_program->setMat4("model", model);
+			buffer->shader_program->setMat4("normalM", normalM);
 			buffer->shader_program->setVec3("viewPos", renderContext->cameraContext->pos);
 			//buffer->shader_program->setMat4("lightSpaceMatrix", renderContext->lightingContext->lights[0].lightSpaceMatrix);
 			//buffer->shader_program->setInt("shadowMap", depthTextureArray);

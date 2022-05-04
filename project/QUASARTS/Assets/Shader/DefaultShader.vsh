@@ -7,7 +7,9 @@ layout(location = 2) in vec2 aTexCoords;
 layout(location = 3) in vec3 aNormal;
 layout(location = 4) in vec3 aTangent;
 
+
 uniform mat4 model;
+uniform mat4 normalM;
 uniform mat4 lightSpaceMatrix;
 
 
@@ -44,23 +46,12 @@ layout(std140, binding = 1) uniform Lightinfo
 
 void main()
 {
-    vs_out.FragPos = aPos;
-    vs_out.Normal = aNormal;
+    vs_out.FragPos = (model * vec4(aPos,1.0f)).xyz;
+    vs_out.Normal = (normalM * vec4(aNormal,1.0f)).xyz;
     vs_out.TexCoords = aTexCoords;
     for (int i = 0; i < countLight; i++)
     {
-        vs_out.FragPosLightSpace[i] = lights[i].lightSpaceMatrix * vec4(aPos, 1.0);
+        vs_out.FragPosLightSpace[i] = lights[i].lightSpaceMatrix * model * vec4(aPos, 1.0);
     }  
-   // vs_out.FragPosLightSpace = lights[0].lightSpaceMatrix * vec4(aPos, 1.0);
-    //gl_Position = projection ;
-     gl_Position = projection * view * model * vec4(aPos, 1.0);
-    //gl_Position = view * model * vec4(aPos, 1.0);
-    //gl_Position =  vec4(aPos, 1.0);
+     gl_Position = projection * view * model * vec4(aPos, 1.0f);
 }
-
-//#version 420 core
-//layout (location = 0) in vec3 aPos;
-//void main()
-//{
-//	gl_Position = vec4(aPos,1.0);
-//};

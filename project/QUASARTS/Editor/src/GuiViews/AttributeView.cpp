@@ -56,10 +56,15 @@ void AttributeView::show_transform() {
 	static float rot[3] = { transform->rotation.x ,transform->rotation.y, transform->rotation.z };
 	static float scal[3] = { transform->scale.x ,transform->scale.y, transform->scale.z };
 
+	static int mode = 0;
+	ImGui::RadioButton("Translate", &mode, ImGuizmo::OPERATION::TRANSLATE); ImGui::SameLine();
+	ImGui::RadioButton("Rotate", &mode, ImGuizmo::OPERATION::ROTATE); ImGui::SameLine();
+	ImGui::RadioButton("Scale", &mode, ImGuizmo::OPERATION::SCALE);
+	transform->operation = (ImGuizmo::OPERATION)mode;
+
 	ImGui::InputFloat3(" Position", pos);
 	ImGui::InputFloat3(" Rotation", rot);
 	ImGui::InputFloat3(" Scale", scal);
-
 
 	if (ImGui::IsWindowFocused()) {
 		transform->position.x = pos[0];
