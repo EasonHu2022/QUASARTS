@@ -14,7 +14,7 @@ public:
 	bool new_attribute;
 	std::string folder_path;
 	std::string project_name;
-	static std::string OpenFileDialogue();
+	static std::string OpenFileDialogue(const wchar_t*);
 	static std::string OpenFolderDialogue();
 	void newProject();
 	void newScene();

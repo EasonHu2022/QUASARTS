@@ -48,9 +48,10 @@ void GameSceneView::on_gui()
                     Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
                     float matrixTranslation[3], matrixRotation[3], matrixScale[3];
                     float matrix[] = {1.f, 0.f, 0.f, 0.f,
-    0.f, 1.f, 0.f, 0.f,
-    0.f, 0.f, 1.f, 0.f,
-    0.f, 0.f, 0.f, 1.f };
+                                      0.f, 1.f, 0.f, 0.f,
+                                      0.f, 0.f, 1.f, 0.f,
+                                      0.f, 0.f, 0.f, 1.f 
+                    };
                    
                     matrixTranslation[0] = transform->position.x;
                     matrixTranslation[1] = transform->position.y;

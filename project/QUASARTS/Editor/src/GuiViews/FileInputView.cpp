@@ -24,11 +24,7 @@ void FileInputView::on_gui()
         
         std::string assetsPath = FileModule::Instance()->get_root()->path;
 
-#if defined(_WIN32)
-        assetsPath = assetsPath + "\\";
-#else
         assetsPath = assetsPath + "/";
-#endif
 
         ImGui::Begin("Asset Selection", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
@@ -87,24 +83,14 @@ void FileInputView::on_gui()
                                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
 
                                     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
-
-                                    Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
-
-                                    auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
-                                    //init
-                                    script->entity_id = entityID;
-                                    Engine::ScriptSystem::Instance()->setComponentPath(script);
-                                    Engine::ScriptSystem::Instance()->setScriptState(script);
-                                    Engine::ScriptSystem::Instance()->addScriptComponent(script);
-                                    
-                                    
+   
                                     Engine::MaterialComponent material;
                                     //get default engine assets path
                                     auto path = FileModule::Instance()->get_internal_assets_path();
-                                    std::string vshPath = path + "Shader\\DefaultShader.vsh";
-                                    std::string fshPath = path +"Shader\\DefaultShader.fsh";
+                                    std::string vshPath = path + "Shader/DefaultShader.vsh";
+                                    std::string fshPath = path +"Shader/DefaultShader.fsh";
                                     std::string gshPth = "";
-                                    std::string texturePath = path + "Texture\\floor.jpg";
+                                    std::string texturePath = path + "Texture/floor.jpg";
                                     material.material = new Engine::Material(vshPath, fshPath,gshPth,texturePath);                                  
                                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
                                 }
