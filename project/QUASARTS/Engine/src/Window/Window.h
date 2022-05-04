@@ -51,16 +51,6 @@ private:
 
 	WindowData m_Data;
 
-private:
-	struct InputData
-	{
-		bool keyHeld[GLFW_KEY_LAST];
-		bool mouseHeld[GLFW_MOUSE_BUTTON_LAST];
-		InputData() {
-			for (int i = 0; i < GLFW_KEY_LAST; ++i) { keyHeld[i] = false; }
-			for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; ++i) { mouseHeld[i] = false; }
-		}
-	};
 };
 
 
