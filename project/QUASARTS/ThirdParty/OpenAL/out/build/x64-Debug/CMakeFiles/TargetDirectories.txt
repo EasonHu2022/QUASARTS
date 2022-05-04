@@ -1,8 +1,0 @@
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/OpenAL.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/common.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/native-tools.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/install/local.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/install.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/edit_cache.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/OpenAL/out/build/x64-Debug/CMakeFiles/list_install_components.dir

@@ -1,2 +1,0 @@
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/glm/glm/out/build/x64-Debug/CMakeFiles/edit_cache.dir
-C:/Users/Computer/source/repos/EasonHu2022/QUASARTS/project/QUASARTS/ThirdParty/glm/glm/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
