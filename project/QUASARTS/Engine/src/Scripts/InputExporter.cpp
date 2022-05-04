@@ -10,7 +10,7 @@ namespace Engine {
 		p_lua_state.new_usertype<Input>("Input",
 
 			//use the same API with C++
-			"get_key", &Input::get_key,
+			"get_key_held", &Input::get_key,
 			"get_key_pressed", &Input::get_key_pressed,
 			"get_key_released", &Input::get_key_released,
 			"get_key_combination", &Input::get_key_combination,

@@ -30,7 +30,7 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
-                std::string proj_file = OpenFileDialogue();
+                std::string proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
                 if(proj_file.compare("N/A")!=0)
                     FileModule::Instance()->open_root(proj_file);
 
@@ -109,10 +109,23 @@ void MenuBarView::on_gui()
 
         if (ImGui::BeginMenu("Assets"))
         {
-            if (ImGui::MenuItem("Add Path")) {
+            ImGui::MenuItem("New Script", NULL, &new_script);
+            if (ImGui::MenuItem("Add Script")) {
+                
+                unsigned int entityID = Engine::ECSManager::Instance()->get_current_entity();
+
+                Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+
+                auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+                //init
+
+                std::string script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
+                std::cout << script_file << std::endl;
+
+                script->entity_id = entityID;
+                Engine::ScriptSystem::Instance()->initComponent(script, script_file, entityID);
 
             }
-            ImGui::MenuItem("Add Script", NULL, &new_script);
             if (ImGui::MenuItem("Delete Script")) {
 
                 Engine::ScriptSystem::Instance()->deleteScript();
@@ -208,14 +221,14 @@ void MenuBarView::on_remove()
 
 
 #if defined(_WIN32)
-std::string MenuBarView::OpenFileDialogue() {
+std::string MenuBarView::OpenFileDialogue(const wchar_t* filter) {
     OPENFILENAME ofn;
     wchar_t fileName[260] = L"";
     ZeroMemory(&ofn, sizeof(ofn));
 
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = NULL;
-    ofn.lpstrFilter = L"All Files (*.*)\0*.q\0";
+    ofn.lpstrFilter = filter;
     ofn.lpstrFile = fileName;
     ofn.nMaxFile = 260;
     ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
@@ -255,7 +268,7 @@ std::string MenuBarView::OpenFolderDialogue() {
 #else
 std::string MenuBarView::OpenFileDialogue() {
     char filename[1024];
-    FILE* f = popen("zenity --file-selection --file-filter=*.cpp", "r");
+    FILE* f = popen("zenity --file-selection --file-filter=*.q", "r");
     if (f == NULL)
         return "N/A";
     else {
@@ -318,6 +331,7 @@ void MenuBarView::newProject() {
             FileModule::Instance()->save_root(buf2, buf1);
             new_project = false;
             show_window = true;
+           
         }
 
     }
@@ -380,23 +394,18 @@ void MenuBarView::newScript() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
 
-            if (!(folder_path.empty() || project_name.empty()))
+            if (FileModule::Instance()->get_root() != nullptr) 
             {
-#if defined(_WIN32)
-                std::string file_path = folder_path + "\\" + project_name;
-#else
-                std::string file_path = folder_path + "/" + project_name;
-#endif
-                Engine::ScriptSystem::Instance()->createScript(buf1, file_path);
+                std::string file_path = (std::string)FileModule::Instance()->get_root()->path + "/Scripts";
             }
             else 
             {
                 QWARN("Failed to create the script, Please create a project first");
             }
+                
             new_script = false;
             show_window = true;
         }
-
     }
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
     if (ImGui::Button("Cancel")) {
