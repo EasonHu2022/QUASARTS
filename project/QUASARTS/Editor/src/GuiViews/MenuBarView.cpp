@@ -119,13 +119,11 @@ void MenuBarView::on_gui()
                 auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
                 //init
 
-                std::string proj_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
-                std::cout << proj_file << std::endl;
+                std::string script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
+                std::cout << script_file << std::endl;
 
                 script->entity_id = entityID;
-                Engine::ScriptSystem::Instance()->setComponentPath(script/*, proj_file*/);
-                Engine::ScriptSystem::Instance()->setScriptState(script);
-                Engine::ScriptSystem::Instance()->addScriptComponent(script);
+                Engine::ScriptSystem::Instance()->initComponent(script, script_file, entityID);
 
             }
             if (ImGui::MenuItem("Delete Script")) {

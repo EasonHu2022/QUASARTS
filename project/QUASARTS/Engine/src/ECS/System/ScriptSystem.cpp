@@ -252,9 +252,9 @@ namespace Engine {
 
 	void ScriptSystem::initComponent(ScriptComponent* component, const std::string& comp_path, unsigned int id)
 	{
-		setScriptState(component);
 		component->entity_id = id;
 		component->script_path = comp_path;
+		setScriptState(component);
 		addScriptComponent(component);
 
 	}
