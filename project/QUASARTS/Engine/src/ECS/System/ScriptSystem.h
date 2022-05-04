@@ -47,6 +47,7 @@ namespace Engine {
 		void importFunc(ScriptComponent* component);
 		void onUpdate();
 		void onUpdate(ScriptComponent* component);
+		void initComponent(ScriptComponent* component, const std::string& comp_path, unsigned int id);
 		bool isScriptExists(std::string path);
 		std::string getScriptPath();
 		std::string getScriptName();
