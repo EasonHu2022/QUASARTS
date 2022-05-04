@@ -65,11 +65,6 @@ void Window::init(const WindowProps& props)
 	now reserve for event system
 */
 
-
-	// Track keys held so only one KeyPressed event is created per key press.
-	InputData* inputData = new InputData();
-	glfwSetWindowUserPointer(m_Window, inputData);
-
 #pragma region CallBacks
 	{	
 		using namespace Engine;
@@ -104,9 +99,6 @@ void Window::init(const WindowProps& props)
 				{
 				case GLFW_PRESS:
 				{
-					InputData* inputData = (InputData*)glfwGetWindowUserPointer(window);
-					if (inputData->keyHeld[key]) break; // Do not repeat KeyPressed events for held-down keys
-
 					EventModule::Instance()->create_event("KeyPressed", EventModule::EventPriority::High,
 						{
 							{ "key",		EV_ARG_INT(keycode_convert_glfw_to_q(key))	},
@@ -115,7 +107,6 @@ void Window::init(const WindowProps& props)
 							{ "repeat",		EV_ARG_BOOL(false)		}
 						}
 					);
-					inputData->keyHeld[key] = true;
 					break;
 				}
 				case GLFW_RELEASE:
@@ -127,9 +118,6 @@ void Window::init(const WindowProps& props)
 							{ "mods",		EV_ARG_INT(keymods_convert_glfw_to_q(mods))	}
 						}
 					);
-
-					InputData* inputData = (InputData*)glfwGetWindowUserPointer(window);
-					inputData->keyHeld[key] = false;
 					break;
 				}
 				case GLFW_REPEAT:
