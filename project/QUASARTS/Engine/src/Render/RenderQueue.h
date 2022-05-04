@@ -18,15 +18,15 @@ public:
 
 	inline void set_model(glm::vec3 offset, glm::vec3 rotation, glm::vec3 scale)
 	{
-		model = glm::scale(model, scale);
 		model = glm::translate(model, offset);
 		//x
-		model = glm::rotate(model, rotation.x, glm::vec3(1,0,0));
+		model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1,0,0));
 		//y
-		model = glm::rotate(model, rotation.y, glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
 		//z
-		model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));		
+		model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 
+		model = glm::scale(model, scale);
 		normalM = glm::transpose(glm::inverse(model));
 	}
 
