@@ -16,6 +16,7 @@ public:
 	std::string project_name;
 	static std::string OpenFileDialogue(const wchar_t*);
 	static std::string OpenFolderDialogue();
+	void load_object(std::string, std::string);
 	void newProject();
 	void newScene();
 	void newScript();

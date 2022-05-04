@@ -131,10 +131,14 @@ void QEditor::poll_input()
 		//ImGui::SetWindowFocus("Script Editor");
 	}
 
-	if (Engine::Input::get_key_combination({ Q_KEY_D, Q_KEY_LEFT_CONTROL }))
+	if (Engine::Input::get_key(Q_KEY_LEFT_CONTROL))
 	{
-		Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
-		Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
-		printf("pressed");
+		if (Engine::Input::get_key_pressed(Q_KEY_D))
+		{
+			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {
+				Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
+				Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+			}
+		}
 	}
 }

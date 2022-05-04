@@ -1,0 +1,20 @@
+#
+# Created for Leeds COMP 5821M Autumn 2020
+#
+# Manually created test with a triangle in the air
+# and a ground plane beneath
+#
+v 0.5 -0.5 0 
+v 0.5 0.5 0 
+v -0.5 0.5 0 
+v -0.5 -0.5 0 
+vt 1 0 
+vt 1 1 
+vt 0 1 
+vt 0 0 
+vn 0 0 1 
+vn 0 0 1 
+vn 0 0 1 
+vn 0 0 1 
+f 1/1/1 2/2/2 4/4/4
+f 2/2/2 3/3/3 4/4/4
