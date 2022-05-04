@@ -119,7 +119,7 @@ void QEditor::poll_input()
 
 	if (Engine::Input::get_key_combination({ Q_KEY_O, Q_KEY_LEFT_CONTROL }))
 	{
-		std::string proj_file = getGuiView<MenuBarView>()->OpenFileDialogue();
+		std::string proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
 		if (proj_file.compare("N/A") != 0)
 			FileModule::Instance()->open_root(proj_file);
 		
@@ -135,5 +135,6 @@ void QEditor::poll_input()
 	{
 		Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
 		Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+		printf("pressed");
 	}
 }

@@ -106,8 +106,7 @@ namespace Engine {
 	void ScriptSystem::createScript(const std::string& file_name, const std::string& file_path)
 	{
 		script_name = file_name;
-		std::string sub_path = "\\Assets\\Scripts\\";
-		script_path = file_path + sub_path + file_name + ".lua";
+		script_path = file_path + "/" +file_name + ".lua";
 		std::ofstream ofs;
 		ofs.open(script_path, std::ios::out);
 		if (ofs)
