@@ -48,7 +48,7 @@ float ShadowCalculation(vec4 fragPosLightSpace,int layer,vec3 normal, vec3 light
 
 void main()
 {  
-    //now only support point light
+    //now only support parallel light
 
     vec3 color = texture(colorTexure, fs_in.TexCoords).rgb;
     // ambient
@@ -79,11 +79,11 @@ void main()
 
         //FragColor += fs_in.FragPosLightSpace[i];
         FragColor += vec4(ambient + (1-shadow) * (diffuse + specular), 0.0);
-        
+        //FragColor = vec4(fs_in.FragPos,1.0f);
     }
 
     FragColor.w = 1.0f;
-
+    //FragColor = vec4(normal,1.0f);
 } 
 
 

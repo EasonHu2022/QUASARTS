@@ -230,7 +230,6 @@ std::string FileModule::get_internal_assets_path()
 	
 	for (int i = 0; i < 4; i++)
 	{
-		//int pos = path.ReverseFind('\\');
 		int pos = path.ReverseFind('\\');
 		path = path.Left(pos);		
 	}
