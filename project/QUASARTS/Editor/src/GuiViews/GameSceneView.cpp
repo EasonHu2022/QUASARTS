@@ -62,11 +62,17 @@ void GameSceneView::on_gui()
                     matrixScale[1] = transform->scale.y;
                     matrixScale[2] = transform->scale.z;
                     ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
-                    ImGuizmo::Manipulate(view, projection, ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, matrix);
+                    ImGuizmo::Manipulate(view, projection, (ImGuizmo::OPERATION)transform->operation, ImGuizmo::LOCAL, matrix);
                     ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
                     //update transform
+                    
                     if (ImGuizmo::IsUsing()) {
-                        transform->position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+                        if (transform->operation == ImGuizmo::OPERATION::TRANSLATE)
+                            transform->position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+                        else if(transform->operation == ImGuizmo::OPERATION::ROTATE)
+                            transform->rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
+                        else
+                            transform->scale = glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]);
                     }
                 }
                 //ImGuizmo::DrawGrid(view, projection, &glm::mat4(1.0)[0][0], 100.f);
