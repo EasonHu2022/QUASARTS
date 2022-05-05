@@ -64,7 +64,7 @@ namespace Engine
 
 	QTime TimeImpl::getTimeSinceInit()
 	{
-		return QTime((steady_clock::now() - initTime).count());
+		return QTime(duration<double>(steady_clock::now() - initTime).count());
 
 	} // getTimeSinceInit()
 

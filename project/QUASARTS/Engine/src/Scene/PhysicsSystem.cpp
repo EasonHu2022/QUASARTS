@@ -88,7 +88,7 @@ namespace Engine {
 
 	void PhysicsSystem::update()
 	{
-
+		// Get all overlaps in this frame.
 		collisionWorld->performDiscreteCollisionDetection();
 		auto* pairs = overlappingPairCache->getOverlappingPairCache();
 		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
@@ -101,6 +101,7 @@ namespace Engine {
 			int objId1 = get_object_index((btCollisionObject*)pair.m_pProxy0->m_clientObject);
 			CollisionObjectInfo* objInfo1 = &collisionObjectArrayInfo[objId1];
 
+			// Create a collision event for each pair of overlapping collision components.
 			EventModule::Instance()->create_event(
 				"Collision", EventModule::EventPriority::Medium,
 				{
@@ -112,6 +113,11 @@ namespace Engine {
 				}
 			);
 		}
+
+
+		// Time tests.
+		time_tests();
+
 
 	} // update()
 
@@ -187,19 +193,19 @@ namespace Engine {
 	} // assign_collision_sphere()
 
 
-	void PhysicsSystem::unassign_collision_object(const int obj_idx)
+	void PhysicsSystem::unassign_collision_object(const int aCollisionObjectId)
 	{
-		if (collisionObjectArrayInfo[obj_idx].mUsage == Unassigned)
+		if (collisionObjectArrayInfo[aCollisionObjectId].mUsage == Unassigned)
 		{
 			char msg[128];
-			snprintf(msg, 128, "unassign_collision_object() was passed the index of an unassigned collision object: %d", obj_idx);
+			snprintf(msg, 128, "unassign_collision_object() was passed the index of an unassigned collision object: %d", aCollisionObjectId);
 			QERROR(msg);
 			return;
 		}
 		--numAssignedObjects;
 
 		// Clear bookkeeping.
-		CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[obj_idx];
+		CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[aCollisionObjectId];
 		objInfo->mComponentId = -1;
 		objInfo->mUsage = Unassigned;
 
@@ -381,6 +387,23 @@ namespace Engine {
 
 
 
+
+
+	void PhysicsSystem::time_tests()
+	{
+		QTime deltaT = TimeModule::Instance()->getFrameDeltaTime();
+		if (timeCounter.sec() < 0)
+		{
+			QDEBUG("engine time: {0}, deltaT: {1}, FPS: {2}",				
+				TimeModule::Instance()->getTime().sec(),
+				deltaT.sec(),
+				(1.f / deltaT.sec())
+			);
+			timeCounter += 1;
+		}
+		timeCounter -= deltaT.sec();
+
+	} // time_tests()
 
 
 	void PhysicsSystem::runTests_init()
