@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <vector>
 
+
 #include "System.h"
 #include "ECS/Component/ScriptComponent.h"
 #include "ECS/ECSManager.h"
@@ -36,33 +37,30 @@ namespace Engine {
 		void createState();
 		void destroyState();
 		void createScript(const std::string& file_name, const std::string& file_path);
-		void loadScript(const std::string& path);
 		void loadScripts();
-		void setScriptState(ScriptComponent* component);
-		void reloadScript();
 		void deleteScript();
 		void deleteAllScripts();
 		void refreshScript();
-		void importFunc();
-		void importFunc(ScriptComponent* component);
+		void registerFunction(ScriptComponent* component);
+		void registerAllFunction();
+		void unregisterFunction(ScriptComponent* component);
+		void unregisterAllFunction();
 		void onUpdate();
 		void onUpdate(ScriptComponent* component);
 		void initComponent(ScriptComponent* component, const std::string& comp_path, unsigned int id);
 		bool isScriptExists(std::string path);
 		std::string getScriptPath();
 		std::string getScriptName();
+		std::vector<ScriptComponent*> getExistsEntities();
 		void setScriptPath(const std::string& path);
 		void setComponentPath(ScriptComponent* component);
 		void setScriptName(const std::string& name);
-		void setComponentName(ScriptComponent* component);
-		void addScriptComponent(ScriptComponent* component);
 
 	private:
 		std::unique_ptr<sol::state> lua_state; 		    //lua virtual machine
 		std::string script_name;
 		std::string script_path;
-		//bool is_imported;							    //check if the update function is imported to C++ side
-		std::vector<ScriptComponent*> script_components; //store all components
+		bool is_running = true;							//check if the update function is imported to C++ side
 	};
 
 }

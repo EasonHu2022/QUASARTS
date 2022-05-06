@@ -29,6 +29,7 @@ namespace Engine
 		EventModule::Instance()->init();
 		EventModule::Instance()->register_handler(EV_CALLBACK_REGISTRATION(WindowClosed));
 		ScriptSystem::Instance()->init();
+		ECSManager::Instance()->register_system(SYSTEM_SCRIPT, ScriptSystem::Instance());
 		ResourceManager::Instance();
 		AudioSystem::Instance()->init();
 		ECSManager::Instance()->init();
