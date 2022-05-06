@@ -91,8 +91,10 @@ void MenuBarView::on_gui()
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Delete", "Ctrl+D")) {
-                Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
-                Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {
+                    Engine::ECSManager::Instance()->destroy_entity(Engine::ECSManager::Instance()->get_current_entity());
+                    Engine::ECSManager::Instance()->set_current_entity(TOO_MANY_ENTITIES);
+                }
             }
             if (ImGui::MenuItem("Delete All")) {
                 std::vector<unsigned int> entities = Engine::ECSManager::Instance()->get_entity_ID_match();
@@ -149,22 +151,22 @@ void MenuBarView::on_gui()
             }
             if (ImGui::BeginMenu("Insert Basic Object")) {
                 if (ImGui::MenuItem("Triangle")) {
-                    
+                    load_object("Triangle", "/triangle.obj");
                 }
                 if (ImGui::MenuItem("Plane")) {
-                  
+                    load_object("Plane", "/triangle_groundplane.obj");
                 }
                 if (ImGui::MenuItem("Pyramid")) {
-
+                    load_object("Pyramid", "/tetrahedron_smooth.obj");
                 }
                 if (ImGui::MenuItem("Cube")) {
-
+                    load_object("Cube", "/cube_smooth.obj");
                 }
                 if (ImGui::MenuItem("Cone")) {
-
+                    load_object("Cone", "/Cone.obj");
                 }
                 if (ImGui::MenuItem("Sphere")) {
-
+                    load_object("Sphere", "/sphere20x20.obj");
                 }
                 ImGui::EndMenu();
             }
@@ -522,5 +524,34 @@ void MenuBarView::newAttribute() {
     }
 
     ImGui::End();
+
+}
+
+void MenuBarView::load_object(std::string name, std::string file) {
+    
+    unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+    Engine::ECSManager::Instance()->set_entityName(entityID, name);
+    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+    Engine::TransformComponent transform;
+    transform.position = { 0.0f,0.0f, 0.0f };
+    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
+
+
+    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
+    Engine::MeshComponent mesh;
+    auto path = FileModule::Instance()->get_internal_assets_path();
+    mesh.path = path + "DefaultObjects" + file;
+    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
+
+    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
+
+    Engine::MaterialComponent material;
+    //get default engine assets path
+    std::string vshPath = path + "Shader/DefaultShader.vsh";
+    std::string fshPath = path + "Shader/DefaultShader.fsh";
+    std::string gshPth = "";
+    std::string texturePath = path + "Texture/floor.jpg";
+    material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
 
 }

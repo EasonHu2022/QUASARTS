@@ -48,16 +48,17 @@ namespace Engine {
 		/// <summary>
 		/// Assign a collision object to a collision component. Gets the ID of an unassigned collision object, sets its transform to the given world position, and sets its collision shape to a sphere shape with the given radius.
 		/// </summary>
+		/// <param name="aEntityId">ID of the collision component's parent entity.
 		/// <param name="worldPosition">Position in world coordinates of the assigned collision object.</param>
 		/// <param name="radius">Radius of the assigned collision object's sphere shape.</param>
 		/// <returns>ID of the assigned collision object, or -1 if an object could not be assigned.</returns>
-		int assign_collision_sphere(const int aComponentId, const glm::vec3 worldPosition, const float radius);
+		int assign_collision_sphere(const int aEntityId, const glm::vec3 worldPosition, const float radius);
 
 		/// <summary>
 		/// Unassign a collision object from a collision component.
 		/// </summary>
-		/// <param name="id">ID of the collision object to be unassigned, stored in the associated collision component.</param>
-		void unassign_collision_object(const int obj_idx);
+		/// <param name="aCollisionObjectId">ID of the collision object to be unassigned, stored in the associated collision component.</param>
+		void unassign_collision_object(const int aCollisionObjectId);
 
 		/// <summary>
 		/// Set the world position of the indicated collision object to the given vector.
@@ -144,8 +145,10 @@ namespace Engine {
 	private:
 		void runTests_init();
 		void runTests_start();
-
 		std::vector<int> pretendComponents;
+
+		void time_tests();
+		QTime trackTime, timeCounter;
 
 
 		// Events //
