@@ -72,9 +72,9 @@ Quasarts Engine now supports:
 v2 = vec2(2,3)
 
 -- get a diagonal matrix
-m3 = (3) 
+m3 = mat3(3) 
 -- or you can set every value of the matrix
-m3 = (1,2,3,4,5,6,7,8,9)
+m3 = mat3(1,2,3,4,5,6,7,8,9)
 ```
 
 ### Audio
