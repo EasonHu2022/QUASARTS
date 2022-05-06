@@ -130,6 +130,17 @@ namespace Engine {
         return false;
     }
 
+    // Get all Component types that an Entity has:
+    std::vector<unsigned int> ECSManager::get_all_component_types(unsigned int entityID) {
+        std::vector<unsigned int> result = {};
+        for (unsigned int i = 0; i < NUM_COMPONENT_TYPES; i++) {
+            if (has_component(entityID, i)) {
+                result.push_back(i);
+            }
+        }
+        return result;
+    }
+
     // Add an entity group:
     void ECSManager::add_entity_group(std::string group_name) {
         if (scene->entity_groups.find(group_name) != scene->entity_groups.end()) {
