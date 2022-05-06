@@ -34,24 +34,51 @@ namespace Engine {
 		// Usage functions //
 	public:
 
+		//open lua state
 		void createState();
+
+		//destroy lua state for reload
 		void destroyState();
+
+		//create a default lua file
 		void createScript(const std::string& file_name, const std::string& file_path);
+
+		//load all entities' script components
 		void loadScripts();
+
+		//--------delete lua file 
 		void deleteScript();
 		void deleteAllScripts();
+		//-------------------------
+
+		//"stop" the script context
 		void refreshScript();
+
+		//register current entity's script function from lua side
 		void registerFunction(ScriptComponent* component);
+		//register all entities function
 		void registerAllFunction();
+
+		//unregister 
 		void unregisterFunction(ScriptComponent* component);
 		void unregisterAllFunction();
+
+		//run the functions from scripts
 		void onUpdate();
 		void onUpdate(ScriptComponent* component);
+
+		//initialize script component -- set path and entity id
 		void initComponent(ScriptComponent* component, const std::string& comp_path, unsigned int id);
+
+		//check if the lua file exists
 		bool isScriptExists(std::string path);
+
+		//get all script components from existing entities
+		std::vector<ScriptComponent*> getExistingComponents();
+
+		//
 		std::string getScriptPath();
 		std::string getScriptName();
-		std::vector<ScriptComponent*> getExistsEntities();
 		void setScriptPath(const std::string& path);
 		void setComponentPath(ScriptComponent* component);
 		void setScriptName(const std::string& name);
@@ -60,7 +87,6 @@ namespace Engine {
 		std::unique_ptr<sol::state> lua_state; 		    //lua virtual machine
 		std::string script_name;
 		std::string script_path;
-		bool is_running = true;							//check if the update function is imported to C++ side
 	};
 
 }

@@ -69,6 +69,7 @@ namespace Engine {
 
 	}
 
+	//open lua state
 	void ScriptSystem::createState()
 	{
 		if (!lua_state)
@@ -80,11 +81,13 @@ namespace Engine {
 		}
 	}
 
+	//destroy lua state for reload
 	void ScriptSystem::destroyState()
 	{
 		lua_state.reset();
 	}
 
+	//create a default lua file
 	void ScriptSystem::createScript(const std::string& file_name, const std::string& file_path)
 	{
 		script_name = file_name;
@@ -103,9 +106,10 @@ namespace Engine {
 
 	}
 
+	//load all entities' script components
 	void ScriptSystem::loadScripts()
 	{
-		auto script_components = getExistsEntities();
+		auto script_components = getExistingComponents();
 
 		if (script_components.empty())
 		{
@@ -128,6 +132,7 @@ namespace Engine {
 		}
 	}
 
+
 	void ScriptSystem::deleteScript()
 	{
 		if (!script_path.empty())
@@ -145,36 +150,52 @@ namespace Engine {
 	}
 	void ScriptSystem::deleteAllScripts()
 	{
-		auto script_components = getExistsEntities();
+		auto script_components = getExistingComponents();
 		for (auto& sc : script_components)
 		{
 			if (std::remove(sc->script_path.c_str()) == 0);
 			QDEBUG("Deleted the file: {0}", sc->script_path);
 		}
 	}
+
+	//"stop" the script context
 	void ScriptSystem::refreshScript()
 	{
 		unregisterAllFunction();
 		destroyState();
 		createState();
 	}
+
+	//register current entity's script function from lua side
+	void ScriptSystem::registerFunction(ScriptComponent* component)
+	{
+		//if (!is_imported)
+		//{
+		component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+		//is_imported = true;
+	//}
+	}
+
+	//register all entities function
 	void ScriptSystem::registerAllFunction()
 	{
-		auto script_components = getExistsEntities();
+		auto script_components = getExistingComponents();
 		for (auto& sc : script_components)
 		{
 			sc->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
 		}
 	}
 
+	//unregister 
 	void ScriptSystem::unregisterFunction(ScriptComponent* component)
 	{
 		component->update_function.reset();
 	}
 
+	//unregister 
 	void ScriptSystem::unregisterAllFunction()
 	{
-		auto script_components = getExistsEntities();
+		auto script_components = getExistingComponents();
 
 		for (auto sc : script_components)
 		{
@@ -182,18 +203,10 @@ namespace Engine {
 		}
 	}
 
-	void ScriptSystem::registerFunction(ScriptComponent* component)
-	{
-		//if (!is_imported)
-		//{
-			component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
-			//is_imported = true;
-		//}
-	}
-
+	//run the functions from scripts
 	void ScriptSystem::onUpdate()
 	{	
-		auto script_components = getExistsEntities();
+		auto script_components = getExistingComponents();
 
 		//loop all
 		for (auto sc : script_components)
@@ -213,17 +226,46 @@ namespace Engine {
 		}
 	}
 
+	//initialize script component -- set path and entity id
 	void ScriptSystem::initComponent(ScriptComponent* component, const std::string& comp_path, unsigned int id)
 	{
 			component->entity_id = id;
 			component->script_path = comp_path;
 	}
 
+	//check if the lua file exists
 	bool ScriptSystem::isScriptExists(std::string path)
 	{
 		struct stat buffer;
 		return(stat(path.c_str(), &buffer) == 0);
 	}
+
+	//get all script components from existing entities
+	std::vector<ScriptComponent*> ScriptSystem::getExistingComponents()
+	{
+
+		//store current entities which have script component
+		std::vector<ScriptComponent*> current;
+
+		//get manager
+		ECSManager* mgr = get_manager();
+
+		//get entity mask
+		quasarts_entity_ID_mask* ent = get_entity_ID_mask(0);
+
+
+		for (int i = 0; i < MAX_ENTITIES; i++)
+		{
+			ScriptComponent* script;
+			if (ent->mask[i] == 1)
+			{
+				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
+				current.push_back(script);
+			}
+		}
+		return current;
+	}
+
 
 	std::string ScriptSystem::getScriptPath()
 	{
@@ -250,30 +292,6 @@ namespace Engine {
 		}
 	}
 
-	std::vector<ScriptComponent*> ScriptSystem::getExistsEntities()
-	{
-
-		//store current entities which have script component
-		std::vector<ScriptComponent*> current;
-
-		//get manager
-		ECSManager* mgr = get_manager();
-
-		//get entity mask
-		quasarts_entity_ID_mask* ent = get_entity_ID_mask(0);
-
-		
-		for (int i = 0; i < MAX_ENTITIES; i++)
-		{
-			ScriptComponent* script;
-			if (ent->mask[i] == 1)
-			{
-				script = mgr->get_component<ScriptComponent>(i, COMPONENT_SCRIPT);
-				current.push_back(script);
-			}
-		}
-		return current;
-	}
 
 	void ScriptSystem::setScriptPath(const std::string& path)
 	{

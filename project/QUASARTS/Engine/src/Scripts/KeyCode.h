@@ -3,6 +3,7 @@
 //reuse the key value form Core/Keycodes
 namespace Engine {
 
+	//keyboard input
 	enum class Key : int
 	{
 		KEY_UNKNOWN			=   -1,
@@ -127,4 +128,14 @@ namespace Engine {
 		KEY_RIGHT_SUPER		=	347,
 		KEY_MENU			=	348
 	};
+
+	//mouse input
+	enum class Mouse : int
+	{
+		MOUSE_LEFT = 0,
+		MOUSE_RIGHT = 1,
+		MOUSE_MIDDLE = 2,
+		MOUSE_LAST = 7
+	};
+
 }
