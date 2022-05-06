@@ -1,6 +1,6 @@
 #pragma once
 #include "GuiViews/FileInputView.h"
-#include "GuiViews/TextEditor.h"
+#include "TextEditor.h"
 #include "QuasartsEngine.h"
 #include <iostream>
 #include <fstream>
