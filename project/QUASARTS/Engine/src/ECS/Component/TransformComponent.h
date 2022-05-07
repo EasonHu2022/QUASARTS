@@ -4,6 +4,8 @@
 #include "ECS/ECS-Common.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
+#include "Core/StaticReflection.h"
+
 
 namespace Engine {
     struct QS_API TransformComponent {
@@ -11,12 +13,17 @@ namespace Engine {
         float y;
         float z;
 
-        glm::vec3 position = {0.0f,0.0f,0.0f};
-        //x->y->z
-        glm::vec3 rotation = {0.0f,0.0f,0.0f};
-        glm::vec3 scale = {1.0f,1.0f,1.0f};
+        //glm::vec3 position = {0.0f,0.0f,0.0f};
+        ////x->y->z
+        //glm::vec3 rotation = {0.0f,0.0f,0.0f};
+        //glm::vec3 scale = {1.0f,1.0f,1.0f};
 
         int operation = 0;
+        DEFINE_PROPERTIES(
+            (glm::vec3) position,
+            (glm::vec3) rotation,
+            (glm::vec3) scale
+            )
     };
 
     // Input stream operator:

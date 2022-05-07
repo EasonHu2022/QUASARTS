@@ -74,6 +74,8 @@ void FileInputView::on_gui()
                                     Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
                                     Engine::TransformComponent transform;
                                     transform.position = { 0.0f,0.0f, 0.0f };
+                                    transform.rotation = { 0.0f,0.0f, 0.0f };
+                                    transform.scale = { 1.0f,1.0f, 1.0f };
                                     Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
 
 

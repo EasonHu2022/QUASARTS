@@ -166,6 +166,9 @@ namespace Engine {
         // Check if an Entity has a particular type of Component:
         bool has_component(unsigned int entityID, unsigned int componentType);
 
+        // Get all Component types that an Entity has:
+        std::vector<unsigned int> get_all_component_types(unsigned int entityID);
+
         // Add an entity group:
         void add_entity_group(std::string group_name);
 
