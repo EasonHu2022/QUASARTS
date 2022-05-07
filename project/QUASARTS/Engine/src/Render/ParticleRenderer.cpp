@@ -39,6 +39,11 @@ namespace Engine
 		return 0;
 	}
 
+	int ParticleRenderer::render()
+	{
+		return 0;
+	}
+
 	//set skybox renderer at the last renderer to render
 	int ParticleRenderer::render(std::vector<Particle> particles)
 	{
@@ -59,7 +64,9 @@ namespace Engine
 		auto view = glm::mat4(glm::mat3(renderContext->cameraContext->get_view_matrix())); // remove translation from the view matrix
 		for (Particle particle : particles) {
 			glDrawArrays(GL_TRIANGLES, 0, 8);
-			updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
+			//updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
+			particleShader->setMat4("view", view);
+			printf("%d, ", particles.size());
 		}
 		particleShader->setMat4("projection", renderContext->cameraContext->get_projection_matrix());
 		

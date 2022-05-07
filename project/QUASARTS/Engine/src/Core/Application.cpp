@@ -119,6 +119,8 @@ namespace Engine
 		meshRenderer->render();
 
 		skyboxRenderer->render();
+
+		particleMaster.render();
 		/**************render update render frame***********************/
 	}
 
@@ -136,7 +138,7 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
-		Particle particle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f), 1, 4, 0, 1);
+		Particle particle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 4.0f, 0.0f), -50, 0.5, 0, 1);
 		particleMaster.addParticle(particle);
 		particleMaster.update();
 		renderSystem->update();
@@ -163,6 +165,7 @@ namespace Engine
 		meshRenderer->release();
 		shadowRenderer->release();
 		skyboxRenderer->release();
+		particleMaster.release();
 		/*********************release things**********************************/
 	}
 

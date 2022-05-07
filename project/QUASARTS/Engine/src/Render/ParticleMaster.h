@@ -9,15 +9,16 @@ namespace Engine
     class ParticleMaster
     {
     private:
-        static std::vector<Particle> particles;
+        std::vector<Particle> particles;
         ParticleRenderer* renderer;
 
     public:
-        ParticleMaster();
-        ~ParticleMaster();
+        ParticleMaster() {}
+        ~ParticleMaster() {}
         void init(RenderContext* renderContext) {
             renderer = new ParticleRenderer(renderContext);
             renderer->init();
+            printf("update");
         }
         void update() {
             for (int i = 0; i < particles.size(); i++) {
@@ -28,6 +29,9 @@ namespace Engine
         }
         void render() {
             renderer->render(particles);
+        }
+        void release() {
+            renderer->release();
         }
         void addParticle(Particle particle) {
             particles.push_back(particle);

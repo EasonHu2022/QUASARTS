@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include <string>
 #include "glm/glm.hpp"
-#include "QuasartsEngine.h"
+#include "Time/TimeModule.h"
 
 namespace Engine
 {
