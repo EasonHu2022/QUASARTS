@@ -22,7 +22,16 @@
  * Add a template class declaration here (at the bottom).
  * Add a new definition in ECS-Common.h.
  * Update NUM_COMPONENT_TYPES in ECS-Common.h
- * Add a ComponentArray initialization to the Scene.h constructor */
+ * Add a ComponentArray initialization to the Scene.h constructor
+ * Add a ComponentArray initialization to the Scene.h constructor
+ * Add << and >> operators to the component (see existing components) */
+
+/* IMPORTANT NOTE for << >> operators for Components:
+ * Please do not save or load raw pointers, for obvious reasons.
+ * If your Component requires a non-null pointer, please add functionality
+ * to the input stream operator to load in the correct data. Additionally,
+ * make sure your Component already contains all the data needed to load
+ * the external resource and/or create the pointer. */
 
 /* Functions:
  * T get_data(unsigned int entityID)
@@ -203,5 +212,4 @@ namespace Engine {
     template class QS_API ComponentArray<MaterialComponent>;
     template class QS_API ComponentArray<LightComponent>;
     template class QS_API ComponentArray<OrbitComponent>;
-
 }
