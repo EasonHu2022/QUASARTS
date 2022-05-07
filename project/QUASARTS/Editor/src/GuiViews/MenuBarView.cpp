@@ -36,7 +36,7 @@ void MenuBarView::on_gui()
 
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
-
+                
             }
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);

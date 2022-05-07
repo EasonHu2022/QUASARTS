@@ -64,6 +64,7 @@ namespace Engine
 		shadowRenderer->init();
 		meshRenderer->init();
 		skyboxRenderer->init();
+		particleMaster.init(renderContext);
 		renderSystem->init();
 		//do init things
 		GuiWrapper::init();
@@ -135,6 +136,9 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
+		Particle particle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 20.0f, 0.0f), 1, 4, 0, 1);
+		particleMaster.addParticle(particle);
+		particleMaster.update();
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();

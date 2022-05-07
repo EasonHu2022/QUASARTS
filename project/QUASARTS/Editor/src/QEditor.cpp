@@ -111,24 +111,29 @@ void QEditor::test_in_update()
 
 void QEditor::poll_input()
 {
-	// N + L/R Control --> new scene
-	if ( Engine::Input::get_key_combination( { Q_KEY_N, Q_KEY_LEFT_CONTROL } ) )
-	{
-		getGuiView<MenuBarView>()->new_scene = true;
-	}
-
-	if (Engine::Input::get_key_combination({ Q_KEY_O, Q_KEY_LEFT_CONTROL }))
-	{
-		std::string proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
-		if (proj_file.compare("N/A") != 0)
-			FileModule::Instance()->open_root(proj_file);
-		
-	}
 
 	if (Engine::Input::get_key_combination({ Q_KEY_G, Q_KEY_LEFT_SHIFT }))
 	{
 		QDEBUG("Get Key from Editor : G");
 		//ImGui::SetWindowFocus("Script Editor");
+	}
+
+	if (Engine::Input::get_key(Q_KEY_LEFT_CONTROL))
+	{
+		if (Engine::Input::get_key_pressed(Q_KEY_O))
+		{
+			std::string proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+			if (proj_file.compare("N/A") != 0)
+				FileModule::Instance()->open_root(proj_file);
+		}
+	}
+
+	if (Engine::Input::get_key(Q_KEY_LEFT_CONTROL))
+	{
+		if (Engine::Input::get_key_pressed(Q_KEY_N))
+		{
+			getGuiView<MenuBarView>()->new_scene = true;
+		}
 	}
 
 	if (Engine::Input::get_key(Q_KEY_LEFT_CONTROL))
