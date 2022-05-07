@@ -15,6 +15,7 @@
 #include "ECS/Component/CollisionSphereComponent.h"
 #include "ECS/Component/LightComponent.h"
 #include "ECS/Component/ScriptComponent.h"
+#include "ECS/Component/OrbitComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
@@ -201,4 +202,6 @@ namespace Engine {
     template class QS_API ComponentArray<CameraComponent>; 
     template class QS_API ComponentArray<MaterialComponent>;
     template class QS_API ComponentArray<LightComponent>;
+    template class QS_API ComponentArray<OrbitComponent>;
+
 }

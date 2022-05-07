@@ -1,10 +1,10 @@
 #pragma once
 
-#include "QuasartsEngine.h"
 #include "Core/IManager.h"
 #include "btBulletCollisionCommon.h"
 #include "glm/vec3.hpp"
-#include "Time/QTime.h"
+#include "Event/EventModule.h"
+#include "Time/TimeModule.h"
 
 namespace Engine {
 
@@ -148,7 +148,7 @@ namespace Engine {
 		std::vector<int> pretendComponents;
 
 		void time_tests();
-		QTime trackTime, timeCounter;
+		QTime timeCounter;
 
 
 		// Events //

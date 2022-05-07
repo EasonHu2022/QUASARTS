@@ -41,6 +41,10 @@ namespace Engine
 		shadowRenderer = new ShadowRenderer(renderContext);
 		meshRenderer = new MeshRenderer(renderContext);
 		skyboxRenderer = new SkyBoxRenderer(renderContext);
+		collisionSystem = new CollisionSystem();
+		ECSManager::Instance()->register_system(SYSTEM_COLLISION, collisionSystem);
+		orbitSystem = new OrbitSystem();
+		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
 		/*************************Create and Init********************************/
 
 	}

@@ -118,7 +118,6 @@ namespace Engine {
 		// Time tests.
 		time_tests();
 
-
 	} // update()
 
 	int PhysicsSystem::stop()
@@ -391,11 +390,11 @@ namespace Engine {
 
 	void PhysicsSystem::time_tests()
 	{
-		QTime deltaT = TimeModule::Instance()->getFrameDeltaTime();
+		QTime deltaT = TimeModule::Instance()->get_frame_delta_time();
 		if (timeCounter.sec() < 0)
 		{
 			QDEBUG("engine time: {0}, deltaT: {1}, FPS: {2}",				
-				TimeModule::Instance()->getTime().sec(),
+				TimeModule::Instance()->get_time().sec(),
 				deltaT.sec(),
 				(1.f / deltaT.sec())
 			);

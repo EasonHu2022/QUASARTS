@@ -2,9 +2,10 @@
 
 // Local includes:
 #include "ECS/ECSManager.h"
+#include "System.h"
 
-// Engine includes
-#include "QuasartsEngine.h"
+#include "Event/EventModule.h"
+#include "Scene/PhysicsSystem.h"
 
 
 namespace Engine {
@@ -25,8 +26,11 @@ namespace Engine {
         CollisionSystem();
         ~CollisionSystem();
 
-
+        void init();
+        int start();
         void update();
+        int stop();
+        void release();
 
 
         // Usage //
@@ -47,6 +51,7 @@ namespace Engine {
 
         /// <summary>
         /// Change the collision object's offset (position relative to its parent entity).
+        /// The collision object will follow its parent entity with this offset.
         /// </summary>
         /// <param name="aEntityId">ID of the collision component's parent entity.</param>
         /// <param name="aDeltaOffset">The vector which will be added to the current offset.</param>
