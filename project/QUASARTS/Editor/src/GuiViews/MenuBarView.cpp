@@ -30,7 +30,12 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
-                std::string proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+                std::string proj_file;
+                #if defined(_WIN32)
+                    proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+                #else
+                    proj_file = OpenFileDialogue();
+                #endif
                 if(proj_file.compare("N/A")!=0)
                     FileModule::Instance()->open_root(proj_file);
 
@@ -121,7 +126,12 @@ void MenuBarView::on_gui()
 
                     auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
 
-                    std::string script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
+                    std::string script_file;
+                    #if defined(_WIN32)
+                        script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
+                    #else
+                        script_file = OpenFileDialogue();
+                    #endif
                     //std::cout << script_file << std::endl;
                     QDEBUG("Successfully added script component to entity:{0}, path: {1}", entityID, script_file);
 

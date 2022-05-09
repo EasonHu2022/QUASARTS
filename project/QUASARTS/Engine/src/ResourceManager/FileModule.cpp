@@ -3,11 +3,13 @@
 #include "ECS/System/AudioSystem.h"
 #include <stdlib.h>
 #include <iostream>
-#include <io.h>
 #include "Core/QUtil.h"
-
 #include <cstring>
-#include "atlstr.h"
+
+#ifdef QS_WINDOWS
+	#include <io.h>
+	#include "atlstr.h"
+#endif
 
 FileModule* FileModule::instance = nullptr;
 /// <summary>
@@ -82,53 +84,59 @@ void FileModule::build_file_vdb(std::string root_dir)
 {
 }
 
-
-int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
-{
-	intptr_t  handle = 0;
-	struct _finddata_t fileinfo;
-	const char* suffix = "\\* ";
-	const char* suffDir = "\\";
-	char* path = char_merge(node->path, suffix);
-	char* next = char_merge(node->path, suffDir);
-	
-	handle = _findfirst(path, &fileinfo);
-	if (handle != -1)
+#ifdef QS_WINDOWS
+	int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 	{
-		do
+		intptr_t  handle = 0;
+		struct _finddata_t fileinfo;
+		const char* suffix = "\\* ";
+		const char* suffDir = "\\";
+		char* path = char_merge(node->path, suffix);
+		char* next = char_merge(node->path, suffDir);
+		
+		handle = _findfirst(path, &fileinfo);
+		if (handle != -1)
 		{
-			if (fileinfo.attrib & _A_SUBDIR)
+			do
 			{
-				//it's a subfolder
-				if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+				if (fileinfo.attrib & _A_SUBDIR)
 				{
-					//create new node
-					auto dir_node = new QDirectoriesNode();
-					dir_node->name = fileinfo.name;
-					char* node_path = char_merge(next, fileinfo.name);
-					dir_node->path = node_path;
-					node->children.push_back(dir_node);
-					QDEBUG("create a dirnode under {0}. path is {1}",node->path, dir_node->path);
-					recursively_build_dirnode(dir_node);
+					//it's a subfolder
+					if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+					{
+						//create new node
+						auto dir_node = new QDirectoriesNode();
+						dir_node->name = fileinfo.name;
+						char* node_path = char_merge(next, fileinfo.name);
+						dir_node->path = node_path;
+						node->children.push_back(dir_node);
+						QDEBUG("create a dirnode under {0}. path is {1}",node->path, dir_node->path);
+						recursively_build_dirnode(dir_node);
+					}
 				}
-			}
-			else
-			{
-				//files
-				auto file_node = new QFileNode();
-				file_node->name = fileinfo.name;
-				char* node_path = char_merge(next, fileinfo.name);
-				file_node->path = node_path;
-				QDEBUG("create a filenode under {0}. name is {1}", node->path, file_node->path);
-				node->files.push_back(file_node);
-			}
-		} while (_findnext(handle, &fileinfo) == 0);
-		_findclose(handle);
+				else
+				{
+					//files
+					auto file_node = new QFileNode();
+					file_node->name = fileinfo.name;
+					char* node_path = char_merge(next, fileinfo.name);
+					file_node->path = node_path;
+					QDEBUG("create a filenode under {0}. name is {1}", node->path, file_node->path);
+					node->files.push_back(file_node);
+				}
+			} while (_findnext(handle, &fileinfo) == 0);
+			_findclose(handle);
+		}
+		delete[] path;
+		delete[] next;
+		return 0;
 	}
-	delete[] path;
-	delete[] next;
-	return 0;
-}
+#else
+	int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
+	{
+		return 0;
+	}
+#endif
 
 int FileModule::create_resource_node()
 {	
@@ -221,6 +229,7 @@ void FileModule::save_root(std::string root, std::string name) {
 	of.close();
 }
 
+#ifdef QS_WINDOWS
 std::string FileModule::get_internal_assets_path()
 {
 
@@ -237,4 +246,10 @@ std::string FileModule::get_internal_assets_path()
 	str += "\\Assets\\";
 	return str;
 }
-
+#else
+std::string FileModule::get_internal_assets_path()
+{
+	std::string str("String");
+	return str;
+}
+#endif

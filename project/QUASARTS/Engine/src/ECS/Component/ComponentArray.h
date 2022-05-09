@@ -16,13 +16,14 @@
 #include "ECS/Component/LightComponent.h"
 #include "ECS/Component/ScriptComponent.h"
 #include "ECS/Component/OrbitComponent.h"
+#include "ECS/Component/HealthComponent.h"
+#include "ECS/Component/WeaponComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
  * Add a template class declaration here (at the bottom).
  * Add a new definition in ECS-Common.h.
  * Update NUM_COMPONENT_TYPES in ECS-Common.h
- * Add a ComponentArray initialization to the Scene.h constructor
  * Add a ComponentArray initialization to the Scene.h constructor
  * Add << and >> operators to the component (see existing components) */
 
@@ -197,4 +198,6 @@ namespace Engine {
     template class QS_API ComponentArray<MaterialComponent>;
     template class QS_API ComponentArray<LightComponent>;
     template class QS_API ComponentArray<OrbitComponent>;
+    template class QS_API ComponentArray<HealthComponent>;
+    template class QS_API ComponentArray<WeaponComponent>;
 }
