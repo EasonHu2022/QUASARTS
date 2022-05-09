@@ -1,9 +1,10 @@
 #pragma once
 
+#include <list>
+
 // Local includes:
 #include "ECS/ECSManager.h"
 #include "System.h"
-
 
 namespace Engine {
 

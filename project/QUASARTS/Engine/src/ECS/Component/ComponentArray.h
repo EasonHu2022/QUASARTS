@@ -33,21 +33,6 @@
  * make sure your Component already contains all the data needed to load
  * the external resource and/or create the pointer. */
 
-/* Functions:
- * T get_data(unsigned int entityID)
- * void add_data(unsigned int entityID)
- * void add_data(unsigned int entityID, T data)
- * void copy_data(unsigned int copyFrom, unsigned int copyTo)
- * void remove_data(unsigned int entityID)
- * void replace_data(unsigned int entityID, T data)
- * unsigned int entityID_from_data(unsigned int index)
- * unsigned int data_from_entityID(unsigned int entityID) */
-
-/* Members:
- * std::array<T, MAX_ENTITIES> componentData
- * std::array<unsigned int, MAX_ENTITIES> entityIDs
- * unsigned int num_entries */
-
 namespace Engine {
     class QS_API ParentComponentArray {
         public:
