@@ -19,7 +19,7 @@ namespace Engine {
 	// Input stream operator:
     inline std::istream & operator >> (std::istream &inStream, ScriptComponent &script) {
 		// Use the name and path, nothing else:
-        inStream >>  script.script_path >> script.entity_id;
+        inStream >> script.script_path >> script.entity_id;
 
         return inStream;
     }
