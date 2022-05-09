@@ -2,6 +2,7 @@
 
 // Library includes:
 #include <cstdint>
+#include <iostream>
 
 // Local includes:
 #include "Core/Core.h"
@@ -12,7 +13,7 @@ namespace Engine {
 
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
-    #define NUM_COMPONENT_TYPES 7
+    #define NUM_COMPONENT_TYPES 10
 
     // Maximum number of entities allowed:
     #define MAX_ENTITIES 1024
@@ -27,6 +28,8 @@ namespace Engine {
     #define COMPONENT_SCRIPT            5
     #define COMPONENT_CAMERA            6
     #define COMPONENT_ORBIT             7
+    #define COMPONENT_HEALTH            8
+    #define COMPONENT_WEAPON            9
 
     // System types:
     #define SYSTEM_SCRIPT       0
