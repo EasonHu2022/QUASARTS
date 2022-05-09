@@ -1,10 +1,14 @@
 #include "SceneCameraController.h"
-#include  <direct.h>  
 #include  <stdio.h> 
 #include <cstring>
-#include "atlstr.h"
 #include <string>
 #include "QuasartsEngine.h"
+
+#ifdef QS_WINDOWS
+	#include <direct.h>
+	#include "atlstr.h"
+#endif
+
 void SceneCameraController::on_update()
 {
 	auto camera = Engine::ECSManager::Instance()->get_camera();

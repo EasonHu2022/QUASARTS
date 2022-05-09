@@ -14,7 +14,11 @@ public:
 	bool new_attribute;
 	std::string folder_path;
 	std::string project_name;
+	#if defined(_WIN32)
 	static std::string OpenFileDialogue(const wchar_t*);
+	#else
+	static std::string OpenFileDialogue();
+	#endif
 	static std::string OpenFolderDialogue();
 	void load_object(std::string, std::string);
 	void newProject();

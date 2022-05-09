@@ -229,6 +229,7 @@ void FileModule::save_root(std::string root, std::string name) {
 	of.close();
 }
 
+#ifdef QS_WINDOWS
 std::string FileModule::get_internal_assets_path()
 {
 
@@ -245,4 +246,10 @@ std::string FileModule::get_internal_assets_path()
 	str += "\\Assets\\";
 	return str;
 }
-
+#else
+std::string FileModule::get_internal_assets_path()
+{
+	std::string str("String");
+	return str;
+}
+#endif
