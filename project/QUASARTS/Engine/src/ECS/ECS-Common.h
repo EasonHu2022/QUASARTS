@@ -26,6 +26,7 @@ namespace Engine {
     #define COMPONENT_LIGHTING          4
     #define COMPONENT_SCRIPT            5
     #define COMPONENT_CAMERA            6
+    #define COMPONENT_ORBIT             7
 
     // System types:
     #define SYSTEM_SCRIPT       0
@@ -33,6 +34,7 @@ namespace Engine {
     #define SYSTEM_PHYSICS      2
     #define SYSTEM_COLLISION    3
     #define SYSTEM_AUDIO        4
+    #define SYSTEM_ORBIT        5
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

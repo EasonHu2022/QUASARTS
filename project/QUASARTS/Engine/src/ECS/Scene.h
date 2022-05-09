@@ -31,6 +31,7 @@ namespace Engine {
             ComponentArray<LightComponent>* array_light = new ComponentArray<LightComponent>;
             ComponentArray<ScriptComponent>* array_script = new ComponentArray<ScriptComponent>;
             ComponentArray<CameraComponent>* array_camera = new ComponentArray<CameraComponent>;
+            ComponentArray<OrbitComponent>* array_orbit = new ComponentArray<OrbitComponent>;
 
             componentArrays.push_back(array_transform);
             componentArrays.push_back(array_mesh);
@@ -39,6 +40,7 @@ namespace Engine {
             componentArrays.push_back(array_light);
             componentArrays.push_back(array_script);
             componentArrays.push_back(array_camera);
+            componentArrays.push_back(array_orbit);
         }
 
         // Destructor:

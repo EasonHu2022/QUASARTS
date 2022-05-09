@@ -27,15 +27,29 @@ namespace Engine
     } // CollisionSystem()
 
 
+    void CollisionSystem::init()
+    {
+
+    } // init()
+
+
+    int CollisionSystem::start()
+    {
+        return 0;
+
+    } // start()
+
+
     void CollisionSystem::update()
     {
-        CollisionSphereComponent* collisionSphere, otherSphere;
+        ECSManager* active_manager = get_manager();
+        CollisionSphereComponent* collisionSphere;
 
         // Handle collisions from last physics update.
         for (int i = 0; i < mNumCollided; ++i)
         {
             unsigned int entityId = mCollidedEntityIds[i];
-            collisionSphere = get_manager()->get_component<CollisionSphereComponent>(entityId, (unsigned)COMPONENT_COLLISION_SPHERE);
+            collisionSphere = active_manager->get_component<CollisionSphereComponent>(entityId, (unsigned)COMPONENT_COLLISION_SPHERE);
 
             for (int j = 0; j < collisionSphere->mNumOverlaps; ++j)
             {
@@ -49,19 +63,20 @@ namespace Engine
 
 
         // Update all collision object positions for next physics update.
-        ECSManager* active_manager = get_manager();
         quasarts_entity_ID_mask* entitiesSpheres = get_entity_ID_mask(get_mask_index(COMPONENT_COLLISION_SPHERE));
         TransformComponent* transf;
+        unsigned int collisionType = COMPONENT_COLLISION_SPHERE;
+        unsigned int transformType = COMPONENT_TRANSFORM;
         for (int i = 0; i < MAX_ENTITIES; i++)
         {
             if (entitiesSpheres->mask[i] == 1)
             {
                 // The entity is valid for the System:
                 collisionSphere = active_manager->get_component
-                    <CollisionSphereComponent>(i, COMPONENT_COLLISION_SPHERE);
+                    <CollisionSphereComponent>(i, collisionType);
 
                 transf = active_manager->get_component
-                    <TransformComponent>(i, COMPONENT_TRANSFORM);
+                    <TransformComponent>(i, transformType);
 
 
                 // Update the component.
@@ -71,16 +86,30 @@ namespace Engine
     }
 
 
+    int CollisionSystem::stop()
+    {
+        return 0;
+
+    } // stop()
+
+
+    void CollisionSystem::release()
+    {
+
+    } // release()
+
+
     // Usage //
 
     void CollisionSystem::init_collision_component(unsigned int const aEntityId, int const aComponentType)
     {
+        ECSManager* active_manager = get_manager();
+
         // Get entity if it has the correct component.
         quasarts_entity_ID_mask* entitiesSpheres = get_entity_ID_mask(get_mask_index(aComponentType));
         if (entitiesSpheres->mask[aEntityId] == 1)
         {
             // Get component.
-            ECSManager* active_manager = get_manager();
             CollisionSphereComponent* collisionSphere = active_manager->get_component
                 <CollisionSphereComponent>(aEntityId, COMPONENT_COLLISION_SPHERE);
 

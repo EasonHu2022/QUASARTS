@@ -3,7 +3,7 @@ group project for HPG
 
 
 # Documentation #
-
+## [Script System](./project/QUASARTS/Engine/src/Scripts/README.md) 
 ## Event System ##
 
 A callback-based data-driven event system for sending information across the engine.
