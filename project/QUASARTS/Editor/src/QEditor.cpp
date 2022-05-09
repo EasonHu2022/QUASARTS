@@ -4,7 +4,6 @@
 #include "GuiViews/GameSceneView.h"
 #include "GuiViews/HierarchyView.h"
 #include "GuiViews/AttributeView.h"
-#include "GuiViews/TextEditorView.h"
 #include "Core/Mesh.h"
 #include "Core/Input.h"
 
@@ -27,7 +26,6 @@ void QEditor::init()
 	add_gui_view<GameSceneView>();
 	add_gui_view<HierarchyView>();
 	add_gui_view<AttributeView>();
-	add_gui_view<TextEditorView>();
 	//test_in_init();
 
 	cameraController = new SceneCameraController();
