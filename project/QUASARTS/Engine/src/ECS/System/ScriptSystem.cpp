@@ -100,7 +100,8 @@ namespace Engine {
 		}
 		ofs << "--Update the script here\n"
 			"-- thiz: current entity id\n"
-			"function onUpdate(thiz)\n"
+			"-- dt: dealt time\n"
+			"function onUpdate(thiz, dt)\n"
 			"end" << std::endl;
 		ofs.close();
 

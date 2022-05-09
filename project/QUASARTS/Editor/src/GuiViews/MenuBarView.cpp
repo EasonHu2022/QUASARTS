@@ -411,6 +411,7 @@ void MenuBarView::newScript() {
             if (FileModule::Instance()->get_root() != nullptr) 
             {
                 std::string file_path = (std::string)FileModule::Instance()->get_root()->path + "/Scripts";
+                Engine::ScriptSystem::Instance()->createScript(buf1, file_path);
             }
             else 
             {
