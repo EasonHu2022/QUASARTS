@@ -8,6 +8,6 @@
 #else	
 	#define QS_API __attribute__((visibility("default")))
 	#ifndef MAX_PATH
-		#define MAX_PATH 32000
+		#define MAX_PATH 4096
 	#endif
 #endif 
