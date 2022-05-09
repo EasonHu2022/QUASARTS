@@ -133,7 +133,7 @@ entity.x(thiz, 2)
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
-entity.updateTransform   | current_entity_id(int) | step(vec3)
+entity.updatePosition   | current_entity_id(int) | step(vec3)
 entity.updateRotation    | current_entity_id(int) | step(vec3)
 entity.updateScale       | current_entity_id(int) | step(vec3)
 
