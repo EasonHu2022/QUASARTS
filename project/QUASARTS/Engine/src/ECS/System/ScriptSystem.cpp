@@ -118,7 +118,7 @@ namespace Engine {
 		}
 		else
 		{
-			for (auto sc : script_components)
+			for (auto& sc : script_components)
 			{
 				if(isScriptExists(sc->script_path))
 				{
@@ -216,7 +216,6 @@ namespace Engine {
 			{
 				(*(sc->update_function))(sc->entity_id, TimeModule::Instance()->get_frame_delta_time().sec());
 			}
-			//
 		}
 	}
 

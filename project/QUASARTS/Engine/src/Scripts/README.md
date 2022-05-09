@@ -13,7 +13,8 @@ To keep tracking the content in script, please put everything you want to update
 ``` lua
 --Update the script here
 --thiz: current entity id
-function onUpdate(thiz)
+--dt : timer
+function onUpdate(thiz, dt)
   --put everything you want to update every frame
 end
 ```
@@ -130,6 +131,23 @@ entity.z   | current_entity_id(int) | step(float)
 entity.x(thiz, 2)
 ```
 
+Function | Argument1 | Argument2
+---------| --------- | ---------
+entity.updatePosition   | current_entity_id(int) | step(vec3)
+entity.updateRotation    | current_entity_id(int) | step(vec3)
+entity.updateScale       | current_entity_id(int) | step(vec3)
+
+**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`
+
+#### simple example
+``` lua
+local dP = vec3(0,0,0)
+local dR = vec3(0,0,0)
+local dS = vec3(0,0,0)
+entity.updatePosition(thiz, dP)
+entity.updateRotation(thiz, dR)
+entity.updateScale(thiz, dS)
+```
 
 
 
