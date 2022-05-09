@@ -213,8 +213,9 @@ namespace Engine {
 		{
 			if (sc->update_function)
 			{
-				(*(sc->update_function))(sc->entity_id);
+				(*(sc->update_function))(sc->entity_id, TimeModule::Instance()->get_frame_delta_time().sec());
 			}
+			//
 		}
 	}
 
@@ -222,7 +223,7 @@ namespace Engine {
 	{
 		if (component->update_function)
 		{
-			(*(component->update_function))();
+			(*(component->update_function))(component->entity_id, TimeModule::Instance()->get_frame_delta_time().sec());
 		}
 	}
 
