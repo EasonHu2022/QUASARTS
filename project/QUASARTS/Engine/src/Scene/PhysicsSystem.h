@@ -15,6 +15,7 @@ namespace Engine {
 #define Q_MAX_COLLISION_OBJS				256
 
 #define Q_DEFAULT_SPHERE_RADIUS				1.f
+#define Q_MAX_COLLISION_SPHERE_SHAPES		64		// Soft max - exceeding this number prints a warning.
 
 #define Q_COLLISION_FILTER_HIDDEN			0
 #define Q_COLLISION_FILTER_VISIBLE			1
@@ -52,7 +53,7 @@ namespace Engine {
 		/// <param name="worldPosition">Position in world coordinates of the assigned collision object.</param>
 		/// <param name="radius">Radius of the assigned collision object's sphere shape.</param>
 		/// <returns>ID of the assigned collision object, or -1 if an object could not be assigned.</returns>
-		int assign_collision_sphere(const int aEntityId, const glm::vec3 worldPosition, const float radius);
+		int assign_collision_sphere(const int aEntityId, const glm::vec3 aWorldPosition, const float aRadius);
 
 		/// <summary>
 		/// Unassign a collision object from a collision component.
@@ -65,7 +66,14 @@ namespace Engine {
 		/// </summary>
 		/// <param name="obj_idx">The ID of the object to move.</param>
 		/// <param name="worldDisplacement">A vector in world coordinates to which the given object will be moved.</param>
-		void set_collision_object_position(const int obj_idx, const glm::vec3 worldPosition);
+		void set_collision_object_position(const int aObjId, const glm::vec3 aNewWorldPosition);
+
+		/// <summary>
+		/// Set the radius of the indicated collision object's collision sphere.
+		/// </summary>
+		/// <param name="aObjId"></param>
+		/// <param name="aNewRadius"></param>
+		void set_collision_sphere_radius(int const aObjId, float const aNewRadius);
 
 		/// <summary>
 		/// Casts a ray from the given origin along the given direction vector. Raycasting stops at the first detected hit. Ray has finite length: ray.length = direction.length if direction.length >= Q_RAYCAST_RAY_MIN_LENGTH, otherwise ray.length = Q_RAYCAST_RAY_MIN_LENGTH.
@@ -74,7 +82,7 @@ namespace Engine {
 		/// <param name="direction">Ray world direction.</param>
 		/// <param name="hitLocation">Address of vector to store the world location of a detected hit.</param>
 		/// <returns>true is there is a hit, false otherwise.</returns>
-		bool raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation);
+		bool raycast(const glm::vec3 aOrigin, const glm::vec3 aDirection, glm::vec3* aHitLocation);
 
 
 		// Collision world variables //
@@ -94,8 +102,8 @@ namespace Engine {
 		{
 			CollisionObjectUsage mUsage;	// Describes the usage of the corresponding collision object in the collision world's collision object array.
 			btCollisionObject* pObject;
-			int mComponentId;
-			CollisionObjectInfo() : mUsage(Unassigned), pObject(nullptr), mComponentId(-1) {}
+			int mEntityId;
+			CollisionObjectInfo() : mUsage(Unassigned), pObject(nullptr), mEntityId(-1) {}
 		};
 		CollisionObjectInfo collisionObjectArrayInfo[Q_MAX_COLLISION_OBJS];
 
@@ -131,7 +139,7 @@ namespace Engine {
 		/// <returns>true is there is a hit, false otherwise.</returns>
 		bool raycast_bt(const btVector3 origin, const btVector3 direction, btVector3* hitLocation);
 
-		// Math lib conversions
+		// Math library conversions
 		static btVector3 glmvec3_to_bt(const glm::vec3 glm_vec) { return btVector3(glm_vec.x, glm_vec.y, glm_vec.z); }
 		static glm::vec3 btvector3_to_glm(const btVector3 bt_vec) { return glm::vec3(bt_vec.x(), bt_vec.y(), bt_vec.z()); }
 
@@ -141,6 +149,9 @@ namespace Engine {
 		static std::string shape_to_string(const btCollisionShape* shape);
 		static std::string vector_to_string(const btVector3 vec);
 
+	public:
+		std::string object_tostring(int const objId);
+
 		// Tests //
 	private:
 		void runTests_init();
@@ -149,6 +160,8 @@ namespace Engine {
 
 		void time_tests();
 		QTime timeCounter;
+
+		void orbit_tests();
 
 
 		// Events //

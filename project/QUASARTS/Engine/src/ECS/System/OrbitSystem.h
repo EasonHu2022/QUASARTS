@@ -8,20 +8,31 @@
 namespace Engine {
 
 #define MAX_ORBITS MAX_ENTITIES     // from ECS-Common.h
-
+    
     class QS_API OrbitSystem : public System
     {
         /// <summary>
-        /// List of orbiting entities in descending order of position dependence.
-        /// For an entity E at index i in the list, all entities which orbit E will
-        /// have indices greater than i.
-        /// This is so that, in a given frame, a primary with its own orbit is never
-        /// updated after its satellite(s), which would invalidate the relative 
-        /// positions of its previously updated satellite(s).
+        /// Tree of orbiting entities.
+        /// The orbits must be updated in descending order, from root to leaf.
+        /// This is so that, in a given frame, a primary that has its own orbit is
+        /// never updated after its satellite(s), which would invalidate the relative
+        /// positions of any of its satellite(s) which were already updated in that
+        /// frame.
         /// </summary>
-        std::list<int> mOrderedOrbits;
-        size_t mNumOrbits;
-        int mEntityPrimaries[MAX_ORBITS]; // Track
+    private:
+        struct OrbitNode
+        {
+            unsigned int mEntityId;
+            unsigned int mPrimaryId;
+            std::shared_ptr<OrbitNode> pPrimaryNode;    // This node's Parent - if the primary entity lacks an orbit node, this points to the tree root.
+            std::set<std::shared_ptr<OrbitNode>> mSatelliteNodes;    // This node's Children - list of all nodes which have this node as their primary.
+            std::string tostring();
+        };
+        // Access point for the tree - does NOT represent an entity.
+        std::shared_ptr<OrbitNode> mOrbitRoot;
+        // Map of entity IDs to their corresponding orbit nodes.
+        std::unordered_map<unsigned int, std::shared_ptr<OrbitNode>> mAllOrbitNodes;
+
         
     public:
         OrbitSystem();
@@ -46,7 +57,43 @@ namespace Engine {
         /// </summary>
         /// <param name="aEntityId">ID of the orbiting entity.</param>
         /// <param name="aPrimaryEntityId">ID of the entity which the satellite will orbit around.</param>
-        void set_orbit_primary(unsigned int const aEntityId, unsigned int const aPrimaryEntityId);
+        /// <returns>0 if successful, non-0 otherwise.</returns>
+        int set_orbit_primary(unsigned int const aEntityId, unsigned int const aPrimaryEntityId);
+
+        /// <summary>
+        /// Set the periapse distance for the given entity's orbit component.
+        /// </summary>
+        /// <param name="aEntityId"></param>
+        /// <param name="aDistPeriapse"></param>
+        /// <returns></returns>
+        int set_orbit_periapse(unsigned int const aEntityId, float const aDistPeriapse);
+
+        /// <summary>
+        /// Clears the entity's orbit component.
+        /// Removes the entity's node from the orbit tree - the entity will no longer move due to orbital motion when the game is running.
+        /// The entity's node is kept alive for re-use.
+        /// </summary>
+        /// <param name="aEntityId">ID of the entity whose orbit primary is to be cleared.</param>
+        void clear_orbit(unsigned int const aEntityId);
+
+        /// <summary>
+        /// Destroy the entity's node.
+        /// Calls clear_orbit() to safely remove the entity's node from the tree.
+        /// </summary>
+        /// <param name="aEntityId">ID of the entity whose orbit node will be destroyed.</param>
+        void destroy_orbit(unsigned int const aEntityId);
+
+
+        // Util //
+    private:
+        std::shared_ptr<OrbitSystem::OrbitNode> get_node(unsigned int const aEntityId);
+
+
+        // Debug //
+    private:
+        std::string print_tree();
+        void tree_tests();
 
     };
+
 }

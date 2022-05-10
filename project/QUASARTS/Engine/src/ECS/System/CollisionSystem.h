@@ -18,7 +18,6 @@ namespace Engine {
     public:
         int mNumCollided; // Track how many components have had collisions in each frame.
         int mCollidedEntityIds[Q_MAX_COLLIDED]; // Track which components have collisions in each frame.
-        std::vector<int> mCollided;
         
 
     public:
@@ -39,32 +38,50 @@ namespace Engine {
         /// Pair a collision component with a collision object in the physics system.
         /// </summary>
         /// <param name="entityId"></param>
-        /// <param name="aComponentType"></param>
+        /// <param name="aComponentType">Defined value, e.g., COMPONENT_COLLISION_SPHERE</param>
         void init_collision_component(unsigned int const aEntityId, int const aComponentType);
 
         /// <summary>
         /// Unpair a collision component from its collision object in the physics system.
         /// </summary>
         /// <param name="entityId"></param>
-        /// <param name="aComponentType"></param>
+        /// <param name="aComponentType">Defined value, e.g., COMPONENT_COLLISION_SPHERE</param>
         void release_collision_component(unsigned int const aEntityId, int const aComponentType);
 
         /// <summary>
         /// Change the collision object's offset (position relative to its parent entity).
         /// The collision object will follow its parent entity with this offset.
         /// </summary>
-        /// <param name="aEntityId">ID of the collision component's parent entity.</param>
+        /// <param name="aEntityId"></param>
         /// <param name="aDeltaOffset">The vector which will be added to the current offset.</param>
         void move_collision_component(unsigned int const aEntityId, int const aComponentType, glm::vec3 const aDeltaOffset);
+
+        /// <summary>
+        /// Sets radius of the collision sphere component and its paired collision object, if the entity has a valid collision sphere component.
+        /// </summary>
+        /// <param name="aEntityId"></param>
+        /// <param name="aNewRadius"></param>
+        void set_collision_sphere_radius(unsigned int const aEntityId, float const aNewRadius);
 
 
         // Util //
     private:
         unsigned int get_mask_index(int const aComponentType);
 
-        // Events
+
+        // Events //
     public:
         void EV_CALLBACK_SIGNATURE(Collision);
+
+
+        // Debug //
+    private:
+        void component_tests_init();
+        void component_tests_running();
+        int entity0Id, entity1Id;
+        QTime oscillationTimer, updateTimer;
+        glm::vec3 movement_per_second;
+        bool oneshot;
 
     };
 }

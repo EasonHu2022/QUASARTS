@@ -9,10 +9,8 @@
 
 namespace Engine
 {
-	class QS_API Time
-	{
 
-	};
+#define Q_MAX_DELTA_T		1.f / 30	// Delta T is capped to that of 30 FPS to avoid simulation instability.
 
 	class QS_API TimeImpl : public IModule
 	{

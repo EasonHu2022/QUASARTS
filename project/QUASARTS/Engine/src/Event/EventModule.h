@@ -29,25 +29,30 @@ namespace Engine {
 // EventModule::Instance()->register_handler( CALLBACK_REGISTRATION( EventType ) );
 #define EV_CALLBACK_REGISTRATION(eventType) #eventType, [this](const Engine::EventModule::Event& evt) -> void { this->handler_##eventType(evt); }
 
-// Returns a wrapper for an event argument, initialised with a boolean of the given value.
+// Returns a wrapper for an event argument initialised with a boolean of the given value.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_BOOL( boolValue1 )}, ... } );
 #define EV_ARG_BOOL(aBool)				EventModule::boolArg( aBool )
 
-// Returns a wrapper for an event argument, initialised with an integer of the given value.
+// Returns a wrapper for an event argument initialised with an integer of the given value.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_INT( intValue1 )}, ... } );
 #define EV_ARG_INT(aInt)				EventModule::intArg( aInt )
 
-// Returns a wrapper for an event argument, initialised with a float of the given value.
+// Returns a wrapper for an event argument initialised with a float of the given value.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_FLOAT( floatValue1 )}, ... } );
 #define EV_ARG_FLOAT(aFloat)			EventModule::floatArg( aFloat )
 
-// Returns a wrapper for an event argument, initialised with a char array of size 64 containing the given string.
+// Returns a wrapper for an event argument initialised with a char array of size 64 containing the given string.
 // Usage:
 // EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_STRING( cstringValue1 )}, ... } );
 #define EV_ARG_STRING(aString)			EventModule::stringArg( aString )
+
+// Returns a wrapper for an event argument initialised with a double of the given value.
+// Usage:
+// EventModule::Instance()->create_event( "EventType", EventModule::EventPriority::PriorityLevel, { {"argumentName1", EV_ARG_DOUBLE( doubleValue1 )}, ... } );
+#define EV_ARG_DOUBLE(aDouble)			EventModule::doubleArg( aDouble )
 
 
 // Important numbers //
@@ -122,6 +127,7 @@ namespace Engine {
 		static VarArg intArg(const int aInt);
 		static VarArg floatArg(const float aFloat);
 		static VarArg stringArg(const std::string aStr);
+		static VarArg doubleArg(const double aDouble);
 
 
 		// debug //
@@ -167,13 +173,15 @@ namespace Engine {
 				int vInt;
 				float vFloat;
 				char vCStr[MAX_CHARS_PER_STRING_ARG];
+				double vDouble;
 			};
 			enum class ArgType
 			{
 				Bool,
 				Integer,
 				Float,
-				String
+				String,
+				Double
 			};
 
 			ArgUnion argValue;
@@ -200,6 +208,7 @@ namespace Engine {
 			bool find_argument(int* dest, const std::string argName) const;
 			bool find_argument(float* dest, const std::string argName) const;
 			bool find_argument(std::string* dest, const std::string argName) const;
+			bool find_argument(double* dest, const std::string argName) const;
 
 
 			// Utils //
