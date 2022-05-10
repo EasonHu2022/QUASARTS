@@ -42,12 +42,12 @@ namespace Engine
 
 	// Public Usage //
 
-	QTime TimeModule::getFrameDeltaTime()
+	QTime TimeModule::get_frame_delta_time()
 	{
 		return implInstance->getDeltaFrameTime();
 	}
 
-	QTime TimeModule::getTime()
+	QTime TimeModule::get_time()
 	{
 		return implInstance->getTimeSinceInit();
 	}

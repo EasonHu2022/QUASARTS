@@ -6,16 +6,19 @@
 // Engine includes
 #include "glm/vec3.hpp"
 
+#include  <sstream>
+
 
 namespace Engine {
 
+// Maximum number of overlaps recorded per collision component per frame.
 #define Q_MAX_OVERLAPS  4
 
     struct QS_API CollisionSphereComponent
     {
         CollisionSphereComponent() :
             mLocalOffset(0,0,0),
-            mRadius(1),
+            mRadius(1.f),
             mCollisionObjectId(-1),
             mNumOverlaps(0)
         { }
@@ -51,6 +54,18 @@ namespace Engine {
             ++mNumOverlaps;
         }
 
+
+        std::string overlap_tostring()
+        {
+            std::ostringstream ostr;
+            ostr << "Overlaps: " << mNumOverlaps << " ( ";
+            for (int i = 0; i < mNumOverlaps; ++i)
+            {
+                ostr << mOverlapEntityIds[i] << " ";
+            }
+            ostr << ")";
+            return ostr.str();
+        }
     };
 
 
@@ -58,15 +73,10 @@ namespace Engine {
     // Input stream operator:
     inline std::istream & operator >> (std::istream &inStream, CollisionSphereComponent &collisionSphere) {
         inStream
-        >> collisionSphere.mLocalOffset[0] >> collisionSphere.mLocalOffset[1]
-        >> collisionSphere.mLocalOffset[2] >> collisionSphere.mRadius
-        >> collisionSphere.mCollisionObjectId >> collisionSphere.mNumOverlaps;
-        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
-            inStream >> collisionSphere.mOverlapEntityIds[i];
-        }
-        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
-            inStream >> collisionSphere.mOverlapComponentTypes[i];
-        }
+            >> collisionSphere.mLocalOffset[0] >> collisionSphere.mLocalOffset[1]
+            >> collisionSphere.mLocalOffset[2] >> collisionSphere.mRadius;
+
+        // TODO : create collision object in PhysicsSystem to populate mCollisionObjectId
 
         return inStream;
     }
@@ -75,14 +85,7 @@ namespace Engine {
     inline std::ostream & operator << (std::ostream &outStream, const CollisionSphereComponent &collisionSphere) {
         outStream
         << collisionSphere.mLocalOffset[0] << " " << collisionSphere.mLocalOffset[1]
-        << " " << collisionSphere.mLocalOffset[2] << " " << collisionSphere.mRadius
-        << " " << collisionSphere.mCollisionObjectId << " " << collisionSphere.mNumOverlaps;
-        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
-            outStream << collisionSphere.mOverlapEntityIds[i];
-        }
-        for (int i = 0; i < Q_MAX_OVERLAPS; i++) {
-            outStream << collisionSphere.mOverlapComponentTypes[i];
-        }
+        << " " << collisionSphere.mLocalOffset[2] << " " << collisionSphere.mRadius;
         
         return outStream;
     }

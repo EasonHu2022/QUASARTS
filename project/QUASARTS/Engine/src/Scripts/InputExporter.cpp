@@ -14,9 +14,10 @@ namespace Engine {
 			"get_key_pressed", &Input::get_key_pressed,
 			"get_key_released", &Input::get_key_released,
 			"get_key_combination", &Input::get_key_combination,
-			"get_mouse", &Input::get_mouse,
+			"get_mouse_held", &Input::get_mouse,
 			"get_mouse_clicked", &Input::get_mouse_clicked,
-			"get_mouse_released", &Input::get_mouse_released
+			"get_mouse_released", &Input::get_mouse_released,
+			"get_mouse_combination", &Input::get_mouse_combination
 			);
 
 		//key names stay the same with C++ definition
@@ -143,6 +144,14 @@ namespace Engine {
 				{"Q_KEY_RIGHT_ALT",		Key::KEY_RIGHT_ALT},
 				{"Q_KEY_RIGHT_SUPER",	Key::KEY_RIGHT_SUPER},
 				{"Q_KEY_MENU",			Key::KEY_MENU}
+			});
+
+		p_lua_state.new_enum<Mouse>("Mouse",
+			{
+				{"Q_MOUSE_LEFT", Mouse::MOUSE_LEFT},
+				{"Q_MOUSE_RIGHT", Mouse::MOUSE_RIGHT},
+				{"Q_MOUSE_MIDDLE", Mouse::MOUSE_MIDDLE},
+				{"Q_MOUSE_LAST", Mouse::MOUSE_LAST}
 			});
 	}
 }

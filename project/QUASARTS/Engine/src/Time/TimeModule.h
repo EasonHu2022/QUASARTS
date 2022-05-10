@@ -36,14 +36,14 @@ namespace Engine
 		/// Gets time in seconds between the current and previous frames.
 		/// </summary>
 		/// <returns>Framewise delta time</returns>
-		QTime getFrameDeltaTime();
+		QTime get_frame_delta_time();
 
 		/// <summary>
 		/// Gets time in seconds since engine initialisation.
 		/// Value is computed during the call, and so is independent of frame times.
 		/// </summary>
 		/// <returns>Current engine time</returns>
-		QTime getTime();
+		QTime get_time();
 		
 
 	};

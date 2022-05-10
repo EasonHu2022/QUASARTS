@@ -21,8 +21,7 @@ namespace Engine {
 			audio_dev(nullptr),
 			clip_src(nullptr),
 			clip_buffer(nullptr),
-			track_src(nullptr),
-			cur_work_dir("")
+			track_src(nullptr)
 		{}
 	public:
 		static AudioSystem* Instance();
@@ -54,11 +53,8 @@ namespace Engine {
 		void resumeTrack();
 		//--------------------------
 
-		void getWorkPath(const std::string& path);
-
 
 	private:
-		std::string cur_work_dir;
 		std::string sound_path;
 		AudioDevice* audio_dev;
 		ClipBuffer* clip_buffer;

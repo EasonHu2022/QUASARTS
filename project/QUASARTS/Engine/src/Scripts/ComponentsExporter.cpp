@@ -8,7 +8,10 @@ namespace Engine {
 		p_lua_state.new_usertype<entity>("entity",
 			"x", &entity::changeX,
 			"y", &entity::changeY,
-			"z", &entity::changeZ
+			"z", &entity::changeZ,
+			"updatePosition", &entity::updatePosition,
+			"updateRotation", &entity::updateRotation,
+			"updateScale", &entity::updateScale
 			);
 	}
 

@@ -30,7 +30,12 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Open Project", "Ctrl+O")) {
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
-                std::string proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+                std::string proj_file;
+                #if defined(_WIN32)
+                    proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+                #else
+                    proj_file = OpenFileDialogue();
+                #endif
                 if(proj_file.compare("N/A")!=0)
                     FileModule::Instance()->open_root(proj_file);
 
@@ -76,14 +81,8 @@ void MenuBarView::on_gui()
 
             }
             ImGui::Separator();
-            if (ImGui::MenuItem("Play", "Ctrl+P")) {
-                
-                //use script directly, worked
-                //Engine::ScriptSystem::Instance()->reloadScript();
+            if (ImGui::MenuItem("Play", "Ctrl+P")) {               
                 Engine::ScriptSystem::Instance()->loadScripts();
-                
-
-                Engine::ScriptSystem::Instance()->importFunc();
             }
             if (ImGui::MenuItem("Stop", "Ctrl+Shift+P")) {
                 Engine::ScriptSystem::Instance()->refreshScript();
@@ -112,25 +111,38 @@ void MenuBarView::on_gui()
         if (ImGui::BeginMenu("Assets"))
         {
             ImGui::MenuItem("New Script", NULL, &new_script);
-            if (ImGui::MenuItem("Add Script")) {
+            if (ImGui::MenuItem("Add Script Component")) {
                 
                 unsigned int entityID = Engine::ECSManager::Instance()->get_current_entity();
 
-                Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
+                if (entityID == TOO_MANY_ENTITIES)
+                {
+                    QERROR("Please select an entity first :)");
+                }
+                else
+                {
 
-                auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
-                //init
+                    Engine::ECSManager::Instance()->create_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
 
-                std::string script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
-                std::cout << script_file << std::endl;
+                    auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
 
-                script->entity_id = entityID;
-                Engine::ScriptSystem::Instance()->initComponent(script, script_file, entityID);
+                    std::string script_file;
+                    #if defined(_WIN32)
+                        script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
+                    #else
+                        script_file = OpenFileDialogue();
+                    #endif
+                    //std::cout << script_file << std::endl;
+                    QDEBUG("Successfully added script component to entity:{0}, path: {1}", entityID, script_file);
+
+                    //init
+                    Engine::ScriptSystem::Instance()->initComponent(script, script_file, entityID);
+                }
 
             }
             if (ImGui::MenuItem("Delete Script")) {
 
-                Engine::ScriptSystem::Instance()->deleteScript();
+                //Engine::ScriptSystem::Instance()->deleteScript();
             }
             if (ImGui::MenuItem("Add Attribute")) {
                 if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
@@ -388,7 +400,7 @@ void MenuBarView::newScript() {
 
 
     ImGui::PushItemWidth(-1);
-    ImGui::InputTextWithHint("##pname", "Script Name(plz use test for now)", buf1, 64);
+    ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
     ImGui::PopItemWidth();
 
 
@@ -399,6 +411,7 @@ void MenuBarView::newScript() {
             if (FileModule::Instance()->get_root() != nullptr) 
             {
                 std::string file_path = (std::string)FileModule::Instance()->get_root()->path + "/Scripts";
+                Engine::ScriptSystem::Instance()->createScript(buf1, file_path);
             }
             else 
             {

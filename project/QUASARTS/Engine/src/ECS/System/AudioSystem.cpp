@@ -90,11 +90,6 @@ namespace Engine {
 		}
 	}
 
-	void AudioSystem::getWorkPath(const std::string& path)
-	{
-		cur_work_dir = path;
-	}
-
 	void AudioSystem::playSoundClip(const std::string& name)
 	{
 
@@ -140,6 +135,7 @@ namespace Engine {
 	{
 		//get default engine assets path
 		std::string path = FileModule::Instance()->get_internal_assets_path();
+
 		std::string file_path = path + "Audio\\" + name + ".wav";
 
 		track_src->loadTrack(file_path.c_str());
