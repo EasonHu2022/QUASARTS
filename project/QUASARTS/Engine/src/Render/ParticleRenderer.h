@@ -29,7 +29,7 @@ namespace Engine
         std::string vshPath;
         std::string fshPath;
         unsigned int particleVAO, particleVBO;
-        float skyboxVertices[8] = {-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f};
+        float particleVertices[8] = {-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f};
         Shader* particleShader = NULL;
         std::vector<std::string> paths;
 	};

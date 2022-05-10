@@ -1,12 +1,12 @@
-#version 140
+#version 330
 
-in vec2 position;
+layout(location = 0) in vec2 position;
 
-uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
+uniform mat4 projection;
+uniform mat4 view;
 
 void main(void){
 
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 0.0, 1.0);
+	gl_Position = projection * view * vec4(position, 0.0, 1.0);
 
 }

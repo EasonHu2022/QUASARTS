@@ -34,7 +34,7 @@ namespace Engine
 		}
 
 		bool update() {
-			velocity.y += TimeModule::Instance()->getFrameDeltaTime().sec();
+			velocity.y += gravity * TimeModule::Instance()->getFrameDeltaTime().sec();
 			glm::vec3 change = velocity;
 			change = (float)TimeModule::Instance()->getFrameDeltaTime().sec() * change;
 			position = position + change;

@@ -11,15 +11,6 @@ namespace Engine
 		vshPath = path + "Shader\\Particle.vsh";
 		fshPath = path + "Shader\\Particle.fsh";
 
-		 paths = std::vector<std::string>
-		{
-			path + "Texture\\Skybox\\right.jpg",
-			path + "Texture\\Skybox\\left.jpg",
-			path + "Texture\\Skybox\\top.jpg",
-			path + "Texture\\Skybox\\bottom.jpg",
-			path + "Texture\\Skybox\\front.jpg",
-			path + "Texture\\Skybox\\back.jpg",
-		};
 	}
 	ParticleRenderer::~ParticleRenderer()
 	{
@@ -30,10 +21,11 @@ namespace Engine
 		glGenBuffers(1, &particleVBO);
 		glBindVertexArray(particleVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, particleVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(particleVertices), &particleVertices, GL_STATIC_DRAW);
 		glBindVertexArray(particleVAO);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		glBindVertexArray(0);
 		particleShader = new Shader(vshPath.data(), fshPath.data());
 		
 		return 0;
@@ -63,14 +55,13 @@ namespace Engine
 		particleShader->use();
 		auto view = glm::mat4(glm::mat3(renderContext->cameraContext->get_view_matrix())); // remove translation from the view matrix
 		for (Particle particle : particles) {
-			glDrawArrays(GL_TRIANGLES, 0, 8);
-			//updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
-			particleShader->setMat4("view", view);
-			printf("%d, ", particles.size());
+			glBindVertexArray(particleVAO);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
+			updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
+			glBindVertexArray(0);
 		}
 		particleShader->setMat4("projection", renderContext->cameraContext->get_projection_matrix());
 		
-		glBindVertexArray(0);
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LESS); // set depth function back to default
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -64,7 +64,8 @@ namespace Engine
 		shadowRenderer->init();
 		meshRenderer->init();
 		skyboxRenderer->init();
-		particleMaster.init(renderContext);
+		ParticleMaster::Instance()->init(renderContext);
+		//particleMaster.init(renderContext);
 		renderSystem->init();
 		//do init things
 		GuiWrapper::init();
@@ -120,7 +121,8 @@ namespace Engine
 
 		skyboxRenderer->render();
 
-		particleMaster.render();
+		ParticleMaster::Instance()->render();
+		//particleMaster.render();
 		/**************render update render frame***********************/
 	}
 
@@ -138,9 +140,7 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
-		Particle particle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 4.0f, 0.0f), -50, 0.5, 0, 1);
-		particleMaster.addParticle(particle);
-		particleMaster.update();
+		ParticleMaster::Instance()->update();
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();
@@ -165,7 +165,7 @@ namespace Engine
 		meshRenderer->release();
 		shadowRenderer->release();
 		skyboxRenderer->release();
-		particleMaster.release();
+		//particleMaster.release();
 		/*********************release things**********************************/
 	}
 
