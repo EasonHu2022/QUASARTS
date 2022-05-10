@@ -61,18 +61,20 @@ namespace Engine {
 
     // Input stream operator:
     inline std::istream & operator >> (std::istream &inStream, OrbitComponent& orbit) {
-        inStream >> orbit.mPrimaryEntityId;
-
-        // TODO : read in from file (same order as outstream)
-
+        inStream >> orbit.mPrimaryEntityId >> orbit.mOrbitPeriod >> orbit.mAxisNormal[0]
+            >> orbit.mAxisNormal[1] >> orbit.mAxisNormal[2] >> orbit.mAxisX[0]
+            >> orbit.mAxisX[1] >> orbit.mAxisX[2] >> orbit.mAxisY[0] >> orbit.mAxisY[1]
+            >> orbit.mAxisY[2];
+        
         return inStream;
     }
             
     // Output stream operator:
     inline std::ostream & operator << (std::ostream &outStream, OrbitComponent const& orbit) {
-        outStream << "primary: " << orbit.mPrimaryEntityId
-            << ", periapse: " << orbit.mDistPeriapse << ", period: " << orbit.mOrbitPeriod
-            << ", normal: " << orbit.mAxisNormal.x << " " << orbit.mAxisNormal.y << " " << orbit.mAxisNormal.z;
+        outStream << orbit.mPrimaryEntityId << " " << orbit.mOrbitPeriod << " "
+            << orbit.mAxisNormal[0] << " " << orbit.mAxisNormal[1] << " " << orbit.mAxisNormal[2]
+            << " " << orbit.mAxisX[0] << " " << orbit.mAxisX[1] << " " << orbit.mAxisX[2] << " "
+            << orbit.mAxisY[0] << " " << orbit.mAxisY[1] << " " << orbit.mAxisY[2];
 
         return outStream;
     }

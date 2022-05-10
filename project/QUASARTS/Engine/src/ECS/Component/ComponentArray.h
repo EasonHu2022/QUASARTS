@@ -16,13 +16,14 @@
 #include "ECS/Component/LightComponent.h"
 #include "ECS/Component/ScriptComponent.h"
 #include "ECS/Component/OrbitComponent.h"
+#include "ECS/Component/HealthComponent.h"
+#include "ECS/Component/WeaponComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
  * Add a template class declaration here (at the bottom).
  * Add a new definition in ECS-Common.h.
  * Update NUM_COMPONENT_TYPES in ECS-Common.h
- * Add a ComponentArray initialization to the Scene.h constructor
  * Add a ComponentArray initialization to the Scene.h constructor
  * Add << and >> operators to the component (see existing components) */
 
@@ -32,21 +33,6 @@
  * to the input stream operator to load in the correct data. Additionally,
  * make sure your Component already contains all the data needed to load
  * the external resource and/or create the pointer. */
-
-/* Functions:
- * T get_data(unsigned int entityID)
- * void add_data(unsigned int entityID)
- * void add_data(unsigned int entityID, T data)
- * void copy_data(unsigned int copyFrom, unsigned int copyTo)
- * void remove_data(unsigned int entityID)
- * void replace_data(unsigned int entityID, T data)
- * unsigned int entityID_from_data(unsigned int index)
- * unsigned int data_from_entityID(unsigned int entityID) */
-
-/* Members:
- * std::array<T, MAX_ENTITIES> componentData
- * std::array<unsigned int, MAX_ENTITIES> entityIDs
- * unsigned int num_entries */
 
 namespace Engine {
     class QS_API ParentComponentArray {
@@ -212,4 +198,6 @@ namespace Engine {
     template class QS_API ComponentArray<MaterialComponent>;
     template class QS_API ComponentArray<LightComponent>;
     template class QS_API ComponentArray<OrbitComponent>;
+    template class QS_API ComponentArray<HealthComponent>;
+    template class QS_API ComponentArray<WeaponComponent>;
 }

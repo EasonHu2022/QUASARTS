@@ -4,7 +4,6 @@
 #include "GuiViews/GameSceneView.h"
 #include "GuiViews/HierarchyView.h"
 #include "GuiViews/AttributeView.h"
-#include "GuiViews/TextEditorView.h"
 #include "Core/Mesh.h"
 #include "Core/Input.h"
 
@@ -27,7 +26,6 @@ void QEditor::init()
 	add_gui_view<GameSceneView>();
 	add_gui_view<HierarchyView>();
 	add_gui_view<AttributeView>();
-	add_gui_view<TextEditorView>();
 	//test_in_init();
 
 	cameraController = new SceneCameraController();
@@ -119,7 +117,12 @@ void QEditor::poll_input()
 
 	if (Engine::Input::get_key_combination({ Q_KEY_O, Q_KEY_LEFT_CONTROL }))
 	{
-		std::string proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+		std::string proj_file;
+		#if defined(_WIN32)
+			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+		#else
+			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue();
+		#endif
 		if (proj_file.compare("N/A") != 0)
 			FileModule::Instance()->open_root(proj_file);
 		
