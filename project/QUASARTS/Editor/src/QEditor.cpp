@@ -155,7 +155,7 @@ void QEditor::poll_input()
 			Engine::ParticleMaster::Instance()->addParticle(particle);
 			Engine::ParticleMaster::Instance()->counter += 1.0f / 5.0f;
 		}
-		Engine::ParticleMaster::Instance()->counter -= Engine::TimeModule::Instance()->getFrameDeltaTime();
+		Engine::ParticleMaster::Instance()->counter -= Engine::TimeModule::Instance()->get_frame_delta_time();
 	}
 	
 }

@@ -13,7 +13,7 @@ namespace Engine
         float pps, averageSpeed, gravity, averageLifeLength, averageScale;
 
         float speedError, lifeError, scaleError = 0;
-        boolean randomRotation = false;
+        bool randomRotation = false;
         glm::vec3 direction;
         float directionDeviation = 0;
 

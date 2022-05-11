@@ -34,11 +34,11 @@ namespace Engine
 		}
 
 		bool update() {
-			velocity.y += gravity * TimeModule::Instance()->getFrameDeltaTime().sec();
+			velocity.y += gravity * TimeModule::Instance()->get_frame_delta_time().sec();
 			glm::vec3 change = velocity;
-			change = (float)TimeModule::Instance()->getFrameDeltaTime().sec() * change;
+			change = (float)TimeModule::Instance()->get_frame_delta_time().sec() * change;
 			position = position + change;
-			time += TimeModule::Instance()->getFrameDeltaTime().sec();
+			time += TimeModule::Instance()->get_frame_delta_time().sec();
 			return time < lifetime;
 		}
 	};
