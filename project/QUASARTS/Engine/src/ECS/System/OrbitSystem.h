@@ -1,10 +1,16 @@
 #pragma once
 
-#include <list>
 
-// Local includes:
+// Engine includes:
 #include "ECS/ECSManager.h"
 #include "System.h"
+#include "ResourceManager/ResourceManager.h"
+#include "ResourceManager/FileModule.h"
+#include "Time/TimeModule.h"
+
+// std lib
+#include <queue>
+
 
 namespace Engine {
 
@@ -62,12 +68,15 @@ namespace Engine {
         int set_orbit_primary(unsigned int const aEntityId, unsigned int const aPrimaryEntityId);
 
         /// <summary>
-        /// Set the periapse distance for the given entity's orbit component.
+        /// Set the orbit period - how long it takes to complete a full orbit.
+        /// Uses absolute value of aOrbitPeriod.
         /// </summary>
         /// <param name="aEntityId"></param>
-        /// <param name="aDistPeriapse"></param>
+        /// <param name="aOrbitPeriod"></param>
         /// <returns></returns>
-        int set_orbit_periapse(unsigned int const aEntityId, float const aDistPeriapse);
+        void set_orbit_period(unsigned int const aEntityId, double const aOrbitPeriod);
+
+        void set_orbit_normal(unsigned int const aEntityId, glm::vec3 const aNormal);
 
         /// <summary>
         /// Clears the entity's orbit component.
@@ -92,8 +101,18 @@ namespace Engine {
 
         // Debug //
     private:
+        void component_tests();
         std::string print_tree();
         void tree_tests();
+        QTime completeTimesCounter;
+        struct OrbitTracker
+        {
+            std::vector<QTime> completeTimes;
+            std::vector<float> aveDistErr;
+            float maxDistErr, minDistErr;
+            bool tick = false;
+        };
+        std::map<unsigned int, OrbitTracker> orbitTrackers;
 
     };
 
