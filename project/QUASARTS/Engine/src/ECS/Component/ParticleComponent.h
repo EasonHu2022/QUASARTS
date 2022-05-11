@@ -45,7 +45,7 @@ namespace Engine {
 		void generateParticle(glm::vec3 center) {
 			float deltaT = TimeModule::Instance()->get_frame_delta_time().sec();
 			float particlesToCreate = pps * deltaT;
-			float count;
+			double count;
 			float partialParticle = modf(particlesToCreate, &count);
 			for (int i = 0; i < count; i++) {
 				emitParticle(center);
