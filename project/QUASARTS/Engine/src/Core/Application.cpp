@@ -46,6 +46,7 @@ namespace Engine
 		ECSManager::Instance()->register_system(SYSTEM_COLLISION, collisionSystem);
 		orbitSystem = new OrbitSystem();
 		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
+		particleSystem = new ParticleSystem(90.0f, 3.0f, -10.0f, 2.0f, 0.1f, 0.3f, 0.2f, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f), 0.5f);
 		/*************************Create and Init********************************/
 
 	}
@@ -146,6 +147,7 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
+		particleSystem->generateParticle(glm::vec3(0.0f, 0.0f, -1.0f));
 		ParticleMaster::Instance()->update();
 		renderSystem->update();
 		AudioSystem::Instance()->update();
