@@ -42,6 +42,11 @@ namespace Engine {
 			Engine::AudioSystem::Instance()->playAllClips();
 		}
 
+		static void isClipLooping()
+		{
+			Engine::AudioSystem::Instance()->getClipSource()->isLooping();
+		}
+
 		//long track
 		static void playTrack(const std::string& name)
 		{
@@ -61,6 +66,43 @@ namespace Engine {
 		static void resumeTrack()
 		{
 			Engine::AudioSystem::Instance()->resumeTrack();
+		}
+
+		static void isTrackLooping()
+		{
+			Engine::AudioSystem::Instance()->getTrackSource()->isLooping();
+		}
+
+
+	};
+
+	//device
+	class Device
+	{
+	public:
+
+		static void setAttunation()
+		{
+			auto device = Engine::AudioSystem::Instance()->getDevice();
+			device->setAttunation(AL_INVERSE_DISTANCE_CLAMPED);
+		}
+
+		static void setPosition3f(const float& x, const float& y, const float& z)
+		{
+			auto device = Engine::AudioSystem::Instance()->getDevice();
+			device->setPosition(x, y, z);
+		}
+
+		static void setPositionv(const glm::vec3& v)
+		{
+			auto device = Engine::AudioSystem::Instance()->getDevice();
+			device->setPosition(v);
+		}
+
+		static void setOritentation(const float& x, const float& y, const float& z, const float& upX, const float& upY, const float& upZ)
+		{
+			auto device = Engine::AudioSystem::Instance()->getDevice();
+			device->setOrientation(x, y, z, upX, upY, upZ);
 		}
 
 	};

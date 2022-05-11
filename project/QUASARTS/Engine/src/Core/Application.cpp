@@ -96,6 +96,7 @@ namespace Engine
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
 		ScriptSystem::Instance()->start();
+		//orbitSystem->start();		// TODO : start when game starts, not in editor
 		/***************later start things*************************/
 
 		//main loop
