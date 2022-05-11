@@ -63,7 +63,9 @@ void GameSceneView::on_gui()
                     matrixScale[2] = transform->scale.z;
                     ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
                     ImGuizmo::Manipulate(view, projection, (ImGuizmo::OPERATION)transform->operation, ImGuizmo::LOCAL, matrix);
+
                     ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
+
                     //update transform
                     
                     if (ImGuizmo::IsUsing()) {
