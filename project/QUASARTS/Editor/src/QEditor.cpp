@@ -118,14 +118,18 @@ void QEditor::poll_input()
 
 	if (Engine::Input::get_key(Q_KEY_LEFT_CONTROL))
 	{
-		std::string proj_file;
-		#if defined(_WIN32)
+
+		if (Engine::Input::get_key_pressed(Q_KEY_O))
+		{
+			std::string proj_file;
+#if defined(_WIN32)
 			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
-		#else
+#else
 			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue();
-		#endif
-		if (proj_file.compare("N/A") != 0)
-			FileModule::Instance()->open_root(proj_file);
+#endif
+			if (proj_file.compare("N/A") != 0)
+				FileModule::Instance()->open_root(proj_file);
+		}
 
 	}
 
