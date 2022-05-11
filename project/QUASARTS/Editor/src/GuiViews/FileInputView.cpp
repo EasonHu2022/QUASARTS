@@ -87,6 +87,8 @@ void FileInputView::on_gui()
                                     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
 
                                     Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityID, COMPONENT_HEALTH);
+                                    Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityID, COMPONENT_WEAPON);
+                                   
    
                                     Engine::MaterialComponent material;
                                     //get default engine assets path
