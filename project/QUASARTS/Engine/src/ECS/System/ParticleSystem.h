@@ -10,7 +10,7 @@ namespace Engine {
     {
 
     public:
-        ParticleSystem::ParticleSystem();
+        ParticleSystem();
         ~ParticleSystem();
 
         // Called when ENGINE starts.
