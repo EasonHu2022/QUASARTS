@@ -37,6 +37,10 @@ namespace Engine
 		newFrameTime = steady_clock::now();
 		deltaFrameTime = newFrameTime - oldFrameTime;
 
+		// Cap dT.
+		if (deltaFrameTime.count() > Q_MAX_DELTA_T)
+			deltaFrameTime = duration< double >(Q_MAX_DELTA_T);
+
 		oldFrameTime = newFrameTime;
 
 	} // update()

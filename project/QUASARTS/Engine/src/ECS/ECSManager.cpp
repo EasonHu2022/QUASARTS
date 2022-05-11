@@ -456,6 +456,24 @@ namespace Engine {
                                                 (entityID, COMPONENT_CAMERA);
                 sceneFile << COMPONENT_CAMERA << " " << *camera << std::endl;
             }
+            if (has_component(entityID, COMPONENT_ORBIT) == true) {
+                sceneFile << "C " << entityID << " ";
+                OrbitComponent *orbit = get_component<OrbitComponent>
+                                                (entityID, COMPONENT_ORBIT);
+                sceneFile << COMPONENT_ORBIT << " " << *orbit << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_HEALTH) == true) {
+                sceneFile << "C " << entityID << " ";
+                HealthComponent *health = get_component<HealthComponent>
+                                                (entityID, COMPONENT_HEALTH);
+                sceneFile << COMPONENT_HEALTH << " " << *health << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_WEAPON) == true) {
+                sceneFile << "C " << entityID << " ";
+                WeaponComponent *weapon = get_component<WeaponComponent>
+                                                (entityID, COMPONENT_WEAPON);
+                sceneFile << COMPONENT_WEAPON << " " << *weapon << std::endl;
+            }
         }
 
         // Parent-child relationships:
@@ -569,6 +587,18 @@ namespace Engine {
                     CameraComponent camera{};
                     parser >> camera;
                     create_component(entityID, componentType, camera);
+                } else if (componentType == COMPONENT_ORBIT) {
+                    OrbitComponent orbit{};
+                    parser >> orbit;
+                    create_component(entityID, componentType, orbit);
+                } else if (componentType == COMPONENT_HEALTH) {
+                    HealthComponent health{};
+                    parser >> health;
+                    create_component(entityID, componentType, health);
+                } else if (componentType == COMPONENT_WEAPON) {
+                    WeaponComponent weapon{};
+                    parser >> weapon;
+                    create_component(entityID, componentType, weapon);
                 }
             // PARENT-CHILD //
             } else if (line[0] == 'P') {

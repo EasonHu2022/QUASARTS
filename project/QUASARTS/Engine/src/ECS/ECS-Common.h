@@ -2,6 +2,7 @@
 
 // Library includes:
 #include <cstdint>
+#include <iostream>
 
 // Local includes:
 #include "Core/Core.h"
@@ -12,7 +13,7 @@ namespace Engine {
 
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
-    #define NUM_COMPONENT_TYPES 8
+    #define NUM_COMPONENT_TYPES 11
 
     // Maximum number of entities allowed:
     #define MAX_ENTITIES 1024
@@ -26,7 +27,10 @@ namespace Engine {
     #define COMPONENT_LIGHTING          4
     #define COMPONENT_SCRIPT            5
     #define COMPONENT_CAMERA            6
-    #define COMPONENT_PARTICLE          7
+    #define COMPONENT_ORBIT             7
+    #define COMPONENT_HEALTH            8
+    #define COMPONENT_WEAPON            9
+    #define COMPONENT_PARTICLE          10
 
     // System types:
     #define SYSTEM_SCRIPT       0
@@ -34,6 +38,7 @@ namespace Engine {
     #define SYSTEM_PHYSICS      2
     #define SYSTEM_COLLISION    3
     #define SYSTEM_AUDIO        4
+    #define SYSTEM_ORBIT        5
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

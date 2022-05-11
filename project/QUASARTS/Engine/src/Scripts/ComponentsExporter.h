@@ -4,6 +4,7 @@
 //component
 #include "ECS/Component/TransformComponent.h"
 #include "ECS/ECSManager.h"
+//#include "glm/glm.hpp"
 
 namespace Engine {
 
@@ -38,6 +39,25 @@ namespace Engine {
 			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
 			trs->position.z += step;
 		}
+
+		static void updatePosition(unsigned int id, glm::vec3 dT)
+		{
+			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
+			trs->position = trs->position + dT;
+		}
+
+		static void updateRotation(unsigned int id, glm::vec3 dR)
+		{
+			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
+			trs->rotation = trs->rotation + dR;
+		}
+
+		static void updateScale(unsigned int id, glm::vec3 dS)
+		{
+			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
+			trs->scale = trs->scale + dS;
+		}
+
 	};
 
 

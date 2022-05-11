@@ -100,7 +100,8 @@ namespace Engine {
 		}
 		ofs << "--Update the script here\n"
 			"-- thiz: current entity id\n"
-			"function onUpdate(thiz)\n"
+			"-- dt: dealt time\n"
+			"function onUpdate(thiz, dt)\n"
 			"end" << std::endl;
 		ofs.close();
 
@@ -117,7 +118,7 @@ namespace Engine {
 		}
 		else
 		{
-			for (auto sc : script_components)
+			for (auto& sc : script_components)
 			{
 				if(isScriptExists(sc->script_path))
 				{
@@ -213,7 +214,7 @@ namespace Engine {
 		{
 			if (sc->update_function)
 			{
-				(*(sc->update_function))(sc->entity_id);
+				(*(sc->update_function))(sc->entity_id, TimeModule::Instance()->get_frame_delta_time().sec());
 			}
 		}
 	}
@@ -222,7 +223,7 @@ namespace Engine {
 	{
 		if (component->update_function)
 		{
-			(*(component->update_function))();
+			(*(component->update_function))(component->entity_id, TimeModule::Instance()->get_frame_delta_time().sec());
 		}
 	}
 

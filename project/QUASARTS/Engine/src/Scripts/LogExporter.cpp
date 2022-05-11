@@ -19,6 +19,10 @@ namespace Engine {
 			QERROR(str);
 			}));
 
+		p_lua_state.set_function("Qwarn", std::function <void(const std::string&)>([](const std::string& str) {
+			QWARN(str);
+			}));
+
 		//for game     
 		p_lua_state.set_function("Glog", std::function <void(const std::string&)>([](const std::string& str) {
 			DEBUG(str);
@@ -30,6 +34,10 @@ namespace Engine {
 
 		p_lua_state.set_function("Gerror", std::function <void(const std::string&)>([](const std::string& str) {
 			ERROR(str);
+			}));
+
+		p_lua_state.set_function("Gwarn", std::function <void(const std::string&)>([](const std::string& str) {
+			WARN(str);
 			}));
 	}
 }

@@ -42,6 +42,10 @@ namespace Engine
 		shadowRenderer = new ShadowRenderer(renderContext);
 		meshRenderer = new MeshRenderer(renderContext);
 		skyboxRenderer = new SkyBoxRenderer(renderContext);
+		collisionSystem = new CollisionSystem();
+		ECSManager::Instance()->register_system(SYSTEM_COLLISION, collisionSystem);
+		orbitSystem = new OrbitSystem();
+		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
 		particleSystem = new ParticleSystem(90.0f, 3.0f, -10.0f, 2.0f, 0.1f, 0.3f, 0.2f, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f), 0.5f);
 		/*************************Create and Init********************************/
 
@@ -73,6 +77,8 @@ namespace Engine
 		Input::init();
 		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
 		/***************later init things*************************/
+		collisionSystem->init();
+		orbitSystem->init();
 
 
 	}
@@ -146,6 +152,7 @@ namespace Engine
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();
+		collisionSystem->update();
 		/***************logic update logic frame************************/
 	}
 
