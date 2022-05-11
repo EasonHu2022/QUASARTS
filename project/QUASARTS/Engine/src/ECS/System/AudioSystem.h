@@ -43,6 +43,7 @@ namespace Engine {
 		void pauseClip();
 		void resumeClip();
 		void playAllClips();
+		ClipSource* getClipSource();
 		//--------------------------
 
 		//--------------------------
@@ -51,7 +52,15 @@ namespace Engine {
 		void stopTrack();
 		void pauseTrack();
 		void resumeTrack();
+		TrackSource* getTrackSource();
 		//--------------------------
+
+		//get device
+		AudioDevice* getDevice();
+		
+
+
+		void test3D();
 
 
 	private:

@@ -11,7 +11,8 @@ namespace Engine {
 
 	struct QS_API ScriptComponent
 	{
-		std::shared_ptr<sol::function> update_function;		// control the onUpdate function in Lua side						
+		std::shared_ptr<sol::function> update_function;		// control the onUpdate function in Lua side		
+        std::shared_ptr<sol::function> init_function;       // control the onInit function in Lua side
 		std::string script_path;
         unsigned int entity_id;     //track the entity
 	};

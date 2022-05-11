@@ -54,7 +54,7 @@ namespace Engine {
 		}
 		if (!format)
 		{
-			QERROR("can't load this clip format: {0} :(", sf_info.channels);
+			QERROR("can't load this track format: {0} :(, please use .wav", sf_info.channels);
 			sf_close(sndfile);
 		}
 
@@ -121,7 +121,7 @@ namespace Engine {
 
 	void TrackSource::isLooping()
 	{
-		alSourcei(source, AL_LOOPING, (ALint)(is_looping ? 1 : 0));
+		alSourcei(source, AL_LOOPING, (ALint)is_looping);
 	}
 		
 	void TrackSource::updateBuffer()
@@ -162,6 +162,17 @@ namespace Engine {
 			}
 			alSourcePlay(source);
 		}	
-	}		
+	}
+
+	void TrackSource::setPosition(const glm::vec3& pos)
+	{
+		alSource3f(source, AL_POSITION, pos.x, pos.y, pos.z);
+	}
+
+	void TrackSource::setPosition(const float& x, const float& y, const float& z)
+	{
+		alSource3f(source, AL_POSITION, x, y, z);
+	}
+
 }
 

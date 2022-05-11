@@ -6,6 +6,9 @@
 // Engine includes
 #include "glm/vec3.hpp"
 
+// std lib includes
+#include <sstream>
+
 
 namespace Engine {
 
@@ -40,20 +43,45 @@ namespace Engine {
         //float mLenSemiMajor;           // Distance from ellipse centre to farthest point(s) on the curve.
 
 
-        OrbitComponent() :
-            mPrimaryEntityId(-1)
+        // Default normal, used until the user defines a new normal.
+        static constexpr glm::vec3 defNormal = glm::vec3(0, 1, 0);
+
+        // Alternative positive-Y axis, used if the user-defined X axis lies on the default normal.
+        static constexpr glm::vec3 altY = glm::vec3(1, 0, 0);
+
+
+        OrbitComponent() 
+            : mPrimaryEntityId(-1)
+            , mAxisNormal(defNormal)
         { }
+
+
+        // Util //
 
         void clear()
         {
             mPrimaryEntityId = -1;
             mDistance = mTrueAnom = mDistPeriapse = mOrbitPeriod = 0;
-            mRelativePos = mAxisY = mAxisX = mAxisNormal = glm::vec3(0, 0, 0);
+            mRelativePos = mAxisY = mAxisX = glm::vec3(0, 0, 0);
+            mAxisNormal = defNormal;
         }
 
-        void start_orbit(glm::vec3 aRelativeWorldPos)
-        {
 
+        // Debug //
+
+        static std::string vec3_tostring(glm::vec3 const& vector, std::string const& separator = " ")
+        {
+            std::ostringstream ostr;
+            ostr << vector.x << separator << vector.y << separator << vector.z;
+            return ostr.str();
+        }
+
+        std::string to_string()
+        {
+            std::ostringstream ostr;
+            ostr << "Orbit: " << "primary: " << mPrimaryEntityId << ", periapse: " << mDistPeriapse << ", period: " << mOrbitPeriod
+                << "\n- X: (" << vec3_tostring(mAxisX) << "), Y: (" << vec3_tostring(mAxisY) << "), Normal: (" << vec3_tostring(mAxisNormal) << ")";
+            return ostr.str();
         }
 
     };
@@ -78,4 +106,12 @@ namespace Engine {
 
         return outStream;
     }
+
+
+    inline std::ostream& operator << (std::ostream& outStream, glm::vec3 const& vector)
+    {
+        outStream << vector.x << " " << vector.y << " " << vector.z;
+        return outStream;
+    }
+
 }

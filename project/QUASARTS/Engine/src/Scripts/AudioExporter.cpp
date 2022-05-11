@@ -8,9 +8,18 @@ void Engine::AudioExporter::exportAudio(sol::state& p_lua_state)
 		"stopClip", &Audio::stopClip,
 		"resumeClip", &Audio::resumeClip,
 		"playAllClips", &Audio::playAllClips,
+		"isClipLooping", &Audio::isClipLooping,
 		"playTrack", &Audio::playTrack,
 		"pauseTrack", &Audio::pauseTrack,
 		"stopTrack", &Audio::stopTrack,
-		"resumeTrack", &Audio::resumeTrack
+		"resumeTrack", &Audio::resumeTrack,
+		"isTrackLooping", &Audio::isTrackLooping
+		);
+
+	p_lua_state.new_usertype<Device>("Device",
+		"setAttunation", &Device::setAttunation,
+		"setPosition3f", &Device::setPosition3f,
+		"setPositionv", &Device::setPositionv,
+		"setOritentation", &Device::setOritentation
 		);
 }

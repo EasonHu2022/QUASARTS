@@ -46,6 +46,8 @@ namespace Engine
 		ECSManager::Instance()->register_system(SYSTEM_COLLISION, collisionSystem);
 		orbitSystem = new OrbitSystem();
 		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
+		particleSystem = new ParticleSystem();
+		ECSManager::Instance()->register_system(SYSTEM_PARTICLE, particleSystem);
 		/*************************Create and Init********************************/
 
 	}
@@ -68,6 +70,8 @@ namespace Engine
 		shadowRenderer->init();
 		meshRenderer->init();
 		skyboxRenderer->init();
+		ParticleMaster::Instance()->init(renderContext);
+		//particleMaster.init(renderContext);
 		renderSystem->init();
 		//do init things
 		GuiWrapper::init();
@@ -92,6 +96,7 @@ namespace Engine
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
 		ScriptSystem::Instance()->start();
+		//orbitSystem->start();		// TODO : start when game starts, not in editor
 		/***************later start things*************************/
 
 		//main loop
@@ -124,6 +129,9 @@ namespace Engine
 		meshRenderer->render();
 
 		skyboxRenderer->render();
+
+		ParticleMaster::Instance()->render();
+		//particleMaster.render();
 		/**************render update render frame***********************/
 	}
 
@@ -141,6 +149,9 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
+		//particleSystem->generateParticle(glm::vec3(0.0f, 0.0f, -1.0f));
+		particleSystem->update();
+		ParticleMaster::Instance()->update();
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();
@@ -166,6 +177,7 @@ namespace Engine
 		meshRenderer->release();
 		shadowRenderer->release();
 		skyboxRenderer->release();
+		//particleMaster.release();
 		/*********************release things**********************************/
 	}
 

@@ -474,6 +474,12 @@ namespace Engine {
                                                 (entityID, COMPONENT_WEAPON);
                 sceneFile << COMPONENT_WEAPON << " " << *weapon << std::endl;
             }
+            if (has_component(entityID, COMPONENT_PARTICLE) == true) {
+                sceneFile << "C " << entityID << " ";
+                ParticleComponent *particle = get_component<ParticleComponent>
+                                                (entityID, COMPONENT_PARTICLE);
+                sceneFile << COMPONENT_PARTICLE << " " << *particle << std::endl;
+            }
         }
 
         // Parent-child relationships:
@@ -599,6 +605,10 @@ namespace Engine {
                     WeaponComponent weapon{};
                     parser >> weapon;
                     create_component(entityID, componentType, weapon);
+                } else if (componentType == COMPONENT_PARTICLE) {
+                    ParticleComponent particle{};
+                    parser >> particle;
+                    create_component(entityID, componentType, particle);
                 }
             // PARENT-CHILD //
             } else if (line[0] == 'P') {
