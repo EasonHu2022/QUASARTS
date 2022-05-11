@@ -1,6 +1,7 @@
 #pragma once
 #include <AL/al.h>
 #include <sndfile.h>
+#include <glm/glm.hpp>
 #include "Core/Core.h"
 
 namespace Engine {
@@ -19,6 +20,9 @@ namespace Engine {
 		void resume();
 		void isLooping();	
 		void updateBuffer();
+
+		void setPosition(const glm::vec3& pos);
+		void setPosition(const float& x, const float& y, const float& z);
 	
 	private:
 

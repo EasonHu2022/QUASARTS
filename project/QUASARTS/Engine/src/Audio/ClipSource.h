@@ -18,18 +18,20 @@ namespace Engine {
 		void resume();
 		void isLooping();
 
-	
+
+		void setPosition(const glm::vec3& pos);
+		void setPosition(const float& x, const float& y, const float& z);
+
+
+
 	private:
 		ALuint source;
 		ALuint buffers = 0;
 		bool is_paused = false;
 		bool is_looping = true;
-		//TODO 3D sound 
-		//float pitch = 1.f;
-		//float gain = 1.f;
+
 		//glm::vec3 position = { 0,0,0 };
 		//glm::vec3	velocity = { 0,0,0 };
-		//bool  loopSound = false;
 	};
 }
 
