@@ -16,6 +16,7 @@
 #include "Render/MeshRenderer.h"
 #include "Render/ShadowRenderer.h"
 #include "Render/SkyboxRenderer.h"
+#include "Render/ParticleSystem.h"
 #include "Core/Input.h"
 #include "ECS/System/CollisionSystem.h"
 #include "ECS/System/OrbitSystem.h"
@@ -44,6 +45,8 @@ namespace Engine
 		MeshRenderer* meshRenderer;
 		ShadowRenderer* shadowRenderer;
 		SkyBoxRenderer* skyboxRenderer;
+		ParticleMaster particleMaster;
+		ParticleSystem* particleSystem;
 
 	public:
 		Window* get_window() { return m_window; }
