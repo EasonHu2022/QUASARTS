@@ -163,6 +163,14 @@ namespace Engine {
 		return arg;
 	}
 
+	EventModule::VarArg EventModule::doubleArg(const double aDouble)
+	{
+		VarArg arg = VarArg();
+		arg.argType = VarArg::ArgType::Double;
+		arg.argValue.vDouble = aDouble;
+		return arg;
+	}
+
 
 	// debug //
 
@@ -346,6 +354,16 @@ namespace Engine {
 			idx != -1)
 		{
 			*dest = arguments[idx].second.argValue.vCStr;
+			return true;
+		}
+		return false;
+	}
+	bool EventModule::Event::find_argument(double* dest, const std::string argName) const
+	{
+		if (int idx = find_arg_index(argName, VarArg::ArgType::Double);
+			idx != -1)
+		{
+			*dest = arguments[idx].second.argValue.vDouble;
 			return true;
 		}
 		return false;

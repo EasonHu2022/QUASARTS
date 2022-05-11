@@ -4,7 +4,9 @@
 #include <iomanip>
 #include <fstream>
 
-#include "Core/Mesh.h" // ResourceManager tests
+
+#include "ECS/System/OrbitSystem.h"	// Orbit tests
+
 
 namespace Engine {
 
@@ -56,29 +58,11 @@ namespace Engine {
 		// Test collision world.
 		//runTests_init();
 
-		//LoadFactory::Instance()->load<>("C:/test/path/file.name.ext0");
-
-		/*std::string filepath = "C:\\Users\\Computer\\Documents\\Uni\\Yr4\\COMP5530M_GrouPr\\Code\\cornell_box.obj";
-		size_t handle = 0;
-		bool ret = ResourceManager::Instance()->load_resource(filepath, &handle);
-		std::shared_ptr<ModelResource> model;
-		std::string modelname;
-		size_t numMesh = 0;
-		if (ret) {
-			model = ResourceManager::Instance()->get_resource<ModelResource>(handle);
-			if (model.get() != NULL)
-			{
-				modelname = model->name;
-				numMesh = model->meshes.size();
-			}
-		}
-		QDEBUG("filepath: {0}, ret: {1}, handle: {2}, modelname: {3}, no. meshes: {4}", filepath, (ret ? "true" : "false"), handle, modelname, numMesh);*/
 
 	} // init()
 
 	int PhysicsSystem::start()
 	{
-
 		// Test collision world.
 		//runTests_start();
 
@@ -90,34 +74,37 @@ namespace Engine {
 	{
 		// Get all overlaps in this frame.
 		collisionWorld->performDiscreteCollisionDetection();
-		auto* pairs = overlappingPairCache->getOverlappingPairCache();
-		for (int i = 0; i < pairs->getNumOverlappingPairs(); ++i)
-		{
-			auto pair = pairs->getOverlappingPairArray()[i];			
+		auto* pairCache = overlappingPairCache->getOverlappingPairCache();
+		auto& pairs = pairCache->getOverlappingPairArray();
 
-			int objId0 = get_object_index((btCollisionObject*)pair.m_pProxy0->m_clientObject);
+		// Dispatch a collision event for each pair.
+		for (int i = 0; i < pairCache->getNumOverlappingPairs(); ++i)
+		{
+			auto pair = pairs[i];
+
+			// Get the colliding entities' information.
+			int objId0 = get_object_index((btCollisionObject*)pairs[i].m_pProxy0->m_clientObject);
 			CollisionObjectInfo* objInfo0 = &collisionObjectArrayInfo[objId0];
 
-			int objId1 = get_object_index((btCollisionObject*)pair.m_pProxy0->m_clientObject);
+			int objId1 = get_object_index((btCollisionObject*)pairs[i].m_pProxy1->m_clientObject);
 			CollisionObjectInfo* objInfo1 = &collisionObjectArrayInfo[objId1];
 
-			// Create a collision event for each pair of overlapping collision components.
+			// Create the event.
 			EventModule::Instance()->create_event(
 				"Collision", EventModule::EventPriority::Medium,
 				{
-					{ "entity0", EV_ARG_INT(objInfo0->mComponentId) },	// while entities are limited to 1 of each type of component, entity ID = component ID
+					{ "entity0", EV_ARG_INT(objInfo0->mEntityId) },	// while entities are limited to 1 of each type of component, entity ID = component ID
 					{ "componentType0", EV_ARG_INT(objInfo0->mUsage) },
 
-					{ "entity1", EV_ARG_INT(objInfo1->mComponentId) },
-					{ "componentType1", EV_ARG_INT(objInfo1->mUsage) }	// while entities are limited to 1 of each type of component, entity ID = component ID
+					{ "entity1", EV_ARG_INT(objInfo1->mEntityId) },
+					{ "componentType1", EV_ARG_INT(objInfo1->mUsage) },	// while entities are limited to 1 of each type of component, entity ID = component ID
 				}
 			);
 		}
 
 
 		// Time tests.
-		time_tests();
-
+		//time_tests();
 
 	} // update()
 
@@ -170,7 +157,7 @@ namespace Engine {
 
 			// Set bookkeeping data.
 			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[obj_idx];
-			objInfo->mComponentId = aComponentId;
+			objInfo->mEntityId = aComponentId;
 			objInfo->mUsage = Sphere;
 
 			// Get and set its collision shape.
@@ -197,16 +184,14 @@ namespace Engine {
 	{
 		if (collisionObjectArrayInfo[aCollisionObjectId].mUsage == Unassigned)
 		{
-			char msg[128];
-			snprintf(msg, 128, "unassign_collision_object() was passed the index of an unassigned collision object: %d", aCollisionObjectId);
-			QERROR(msg);
+			QERROR("unassign_collision_object() was passed the index of an unassigned collision object: {0}", aCollisionObjectId);
 			return;
 		}
 		--numAssignedObjects;
 
 		// Clear bookkeeping.
 		CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[aCollisionObjectId];
-		objInfo->mComponentId = -1;
+		objInfo->mEntityId = -1;
 		objInfo->mUsage = Unassigned;
 
 		// Deactivate collision detection.
@@ -217,17 +202,32 @@ namespace Engine {
 	} // unassign_collision_object()
 
 
-	void PhysicsSystem::set_collision_object_position(const int obj_idx, const glm::vec3 worldPosition)
+	void PhysicsSystem::set_collision_object_position(const int aObjId, const glm::vec3 aNewWorldPosition)
 	{
-		if (collisionObjectArrayInfo[obj_idx].mUsage == Unassigned)
+		CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[aObjId];
+		if (objInfo->mUsage == Unassigned)
 		{
-			char msg[128];
-			snprintf(msg, 128, "move_collision_object() was passed the index of an unassigned collision object: %d", obj_idx);
-			QERROR(msg);
+			QERROR("move_collision_object() was passed the index of an unassigned collision object: {0}", object_to_string(objInfo->pObject));
+			return;
 		}
-		collisionWorld->getCollisionObjectArray()[obj_idx]->getWorldTransform().setOrigin(glmvec3_to_bt(worldPosition));
+		collisionWorld->getCollisionObjectArray()[aObjId]->getWorldTransform().setOrigin(glmvec3_to_bt(aNewWorldPosition));
 
 	} // move_collision_object()
+
+
+	void PhysicsSystem::set_collision_sphere_radius(int const aObjId, float const aNewRadius)
+	{
+		CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[aObjId];
+		if (objInfo->mUsage != Sphere)
+		{
+			QERROR("PhysicsSystem::set_collision_sphere_radius(): Received ID of non-sphere collision object: {0}", object_to_string(objInfo->pObject));
+			return;
+		}
+		// Get and set new collision sphere shape (previous shape is not discarded).
+		btSphereShape* sphere = get_sphere_shape(aNewRadius);
+		objInfo->pObject->setCollisionShape(sphere);
+
+	} // set_collision_sphere_radius()
 
 
 	bool PhysicsSystem::raycast(const glm::vec3 origin, const glm::vec3 direction, glm::vec3* hitLocation)
@@ -280,6 +280,7 @@ namespace Engine {
 			collisionWorld->addCollisionObject(objInfo->pObject, Q_COLLISION_FILTER_HIDDEN, Q_COLLISION_FILTER_HIDDEN);
 			return numObjs;
 		}
+		QDEBUG("PhysicsSystem: get_unassigned_collision_object_index(): too many collision objects, could not assign new.");
 		return -1;
 
 	} // get_available_collision_object()
@@ -288,14 +289,21 @@ namespace Engine {
 	btSphereShape* PhysicsSystem::get_sphere_shape(float radius)
 	{
 		// Find an existing btSphereShape with (approximately) the required radius.
-		for (int i = 0; i < collisionSpheres.size(); ++i)
+		size_t numSpheres = collisionSpheres.size();
+		for (int i = 0; i < numSpheres; ++i)
 		{
 			if (abs(collisionSpheres[i]->getRadius() - radius) < Q_COLLISION_EPSILON)
 			{
 				return collisionSpheres[i];
 			}
 		}
+
 		// If none was found, create new.
+		++numSpheres;
+		if (numSpheres > Q_MAX_COLLISION_SPHERE_SHAPES)
+		{
+			QDEBUG("PhysicsSystem::get_sphere_shape(): btSphereShape created; maximum number ({0}) of btSphereShapes exceeded. New number: {1}", Q_MAX_COLLISION_SPHERE_SHAPES, numSpheres);
+		}
 		btSphereShape* sphere = new btSphereShape(radius);
 		collisionSpheres.push_back(sphere);
 		return sphere;
@@ -382,20 +390,31 @@ namespace Engine {
 		return ostr.str();
 	} // vector_to_string()
 
+	std::string PhysicsSystem::object_tostring(int const objId)
+	{
+		return object_to_string(collisionObjectArrayInfo[objId].pObject);
+	}
 
 
 
 
 
+
+
+	void PhysicsSystem::orbit_tests()
+	{
+		
+
+	} // orbit_tests()
 
 
 	void PhysicsSystem::time_tests()
 	{
-		QTime deltaT = TimeModule::Instance()->getFrameDeltaTime();
+		QTime deltaT = TimeModule::Instance()->get_frame_delta_time();
 		if (timeCounter.sec() < 0)
 		{
 			QDEBUG("engine time: {0}, deltaT: {1}, FPS: {2}",				
-				TimeModule::Instance()->getTime().sec(),
+				TimeModule::Instance()->get_time().sec(),
 				deltaT.sec(),
 				(1.f / deltaT.sec())
 			);
@@ -431,7 +450,7 @@ namespace Engine {
 		{
 			CollisionObjectInfo* objInfo = &collisionObjectArrayInfo[i];
 			if (objInfo->mUsage == Unassigned) continue;
-			snprintf(msg, 512, "- component: %d, object: %d, %s", objInfo->mComponentId, i, object_to_string(objInfo->pObject).c_str());
+			snprintf(msg, 512, "- component: %d, object: %d, %s", objInfo->mEntityId, i, object_to_string(objInfo->pObject).c_str());
 			QDEBUG(msg);
 		}
 
