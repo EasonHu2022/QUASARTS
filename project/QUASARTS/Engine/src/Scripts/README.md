@@ -10,6 +10,7 @@ For Quasarts Engine, we select lua as our scripting language
 ## Update tracking
 
 To init attributes, please put everything you want to initialize in `onInit` function
+
 To keep tracking the content in script, please put everything you want to update in `onUpdate` function
 
 ``` lua
