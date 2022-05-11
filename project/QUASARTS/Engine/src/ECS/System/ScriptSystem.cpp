@@ -98,7 +98,11 @@ namespace Engine {
 		{
 			QDEBUG("created and added the script: {0}.lua , the path is {1}", script_name, script_path);
 		}
-		ofs << "--Update the script here\n"
+		ofs <<"--init here\n"
+			"-- thiz: current entity id\n"
+			"function onInit(thiz)\n"
+			"end\n"
+			"--Update the script here\n"
 			"-- thiz: current entity id\n"
 			"-- dt: dealt time\n"
 			"function onUpdate(thiz, dt)\n"
@@ -124,6 +128,7 @@ namespace Engine {
 				{
 					lua_state->script_file(sc->script_path);
 					registerFunction(sc);
+					onInit(sc);
 				}
 				else
 				{
@@ -173,6 +178,7 @@ namespace Engine {
 		//if (!is_imported)
 		//{
 		component->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+		component->init_function = std::make_shared<sol::function>((*lua_state)["onInit"]);
 		//is_imported = true;
 	//}
 	}
@@ -184,6 +190,7 @@ namespace Engine {
 		for (auto& sc : script_components)
 		{
 			sc->update_function = std::make_shared<sol::function>((*lua_state)["onUpdate"]);
+			sc->init_function = std::make_shared<sol::function>((*lua_state)["onInit"]);
 		}
 	}
 
@@ -191,6 +198,7 @@ namespace Engine {
 	void ScriptSystem::unregisterFunction(ScriptComponent* component)
 	{
 		component->update_function.reset();
+		component->init_function.reset();
 	}
 
 	//unregister 
@@ -201,6 +209,7 @@ namespace Engine {
 		for (auto sc : script_components)
 		{
 			sc->update_function.reset();
+			sc->init_function.reset();
 		}
 	}
 
@@ -224,6 +233,28 @@ namespace Engine {
 		if (component->update_function)
 		{
 			(*(component->update_function))(component->entity_id, TimeModule::Instance()->get_frame_delta_time().sec());
+		}
+	}
+
+	void ScriptSystem::onInit()
+	{
+		auto script_components = getExistingComponents();
+
+		//loop all
+		for (auto sc : script_components)
+		{
+			if (sc->init_function)
+			{
+				(*(sc->init_function))(sc->entity_id);
+			}
+		}
+	}
+
+	void ScriptSystem::onInit(ScriptComponent* component)
+	{
+		if (component->init_function)
+		{
+			(*(component->init_function))(component->entity_id);
 		}
 	}
 
