@@ -18,6 +18,7 @@
 #include "ECS/Component/OrbitComponent.h"
 #include "ECS/Component/HealthComponent.h"
 #include "ECS/Component/WeaponComponent.h"
+#include "ECS/Component/ParticleComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
@@ -200,4 +201,5 @@ namespace Engine {
     template class QS_API ComponentArray<OrbitComponent>;
     template class QS_API ComponentArray<HealthComponent>;
     template class QS_API ComponentArray<WeaponComponent>;
+    template class QS_API ComponentArray<ParticleComponent>;
 }

@@ -34,6 +34,7 @@ namespace Engine {
             ComponentArray<OrbitComponent>* array_orbit = new ComponentArray<OrbitComponent>;
             ComponentArray<HealthComponent>* array_health = new ComponentArray<HealthComponent>;
             ComponentArray<WeaponComponent>* array_weapon = new ComponentArray<WeaponComponent>;
+            ComponentArray<ParticleComponent>* array_particle = new ComponentArray<ParticleComponent>;
 
             componentArrays.push_back(array_transform);
             componentArrays.push_back(array_mesh);
@@ -45,6 +46,7 @@ namespace Engine {
             componentArrays.push_back(array_orbit);
             componentArrays.push_back(array_health);
             componentArrays.push_back(array_weapon);
+            componentArrays.push_back(array_particle);
         }
 
         // Destructor:
