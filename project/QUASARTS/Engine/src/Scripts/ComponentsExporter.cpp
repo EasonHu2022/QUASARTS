@@ -9,9 +9,16 @@ namespace Engine {
 			"x", &entity::changeX,
 			"y", &entity::changeY,
 			"z", &entity::changeZ,
+
+			//transform attributes
 			"updatePosition", &entity::updatePosition,
 			"updateRotation", &entity::updateRotation,
-			"updateScale", &entity::updateScale
+			"updateScale", &entity::updateScale,
+
+			//health 
+			"setMaxHealth", &entity::setMaxHealth,
+			"setCurrentHealth", &entity::setCurrentHealth,
+			"getCurrentHealth", &entity::getCurrentHealth
 			);
 	}
 

@@ -2,9 +2,8 @@
 #include <sol/sol.hpp>
 #include <iostream>
 //component
-#include "ECS/Component/TransformComponent.h"
 #include "ECS/ECSManager.h"
-//#include "glm/glm.hpp"
+#include "glm/glm.hpp"
 
 namespace Engine {
 
@@ -21,9 +20,9 @@ namespace Engine {
 	class entity {
 
 	public:
+
 		static void changeX(unsigned int id, float step)
 		{
-			//cannot work
 			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
 			trs->position.x += step;
 		}
@@ -40,6 +39,8 @@ namespace Engine {
 			trs->position.z += step;
 		}
 
+
+		//transform
 		static void updatePosition(unsigned int id, glm::vec3 dT)
 		{
 			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
@@ -56,6 +57,27 @@ namespace Engine {
 		{
 			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
 			trs->scale = trs->scale + dS;
+		}
+
+
+		//health
+		static void setMaxHealth(unsigned int id, float maxH)
+		{
+			Engine::HealthComponent* health = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(id, COMPONENT_HEALTH);
+			health->max_health = maxH;
+		}
+
+
+		static void setCurrentHealth(unsigned int id, float curr_health)
+		{
+			Engine::HealthComponent* health = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(id, COMPONENT_HEALTH);
+			health->current_health = curr_health;
+		}
+
+		static float getCurrentHealth(unsigned int id)
+		{
+			Engine::HealthComponent* health = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(id, COMPONENT_HEALTH);
+			return health->current_health;
 		}
 
 	};
