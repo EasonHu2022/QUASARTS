@@ -1,6 +1,7 @@
 #include "AudioDevice.h"
 #include "QuasartsEngine.h"
 #include <AL/al.h>
+#include <vector>
 
 namespace Engine {
 
@@ -20,7 +21,6 @@ namespace Engine {
 		
 		// make context current
 		alcMakeContextCurrent(context);
-
 	}
 	
 	AudioDevice::~AudioDevice()
@@ -28,5 +28,42 @@ namespace Engine {
 		alcDestroyContext(context);
 		alcCloseDevice(device);
 	}
+
+	void AudioDevice::setPosition(const glm::vec3& pos)
+	{
+		alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
+	}
+
+
+	void AudioDevice::setPosition(const float& x, const float& y, const float& z)
+	{
+		alListener3f(AL_POSITION, x, y, z);
+	}
+
+
+
+	void AudioDevice::setOrientation(const float& x, const float& y, const float& z, const float& upX, const float& upY, const float& upZ)
+	{
+		std::vector<float> orientation;
+		orientation.push_back(x);
+		orientation.push_back(y);
+		orientation.push_back(z);
+		orientation.push_back(upX);
+		orientation.push_back(upY);
+		orientation.push_back(upZ);
+		alListenerfv(AL_ORIENTATION, orientation.data());
+	}
+
+	void AudioDevice::getOrientation(float& orientation)
+	{
+		alGetListenerfv(AL_ORIENTATION, &orientation);
+	}
+
+	void AudioDevice::setAttunation(ALint model_val)
+	{
+		alDistanceModel(model_val);
+	}
+
+
 }
 

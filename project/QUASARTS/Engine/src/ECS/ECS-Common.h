@@ -39,6 +39,7 @@ namespace Engine {
     #define SYSTEM_COLLISION    3
     #define SYSTEM_AUDIO        4
     #define SYSTEM_ORBIT        5
+    #define SYSTEM_PARTICLE     6
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

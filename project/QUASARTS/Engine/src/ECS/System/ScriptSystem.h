@@ -63,9 +63,13 @@ namespace Engine {
 		void unregisterFunction(ScriptComponent* component);
 		void unregisterAllFunction();
 
-		//run the functions from scripts
+		//run the onUpdate function from scripts
 		void onUpdate();
 		void onUpdate(ScriptComponent* component);
+
+		//run the onInit function from scripts
+		void onInit();
+		void onInit(ScriptComponent* component);
 
 		//initialize script component -- set path and entity id
 		void initComponent(ScriptComponent* component, const std::string& comp_path, unsigned int id);

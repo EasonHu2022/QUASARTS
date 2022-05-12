@@ -201,7 +201,11 @@ void MenuBarView::on_gui()
                 
             }
             if (ImGui::MenuItem("Particle Emitter")) {
-
+                unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
+                Engine::ECSManager::Instance()->set_entityName(entityID, "Emitter");
+                Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM)->position = { 0.0f,0.0f,-1.0f };
+                Engine::ParticleComponent particle;
+                Engine::ECSManager::Instance()->create_component<Engine::ParticleComponent>(entityID, COMPONENT_PARTICLE, particle);
             }
             ImGui::EndMenu();
         }
@@ -544,19 +548,16 @@ void MenuBarView::load_object(std::string name, std::string file) {
     
     unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
     Engine::ECSManager::Instance()->set_entityName(entityID, name);
-    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
     Engine::TransformComponent transform;
     transform.position = { 0.0f,0.0f, 0.0f };
-    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
+    transform.rotation = { 0.0f,0.0f, 0.0f };
+    transform.scale = { 1.0f,1.0f, 1.0f };
+    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM, transform);
 
-
-    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
     Engine::MeshComponent mesh;
     auto path = FileModule::Instance()->get_internal_assets_path();
     mesh.path = path + "DefaultObjects" + file;
-    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
-
-    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
+    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH, mesh);
 
     Engine::MaterialComponent material;
     //get default engine assets path
@@ -565,6 +566,6 @@ void MenuBarView::load_object(std::string name, std::string file) {
     std::string gshPth = "";
     std::string texturePath = path + "Texture/floor.jpg";
     material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
-    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
+    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL, material);
 
 }

@@ -1,6 +1,7 @@
 #include "AudioSystem.h"
 #include "ResourceManager/FileModule.h"
 #include <AL/al.h>
+#include "QuasartsEngine.h"
 
 namespace Engine {
 
@@ -28,6 +29,20 @@ namespace Engine {
 		clip_buffer = new ClipBuffer();
 		clip_src = new ClipSource();
 		track_src = new TrackSource();
+
+		ALint attunation = AL_INVERSE_DISTANCE_CLAMPED;
+		audio_dev->setAttunation(attunation);
+		audio_dev->setPosition(0.f, 0.f, 0.f);
+		audio_dev->setOrientation(0.f, 1.f, 0.f, 0.f, 0.f, 1.f);
+
+		//clip_src->isLooping();
+		//playSoundClip("sci-fidrone");
+		//clip_src->setPosition(0.f, 5.f, 0.f);
+
+		//playTrack("TownTheme");
+		//track_src->setPosition(3.f, 5.f, 0.f);
+
+
 	}
 
 	/// <summary>
@@ -48,6 +63,9 @@ namespace Engine {
 		{
 			track_src->updateBuffer();
 		}
+
+
+		//test3D();
 	}
 
 	/// <summary>
@@ -131,6 +149,11 @@ namespace Engine {
 		}
 	}
 
+	ClipSource* AudioSystem::getClipSource()
+	{
+		return clip_src;
+	}
+
 	void AudioSystem::playTrack(const std::string& name)
 	{
 		//get default engine assets path
@@ -147,7 +170,7 @@ namespace Engine {
 		{
 			track_src->stop();
 		}
-	}
+	} 
 	void AudioSystem::pauseTrack()
 	{
 		if (track_src != nullptr)
@@ -161,5 +184,49 @@ namespace Engine {
 		{
 			track_src->resume();
 		}
+	}
+
+	TrackSource* AudioSystem::getTrackSource()
+	{
+		return track_src;
+	}
+
+	AudioDevice* AudioSystem::getDevice()
+	{
+		return audio_dev;
+	}
+
+
+	glm::vec3 pos = { 0,0,0 };
+	void AudioSystem::test3D()
+	{
+
+		if (Engine::Input::get_key_pressed(Q_KEY_W))
+		{
+			audio_dev->setOrientation(0.f, 1.f, 0.f, 0.f, 0.f, 1.f);
+			pos.y += 1.f;
+		}
+
+		if (Engine::Input::get_key_released(Q_KEY_D))
+		{
+			audio_dev->setOrientation(1.f, 0.f, 0.f, 0.f, 0.f, 1.f);
+			pos.x += 1.f;
+		}
+
+		if (Engine::Input::get_key_released(Q_KEY_A))
+		{
+			audio_dev->setOrientation(-1.f, 0.f, 0.f, 0.f, 0.f, 1.f);
+			pos.x -= 1.f;
+		}
+
+		if (Engine::Input::get_key_released(Q_KEY_S))
+		{
+			audio_dev->setOrientation(0.f, -1.f, 0.f, 0.f, 0.f, 1.f);
+			pos.y -= 1.f;
+		}
+
+		QWARN("pos.x: {0},  pos.y: {1}", pos.x, pos.y);
+		audio_dev->setPosition(pos);
+
 	}
 }
