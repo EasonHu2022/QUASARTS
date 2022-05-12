@@ -11,7 +11,6 @@
 namespace Engine {
     enum class LightType
     {
-        def = 0,
         spot,
         parallel,
         point,
@@ -22,7 +21,7 @@ namespace Engine {
         glm::vec3 ambient = {0.2f,0.2f,0.2f};
         glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
         glm::vec3 specular = { 0.2f,0.2f,0.2f };   
-        LightType type = LightType::def;
+        LightType type = LightType::parallel;
     };
 
 
@@ -34,7 +33,7 @@ namespace Engine {
         if (light_type == 1) { light.type = LightType::spot; }
         else if (light_type == 2) { light.type = LightType::parallel; }
         else if (light_type == 3) { light.type = LightType::point; }
-        else { light.type = LightType::def; }
+    
         
         inStream
         >> light.ambient[0] >> light.ambient[1] >> light.ambient[2]

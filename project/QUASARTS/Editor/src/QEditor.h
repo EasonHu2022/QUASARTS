@@ -46,6 +46,7 @@ template<class T>
 inline void QEditor::add_gui_view()
 {
 	guiViews.emplace(typeid(T).hash_code(), std::make_shared<T>());
+	guiViews[typeid(T).hash_code()]->on_add();
 }
 
 
