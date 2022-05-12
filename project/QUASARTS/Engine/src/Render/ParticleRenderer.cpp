@@ -8,8 +8,8 @@ namespace Engine
 		//get default engine assets path
 		std::string path = FileModule::Instance()->get_internal_assets_path();
 
-		vshPath = path + "Shader\\Particle.vsh";
-		fshPath = path + "Shader\\Particle.fsh";
+		vshPath = path + "Shader/Particle.vsh";
+		fshPath = path + "Shader/Particle.fsh";
 
 	}
 	ParticleRenderer::~ParticleRenderer()
