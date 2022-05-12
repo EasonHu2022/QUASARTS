@@ -6,9 +6,6 @@ namespace Engine {
 	{
 		//todo 
 		p_lua_state.new_usertype<entity>("entity",
-			"x", &entity::changeX,
-			"y", &entity::changeY,
-			"z", &entity::changeZ,
 
 			//transform attributes
 			"updatePosition", &entity::updatePosition,
@@ -18,8 +15,17 @@ namespace Engine {
 			//health 
 			"setMaxHealth", &entity::setMaxHealth,
 			"setCurrentHealth", &entity::setCurrentHealth,
-			"getCurrentHealth", &entity::getCurrentHealth
+			"getCurrentHealth", &entity::getCurrentHealth,
+
+			//weapon
+			"setDamage", &entity::setDamage,
+			"setRange", &entity::setRange,
+			"setSpeed", &entity::setSpeed
 			);
+
+		p_lua_state.set_function("createEntity", &createEntity);
+		p_lua_state.set_function("addComponent", &addComponent);
+
 	}
 
 }
