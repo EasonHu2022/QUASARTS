@@ -345,23 +345,8 @@ void MenuBarView::newProject() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0 && strlen(buf2) != 0) {
 
-            #if defined(_WIN32)
-                FileModule::Instance()->create_workdir(buf2, buf1);
-                FileModule::Instance()->save_root(buf2, buf1);
-            #else
-                // Remove newline from path, which is there for some reason:
-                char newbuff[260];
-                strcpy(newbuff, buf2);
-                for (int i = 0; i < 260; i++) {
-                    if (newbuff[i] == '\n') {
-                        // Terminate string at newline (lazy but it works):
-                        newbuff[i] = '\0';
-                        break;
-                    }
-                }
-                FileModule::Instance()->create_workdir(newbuff, buf1);
-                FileModule::Instance()->save_root(newbuff, buf1);
-            #endif
+            FileModule::Instance()->create_workdir(buf2, buf1);
+            FileModule::Instance()->save_root(buf2, buf1);
 
             new_project = false;
             show_window = true;
