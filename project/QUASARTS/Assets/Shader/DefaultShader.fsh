@@ -52,18 +52,19 @@ void main()
 
     vec3 color = texture(colorTexure, fs_in.TexCoords).rgb;
     // ambient
-    vec3 ambient = 0.2 * color;
+   
     vec3 normal = normalize(fs_in.Normal);
 
     //per light attribution
     FragColor = vec4(0.0f,0.0f,0.0f,1.0f);
     for(int i = 0;i < countLight;i++)
     {
+        vec3 ambient = lights[i].ambient.xyz * color;
         vec3 lightPos = lights[i].positon.xyz;
         // diffuse
         vec3 lightDir = normalize(lightPos - fs_in.FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
-        vec3 diffuse = diff * color;
+        vec3 diffuse = diff * color *  lights[i].diffuse.xyz;
         // specular
         vec3 viewDir = normalize(viewPos - fs_in.FragPos);
         //vec3 reflectDir = reflect(-lightDir, normal);
@@ -72,7 +73,7 @@ void main()
         vec3 halfwayDir = normalize(lightDir + viewDir);  
         spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
 
-        vec3 specular = vec3(0.3) * spec; // assuming bright white light color
+        vec3 specular = lights[i].specular.xyz * spec; 
 
         //calculate shadow
         float shadow = ShadowCalculation(fs_in.FragPosLightSpace[i],i,fs_in.Normal,lightDir);    
