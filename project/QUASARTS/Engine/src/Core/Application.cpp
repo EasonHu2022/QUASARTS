@@ -76,9 +76,9 @@ namespace Engine
 		GuiWrapper::init();
 		Input::init();
 		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
-		/***************later init things*************************/
 		collisionSystem->init();
 		orbitSystem->init();
+		/***************later init things*************************/
 
 
 	}
@@ -154,6 +154,7 @@ namespace Engine
 		AudioSystem::Instance()->update();
 		on_gui();
 		collisionSystem->update();
+		orbitSystem->update();
 		/***************logic update logic frame************************/
 	}
 

@@ -96,9 +96,19 @@ namespace Engine
 					orbit->mAxisNormal = glm::normalize(glm::cross(orbit->mAxisX, orbit->mAxisY));
 				}
 
-				//QDEBUG("Entity {0} orbit: {1}", i, orbit->to_string());
+				QDEBUG("Entity {0} orbit: {1}", i, orbit->to_string());
 			}
 		}
+
+		/*completeTimesCounter = 30;
+		for (auto& tracker : orbitTrackers)
+		{
+			tracker.second.aveDistErr.clear();
+			tracker.second.completeTimes.clear();
+			tracker.second.maxDistErr = 0;
+			tracker.second.minDistErr = 0;
+			tracker.second.tick = false;
+		}*/
 
 		return 0;
 
@@ -106,6 +116,14 @@ namespace Engine
 
 	void OrbitSystem::update()
 	{
+		if (Input::get_key_pressed(Q_KEY_P))
+		{
+			if (paused) start(); // restart system when unpaused
+			paused = !paused;
+		}
+		if (paused) return;
+		QDEBUG("Running");
+
 		ECSManager* active_manager = get_manager();
 
 		// Iterate through the orbit tree to update the positions of all entities with orbital motion.
@@ -135,13 +153,13 @@ namespace Engine
 			}
 
 			// debug
-			//OrbitTracker* tracker = &orbitTrackers[node->mEntityId];
+			OrbitTracker* tracker = &orbitTrackers[node->mEntityId];
 
 			// Update node entity position. //
 			orbit = active_manager->get_component<OrbitComponent>(node->mEntityId, COMPONENT_ORBIT);
 
 			// Get new true anomaly.
-			deltaTheta = dtPi2 / orbit->mOrbitPeriod;
+			deltaTheta = (orbit->mOrbitPeriod > 0) ? dtPi2 / orbit->mOrbitPeriod : 0;
 			trueAnom = orbit->mTrueAnom + deltaTheta;
 			if (trueAnom >= Pi2) {
 				trueAnom -= Pi2;
@@ -160,20 +178,20 @@ namespace Engine
 			transf->position = transfPrimary->position + orbit->mRelativePos;
 
 
-			// stats tracking
-			/*float actDistErr = glm::length(transfPrimary->position - transf->position) - orbit->mDistPeriapse;
-			if (actDistErr > tracker->maxDistErr) tracker->maxDistErr = actDistErr;
-			if (actDistErr < tracker->minDistErr) tracker->minDistErr = actDistErr;
-			if (tracker->tick)
-			{
-				tracker->completeTimes.push_back(TimeModule::Instance()->get_time());
-				tracker->aveDistErr.push_back(actDistErr);
-				tracker->tick = false;
-			}*/
+			//// stats tracking
+			//float actDistErr = glm::length(transfPrimary->position - transf->position) - orbit->mDistPeriapse;
+			//if (actDistErr > tracker->maxDistErr) tracker->maxDistErr = actDistErr;
+			//if (actDistErr < tracker->minDistErr) tracker->minDistErr = actDistErr;
+			//if (tracker->tick)
+			//{
+			//	tracker->completeTimes.push_back(TimeModule::Instance()->get_time());
+			//	tracker->aveDistErr.push_back(actDistErr);
+			//	tracker->tick = false;
+			//}
 		}
 
 
-		// debug
+		//// debug
 		//if (completeTimesCounter.sec() < 0)
 		//{
 		//	QDEBUG("Orbit stats:");
@@ -495,7 +513,7 @@ namespace Engine
 		QDEBUG("Setting orbit periods...");
 		set_orbit_period(entity0Id, 10.f);
 		QDEBUG("Entity {0} new orbit period: {1}", entity0Id, orbit0->mOrbitPeriod);
-		set_orbit_period(entity2Id, 3.f);
+		set_orbit_period(entity2Id, 0.f);
 		QDEBUG("Entity {0} new orbit period: {1}", entity2Id, orbit2->mOrbitPeriod);
 
 

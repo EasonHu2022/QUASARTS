@@ -7,6 +7,7 @@
 #include "ResourceManager/ResourceManager.h"
 #include "ResourceManager/FileModule.h"
 #include "Time/TimeModule.h"
+#include "Core/Input.h"
 
 // std lib
 #include <queue>
@@ -101,6 +102,7 @@ namespace Engine {
 
         // Debug //
     private:
+        bool paused = true;
         void component_tests();
         std::string print_tree();
         void tree_tests();
@@ -113,6 +115,8 @@ namespace Engine {
             bool tick = false;
         };
         std::map<unsigned int, OrbitTracker> orbitTrackers;
+
+
 
     };
 
