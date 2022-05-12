@@ -516,6 +516,7 @@ void MenuBarView::newAttribute() {
     
     static int item_current_idx = 0; // Here we store our selection data as an index.
     const char* combo_preview_value = components[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+    
     if (ImGui::BeginCombo("Attributes", combo_preview_value))
     {
         for (int n = 0; n < NUM_COMPONENT_TYPES; n++)

@@ -34,7 +34,8 @@ namespace Engine
 			{
 				particle = mgr->get_component<ParticleComponent>(i, COMPONENT_PARTICLE);
 				transform = mgr->get_component<TransformComponent>(i, COMPONENT_TRANSFORM);
-				particle->generateParticle(transform->position);
+				if(particle->is_on)
+					particle->generateParticle(particle->generateVec(transform->position, particle->posError));
 			}
 		}
 	}

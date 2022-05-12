@@ -22,7 +22,7 @@ private:
 
 	
 
+private:
+	void show_particle();
 
-
-	
 };
