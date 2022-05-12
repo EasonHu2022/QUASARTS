@@ -200,12 +200,25 @@ int FileModule::update_resource_node()
 
 int FileModule::create_workdir(const char* p, const char* projectName)
 {
-#if defined(_WIN32)
-	const char* sig = "\\";
-#else
-	const char* sig = "/";
-#endif
-	cur_workdir = char_merge(p, sig);
+	// Copy the string:
+	char new_p[260];
+	strcpy(new_p, p);
+
+	#if defined(_WIN32)
+		const char* sig = "\\";
+	#else
+		// Remove newline, which may be there on Linux (hence the copy above):
+		for (int i = 0; i < 260; i++) {
+			if (new_p[i] == '\n') {
+				// Terminate string at newline (lazy but it works):
+				new_p[i] = '\0';
+				break;
+			}
+		}
+		const char* sig = "/";
+	#endif
+
+	cur_workdir = char_merge(new_p, sig);
 	cur_workdir = char_merge(cur_workdir, projectName);
 
 	if (0 == access(cur_workdir, 0))
@@ -248,12 +261,18 @@ void FileModule::open_root(std::string root) {
 }
 
 void FileModule::save_root(std::string root, std::string name) {
+	#if defined(_WIN32)
+		std::string project_file = root + "\\" + name + "\\" + name + ".q";
+	#else
+		// Copy the string and remove the newline:
+		std::string new_root = root;
+		std::size_t position = new_root.find('\n');
+		if (position != std::string::npos) {
+			new_root.erase(new_root.begin() + position, new_root.end());
+		}
+		std::string project_file = new_root + "/" + name + "/" + name + ".q";
+	#endif
 
-#if defined(_WIN32)
-	std::string project_file = root + "\\" + name + "\\" + name + ".q";
-#else
-	std::string project_file = root + "/" + name + "/" + name + ".q";
-#endif
 	std::ofstream of(project_file);
 	if (of.is_open())
 	{
