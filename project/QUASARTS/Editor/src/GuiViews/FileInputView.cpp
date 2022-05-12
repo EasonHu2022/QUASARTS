@@ -70,35 +70,27 @@ void FileInputView::on_gui()
                             if (ImGui::IsMouseDoubleClicked(0)) {
                                 if (i == 0) {
                                     unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                                    Engine::ECSManager::Instance()->set_entityName(entityID, "object");
-                                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
+                                    
                                     Engine::TransformComponent transform;
                                     transform.position = { 0.0f,0.0f, 0.0f };
                                     transform.rotation = { 0.0f,0.0f, 0.0f };
                                     transform.scale = { 1.0f,1.0f, 1.0f };
-                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_TRANSFORM, transform);
+                                    Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM, transform);
 
-
-                                    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH);
                                     Engine::MeshComponent mesh;
+                                    auto path = FileModule::Instance()->get_internal_assets_path();
                                     mesh.path = assetsFiles[j].path().string();
-                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MESH, mesh);
+                                    Engine::ECSManager::Instance()->set_entityName(entityID, assetsFiles[j].path().filename().string());
+                                    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH, mesh);
 
-                                    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL);
-
-                                    Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityID, COMPONENT_HEALTH);
-                                    Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityID, COMPONENT_WEAPON);
-                                   
-   
                                     Engine::MaterialComponent material;
                                     //get default engine assets path
-                                    auto path = FileModule::Instance()->get_internal_assets_path();
                                     std::string vshPath = path + "Shader/DefaultShader.vsh";
-                                    std::string fshPath = path +"Shader/DefaultShader.fsh";
+                                    std::string fshPath = path + "Shader/DefaultShader.fsh";
                                     std::string gshPth = "";
                                     std::string texturePath = path + "Texture/floor.jpg";
-                                    material.material = new Engine::Material(vshPath, fshPath,gshPth,texturePath);                                  
-                                    Engine::ECSManager::Instance()->replace_component(entityID, COMPONENT_MATERIAL, material);
+                                    material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+                                    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL, material);
                                 }
                                 else if (i == 1) 
                                 {
