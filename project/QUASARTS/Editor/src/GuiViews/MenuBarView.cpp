@@ -330,7 +330,7 @@ void MenuBarView::newProject() {
         project_name = buf1;
     }
     ImGui::PopItemWidth();
-    if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 64)) {
+    if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 260)) {
         folder_path = buf2;
     }
     ImGui::SameLine();
