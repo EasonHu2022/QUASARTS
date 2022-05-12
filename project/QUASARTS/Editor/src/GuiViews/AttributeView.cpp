@@ -215,8 +215,6 @@ void AttributeView::show_particle() {
 	particle->directionDeviation = directionDeviation;
 	
 }
-	
-}
 
 void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {
 
