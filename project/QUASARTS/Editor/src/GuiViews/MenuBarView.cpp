@@ -192,7 +192,7 @@ void MenuBarView::on_gui()
                 Engine::ECSManager::Instance()->create_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
                 Engine::LightComponent *light = Engine::ECSManager::Instance()->get_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
                 light->ambient = { 1.0f,0.0f, 0.0f };
-                light->type = Engine::LightType::point;
+                light->type = Engine::LightType::parallel;
                
 
                 Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);

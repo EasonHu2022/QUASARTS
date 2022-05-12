@@ -12,6 +12,7 @@ namespace Engine
 	public:
 		Material(std::string vShaderPath, std::string fShaderPath, std::string gShaderPath = "", std::string texture = "");
 		~Material();
+		std::string name = "default";
 		std::string vShaderPath = "";
 		std::string fShaderPath = "";
 		std::string gShaderPath = "";
