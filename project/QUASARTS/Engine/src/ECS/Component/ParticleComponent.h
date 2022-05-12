@@ -13,8 +13,8 @@ namespace Engine {
 	{
 		float pps, averageSpeed, gravity, averageLifeLength, averageScale;
 
-		float speedError, lifeError, scaleError = 0;
-		bool randomRotation = false, is_on = false;
+		float speedError, lifeError, scaleError = 0, posError;
+		bool randomRotation = false, is_on = false, cone = true;
 		glm::vec3 direction;
 		float directionDeviation = 0;
 		ParticleComponent() {
@@ -28,6 +28,7 @@ namespace Engine {
 			scaleError = 0.01f;
 			direction = glm::vec3(0.0f, 1.0f, 0.0f);
 			directionDeviation = 0.5f;
+			posError = 0.0f;
 		}
 		ParticleComponent(float particles, float speed, float grav, float life, float scal, float speedE, float lifeE, float scalE, glm::vec3 dir, float div) {
 			pps = particles;
@@ -57,12 +58,12 @@ namespace Engine {
 
 		void emitParticle(glm::vec3 center) {
 			glm::vec3 velocity;
-			//if (direction != NULL) {
+			if (cone) {
 			velocity = randVecCone(direction, directionDeviation);
-			//}
-			//else {
-				//velocity = randVec();
-			//}
+			}
+			else {
+				velocity = randVec();
+			}
 			velocity = glm::normalize(velocity);
 			velocity = velocity * generateFloat(averageSpeed, speedError);
 			float scale = generateFloat(averageScale, scaleError);
@@ -73,6 +74,11 @@ namespace Engine {
 		float generateFloat(float avg, float error) {
 			float offset = ((float)rand() / (float)(RAND_MAX)-0.5f) * 2.0f * error;
 			return avg + offset;
+		}
+		glm::vec3 generateVec(glm::vec3 avg, float error) {
+			float x = ((float)rand() / (float)(RAND_MAX)-0.5f) * 2.0f * error;
+			float z = ((float)rand() / (float)(RAND_MAX)-0.5f) * 2.0f * error;
+			return glm::vec3(avg.x + x, avg.y, avg.z + z);
 		}
 		float generateRotation() {
 			if (randomRotation) {

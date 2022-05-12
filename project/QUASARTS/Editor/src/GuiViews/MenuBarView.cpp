@@ -192,7 +192,7 @@ void MenuBarView::on_gui()
                 Engine::ECSManager::Instance()->create_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
                 Engine::LightComponent *light = Engine::ECSManager::Instance()->get_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
                 light->ambient = { 1.0f,0.0f, 0.0f };
-                light->type = Engine::LightType::point;
+                light->type = Engine::LightType::parallel;
                
 
                 Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
@@ -330,7 +330,7 @@ void MenuBarView::newProject() {
         project_name = buf1;
     }
     ImGui::PopItemWidth();
-    if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 64)) {
+    if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 260)) {
         folder_path = buf2;
     }
     ImGui::SameLine();
@@ -344,9 +344,10 @@ void MenuBarView::newProject() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0 && strlen(buf2) != 0) {
-                      
+
             FileModule::Instance()->create_workdir(buf2, buf1);
             FileModule::Instance()->save_root(buf2, buf1);
+
             new_project = false;
             show_window = true;
            
@@ -515,6 +516,7 @@ void MenuBarView::newAttribute() {
     
     static int item_current_idx = 0; // Here we store our selection data as an index.
     const char* combo_preview_value = components[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+    
     if (ImGui::BeginCombo("Attributes", combo_preview_value))
     {
         for (int n = 0; n < NUM_COMPONENT_TYPES; n++)
