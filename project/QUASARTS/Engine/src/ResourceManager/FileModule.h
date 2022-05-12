@@ -71,9 +71,14 @@ private:
 	QDirectoriesNode* cur_root = nullptr;
 	const char* cur_workdir = NULL;
 	std::string current_root;
-	const char* cmd = "mkdir ";
 	//default add 2 folders(Resources and Scripts) under Assets
+#if defined(_WIN32)
+	const char* cmd = "mkdir ";
 	const char*  folders[5] = {"\\Assets","\\Release","\\ProjectSetting","\\Assets\\Scripts","\\Assets\\Resources"};
+#else
+	const char* cmd = "mkdir -p "; // -p flag says to ignore error if directory exists, and to create parents.
+	const char* folders[5] = {"/Assets", "/Release", "/ProjectSetting", "/Assets/Scripts", "/Assets/Resources"};
+#endif
 	
 public:
 	/// <summary>

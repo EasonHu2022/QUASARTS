@@ -9,6 +9,8 @@
 #ifdef QS_WINDOWS
 	#include <io.h>
 	#include "atlstr.h"
+#else
+	#include <dirent.h>
 #endif
 
 FileModule* FileModule::instance = nullptr;
@@ -134,6 +136,44 @@ void FileModule::build_file_vdb(std::string root_dir)
 #else
 	int FileModule::recursively_build_dirnode(QDirectoriesNode* node)
 	{
+		const char *fSlash = "/";
+		const char *dirName = char_merge(node->path, fSlash);
+
+		// Loop through directory specified by node, finding files + subdirectories:
+		auto dir = opendir(node->path);
+		if (dir != NULL) {
+			// Read an object in the directory:
+			auto content = readdir(dir);
+			while (content != NULL) {
+				// See if the content is a directory or file:
+				if (content->d_type == DT_DIR) {
+					// This is a directory. Don't process ".." and "." options:
+					if (content->d_name[0] == '.') {
+						content = readdir(dir);
+						continue;
+					}
+					QDirectoriesNode *dir_node = new QDirectoriesNode();
+					dir_node->name = content->d_name;
+					char* node_path = char_merge(dirName, content->d_name);
+					dir_node->path = node_path;
+					node->children.push_back(dir_node);
+					QDEBUG("create a dirnode under {0}. path is {1}",node->path, dir_node->path);
+					recursively_build_dirnode(dir_node);
+				} else if (content->d_type == DT_REG) {
+					// This is a regular file:
+					QFileNode *file_node = new QFileNode();
+					file_node->name = content->d_name;
+					char* node_path = char_merge(dirName, content->d_name);
+					file_node->path = node_path;
+					QDEBUG("create a filenode under {0}. name is {1}", node->path, file_node->path);
+					node->files.push_back(file_node);
+				}
+				content = readdir(dir);
+			}
+			closedir(dir);
+		}
+
+		delete[] dirName;
 		return 0;
 	}
 #endif
@@ -160,9 +200,14 @@ int FileModule::update_resource_node()
 
 int FileModule::create_workdir(const char* p, const char* projectName)
 {
+#if defined(_WIN32)
 	const char* sig = "\\";
+#else
+	const char* sig = "/";
+#endif
 	cur_workdir = char_merge(p, sig);
 	cur_workdir = char_merge(cur_workdir, projectName);
+
 	if (0 == access(cur_workdir, 0))
 	{
 		QERROR("Directory exists in {0}", cur_workdir);
@@ -170,8 +215,6 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 		return 0;
 		//return 1;
 	}
-
-
 
 	char* mkCmd = char_merge(cmd, cur_workdir);
 
@@ -188,10 +231,7 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 		delete[] fcmd;
 	}
 
-
-
 	update_resource_node();
-
 
 	delete[] mkCmd;
 	return 0;
