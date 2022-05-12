@@ -18,18 +18,10 @@ public:
 	bool game = false;
 private:
 	size_t current_entity_id;
-	void show_transform();
-	void change_transform(Engine::TransformComponent*, float[], float[], float[]);
-	void show_mesh();
+
 
 	
-	/********************** drawfunctions ************************************/
-	void draw_property(std::string name, glm::vec2 target);
-	void draw_property(std::string name, glm::vec3 target);
-	void draw_property(std::string name, glm::vec4 target);
-	void draw_property(std::string name, std::string target);
-	void draw_property(std::string name, float target);
-	/********************** drawfunctions ************************************/
+
 
 
 	
