@@ -18,11 +18,10 @@ void AttributeView::on_gui()
 		
 		if (!game) {
 		
-			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
-				
-				/**/
-				//show_mesh();
+			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES) {
 				show_transform();
+				if(Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE))
+					show_particle();
 			}
 		
 		}
@@ -93,6 +92,57 @@ void AttributeView::show_transform() {
 	
 }
 
-void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {
+void AttributeView::show_particle() {
+	
+	ImGui::Separator();
+	Engine::ParticleComponent* particle = Engine::ECSManager::Instance()->get_component<Engine::ParticleComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE);
+	
+	static bool is_on = particle->is_on;
+	static bool randomRotation = particle->randomRotation;
+	static int mode = 1;
+	static float pps = particle->pps;
+	static float gravity = particle->gravity;
+	static float averageSpeed = particle->averageSpeed, averageLifeLength = particle->averageLifeLength, averageScale = particle->averageScale;
+	static float speedError = particle->speedError, lifeError = particle->lifeError, scaleError = particle->scaleError;
+	static float directionDeviation = particle->directionDeviation;
+	static float dir[3] = { particle->direction.x, particle->direction.y, particle->direction.z };
 
+	if (ImGui::Button("Toggle On/Off")) {
+		is_on = !is_on;
+	}
+	if (ImGui::Button("Toggle Particle Rotation")) {
+		randomRotation = !randomRotation;
+	}
+	ImGui::RadioButton("Cone", &mode, 1); ImGui::SameLine();
+	ImGui::RadioButton("Sphere", &mode, 2);
+	if (mode == 1)
+		particle->cone = true;
+	else
+		particle->cone = false;
+	ImGui::InputFloat(" Particles per Second", &pps);
+	ImGui::InputFloat(" Gravity", &gravity);
+	ImGui::InputFloat(" Speed", &averageSpeed);
+	ImGui::InputFloat(" Lifetime", &averageLifeLength);
+	ImGui::InputFloat(" Scale", &averageScale);
+	ImGui::InputFloat(" Speed Error", &speedError);
+	ImGui::InputFloat(" Lifetime Error", &lifeError);
+	ImGui::InputFloat(" Scale Error", &scaleError);
+	ImGui::InputFloat3(" Direction", dir);
+	ImGui::InputFloat(" Direction Deviation", &directionDeviation);
+	
+	particle->is_on = is_on;
+	particle->randomRotation = randomRotation;
+	particle->pps = pps;
+	particle->gravity = gravity;
+	particle->averageSpeed = averageSpeed;
+	particle->averageLifeLength = averageLifeLength;
+	particle->averageScale = averageScale;
+	particle->speedError = speedError;
+	particle->lifeError = lifeError;
+	particle->scaleError = scaleError;
+	particle->direction.x = dir[0];
+	particle->direction.y = dir[1];
+	particle->direction.z = dir[2];
+	particle->directionDeviation = directionDeviation;
+	
 }
