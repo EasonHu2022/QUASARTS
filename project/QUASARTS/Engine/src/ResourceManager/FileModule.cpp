@@ -346,7 +346,6 @@ std::string FileModule::get_internal_assets_path()
 	}
 	std::string str(path);
 	str = str + "Assets/";
-	std::cout << str << std::endl;
 	return str;
 }
 #endif

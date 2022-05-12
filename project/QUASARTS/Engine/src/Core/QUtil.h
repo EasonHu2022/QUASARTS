@@ -40,10 +40,4 @@ inline std::string getExtension(const std::string& fileName)
 		delete[] pszDst;
 		return strTemp;
 	}
-#else
-	inline std::string WChar2Ansi(int i)
-	{
-		std::string strTemp("Temp");
-		return strTemp;
-	}
 #endif
