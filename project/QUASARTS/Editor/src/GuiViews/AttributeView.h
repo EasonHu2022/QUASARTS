@@ -2,7 +2,10 @@
 #include "QuasartsEngine.h"
 #include <string>
 #include "GuiViews/GuiView.h"
-
+#include <memory>
+#include <map>
+#include <unordered_map>
+#include <functional>
 
 class AttributeView : public GuiView
 {
@@ -13,6 +16,11 @@ public:
 	void on_remove() override;
 
 	bool game = false;
+private:
+	size_t current_entity_id;
+
+
+	
 
 private:
 	void show_transform();
@@ -23,5 +31,6 @@ private:
 	void show_lighting();
 	void show_script();
 	void show_orbit();
+	void show_particle();
 
 };
