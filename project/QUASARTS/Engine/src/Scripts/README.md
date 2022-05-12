@@ -10,6 +10,7 @@ For Quasarts Engine, we select lua as our scripting language
 ## Update tracking
 
 To init attributes, please put everything you want to initialize in `onInit` function
+
 To keep tracking the content in script, please put everything you want to update in `onUpdate` function
 
 ``` lua
@@ -31,12 +32,14 @@ end
 - Math
 - Audio
 - Log
+- New Entity
 - Components
   - Transform
   - Health 
+  - Weapon
 - Time
 
-### Input 
+## Input 
 
 Function | Argument 
 ---------| ---------
@@ -52,22 +55,21 @@ Input.get_mouse_released |  mousecodes(int)
 
 2.For mouse codes, we use the format like `Q_MOUSE_X`
 
-#### [keycodes and mousecodes list](./InputExporter.cpp)
+### [keycodes and mousecodes list](./InputExporter.cpp)
 
-#### simple example
+### simple example
+
 ``` lua
 if Input.get_key_held(Key.Q_KEY_A) then
     --do what you want to do here
 end
-```
 
-``` lua
 if Input.get_mouse_held(Mouse.Q_MOUSE_LEFT) then
     --do what you want to do here
 end
 ```
 
-### Math(from glm library)
+## Math(from glm library)
 
 Quasarts Engine now supports:
 - vec2
@@ -77,7 +79,8 @@ Quasarts Engine now supports:
 - mat4
 
 
-#### simple example
+### simple example
+
 ``` lua
 -- create a variable
 v2 = vec2(2,3)
@@ -88,9 +91,9 @@ m3 = mat3(3)
 m3 = mat3(1,2,3,4,5,6,7,8,9)
 ```
 
-### Audio
+## Audio
 
-Quasarts Engine now supports playing sound clip(***.ogg format only***) and long track (***.wav format only***)
+Quasarts Engine supports playing sound clip(***.ogg format only***) and long track (***.wav format only***)
 
 Function | Argument
 ---------| ---------
@@ -112,9 +115,9 @@ Device.setPositionv      |  vec3                         | Set device position w
 Device.setOritentation   |  atX, atY, atZ, upX, upY, upZ | Set device oritentation
 
 
-### Log
+## Log
 
-Quasarts Engine now supports log functions
+Quasarts Engine supports log functions
 
 Function  |
 --------- |
@@ -128,34 +131,37 @@ Gerror    |
 Gwarn     |
 
 
-#### simple example
+### simple example
+
 ``` lua
 Qlog("log")
 v = 2
 Qwarn("v = " .. v)
 ```
 
-### Components
+## New Entity
 
-Quasarts Engine can manipulate other components which belong to current entity
-
-#### Transform
+Quasarts Engine supports creating new entitiy via script, also bind components 
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
-entity.x   | current_entity_id(unsigned int) | step(float)
-entity.y   | current_entity_id(unsigned int) | step(float)
-entity.z   | current_entity_id(unsigned int) | step(float)
+createEntity   | entity_name(string)     | \
+addComponent   | entity_id(unsigned int) | component_type(string)
 
+### simple example
 
-**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`
-
-
-##### simple example
 ``` lua
-entity.x(thiz, 2)
+id = createEntity("new_entity")
+addComponent(id, "Health")
 ```
 
+
+
+## Components
+
+Quasarts Engine can manipulate other components which belong to current entity
+
+### Transform
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
@@ -164,10 +170,11 @@ entity.updateRotation    | current_entity_id(unsigned int) | step(vec3)
 entity.updateScale       | current_entity_id(unsigned int) | step(vec3)
 
 
-**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`
+**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
 
 
-##### simple example
+#### simple example
+
 ``` lua
 local dP = vec3(0,0,0)
 local dR = vec3(0,0,0)
@@ -178,7 +185,7 @@ entity.updateScale(thiz, dS)
 ```
 
 
-#### Health
+### Health
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
@@ -186,10 +193,11 @@ entity.setMaxHealth       | current_entity_id(unsigned int) | max_health(float)
 entity.setCurrentHealth   | current_entity_id(unsigned int) | current_health(float)
 entity.getCurrentHealth   | current_entity_id(unsigned int) | /
 
-**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`
+**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
 
 
-##### simple example
+#### simple example
+
 ``` lua
 init_health = 100
 entity.setMaxHealth(thiz, init_health)
@@ -197,4 +205,24 @@ entity.setsetCurrentHealth(thiz, init_health)
 current_health = entity.getCurrentHealth(thiz)
 current_health = current_health - 20 -- change the health
 entity.setsetCurrentHealth(thiz, current_health)
+```
+
+
+### Weapon
+
+Function | Argument1 | Argument2
+---------| --------- | ---------
+entity.setDamage  | current_entity_id(unsigned int) | damage(float)
+entity.setRange   | current_entity_id(unsigned int) | range(float)
+entity.setSpeed   | current_entity_id(unsigned int) | speed(int)
+
+**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
+
+
+#### simple example
+
+``` lua
+entity.setDamage(thiz, 20)
+entity.setRange(thiz, 5)
+entity.setSpeed(thiz, 2)
 ```
