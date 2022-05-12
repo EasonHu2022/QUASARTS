@@ -25,6 +25,7 @@ namespace Engine {
             scene = new Scene();
             create_camera();
             current_entity = TOO_MANY_ENTITIES;
+            game_running = false;
         }
 
         public:
@@ -253,6 +254,12 @@ namespace Engine {
         // Get an index for an Entity by ID:
         unsigned int get_index_from_ID(unsigned int entityID);
 
+        // Set the value of game_running:
+        void set_game_running(bool state);
+
+        // Get the value of game_running:
+        bool get_game_running();
+
         // Print Entity information for debugging purposes:
         void print_entities();
 
@@ -268,5 +275,8 @@ namespace Engine {
 
         // Systems:
         std::map<unsigned int, System *> systems;  // For iterating over Systems easily.
+
+        // Boolean to tell whether the game is running or not:
+        bool game_running;
     };
 }

@@ -118,6 +118,16 @@ namespace Engine {
         }
     }
 
+    // Set the value of game_running:
+    void ECSManager::set_game_running(bool state) {
+        game_running = state;
+    }
+
+    // Get the value of game_running:
+    bool ECSManager::get_game_running() {
+        return game_running;
+    }
+
     // Check if an Entity has a particular type of Component:
     bool ECSManager::has_component(unsigned int entityID, unsigned int componentType) {
         Entity *entity = get_entity(entityID);
