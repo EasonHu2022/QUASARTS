@@ -27,7 +27,19 @@ public:
 	void newEntity();
 	void newChild();
 	void newAttribute();
-	const char* components[4] = { "Transform", "Mesh", "Colision", "Script"};
+	const char* components[11] = {
+		"Transform",
+		"Mesh",
+		"Colision Sphere",
+		"Material",
+		"Lighting",
+		"Script",
+		"Camera",
+		"Orbit",
+		"Health",
+		"Weapon",
+		"Particle"
+	};
 public:
 	void on_add() override;
 	void on_gui() override;

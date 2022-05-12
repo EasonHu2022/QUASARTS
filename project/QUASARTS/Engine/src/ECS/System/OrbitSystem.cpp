@@ -53,6 +53,12 @@ namespace Engine
 
 	int OrbitSystem::start()
 	{
+		if (oneshot)
+		{
+			oneshot = false;
+			//component_tests();
+		}
+
 		ECSManager* active_manager = get_manager();
 
 		// Initialise all orbits with valid primaries.
@@ -116,13 +122,13 @@ namespace Engine
 
 	void OrbitSystem::update()
 	{
-		if (Input::get_key_pressed(Q_KEY_P))
-		{
-			if (paused) start(); // restart system when unpaused
-			paused = !paused;
-		}
-		if (paused) return;
-		QDEBUG("Running");
+		//if (Input::get_key_pressed(Q_KEY_P))
+		//{
+		//	if (paused) start(); // restart system when unpaused
+		//	paused = !paused;
+		//}
+		//if (paused) return;
+		//QDEBUG("Running");
 
 		ECSManager* active_manager = get_manager();
 
@@ -178,20 +184,20 @@ namespace Engine
 			transf->position = transfPrimary->position + orbit->mRelativePos;
 
 
-			//// stats tracking
-			//float actDistErr = glm::length(transfPrimary->position - transf->position) - orbit->mDistPeriapse;
-			//if (actDistErr > tracker->maxDistErr) tracker->maxDistErr = actDistErr;
-			//if (actDistErr < tracker->minDistErr) tracker->minDistErr = actDistErr;
-			//if (tracker->tick)
-			//{
-			//	tracker->completeTimes.push_back(TimeModule::Instance()->get_time());
-			//	tracker->aveDistErr.push_back(actDistErr);
-			//	tracker->tick = false;
-			//}
+			// stats tracking
+			/*float actDistErr = glm::length(transfPrimary->position - transf->position) - orbit->mDistPeriapse;
+			if (actDistErr > tracker->maxDistErr) tracker->maxDistErr = actDistErr;
+			if (actDistErr < tracker->minDistErr) tracker->minDistErr = actDistErr;
+			if (tracker->tick)
+			{
+				tracker->completeTimes.push_back(TimeModule::Instance()->get_time());
+				tracker->aveDistErr.push_back(actDistErr);
+				tracker->tick = false;
+			}*/
 		}
 
 
-		//// debug
+		// debug
 		//if (completeTimesCounter.sec() < 0)
 		//{
 		//	QDEBUG("Orbit stats:");
@@ -496,6 +502,9 @@ namespace Engine
 		TransformComponent* transform0 = active_manager->get_component<TransformComponent>(entity0Id, COMPONENT_TRANSFORM);
 		TransformComponent* transform1 = active_manager->get_component<TransformComponent>(entity1Id, COMPONENT_TRANSFORM);
 		TransformComponent* transform2 = active_manager->get_component<TransformComponent>(entity2Id, COMPONENT_TRANSFORM);
+		glm::vec3 startPosition1(0, 0, -25);
+		QDEBUG("Setting entity {0} relative position...", entity1Id);
+		transform1->position = startPosition1;
 		glm::vec3 startRelativePos0(10, 0, 10);
 		glm::vec3 startRelativePos2(0, -5, 0);
 		QDEBUG("Setting entity {0} relative position...", entity0Id);
@@ -508,12 +517,12 @@ namespace Engine
 			entity2Id, OrbitComponent::vec3_tostring(transform2->position, ", ")
 		);
 
-
+		
 		// Set orbit periods.
 		QDEBUG("Setting orbit periods...");
-		set_orbit_period(entity0Id, 10.f);
+		set_orbit_period(entity0Id, 60.f);
 		QDEBUG("Entity {0} new orbit period: {1}", entity0Id, orbit0->mOrbitPeriod);
-		set_orbit_period(entity2Id, 0.f);
+		set_orbit_period(entity2Id, 5.f);
 		QDEBUG("Entity {0} new orbit period: {1}", entity2Id, orbit2->mOrbitPeriod);
 
 
@@ -528,76 +537,84 @@ namespace Engine
 		orbitTrackers.emplace(std::make_pair(entity2Id, OrbitTracker()));
 
 
-		// Deactivate orbit.
-		QDEBUG("Clearing orbit {0}...", entity0Id);
-		clear_orbit(entity0Id);
+
+		// Render resources //
+		auto path = FileModule::Instance()->get_internal_assets_path();
+
+		// Create sphere meshes.
+		auto spherePath = path + "DefaultObjects/sphere20x20.obj";
+		// 0
+		QDEBUG("Creating sphere meshes...");
+		active_manager->create_component<Engine::MeshComponent>(entity0Id, COMPONENT_MESH);
+		MeshComponent* mesh0 = active_manager->get_component<MeshComponent>(entity0Id, COMPONENT_MESH);
+		if (mesh0 == nullptr) {
+			QDEBUG("Failed to create/retrieve mesh component for entity: {0}", entity0Id);
+			return;
+		}
+		mesh0->path = spherePath;
+		QDEBUG("Sphere mesh created for entity {0}", entity0Id);
+		// 1
+		active_manager->create_component<Engine::MeshComponent>(entity1Id, COMPONENT_MESH);
+		MeshComponent* mesh1 = active_manager->get_component<MeshComponent>(entity1Id, COMPONENT_MESH);
+		if (mesh1 == nullptr) {
+			QDEBUG("Failed to create/retrieve mesh component for entity: {0}", entity1Id);
+			return;
+		}
+		mesh1->path = spherePath;
+		QDEBUG("Sphere mesh created for entity {0}", entity1Id);
+		// 2
+		active_manager->create_component<Engine::MeshComponent>(entity2Id, COMPONENT_MESH);
+		MeshComponent* mesh2 = active_manager->get_component<MeshComponent>(entity2Id, COMPONENT_MESH);
+		if (mesh2 == nullptr) {
+			QDEBUG("Failed to create/retrieve mesh component for entity: {0}", entity2Id);
+			return;
+		}
+		mesh2->path = spherePath;
+		QDEBUG("Sphere mesh created for entity {0}", entity2Id);
 
 
-		//// Render resources //
-		//auto path = FileModule::Instance()->get_internal_assets_path();
-
-		//// Create sphere meshes.
-		//auto spherePath = path + "DefaultObjects/sphere20x20.obj";
-		//// 0
-		//QDEBUG("Creating sphere meshes...");
-		//active_manager->create_component<Engine::MeshComponent>(entity0Id, COMPONENT_MESH);
-		//MeshComponent* mesh0 = active_manager->get_component<MeshComponent>(entity0Id, COMPONENT_MESH);
-		//if (mesh0 == nullptr) {
-		//	QDEBUG("Failed to create/retrieve mesh component for entity: {0}", entity0Id);
-		//	return;
-		//}
-		//mesh0->path = spherePath;
-		//QDEBUG("Sphere mesh created for entity {0}", entity0Id);
-		//// 1
-		//active_manager->create_component<Engine::MeshComponent>(entity1Id, COMPONENT_MESH);
-		//MeshComponent* mesh1 = active_manager->get_component<MeshComponent>(entity1Id, COMPONENT_MESH);
-		//if (mesh1 == nullptr) {
-		//	QDEBUG("Failed to create/retrieve mesh component for entity: {0}", entity1Id);
-		//	return;
-		//}
-		//mesh1->path = spherePath;
-		//QDEBUG("Sphere mesh created for entity {0}", entity1Id);
-		//// 2
-		//active_manager->create_component<Engine::MeshComponent>(entity2Id, COMPONENT_MESH);
-		//MeshComponent* mesh2 = active_manager->get_component<MeshComponent>(entity2Id, COMPONENT_MESH);
-		//if (mesh0 == nullptr) {
-		//	QDEBUG("Failed to create/retrieve mesh component for entity: {0}", entity2Id);
-		//	return;
-		//}
-		//mesh2->path = spherePath;
-		//QDEBUG("Sphere mesh created for entity {0}", entity2Id);
+		// Set scales.
+		transform0->scale = glm::vec3(0.5,0.5,0.5);
+		transform1->scale = glm::vec3(1, 1, 1);
+		transform2->scale = glm::vec3(0.2, 0.2, 0.2);
 
 
-		//// Create sphere materials.
-		//std::string vshPath = path + "Shader/DefaultShader.vsh";
-		//std::string fshPath = path + "Shader/DefaultShader.fsh";
-		//std::string gshPth = "";
-		//std::string texturePath = path + "Texture/floor.jpg";
-		//Material* material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
-		//// 0
-		//active_manager->create_component<Engine::MaterialComponent>(entity0Id, COMPONENT_MATERIAL);
-		//MaterialComponent* mat0 = active_manager->get_component<MaterialComponent>(entity0Id, COMPONENT_MATERIAL);
-		//if (mat0 == nullptr) {
-		//	QDEBUG("Failed to create/retrieve material component for entity: {0}", entity0Id);
-		//	return;
-		//}
-		//mat0->material = material;
-		//// 1
-		//active_manager->create_component<Engine::MaterialComponent>(entity1Id, COMPONENT_MATERIAL);
-		//MaterialComponent* mat1 = active_manager->get_component<MaterialComponent>(entity1Id, COMPONENT_MATERIAL);
-		//if (mat1 == nullptr) {
-		//	QDEBUG("Failed to create/retrieve material component for entity: {0}", entity1Id);
-		//	return;
-		//}
-		//mat1->material = material;
-		//// 2
-		//active_manager->create_component<Engine::MaterialComponent>(entity2Id, COMPONENT_MATERIAL);
-		//MaterialComponent* mat2 = active_manager->get_component<MaterialComponent>(entity2Id, COMPONENT_MATERIAL);
-		//if (mat2 == nullptr) {
-		//	QDEBUG("Failed to create/retrieve material component for entity: {0}", entity2Id);
-		//	return;
-		//}
-		//mat2->material = material;
+		// Create sphere materials.
+		std::string vshPath = path + "Shader/DefaultShader.vsh";
+		std::string fshPath = path + "Shader/DefaultShader.fsh";
+		std::string gshPth = "";
+		std::string texturePath = path + "Texture/floor.jpg";
+		Material* material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+		// 0
+		active_manager->create_component<Engine::MaterialComponent>(entity0Id, COMPONENT_MATERIAL);
+		MaterialComponent* mat0 = active_manager->get_component<MaterialComponent>(entity0Id, COMPONENT_MATERIAL);
+		if (mat0 == nullptr) {
+			QDEBUG("Failed to create/retrieve material component for entity: {0}", entity0Id);
+			return;
+		}
+		mat0->material = material;
+		// 1
+		active_manager->create_component<Engine::MaterialComponent>(entity1Id, COMPONENT_MATERIAL);
+		MaterialComponent* mat1 = active_manager->get_component<MaterialComponent>(entity1Id, COMPONENT_MATERIAL);
+		if (mat1 == nullptr) {
+			QDEBUG("Failed to create/retrieve material component for entity: {0}", entity1Id);
+			return;
+		}
+		mat1->material = material;
+		// 2
+		active_manager->create_component<Engine::MaterialComponent>(entity2Id, COMPONENT_MATERIAL);
+		MaterialComponent* mat2 = active_manager->get_component<MaterialComponent>(entity2Id, COMPONENT_MATERIAL);
+		if (mat2 == nullptr) {
+			QDEBUG("Failed to create/retrieve material component for entity: {0}", entity2Id);
+			return;
+		}
+		mat2->material = material;
+
+
+		// Set entity names.
+		active_manager->set_entityName(entity0Id, "e1");
+		active_manager->set_entityName(entity1Id, "e2");
+		active_manager->set_entityName(entity2Id, "e3");
 
 
 	} // component_tests()

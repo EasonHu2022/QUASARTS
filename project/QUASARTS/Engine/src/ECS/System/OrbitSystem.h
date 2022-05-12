@@ -102,6 +102,7 @@ namespace Engine {
 
         // Debug //
     private:
+        bool oneshot = true;
         bool paused = true;
         void component_tests();
         std::string print_tree();

@@ -16,15 +16,20 @@ void AttributeView::on_gui()
 		ImGui::SetNextWindowSize(ImVec2(window->get_width() * 0.34375, window->get_height() * 1.0922222222+41));
 		ImGui::Begin("Attribute Window", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 		
-		if (!game) {
-		
-			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES && Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
-				
-				/**/
-				//show_mesh();
+		if (!game)
+		{		
+			if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
+			{
 				show_transform();
+				if (Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_MESH)) {
+
+					/**/
+					//show_mesh();
+				}
+				if (Engine::ECSManager::Instance()->has_component(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_ORBIT)) {
+					show_orbit();
+				}
 			}
-		
 		}
 		if (ImGui::Button("Game")) {
 			game = !game;
@@ -96,3 +101,24 @@ void AttributeView::show_transform() {
 void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {
 
 }
+
+
+void AttributeView::show_orbit()
+{
+	ImGui::Separator();
+	Engine::OrbitComponent* orbit = Engine::ECSManager::Instance()->get_component<Engine::OrbitComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_ORBIT);
+	static int primaryEntity = orbit->mPrimaryEntityId;
+	static float orbitPeriod = orbit->mOrbitPeriod;
+	static float normal[3] = { orbit->mAxisNormal.x, orbit->mAxisNormal.y, orbit->mAxisNormal.z };
+
+	ImGui::InputInt(" Primary", &primaryEntity);
+	ImGui::InputFloat(" Period", &orbitPeriod);
+	ImGui::InputFloat3(" Normal", normal);
+
+	orbit->mPrimaryEntityId = primaryEntity;
+	orbit->mOrbitPeriod = orbitPeriod;
+	orbit->mAxisNormal.x = normal[0];
+	orbit->mAxisNormal.y = normal[1];
+	orbit->mAxisNormal.z = normal[2];
+
+} // change_transform()

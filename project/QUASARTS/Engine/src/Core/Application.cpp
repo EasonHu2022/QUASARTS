@@ -149,14 +149,13 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
-		//particleSystem->generateParticle(glm::vec3(0.0f, 0.0f, -1.0f));
 		particleSystem->update();
 		ParticleMaster::Instance()->update();
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();
 		collisionSystem->update();
-		orbitSystem->update();
+		//orbitSystem->update();
 		/***************logic update logic frame************************/
 	}
 

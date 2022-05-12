@@ -22,5 +22,6 @@ private:
 	void show_material();
 	void show_lighting();
 	void show_script();
+	void show_orbit();
 
 };
