@@ -46,7 +46,6 @@ void MenuBarView::on_gui()
                                 project_name = proj_file.substr(i + 1);
                             } else if (count == 2) {
                                 folder_path = proj_file.substr(0, i);
-                                std::cout << folder_path << "A\n";
                                 break;
                             }
                             // Take the extension off project name:
@@ -313,7 +312,7 @@ std::string MenuBarView::OpenFolderDialogue() {
 #else
 std::string MenuBarView::OpenFileDialogue() {
     char filename[1024];
-    FILE* f = popen("zenity --file-selection --file-filter=*.q", "r");
+    FILE* f = popen("zenity --file-selection --file-filter=\"\"*.q\" \"*.scn\"\"", "r");
     if (f == nullptr)
         return "N/A";
     else {
@@ -334,7 +333,7 @@ std::string MenuBarView::OpenFileDialogue() {
 }
 std::string MenuBarView::OpenFolderDialogue() {
     char foldername[1024];
-    FILE* f = popen("zenity  --file-selection --directory", "r");
+    FILE* f = popen("zenity --file-selection --directory", "r");
     if (f == NULL)
         return "N/A";
     else {
