@@ -37,6 +37,7 @@ end
   - Transform
   - Health 
   - Weapon
+  - camera
 - Time
 
 ## Input 
@@ -165,9 +166,9 @@ Quasarts Engine can manipulate other components which belong to current entity
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
-entity.updatePosition    | current_entity_id(unsigned int) | step(vec3)
-entity.updateRotation    | current_entity_id(unsigned int) | step(vec3)
-entity.updateScale       | current_entity_id(unsigned int) | step(vec3)
+updatePosition    | current_entity_id(unsigned int) | step(vec3)
+updateRotation    | current_entity_id(unsigned int) | step(vec3)
+updateScale       | current_entity_id(unsigned int) | step(vec3)
 
 
 **Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
@@ -179,9 +180,9 @@ entity.updateScale       | current_entity_id(unsigned int) | step(vec3)
 local dP = vec3(0,0,0)
 local dR = vec3(0,0,0)
 local dS = vec3(0,0,0)
-entity.updatePosition(thiz, dP)
-entity.updateRotation(thiz, dR)
-entity.updateScale(thiz, dS)
+updatePosition(thiz, dP)
+updateRotation(thiz, dR)
+updateScale(thiz, dS)
 ```
 
 
@@ -189,9 +190,9 @@ entity.updateScale(thiz, dS)
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
-entity.setMaxHealth       | current_entity_id(unsigned int) | max_health(float)
-entity.setCurrentHealth   | current_entity_id(unsigned int) | current_health(float)
-entity.getCurrentHealth   | current_entity_id(unsigned int) | /
+setMaxHealth       | current_entity_id(unsigned int) | max_health(float)
+setCurrentHealth   | current_entity_id(unsigned int) | current_health(float)
+getCurrentHealth   | current_entity_id(unsigned int) | /
 
 **Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
 
@@ -200,11 +201,11 @@ entity.getCurrentHealth   | current_entity_id(unsigned int) | /
 
 ``` lua
 init_health = 100
-entity.setMaxHealth(thiz, init_health)
-entity.setsetCurrentHealth(thiz, init_health)
+setMaxHealth(thiz, init_health)
+setsetCurrentHealth(thiz, init_health)
 current_health = entity.getCurrentHealth(thiz)
 current_health = current_health - 20 -- change the health
-entity.setsetCurrentHealth(thiz, current_health)
+setsetCurrentHealth(thiz, current_health)
 ```
 
 
@@ -212,9 +213,9 @@ entity.setsetCurrentHealth(thiz, current_health)
 
 Function | Argument1 | Argument2
 ---------| --------- | ---------
-entity.setDamage  | current_entity_id(unsigned int) | damage(float)
-entity.setRange   | current_entity_id(unsigned int) | range(float)
-entity.setSpeed   | current_entity_id(unsigned int) | speed(int)
+setDamage  | current_entity_id(unsigned int) | damage(float)
+setRange   | current_entity_id(unsigned int) | range(float)
+setSpeed   | current_entity_id(unsigned int) | speed(int)
 
 **Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
 
@@ -222,7 +223,33 @@ entity.setSpeed   | current_entity_id(unsigned int) | speed(int)
 #### simple example
 
 ``` lua
-entity.setDamage(thiz, 20)
-entity.setRange(thiz, 5)
-entity.setSpeed(thiz, 2)
+setDamage(thiz, 20)
+setRange(thiz, 5)
+setSpeed(thiz, 2)
+```
+
+### Camera
+
+Function | Argument1 
+---------| --------- 
+getCamera      | /
+cameraZoomIn   | camera id(unsigned int)
+cameraZoomOut  | camera id(unsigned int)
+
+**Note** : getCamera return the camera id
+
+
+#### simple example
+
+``` lua
+camera = getCamera()
+if Input.get_key_held(Key.Q_KEY_W) then
+		cameraZoomIn(camera)
+	end
+	
+	if Input.get_key_held(Key.Q_KEY_S) then
+		cameraZoomOut(camera)
+	end
+	
+	updateRotation(camera, vec3(0,0.5,0)) --rotate the camera
 ```
