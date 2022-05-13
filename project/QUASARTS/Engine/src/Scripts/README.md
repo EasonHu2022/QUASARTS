@@ -98,23 +98,25 @@ Quasarts Engine supports playing sound clip(***.ogg format only***) and long tra
 
 Function | Argument
 ---------| ---------
-Audio.playClip    | source name(string)
-Audio.pauseClip   | /
-Audio.stopClip    | /
-Audio.resumeClip  | /
-Audio.playTrack   | source name(string)
-Audio.pauseTrack  | /
-Audio.stopTrack   | /
-Audio.resumeTrack | /
+Audio.playClip       | source name(string)
+Audio.pauseClip      | /
+Audio.stopClip       | /
+Audio.resumeClip     | /
+Audio.setLooping     | looping_state(bool)
+Audio.playTrack      | source name(string)
+Audio.pauseTrack     | /
+Audio.stopTrack      | /
+Audio.resumeTrack    | /
+Audio.active3DEffect | audio_source_position(glm::vec3)
 
 
 Function | Arguments | Description
 ---------| --------- | ---------
-Device.setAttunation     |  /                            | Set distance attenuation model
-Device.setPosition3f     |  x, y, z (float)              | Set device position with separate x, y, z
-Device.setPositionv      |  vec3                         | Set device position with vec3
-Device.setOritentation   |  atX, atY, atZ, upX, upY, upZ | Set device oritentation
-
+Listener.setAttunation       |  /                            | Set distance attenuation model
+Listener.setPosition3f       |  x, y, z (float)              | Set listener position with separate x, y, z
+Listener.setPositionv        |  vec3                         | Set listener position with vec3
+Listener.setOritentation3f   |  x, y, z 		     | Set listener oritentation with separate x, y, z
+Listener.setOritentationv    |  vec3                         | Set listener oritentation with vec3
 
 ## Log
 
@@ -167,6 +169,7 @@ Quasarts Engine can manipulate other components which belong to current entity
 Function | Argument1 | Argument2
 ---------| --------- | ---------
 updatePosition    | current_entity_id(unsigned int) | step(vec3)
+getPosition       | current_entity_id(unsigned int) | /
 updateRotation    | current_entity_id(unsigned int) | step(vec3)
 updateScale       | current_entity_id(unsigned int) | step(vec3)
 
