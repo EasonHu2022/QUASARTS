@@ -60,6 +60,8 @@ namespace Engine {
         // Called when GAME stops.
         int stop();
         void release();
+        // Set up all the data required for the component to function:
+		void initialize_components() override;
 
 
         // Usage //

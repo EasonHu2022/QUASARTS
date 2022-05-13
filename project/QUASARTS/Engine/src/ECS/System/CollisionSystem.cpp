@@ -112,6 +112,30 @@ namespace Engine
 
     } // release()
 
+    // Set up all the data required for the component to function:
+	void CollisionSystem::initialize_components() {
+		// Get the manager and entity mask:
+		ECSManager* active_manager = get_manager();
+		quasarts_entity_ID_mask *entitiesSpheres = get_entity_ID_mask(get_mask_index(COMPONENT_COLLISION_SPHERE));
+		CollisionSphereComponent *collisionSphere;
+
+		// Loop through entities:
+		for (int i = 0; i < MAX_ENTITIES; i++)
+		{
+			if (entitiesSpheres->mask[i] == 1) // Entity [i] with orbit component.
+			{
+				init_collision_component(i, COMPONENT_COLLISION_SPHERE);
+			}
+		}
+		/* Alternative method (slower, but you can ignore the mask if you need):
+		std::vector<unsigned int> entities = active_manager->get_entity_ID_match();
+		for (int i = 0; i < entities.size(); i++) {
+			if (active_manager->has_component(entities[i], COMPONENT_ORBIT) == true) {
+				init_collision_component(entities[i], COMPONENT_COLLISION_SPHERE);
+			}
+		}
+		*/
+    }
 
     // Usage //
 
