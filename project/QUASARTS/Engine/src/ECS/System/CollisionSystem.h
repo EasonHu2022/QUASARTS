@@ -14,6 +14,13 @@ namespace Engine {
 
     class QS_API CollisionSystem : public System
     {
+        // singleton
+    private:
+        static CollisionSystem* instance;
+        CollisionSystem();
+    public:
+        static CollisionSystem* Instance();
+        ~CollisionSystem();
 
     public:
         int mNumCollided; // Track how many components have had collisions in each frame.
@@ -21,10 +28,6 @@ namespace Engine {
         
 
     public:
-        // Constructor and destructor:
-        CollisionSystem();
-        ~CollisionSystem();
-
         void init();
         int start();
         void update();

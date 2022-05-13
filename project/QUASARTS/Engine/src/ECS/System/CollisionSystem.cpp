@@ -3,6 +3,16 @@
 
 namespace Engine
 {
+    // Instancing
+    CollisionSystem* CollisionSystem::instance = nullptr;
+    CollisionSystem* CollisionSystem::Instance()
+    {
+        if (nullptr == instance)
+            instance = new CollisionSystem();
+        return instance;
+    } // Instance()
+
+
     CollisionSystem::CollisionSystem() {
         // Set the Component mask:
         quasarts_component_mask mask;

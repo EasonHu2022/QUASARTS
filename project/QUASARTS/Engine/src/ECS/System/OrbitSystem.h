@@ -19,6 +19,14 @@ namespace Engine {
     
     class QS_API OrbitSystem : public System
     {
+        // singleton
+    private:
+        static OrbitSystem* instance;
+        OrbitSystem();
+    public:
+        static OrbitSystem* Instance();
+        ~OrbitSystem();
+
         /// <summary>
         /// Tree of orbiting entities.
         /// The orbits must be updated in descending order, from root to leaf.
@@ -43,9 +51,6 @@ namespace Engine {
 
         
     public:
-        OrbitSystem();
-        ~OrbitSystem();
-
         // Called when ENGINE starts.
         void init();
         // Called when GAME starts.
@@ -99,6 +104,7 @@ namespace Engine {
 
         // Util //
     private:
+        void clear_tree();
         std::shared_ptr<OrbitSystem::OrbitNode> get_node(unsigned int const aEntityId);
 
 
