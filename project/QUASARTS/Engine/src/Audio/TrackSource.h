@@ -18,7 +18,7 @@ namespace Engine {
 		void stop();
 		void pause();
 		void resume();
-		void isLooping();	
+		void setLooping(const bool& looping_state);
 		void updateBuffer();
 
 		void setPosition(const glm::vec3& pos);

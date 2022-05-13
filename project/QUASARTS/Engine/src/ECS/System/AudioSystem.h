@@ -57,8 +57,6 @@ namespace Engine {
 
 		//get device
 		AudioDevice* getDevice();
-		
-
 
 		void test3D();
 

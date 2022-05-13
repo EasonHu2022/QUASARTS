@@ -16,9 +16,7 @@ namespace Engine {
 		void setPosition(const float& x, const float& y, const float& z);
 
 		//orientation
-		void setOrientation(const float& x, const float& y, const float& z,
-			const float& upX, const float& upY, const float& upZ);
-		void getOrientation(float& orientation);
+		void setOrientation(const float& x, const float& y, const float& z);
 
 
 		/* Distance model values. */

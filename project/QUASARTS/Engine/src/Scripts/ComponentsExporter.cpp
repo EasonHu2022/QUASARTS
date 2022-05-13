@@ -8,6 +8,7 @@ namespace Engine {
 		p_lua_state.set_function("updatePosition", &updatePosition);
 		p_lua_state.set_function("updateRotation", &updateRotation);
 		p_lua_state.set_function("updateScale", &updateScale);
+		p_lua_state.set_function("getPosition", &getPosition);
 
 		//camera
 		p_lua_state.set_function("getCamera", &getCamera);
@@ -64,6 +65,12 @@ namespace Engine {
 	{
 		Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
 		trs->scale = trs->scale + dS;
+	}
+
+	glm::vec3 getPosition(unsigned int id)
+	{
+		Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
+		return trs->position;
 	}
 
 

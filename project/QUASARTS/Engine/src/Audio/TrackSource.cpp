@@ -119,9 +119,9 @@ namespace Engine {
 		is_paused = false;
 	}
 
-	void TrackSource::isLooping()
+	void TrackSource::setLooping(const bool& looping_state)
 	{
-		alSourcei(source, AL_LOOPING, (ALint)is_looping);
+		alSourcei(source, AL_LOOPING, (ALint)looping_state);
 	}
 		
 	void TrackSource::updateBuffer()

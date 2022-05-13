@@ -6,11 +6,6 @@ namespace Engine {
 	{
 		alGenSources(1, &source);
 		alSourcei(source, AL_BUFFER, 0);
-
-		//TODO 3D
-		//alSourcef(p_Source, AL_PITCH, p_Pitch);
-		//alSourcef(p_Source, AL_GAIN, p_Gain);
-		//alSource3f(p_Source, AL_VELOCITY, p_Velocity[0], p_Velocity[1], p_Velocity[2]);
 	}
 	
 	ClipSource::~ClipSource()
@@ -25,7 +20,6 @@ namespace Engine {
 			buffers = buffer;
 			alSourcei(source, AL_BUFFER, (ALint)buffers);
 		}
-		isLooping();
 		alSourcePlay(source);
 	}
 
@@ -51,9 +45,9 @@ namespace Engine {
 		alSourcePlay(source);
 	}
 
-	void ClipSource::isLooping()
+	void ClipSource::setLooping(const bool& looping_state)
 	{
-		alSourcei(source, AL_LOOPING, (ALint)is_looping);
+		alSourcei(source, AL_LOOPING, (ALint)looping_state);
 	}
 
 	void ClipSource::setPosition(const glm::vec3& pos)

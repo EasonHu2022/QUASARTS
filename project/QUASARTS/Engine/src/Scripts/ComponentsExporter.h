@@ -28,6 +28,7 @@ namespace Engine {
 	static void updatePosition(unsigned int id, glm::vec3 dT);
 	static void updateRotation(unsigned int id, glm::vec3 dR);
 	static void updateScale(unsigned int id, glm::vec3 dS);
+	static glm::vec3 getPosition(unsigned int id);
 
 	//health
 	static void setMaxHealth(unsigned int id, float maxH);

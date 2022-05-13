@@ -42,21 +42,16 @@ namespace Engine {
 
 
 
-	void AudioDevice::setOrientation(const float& x, const float& y, const float& z, const float& upX, const float& upY, const float& upZ)
+	void AudioDevice::setOrientation(const float& x, const float& y, const float& z)
 	{
 		std::vector<float> orientation;
 		orientation.push_back(x);
 		orientation.push_back(y);
 		orientation.push_back(z);
-		orientation.push_back(upX);
-		orientation.push_back(upY);
-		orientation.push_back(upZ);
+		orientation.push_back(0.f);
+		orientation.push_back(0.f);
+		orientation.push_back(1.f);
 		alListenerfv(AL_ORIENTATION, orientation.data());
-	}
-
-	void AudioDevice::getOrientation(float& orientation)
-	{
-		alGetListenerfv(AL_ORIENTATION, &orientation);
 	}
 
 	void AudioDevice::setAttunation(ALint model_val)
