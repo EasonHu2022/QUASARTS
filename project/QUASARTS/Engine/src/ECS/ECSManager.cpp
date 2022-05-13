@@ -47,11 +47,11 @@ namespace Engine {
 
     // Create a new Entity and add it to the vector:
     unsigned int ECSManager::create_entity() {
-        // Get a new entity ID:
+        // Get a new Entity ID:
         unsigned int entityID = get_free_entity_ID();
         // Check that the new ID is valid:
         if (entityID == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::create_entity(): Warning: unable to create new entity. Maximum number of entities reached.");
+            QERROR("Function ECSManager::create_entity(): Warning: unable to create new Entity. Maximum number of Entities reached.");
             return entityID;
         }
 
@@ -94,7 +94,7 @@ namespace Engine {
             scene->componentArrays[i]->remove_entity(entityID);
         }
 
-        // Change the entity mask in all Systems:
+        // Change the Entity mask in all Systems:
         for (const auto &[key, val] : systems) {
             val->clear_entity(entityID);
         }
@@ -149,7 +149,7 @@ namespace Engine {
         return result;
     }
 
-    // Add an entity group:
+    // Add an Entity group:
     void ECSManager::add_entity_group(std::string group_name) {
         if (scene->entity_groups.find(group_name) != scene->entity_groups.end()) {
             QERROR("Function ECSManager::add_entity_group: Warning: group already exists!");
@@ -158,22 +158,22 @@ namespace Engine {
         scene->entity_groups[group_name] = {};
     }
 
-    // Destroy an entity group (does not destroy entities in the group):
+    // Destroy an Entity group (does not destroy Entities in the group):
     void ECSManager::destroy_entity_group(std::string group_name) {
         scene->entity_groups.erase(group_name);
     }
 
-    // Add an entity to a group:
+    // Add an Entity to a group:
     void ECSManager::add_entity_to_group(std::string group_name, unsigned int entityID) {
         scene->entity_groups[group_name].emplace(entityID);
     }
 
-    // Remove an entity from a group:
+    // Remove an Entity from a group:
     void ECSManager::remove_entity_from_group(std::string group_name, unsigned int entityID) {
         scene->entity_groups[group_name].erase(entityID);
     }
 
-    // Destroy all the entities in a group (does not destroy the group):
+    // Destroy all the Entities in a group (does not destroy the group):
     void ECSManager::destroy_entities_in_group(std::string group_name) {
         std::set<unsigned int>::iterator iter;
         for (iter = scene->entity_groups[group_name].begin();
@@ -206,22 +206,22 @@ namespace Engine {
         unsigned int parent_index = get_index_from_ID(parent);
         unsigned int child_index = get_index_from_ID(child);
         if (parent_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::add_child: Warning: no match was found for parent entity {0}!", parent);
+            QERROR("Function ECSManager::add_child: Warning: no match was found for parent Entity {0}!", parent);
             return;
         } else if (child_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::add_child: Warning: no match was found for child entity {0}!", child);
+            QERROR("Function ECSManager::add_child: Warning: no match was found for child Entity {0}!", child);
             return;
         }
 
         // Take into account the situation where a child already has a parent:
         if (has_parent(child_index) == true) {
-            QERROR("Function ECSManager::add_child: Warning: child entity {0} already has a parent!", child);
+            QERROR("Function ECSManager::add_child: Warning: child Entity {0} already has a parent!", child);
             return;
         }
 
         // Deal with the situation where the child is the parent of the parent:
         if (get_parent(parent_index) == child) {
-            QERROR("Function ECSManager::add_child: Warning: child entity {0} is the parent of parent entity {1}!", child, parent);
+            QERROR("Function ECSManager::add_child: Warning: child Entity {0} is the parent of parent Entity {1}!", child, parent);
             return;
         }
 
@@ -236,10 +236,10 @@ namespace Engine {
         unsigned int parent_index = get_index_from_ID(parent);
         unsigned int child_index = get_index_from_ID(child);
         if (parent_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::remove_child: Warning: no match was found for parent entity {0}!", parent);
+            QERROR("Function ECSManager::remove_child: Warning: no match was found for parent Entity {0}!", parent);
             return;
         } else if (child_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::remove_child: Warning: no match was found for child entity {0}!", child);
+            QERROR("Function ECSManager::remove_child: Warning: no match was found for child Entity {0}!", child);
             return;
         }
 
@@ -252,7 +252,7 @@ namespace Engine {
     std::set<unsigned int> ECSManager::get_children(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
         if (index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::get_children: Warning: no match was found for entity {0}!", entityID);
+            QERROR("Function ECSManager::get_children: Warning: no match was found for Entity {0}!", entityID);
             return {};
         }
         return scene->children[index];
@@ -262,7 +262,7 @@ namespace Engine {
     unsigned int ECSManager::get_parent(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
         if (index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::get_parent: Warning: no match was found for entity {0}!", entityID);
+            QERROR("Function ECSManager::get_parent: Warning: no match was found for Entity {0}!", entityID);
             return TOO_MANY_ENTITIES;
         }
         return scene->parents[index];
@@ -310,7 +310,7 @@ namespace Engine {
         // Create the camera:
         unsigned int cameraID = get_free_entity_ID();
         if (cameraID == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::create_camera(): Warning: unable to create new entity. Maximum number of entities reached.");
+            QERROR("Function ECSManager::create_camera(): Warning: unable to create new Entity. Maximum number of Entities reached.");
             return;
         }
         scene->create_camera(cameraID);
@@ -401,7 +401,7 @@ namespace Engine {
         // Components:
         for (int i = 0; i < scene->entities.size(); i++) {
             unsigned int entityID = scene->entities[i].get_entityID();
-            // Cycle through component types:
+            // Cycle through Component types:
             if (has_component(entityID, COMPONENT_TRANSFORM) == true) {
                 sceneFile << "C " << entityID << " ";
                 TransformComponent *transform = get_component<TransformComponent>
