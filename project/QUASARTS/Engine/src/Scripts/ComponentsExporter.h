@@ -17,90 +17,31 @@ namespace Engine {
 	};
 
 
-	class entity {
+	//Util
 
-	public:
+	//Camera
+	static unsigned int getCamera();
+	static void camera_zoom_in(unsigned int id);
+	static void camera_zoom_out(unsigned int id);
 
-		//transform
-		static void updatePosition(unsigned int id, glm::vec3 dT)
-		{
-			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
-			trs->position = trs->position + dT;
-		}
+	//transform
+	static void updatePosition(unsigned int id, glm::vec3 dT);
+	static void updateRotation(unsigned int id, glm::vec3 dR);
+	static void updateScale(unsigned int id, glm::vec3 dS);
 
-		static void updateRotation(unsigned int id, glm::vec3 dR)
-		{
-			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
-			trs->rotation = trs->rotation + dR;
-		}
+	//health
+	static void setMaxHealth(unsigned int id, float maxH);
+	static void setCurrentHealth(unsigned int id, float curr_health);
+	static float getCurrentHealth(unsigned int id);
 
-		static void updateScale(unsigned int id, glm::vec3 dS)
-		{
-			Engine::TransformComponent* trs = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(id, COMPONENT_TRANSFORM);
-			trs->scale = trs->scale + dS;
-		}
+	//weapon 
+	static void setDamage(unsigned int id, float damage);
+	static void setRange(unsigned int id, float range);
+	static void setSpeed(unsigned int id, int speed);
 
-
-		//health
-		static void setMaxHealth(unsigned int id, float maxH)
-		{
-			Engine::HealthComponent* health = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(id, COMPONENT_HEALTH);
-			health->max_health = maxH;
-		}
-
-
-		static void setCurrentHealth(unsigned int id, float curr_health)
-		{
-			Engine::HealthComponent* health = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(id, COMPONENT_HEALTH);
-			health->current_health = curr_health;
-		}
-
-		static float getCurrentHealth(unsigned int id)
-		{
-			Engine::HealthComponent* health = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(id, COMPONENT_HEALTH);
-			return health->current_health;
-		}
-
-
-		//weapon 
-		static void setDamage(unsigned int id, float damage)
-		{
-			Engine::WeaponComponent* weapon = Engine::ECSManager::Instance()->get_component<Engine::WeaponComponent>(id, COMPONENT_WEAPON);
-			weapon->base_damage = damage;
-		}
-
-		static void setRange(unsigned int id, float range)
-		{
-			Engine::WeaponComponent* weapon = Engine::ECSManager::Instance()->get_component<Engine::WeaponComponent>(id, COMPONENT_WEAPON);
-			weapon->attack_range = range;
-		}
-
-		static void setSpeed(unsigned int id, int speed)
-		{
-			Engine::WeaponComponent* weapon = Engine::ECSManager::Instance()->get_component<Engine::WeaponComponent>(id, COMPONENT_WEAPON);
-			weapon->attack_speed = speed;
-		}
-
-	};
-
-	static unsigned int createEntity(const std::string& entity_name)
-	{
-		unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-		Engine::ECSManager::Instance()->set_entityName(entityID, entity_name);
-		
-		return entityID;
-	}
-
-	static void addComponent(unsigned int entity_id, const std::string& component_type)
-	{
-
-		if (component_type == "Health")
-		{
-			Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entity_id, COMPONENT_HEALTH);
-		}
-
-	}
-	
+	//create new entity and add components
+	static unsigned int createEntity(const std::string& entity_name);
+	static void addComponent(unsigned int entity_id, const std::string& component_type);
 
 
 }
