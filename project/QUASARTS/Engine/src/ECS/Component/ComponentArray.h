@@ -2,7 +2,6 @@
 
 // Library includes:
 #include <array>
-#include <iostream>
 
 // Local includes:
 #include "ECS/ECS-Common.h"
@@ -62,8 +61,7 @@ namespace Engine {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
-                std::cerr << "Function ComponentArray::get_data(): Warning: \
-                            Entity " << entityID << " not found!" << std::endl;
+                QERROR("Function ComponentArray::get_data(): Warning: Entity {0} not found!", entityID);
                 return nullptr;
             }
             return &(componentData[index]);
@@ -129,9 +127,7 @@ namespace Engine {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
-                std::cerr << "Function ComponentArray::replace_data(): \
-                            Warning: Entity " << entityID << " not found!"
-                            << std::endl;
+                QERROR("Function ComponentArray::replace_data(): Warning: Entity {0} not found!", entityID);
                 return;
             }
 
@@ -169,12 +165,21 @@ namespace Engine {
 
         // Print out the state of the component array for debugging:
         virtual void print_state() {
-            std::cout << "Number of entries: " << num_entries << std::endl;
-            std::cout << "Entities:" << std::endl;
-            for (int i = 0; i < num_entries; i++) {
-                std::cout << entityIDs[i] << ", ";
+            QDEBUG("************************");
+            QDEBUG("* Component array info *");
+            QDEBUG("************************");
+            QDEBUG("Number of entries: {0}", num_entries);
+            QDEBUG("Entities:");
+            if (num_entries > 0) {
+                std::string entityList = std::to_string(entityIDs[0]);
+                for (int i = 1; i < num_entries; i++) {
+                    entityList += ", " + std::to_string(entityIDs[i]);
+                }
+                QDEBUG(entityList);
+            } else {
+                QDEBUG("None");
             }
-            std::cout << std::endl;
+            QDEBUG("************************");
         }
 
         private:

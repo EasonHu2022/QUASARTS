@@ -504,6 +504,7 @@ namespace Engine {
             sceneFile << std::endl;
         }
 
+        QDEBUG("Scene \"{0}\" saved.", scene->name);
         return true;
     }
 

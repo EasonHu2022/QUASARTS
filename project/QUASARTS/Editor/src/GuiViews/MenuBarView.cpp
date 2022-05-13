@@ -31,14 +31,35 @@ void MenuBarView::on_gui()
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
                 std::string proj_file;
-                #if defined(_WIN32)
+                #ifdef QS_WINDOWS
                     proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
                 #else
                     proj_file = OpenFileDialogue();
                 #endif
-                if(proj_file.compare("N/A")!=0)
+                if(proj_file.compare("N/A")!=0) {
+                    // Get project name and folder path:
+                    int count = 0;
+                    for (int i = (int)(proj_file.size()) - 1; i >= 0; i--) {
+                        if (proj_file[i] == '/' || proj_file[i] == '\\') {
+                            count++;
+                            if (count == 1) {
+                                project_name = proj_file.substr(i + 1);
+                            } else if (count == 2) {
+                                folder_path = proj_file.substr(0, i);
+                                std::cout << folder_path << "A\n";
+                                break;
+                            }
+                            // Take the extension off project name:
+                            for (int j = (int)project_name.size() - 1; j >= 0; j--) {
+                                if (project_name[j] == '.') {
+                                    project_name.erase(project_name.begin() + j, project_name.end());
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     FileModule::Instance()->open_root(proj_file);
-
+                }
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
                 
@@ -46,7 +67,11 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);
             if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
-                std::string file_name = "./ProjectSetting/scene.scn";
+                #ifdef QS_WINDOWS
+                    std::string file_name = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+                #else
+                    std::string file_name = OpenFileDialogue();
+                #endif
                 Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
@@ -129,7 +154,7 @@ void MenuBarView::on_gui()
                     auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
 
                     std::string script_file;
-                    #if defined(_WIN32)
+                    #ifdef QS_WINDOWS
                         script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
                     #else
                         script_file = OpenFileDialogue();
@@ -240,7 +265,7 @@ void MenuBarView::on_remove()
 }
 
 
-#if defined(_WIN32)
+#ifdef QS_WINDOWS
 std::string MenuBarView::OpenFileDialogue(const wchar_t* filter) {
     OPENFILENAME ofn;
     wchar_t fileName[260] = L"";
@@ -289,13 +314,21 @@ std::string MenuBarView::OpenFolderDialogue() {
 std::string MenuBarView::OpenFileDialogue() {
     char filename[1024];
     FILE* f = popen("zenity --file-selection --file-filter=*.q", "r");
-    if (f == NULL)
+    if (f == nullptr)
         return "N/A";
     else {
-        fgets(filename, 1024, f);
-        std::string fileNameStr;
-        fileNameStr = filename;
-        return fileNameStr;
+        if (fgets(filename, 1024, f) == nullptr) {
+            return "N/A";
+        } else {
+            std::string fileNameStr;
+            fileNameStr = filename;
+            // Remove newline that appears on Linux:
+            std::size_t position = fileNameStr.find('\n');
+            if (position != std::string::npos) {
+                fileNameStr.erase(fileNameStr.begin() + position, fileNameStr.end());
+            }
+            return fileNameStr;
+        }
     }
 
 }
@@ -305,10 +338,13 @@ std::string MenuBarView::OpenFolderDialogue() {
     if (f == NULL)
         return "N/A";
     else {
-        fgets(foldername, 1024, f);
-        std::string folderNameStr;
-        folderNameStr = foldername;
-        return folderNameStr;
+        if (fgets(foldername, 1024, f) == nullptr) {
+            return "N/A";
+        } else {
+            std::string folderNameStr;
+            folderNameStr = foldername;
+            return folderNameStr;
+        }
     }
 
 }
@@ -334,13 +370,6 @@ void MenuBarView::newProject() {
     ImGui::PopItemWidth();
     if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 260)) {
         folder_path = buf2;
-        #ifndef QS_WINDOWS
-            // Remove newline that appears on Linux:
-            std::size_t position = folder_path.find('\n');
-            if (position != std::string::npos) {
-                folder_path.erase(folder_path.begin() + position, folder_path.end());
-            }
-        #endif
     }
     ImGui::SameLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2);
@@ -356,7 +385,6 @@ void MenuBarView::newProject() {
                 }
             #endif
         }
-
     }
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
