@@ -99,10 +99,16 @@ namespace Engine {
 			device->setPosition(v);
 		}
 
-		static void setOritentation(const float& x, const float& y, const float& z)
+		static void setOritentation3f(const float& x, const float& y, const float& z)
 		{
 			auto device = Engine::AudioSystem::Instance()->getDevice();
 			device->setOrientation(x, y, z);
+		}
+
+		static void setOritentationv(const glm::vec3& v)
+		{
+			auto device = Engine::AudioSystem::Instance()->getDevice();
+			device->setOrientation(v.x, v.y, v.z);
 		}
 
 	};

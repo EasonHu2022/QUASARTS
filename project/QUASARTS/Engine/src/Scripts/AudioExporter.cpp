@@ -20,6 +20,7 @@ void Engine::AudioExporter::exportAudio(sol::state& p_lua_state)
 		"setAttunation", &Listener::setAttunation,
 		"setPosition3f", &Listener::setPosition3f,
 		"setPositionv", &Listener::setPositionv,
-		"setOritentation", &Listener::setOritentation
+		"setOritentation3f", &Listener::setOritentation3f,
+		"setOritentationv", &Listener::setOritentationv
 		);
 }

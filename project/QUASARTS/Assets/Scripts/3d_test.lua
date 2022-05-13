@@ -21,22 +21,22 @@ v = vec3(0,0,0)
 function onUpdate(thiz, dt)
 		
 	if Input.get_key_pressed(Key.Q_KEY_D) then 
-		Listener.setOritentation(1,0,0,0,0,1)
+		Listener.setOritentation3f(1,0,0)
 		v.x = v.x + 1
 	end	
 	
 	if Input.get_key_pressed(Key.Q_KEY_A) then 
-		Listener.setOritentation(-1,0,0,0,0,1)
+		Listener.setOritentation3f(-1,0,0)
 		v.x = v.x - 1
 	end	
 	
 	if Input.get_key_pressed(Key.Q_KEY_W) then 
-		Listener.setOritentation(0,1,0,0,0,1)
+		Listener.setOritentation3f(0,1,0)
 		v.y = v.y + 1
 	end	
 	
 	if Input.get_key_pressed(Key.Q_KEY_S) then 
-		Listener.setOritentation(0,-1,0,0,0,1)
+		Listener.setOritentation3f(0,-1,0)
 		v.y = v.y -1
 	end	
 	
