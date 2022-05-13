@@ -417,14 +417,14 @@ void MenuBarView::newScene() {
 
 
     ImGui::PushItemWidth(-1);
-    ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
+    ImGui::InputTextWithHint("##pname", "Scene Name", buf1, 64);
     ImGui::PopItemWidth();
 
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
-
+            Engine::ECSManager::Instance()->new_scene(std::string(buf1));
             new_scene = false;
             show_window = true;
         }

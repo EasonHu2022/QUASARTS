@@ -351,6 +351,9 @@ namespace Engine {
         for (const auto &[key, val] : systems) {
             val->clear_all_entity_masks();
         }
+
+        // Recreate the camera:
+        create_camera();
     }
 
     // Create new blank scene with a name:
@@ -365,6 +368,9 @@ namespace Engine {
 
         // Set the scene name:
         scene->name = name;
+
+        // Recreate the camera:
+        create_camera();
     }
 
     // Save the whole scene to file:
