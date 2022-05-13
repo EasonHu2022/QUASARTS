@@ -7,6 +7,10 @@
 #include <direct.h>
 #include <ShlObj_core.h>
 #endif
+
+// engine
+#include "ECS/System/CollisionSystem.h"
+
 void MenuBarView::on_add()
 {
     new_project = false;
@@ -529,12 +533,21 @@ void MenuBarView::newAttribute() {
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
-        if(item_current_idx == COMPONENT_TRANSFORM)
-            Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
-        else if(item_current_idx == COMPONENT_MESH)
-            Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
+        unsigned int entityId = Engine::ECSManager::Instance()->get_current_entity();
+
+        if      (item_current_idx == COMPONENT_TRANSFORM)
+            Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityId, item_current_idx);
+        else if (item_current_idx == COMPONENT_MESH)
+            Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityId, item_current_idx);
         else if (item_current_idx == COMPONENT_COLLISION_SPHERE)
-            Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
+        {
+            Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityId, item_current_idx);
+            Engine::CollisionSystem::Instance()->init_collision_component(entityId, COMPONENT_COLLISION_SPHERE);
+        }
+        else if (item_current_idx == COMPONENT_ORBIT)
+        {
+            Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, item_current_idx);
+        }
         new_attribute = false;
     }
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);

@@ -45,7 +45,13 @@ namespace Engine {
 		};
 
 		// Usage functions //
-	public:		
+	public:
+		/// <summary>
+		/// Assumes all collision world objects are created.
+		/// Clears the existing collision world then (re)populates it with default objects.
+		/// </summary>
+		void setup_collision_world();
+
 		/// <summary>
 		/// Assign a collision object to a collision component. Gets the ID of an unassigned collision object, sets its transform to the given world position, and sets its collision shape to a sphere shape with the given radius.
 		/// </summary>
@@ -111,6 +117,11 @@ namespace Engine {
 		// Util //
 	private:
 		/// <summary>
+		/// Removes all collision objects from the world and frees their memory.
+		/// </summary>
+		void clear_collision_world();
+
+		/// <summary>
 		/// Get the index of a collision object in the collision object array from its pointer.
 		/// </summary>
 		/// <param name="obj">Pointer to a collision object.</param>
@@ -160,8 +171,6 @@ namespace Engine {
 
 		void time_tests();
 		QTime timeCounter;
-
-		void orbit_tests();
 
 
 		// Events //

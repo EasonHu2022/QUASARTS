@@ -7,6 +7,8 @@
 #include "ECS/System/AudioSystem.h"
 #include "ResourceManager/ResourceManager.h"
 #include "Time/TimeModule.h"
+#include "ECS/System/CollisionSystem.h"
+#include "ECS/System/OrbitSystem.h"
 
 namespace Engine
 {
@@ -42,9 +44,9 @@ namespace Engine
 		shadowRenderer = new ShadowRenderer(renderContext);
 		meshRenderer = new MeshRenderer(renderContext);
 		skyboxRenderer = new SkyBoxRenderer(renderContext);
-		collisionSystem = new CollisionSystem();
+		CollisionSystem* collisionSystem = CollisionSystem::Instance();
 		ECSManager::Instance()->register_system(SYSTEM_COLLISION, collisionSystem);
-		orbitSystem = new OrbitSystem();
+		OrbitSystem* orbitSystem = OrbitSystem::Instance();
 		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
 		particleSystem = new ParticleSystem();
 		ECSManager::Instance()->register_system(SYSTEM_PARTICLE, particleSystem);
@@ -77,8 +79,8 @@ namespace Engine
 		GuiWrapper::init();
 		Input::init();
 		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
-		collisionSystem->init();
-		orbitSystem->init();
+		CollisionSystem::Instance()->init();
+		OrbitSystem::Instance()->init();
 		/***************later init things*************************/
 
 
@@ -154,8 +156,8 @@ namespace Engine
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();
-		collisionSystem->update();
-		//orbitSystem->update();
+		CollisionSystem::Instance()->update();
+		//OrbitSystem::Instance()->update();
 		/***************logic update logic frame************************/
 	}
 

@@ -39,21 +39,7 @@ namespace Engine {
 		// Collision world stores all collision objects and provides interface for queries.
 		collisionWorld = new btCollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
 
-		// Create default collision shape.
-		collisionSpheres.push_back(new btSphereShape(Q_DEFAULT_SPHERE_RADIUS));
-
-		// Pre-create the default number of collision objects.
-		{
-			int temp[Q_DEFAULT_NUM_COLLISION_OBJS];
-			for (int i = 0; i < Q_DEFAULT_NUM_COLLISION_OBJS; ++i)
-			{
-				temp[i] = assign_collision_sphere(i, glm::vec3(0, 0, 0), Q_DEFAULT_SPHERE_RADIUS);
-			}
-			for (int i = 0; i < Q_DEFAULT_NUM_COLLISION_OBJS; ++i)
-			{
-				unassign_collision_object(temp[i]);
-			}
-		}
+		setup_collision_world();
 
 		// Test collision world.
 		//runTests_init();
@@ -116,35 +102,40 @@ namespace Engine {
 
 	void PhysicsSystem::release()
 	{
-		// Remove pointers to collision objects.
-		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
-		{
-			collisionObjectArrayInfo[i].pObject = nullptr;
-		}
+		clear_collision_world();
 
-		// Delete collision objects in reverse order of creation.
-		for (int i = collisionWorld->getNumCollisionObjects() - 1; i >= 0; --i)
-		{
-			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
-			collisionWorld->removeCollisionObject(obj);
-			delete obj;
-		}
-
-		// Delete collision spheres (no longer referenced by collision objects).
-		for (int i = 0; i < collisionSpheres.size(); ++i)
-		{
-			btSphereShape* sphere = collisionSpheres[i];
-			collisionSpheres[i] = 0; // Remove pointer from array.
-			delete sphere;
-		}
-
-		// Delete collision detection objects in reverse order of creation.
+		// Delete collision world objects in reverse order of creation.
 		delete collisionWorld;
 		delete overlappingPairCache;
 		delete dispatcher;
 		delete collisionConfiguration;
 
 	} // release()
+
+
+	// Usage //
+
+	void PhysicsSystem::setup_collision_world()
+	{
+		clear_collision_world();
+
+		// Create default collision shape.
+		collisionSpheres.push_back(new btSphereShape(Q_DEFAULT_SPHERE_RADIUS));
+
+		// Pre-create the default number of collision objects.
+		{
+			int temp[Q_DEFAULT_NUM_COLLISION_OBJS];
+			for (int i = 0; i < Q_DEFAULT_NUM_COLLISION_OBJS; ++i)
+			{
+				temp[i] = assign_collision_sphere(i, glm::vec3(0, 0, 0), Q_DEFAULT_SPHERE_RADIUS);
+			}
+			for (int i = 0; i < Q_DEFAULT_NUM_COLLISION_OBJS; ++i)
+			{
+				unassign_collision_object(temp[i]);
+			}
+		}
+
+	} // setup_collision_world()
 
 
 	int PhysicsSystem::assign_collision_sphere(const int aComponentId, const glm::vec3 worldPosition, const float radius)
@@ -242,6 +233,33 @@ namespace Engine {
 
 	// Util //
 
+	void PhysicsSystem::clear_collision_world()
+	{
+		// Remove pointers to collision objects.
+		for (int i = 0; i < Q_MAX_COLLISION_OBJS; ++i)
+		{
+			collisionObjectArrayInfo[i].pObject = nullptr;
+		}
+
+		// Delete collision objects in reverse order of creation.
+		for (int i = collisionWorld->getNumCollisionObjects() - 1; i >= 0; --i)
+		{
+			btCollisionObject* obj = collisionWorld->getCollisionObjectArray()[i];
+			collisionWorld->removeCollisionObject(obj);
+			delete obj;
+		}
+
+		// Delete collision spheres (no longer referenced by collision objects).
+		for (int i = 0; i < collisionSpheres.size(); ++i)
+		{
+			btSphereShape* sphere = collisionSpheres[i];
+			collisionSpheres[i] = 0; // Remove pointer from array.
+			delete sphere;
+		}
+
+	} // reset_collision_world()
+
+
 	int PhysicsSystem::get_object_index(btCollisionObject* obj)
 	{
 		if (obj == nullptr)
@@ -257,7 +275,8 @@ namespace Engine {
 				return i;
 		}
 		return -1;
-	}
+
+	} // get_object_index()
 
 
 	int PhysicsSystem::get_unassigned_collision_object_index()
@@ -332,6 +351,8 @@ namespace Engine {
 	} // raycast_bt()
 
 
+	// Debug //
+
 	std::string PhysicsSystem::object_to_string(const btCollisionObject* obj, const bool angles_to_deg)
 	{
 		std::ostringstream ostr;
@@ -393,7 +414,7 @@ namespace Engine {
 	std::string PhysicsSystem::object_tostring(int const objId)
 	{
 		return object_to_string(collisionObjectArrayInfo[objId].pObject);
-	}
+	} // object_tostring()
 
 
 
@@ -401,12 +422,7 @@ namespace Engine {
 
 
 
-	void PhysicsSystem::orbit_tests()
-	{
-		
-
-	} // orbit_tests()
-
+	// Tests //
 
 	void PhysicsSystem::time_tests()
 	{

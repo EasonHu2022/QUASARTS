@@ -5,6 +5,15 @@
 
 namespace Engine
 {
+	// Instancing
+	OrbitSystem* OrbitSystem::instance = nullptr;
+	OrbitSystem* OrbitSystem::Instance()
+	{
+		if (nullptr == instance)
+			instance = new OrbitSystem();
+		return instance;
+	} // Instance()
+
 
 	OrbitSystem::OrbitSystem()
 	{
@@ -22,12 +31,7 @@ namespace Engine
 	OrbitSystem::~OrbitSystem()
 	{
 		// Delete orbit tree.
-		for (auto node : mAllOrbitNodes)
-		{
-			node.second->pPrimaryNode = nullptr;
-			node.second->mSatelliteNodes.clear();
-		}
-		mAllOrbitNodes.clear();
+		clear_tree();
 
 	} // ~OrbitSystem()
 	
@@ -422,6 +426,28 @@ namespace Engine
 
 	// Util //
 	
+	void OrbitSystem::clear_tree()
+	{
+		mOrbitRoot->pPrimaryNode = nullptr;
+		mOrbitRoot->mSatelliteNodes.clear();
+		for (auto node : mAllOrbitNodes)
+		{
+			node.second->pPrimaryNode = nullptr;
+			node.second->mSatelliteNodes.clear();
+		}
+
+		// Assert tree is clear.
+		assert(mOrbitRoot.unique());
+		for (auto node : mAllOrbitNodes)
+		{
+			assert(node.second.unique());
+		}
+
+		mAllOrbitNodes.clear();
+
+	} // clear_tree()
+
+
 	std::shared_ptr<OrbitSystem::OrbitNode> OrbitSystem::get_node(unsigned int const aEntityId)
 	{
 		for (auto node : mAllOrbitNodes)

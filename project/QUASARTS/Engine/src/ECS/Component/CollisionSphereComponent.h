@@ -73,8 +73,8 @@ namespace Engine {
     // Input stream operator:
     inline std::istream & operator >> (std::istream &inStream, CollisionSphereComponent &collisionSphere) {
         inStream
-            >> collisionSphere.mLocalOffset[0] >> collisionSphere.mLocalOffset[1]
-            >> collisionSphere.mLocalOffset[2] >> collisionSphere.mRadius;
+            >> collisionSphere.mLocalOffset.x >> collisionSphere.mLocalOffset.y >> collisionSphere.mLocalOffset.z
+            >> collisionSphere.mRadius;
 
         // TODO : create collision object in PhysicsSystem to populate mCollisionObjectId
 
@@ -84,8 +84,8 @@ namespace Engine {
     // Output stream operator:
     inline std::ostream & operator << (std::ostream &outStream, const CollisionSphereComponent &collisionSphere) {
         outStream
-        << collisionSphere.mLocalOffset[0] << " " << collisionSphere.mLocalOffset[1]
-        << " " << collisionSphere.mLocalOffset[2] << " " << collisionSphere.mRadius;
+        << collisionSphere.mLocalOffset.x << " " << collisionSphere.mLocalOffset.y << " " << collisionSphere.mLocalOffset.z
+            << " " << collisionSphere.mRadius;
         
         return outStream;
     }
