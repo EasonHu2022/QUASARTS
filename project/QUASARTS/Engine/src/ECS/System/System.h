@@ -98,6 +98,9 @@ namespace Engine {
             return &(entity_masks[index]);
         }
 
+        // Set up all the data required for the component to function:
+        virtual void initialize_components() {}
+
         private:
         // The manager responsible for this System:
         ECSManager *manager;

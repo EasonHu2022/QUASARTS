@@ -641,6 +641,10 @@ namespace Engine {
                 val->test_entity(this, scene->entity_ID_match[i], scene->entities[index].get_componentMask());
             }
         }
+        // Initialize appropriate Components:
+        for (const auto &[key, val] : systems) {
+                val->initialize_components();
+        }
 
         return true;
     }

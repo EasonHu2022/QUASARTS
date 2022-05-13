@@ -244,6 +244,31 @@ namespace Engine
 
 	} // release()
 
+	// Set up all the data required for the component to function:
+	void OrbitSystem::initialize_components() {
+		// Get the manager and entity mask:
+		ECSManager* active_manager = get_manager();
+		quasarts_entity_ID_mask *entitiesOrbits = get_entity_ID_mask(0);
+		OrbitComponent *orbit;
+
+		// Loop through entities:
+		for (int i = 0; i < MAX_ENTITIES; i++)
+		{
+			if (entitiesOrbits->mask[i] == 1) // Entity [i] with orbit component.
+			{
+				orbit = active_manager->get_component<OrbitComponent>(i, COMPONENT_ORBIT);
+			}
+		}
+		/* Alternative method (slower, but you can ignore the mask if you need):
+		std::vector<unsigned int> entities = active_manager->get_entity_ID_match();
+		for (int i = 0; i < entities.size(); i++) {
+			if (active_manager->has_component(entities[i], COMPONENT_ORBIT) == true) {
+				orbit = active_manager->get_component<OrbitComponent>(entities[i], COMPONENT_ORBIT);
+			}
+		}
+		*/
+    }
+
 
 	// Usage //
 

@@ -30,10 +30,8 @@
 
 /* IMPORTANT NOTE for << >> operators for Components:
  * Please do not save or load raw pointers, for obvious reasons.
- * If your Component requires a non-null pointer, please add functionality
- * to the input stream operator to load in the correct data. Additionally,
- * make sure your Component already contains all the data needed to load
- * the external resource and/or create the pointer. */
+ * If your Component requires a non-null pointer, please add 
+ * functionality to the initialize_components function. */
 
 namespace Engine {
     class QS_API ParentComponentArray {
