@@ -50,7 +50,9 @@ void MenuBarView::on_gui()
                 Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
-                std::string file_name = "./ProjectSetting/scene.scn";
+                std::string scene_name = Engine::ECSManager::Instance()->get_scene_name();
+                std::string file_name = folder_path + "/" + project_name +
+                                            "/ProjectSetting/" + scene_name + ".scn";
                 Engine::ECSManager::Instance()->save_scene((char*)file_name.c_str());
             }
             ImGui::EndMenu();
@@ -332,13 +334,28 @@ void MenuBarView::newProject() {
     ImGui::PopItemWidth();
     if (ImGui::InputTextWithHint("##ppath", "Project Directory", buf2, 260)) {
         folder_path = buf2;
+        #ifndef QS_WINDOWS
+            // Remove newline that appears on Linux:
+            std::size_t position = folder_path.find('\n');
+            if (position != std::string::npos) {
+                folder_path.erase(folder_path.begin() + position, folder_path.end());
+            }
+        #endif
     }
     ImGui::SameLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2);
     if (ImGui::Button("  Browse  ")) {
         std::string temp_path = OpenFolderDialogue();
-        if (temp_path.compare("N/A") != 0)
+        if (temp_path.compare("N/A") != 0) {
             folder_path = temp_path;
+            #ifndef QS_WINDOWS
+                // Remove newline that appears on Linux:
+                std::size_t position = folder_path.find('\n');
+                if (position != std::string::npos) {
+                    folder_path.erase(folder_path.begin() + position, folder_path.end());
+                }
+            #endif
+        }
 
     }
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
