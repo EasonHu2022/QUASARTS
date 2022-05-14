@@ -72,7 +72,7 @@ private:
 	const char* cur_workdir = NULL;
 	std::string current_root;
 	//default add 2 folders(Resources and Scripts) under Assets
-#if defined(_WIN32)
+#ifdef QS_WINDOWS
 	const char* cmd = "mkdir ";
 	const char*  folders[5] = {"\\Assets","\\Release","\\ProjectSetting","\\Assets\\Scripts","\\Assets\\Resources"};
 #else

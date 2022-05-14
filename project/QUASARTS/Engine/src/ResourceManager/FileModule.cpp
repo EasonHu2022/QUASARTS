@@ -11,6 +11,7 @@
 	#include "atlstr.h"
 #else
 	#include <dirent.h>
+	#include <unistd.h>
 #endif
 
 FileModule* FileModule::instance = nullptr;
@@ -204,7 +205,7 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 	char new_p[260];
 	strcpy(new_p, p);
 
-	#if defined(_WIN32)
+	#ifdef QS_WINDOWS
 		const char* sig = "\\";
 	#else
 		// Remove newline, which may be there on Linux (hence the copy above):
@@ -252,7 +253,18 @@ int FileModule::create_workdir(const char* p, const char* projectName)
 
 void FileModule::open_root(std::string root) {
 
-	std::ifstream read(root);
+	#ifdef QS_WINDOWS
+		std::ifstream read(root);
+	#else
+		// Copy the string and remove the newline:
+		std::string new_root = root;
+		std::size_t position = new_root.find('\n');
+		if (position != std::string::npos) {
+			new_root.erase(new_root.begin() + position, new_root.end());
+		}
+		std::ifstream read(new_root);
+	#endif
+
 	getline(read, current_root);
 	cur_root = new QDirectoriesNode();
 	cur_root->path = (char*)current_root.c_str(); 
@@ -261,7 +273,7 @@ void FileModule::open_root(std::string root) {
 }
 
 void FileModule::save_root(std::string root, std::string name) {
-	#if defined(_WIN32)
+	#ifdef QS_WINDOWS
 		std::string project_file = root + "\\" + name + "\\" + name + ".q";
 	#else
 		// Copy the string and remove the newline:
@@ -308,7 +320,32 @@ std::string FileModule::get_internal_assets_path()
 #else
 std::string FileModule::get_internal_assets_path()
 {
-	std::string str("String");
+	// Get the path to the running executable:
+	char path[MAX_PATH];
+	std::size_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+	if (len != -1) {
+		// Success. Chop off 4 forward slashes and then null-terminate:
+		int count = 0;
+		for (int i = len - 1; i >= 0; i--) {
+			if (i == 0) {
+				QERROR("Cannot find internal assets path!");
+				return NULL;
+			}
+			if (path[i] == '/') {
+				count++;
+			}
+			if (count == 4) {
+				path[i + 1] = '\0';
+				break;
+			}
+		}
+	} else {
+		// Failure:
+		QERROR("Cannot find internal assets path!");
+		return NULL;
+	}
+	std::string str(path);
+	str = str + "Assets/";
 	return str;
 }
 #endif

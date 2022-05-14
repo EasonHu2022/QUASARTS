@@ -7,6 +7,7 @@
 #include "ResourceManager/ResourceManager.h"
 #include "ResourceManager/FileModule.h"
 #include "Time/TimeModule.h"
+#include "Core/Input.h"
 
 // std lib
 #include <queue>
@@ -18,6 +19,14 @@ namespace Engine {
     
     class QS_API OrbitSystem : public System
     {
+        // singleton
+    private:
+        static OrbitSystem* instance;
+        OrbitSystem();
+    public:
+        static OrbitSystem* Instance();
+        ~OrbitSystem();
+
         /// <summary>
         /// Tree of orbiting entities.
         /// The orbits must be updated in descending order, from root to leaf.
@@ -42,9 +51,6 @@ namespace Engine {
 
         
     public:
-        OrbitSystem();
-        ~OrbitSystem();
-
         // Called when ENGINE starts.
         void init();
         // Called when GAME starts.
@@ -54,6 +60,8 @@ namespace Engine {
         // Called when GAME stops.
         int stop();
         void release();
+        // Set up all the data required for the component to function:
+		void initialize_components() override;
 
 
         // Usage //
@@ -96,11 +104,14 @@ namespace Engine {
 
         // Util //
     private:
+        void clear_tree();
         std::shared_ptr<OrbitSystem::OrbitNode> get_node(unsigned int const aEntityId);
 
 
         // Debug //
     private:
+        bool oneshot = true;
+        bool paused = true;
         void component_tests();
         std::string print_tree();
         void tree_tests();
@@ -113,6 +124,8 @@ namespace Engine {
             bool tick = false;
         };
         std::map<unsigned int, OrbitTracker> orbitTrackers;
+
+
 
     };
 

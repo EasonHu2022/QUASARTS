@@ -61,9 +61,7 @@ namespace Engine {
             // Update the component mask of the Entity:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                std::cerr << "Function ECSManager::create_component(): \
-                            Warning: no match was found for entity " <<
-                            entityID << "!" << std::endl;
+                QERROR("Function ECSManager::create_component(): Warning: no match was found for Entity {0}!", entityID);
                 return;
             }
             scene->entities[index].add_component_type(componentType);
@@ -73,7 +71,7 @@ namespace Engine {
                 val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
-            // Add the data to the relevant component array:
+            // Add the data to the relevant Component array:
             ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->add_data(entityID, data);
         }
@@ -84,9 +82,7 @@ namespace Engine {
             // Update the component mask of the Entity:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                std::cerr << "Function ECSManager::create_component(): \
-                            Warning: no match was found for entity " <<
-                            entityID << "!" << std::endl;
+                QERROR("Function ECSManager::create_component(): Warning: no match was found for Entity {0}!", entityID);
                 return;
             }
             scene->entities[index].add_component_type(componentType);
@@ -96,7 +92,7 @@ namespace Engine {
                 val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
-            // Add the data to the relevant component array:
+            // Add the data to the relevant Component array:
             ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->add_data(entityID);
         }
@@ -107,9 +103,7 @@ namespace Engine {
             // Check that the Entity exists:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                std::cerr << "Function ECSManager::replace_component(): \
-                            Warning: no match was found for entity " <<
-                            entityID << "!" << std::endl;
+                QERROR("Function ECSManager::replace_component(): Warning: no match was found for Entity {0}!", entityID);
                 return;
             }
 
@@ -134,7 +128,7 @@ namespace Engine {
                 return compArray->get_data(entityID);
         }
 
-        // Copy a component from one Entity to another:
+        // Copy a Component from one Entity to another:
         template <typename T>
         void copy_component(unsigned int copyFrom, unsigned int copyTo, unsigned int componentType) {
                 ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
@@ -147,9 +141,7 @@ namespace Engine {
             // Update the component mask of the entity:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                std::cerr << "Function ECSManager::destroy_component(): \
-                            Warning: no match was found for entity " <<
-                            entityID << "!" << std::endl;
+                QERROR("Function ECSManager::destroy_component(): Warning: no match was found for Entity {0}!", entityID);
                 return;
             }
             scene->entities[index].remove_component_type(componentType);
@@ -159,7 +151,7 @@ namespace Engine {
                 val->test_entity(this, entityID, scene->entities[index].get_componentMask());
             }
 
-            // Remove the data from the relevant component array:
+            // Remove the data from the relevant Component array:
             ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
             compArray->remove_data(entityID);
         }
@@ -170,19 +162,19 @@ namespace Engine {
         // Get all Component types that an Entity has:
         std::vector<unsigned int> get_all_component_types(unsigned int entityID);
 
-        // Add an entity group:
+        // Add an Entity group:
         void add_entity_group(std::string group_name);
 
-        // Destroy an entity group (does not destroy entities in the group):
+        // Destroy an Entity group (does not destroy Entities in the group):
         void destroy_entity_group(std::string group_name);
 
-        // Add an entity to a group:
+        // Add an Entity to a group:
         void add_entity_to_group(std::string group_name, unsigned int entityID);
 
-        // Remove an entity from a group:
+        // Remove an Entity from a group:
         void remove_entity_from_group(std::string group_name, unsigned int entityID);
 
-        // Destroy all the entities in a group (does not destroy the group):
+        // Destroy all the Entities in a group (does not destroy the group):
         void destroy_entities_in_group(std::string group_name);
 
         // Get a pointer to an Entity:

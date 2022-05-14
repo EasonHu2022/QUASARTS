@@ -8,17 +8,17 @@ namespace Engine
 		//get default engine assets path
 		std::string path = FileModule::Instance()->get_internal_assets_path();
 
-		vshPath = path + "Shader\\SkyBox.vsh";
-		fshPath = path + "Shader\\SkyBox.fsh";
+		vshPath = path + "Shader/SkyBox.vsh";
+		fshPath = path + "Shader/SkyBox.fsh";
 
 		 paths = std::vector<std::string>
 		{
-			path + "Texture\\Skybox\\right.jpg",
-			path + "Texture\\Skybox\\left.jpg",
-			path + "Texture\\Skybox\\top.jpg",
-			path + "Texture\\Skybox\\bottom.jpg",
-			path + "Texture\\Skybox\\front.jpg",
-			path + "Texture\\Skybox\\back.jpg",
+			path + "Texture/Skybox/right.jpg",
+			path + "Texture/Skybox/left.jpg",
+			path + "Texture/Skybox/top.jpg",
+			path + "Texture/Skybox/bottom.jpg",
+			path + "Texture/Skybox/front.jpg",
+			path + "Texture/Skybox/back.jpg",
 		};
 	}
 	SkyBoxRenderer::~SkyBoxRenderer()

@@ -7,6 +7,10 @@
 #include <direct.h>
 #include <ShlObj_core.h>
 #endif
+
+// engine
+#include "ECS/System/CollisionSystem.h"
+
 void MenuBarView::on_add()
 {
     new_project = false;
@@ -31,14 +35,34 @@ void MenuBarView::on_gui()
 
                 //std::cout << OpenFileDialogue().c_str() << std::endl;
                 std::string proj_file;
-                #if defined(_WIN32)
+                #ifdef QS_WINDOWS
                     proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
                 #else
                     proj_file = OpenFileDialogue();
                 #endif
-                if(proj_file.compare("N/A")!=0)
+                if(proj_file.compare("N/A")!=0) {
+                    // Get project name and folder path:
+                    int count = 0;
+                    for (int i = (int)(proj_file.size()) - 1; i >= 0; i--) {
+                        if (proj_file[i] == '/' || proj_file[i] == '\\') {
+                            count++;
+                            if (count == 1) {
+                                project_name = proj_file.substr(i + 1);
+                            } else if (count == 2) {
+                                folder_path = proj_file.substr(0, i);
+                                break;
+                            }
+                            // Take the extension off project name:
+                            for (int j = (int)project_name.size() - 1; j >= 0; j--) {
+                                if (project_name[j] == '.') {
+                                    project_name.erase(project_name.begin() + j, project_name.end());
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     FileModule::Instance()->open_root(proj_file);
-
+                }
             }
             if (ImGui::MenuItem("Save Project", "Ctrl+S")) {
                 
@@ -46,11 +70,17 @@ void MenuBarView::on_gui()
             ImGui::Separator();
             ImGui::MenuItem("New Scene", "Ctrl+N", &new_scene);
             if (ImGui::MenuItem("Open Scene", "Ctrl+Shift+O")) {
-                std::string file_name = "./ProjectSetting/scene.scn";
+                #ifdef QS_WINDOWS
+                    std::string file_name = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
+                #else
+                    std::string file_name = OpenFileDialogue();
+                #endif
                 Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
-                std::string file_name = "./ProjectSetting/scene.scn";
+                std::string scene_name = Engine::ECSManager::Instance()->get_scene_name();
+                std::string file_name = folder_path + "/" + project_name +
+                                            "/ProjectSetting/" + scene_name + ".scn";
                 Engine::ECSManager::Instance()->save_scene((char*)file_name.c_str());
             }
             ImGui::EndMenu();
@@ -127,7 +157,7 @@ void MenuBarView::on_gui()
                     auto script = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(entityID, COMPONENT_SCRIPT);
 
                     std::string script_file;
-                    #if defined(_WIN32)
+                    #ifdef QS_WINDOWS
                         script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
                     #else
                         script_file = OpenFileDialogue();
@@ -238,7 +268,7 @@ void MenuBarView::on_remove()
 }
 
 
-#if defined(_WIN32)
+#ifdef QS_WINDOWS
 std::string MenuBarView::OpenFileDialogue(const wchar_t* filter) {
     OPENFILENAME ofn;
     wchar_t fileName[260] = L"";
@@ -286,27 +316,38 @@ std::string MenuBarView::OpenFolderDialogue() {
 #else
 std::string MenuBarView::OpenFileDialogue() {
     char filename[1024];
-    FILE* f = popen("zenity --file-selection --file-filter=*.q", "r");
-    if (f == NULL)
+    FILE* f = popen("zenity --file-selection --file-filter=\"\"*.q\" \"*.scn\"\"", "r");
+    if (f == nullptr)
         return "N/A";
     else {
-        fgets(filename, 1024, f);
-        std::string fileNameStr;
-        fileNameStr = filename;
-        return fileNameStr;
+        if (fgets(filename, 1024, f) == nullptr) {
+            return "N/A";
+        } else {
+            std::string fileNameStr;
+            fileNameStr = filename;
+            // Remove newline that appears on Linux:
+            std::size_t position = fileNameStr.find('\n');
+            if (position != std::string::npos) {
+                fileNameStr.erase(fileNameStr.begin() + position, fileNameStr.end());
+            }
+            return fileNameStr;
+        }
     }
 
 }
 std::string MenuBarView::OpenFolderDialogue() {
     char foldername[1024];
-    FILE* f = popen("zenity  --file-selection --directory", "r");
+    FILE* f = popen("zenity --file-selection --directory", "r");
     if (f == NULL)
         return "N/A";
     else {
-        fgets(foldername, 1024, f);
-        std::string folderNameStr;
-        folderNameStr = foldername;
-        return folderNameStr;
+        if (fgets(foldername, 1024, f) == nullptr) {
+            return "N/A";
+        } else {
+            std::string folderNameStr;
+            folderNameStr = foldername;
+            return folderNameStr;
+        }
     }
 
 }
@@ -337,9 +378,16 @@ void MenuBarView::newProject() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2);
     if (ImGui::Button("  Browse  ")) {
         std::string temp_path = OpenFolderDialogue();
-        if (temp_path.compare("N/A") != 0)
+        if (temp_path.compare("N/A") != 0) {
             folder_path = temp_path;
-
+            #ifndef QS_WINDOWS
+                // Remove newline that appears on Linux:
+                std::size_t position = folder_path.find('\n');
+                if (position != std::string::npos) {
+                    folder_path.erase(folder_path.begin() + position, folder_path.end());
+                }
+            #endif
+        }
     }
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
@@ -373,14 +421,14 @@ void MenuBarView::newScene() {
 
 
     ImGui::PushItemWidth(-1);
-    ImGui::InputTextWithHint("##pname", "Project Name", buf1, 64);
+    ImGui::InputTextWithHint("##pname", "Scene Name", buf1, 64);
     ImGui::PopItemWidth();
 
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
-
+            Engine::ECSManager::Instance()->new_scene(std::string(buf1));
             new_scene = false;
             show_window = true;
         }
@@ -529,12 +577,21 @@ void MenuBarView::newAttribute() {
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
-        if(item_current_idx == COMPONENT_TRANSFORM)
-            Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
-        else if(item_current_idx == COMPONENT_MESH)
-            Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
+        unsigned int entityId = Engine::ECSManager::Instance()->get_current_entity();
+
+        if      (item_current_idx == COMPONENT_TRANSFORM)
+            Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityId, item_current_idx);
+        else if (item_current_idx == COMPONENT_MESH)
+            Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityId, item_current_idx);
         else if (item_current_idx == COMPONENT_COLLISION_SPHERE)
-            Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(Engine::ECSManager::Instance()->get_current_entity(), item_current_idx);
+        {
+            Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityId, item_current_idx);
+            Engine::CollisionSystem::Instance()->init_collision_component(entityId, COMPONENT_COLLISION_SPHERE);
+        }
+        else if (item_current_idx == COMPONENT_ORBIT)
+        {
+            Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, item_current_idx);
+        }
         new_attribute = false;
     }
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);

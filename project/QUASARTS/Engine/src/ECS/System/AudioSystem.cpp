@@ -30,18 +30,14 @@ namespace Engine {
 		clip_src = new ClipSource();
 		track_src = new TrackSource();
 
+		//prepare for 3D effect
 		ALint attunation = AL_INVERSE_DISTANCE_CLAMPED;
 		audio_dev->setAttunation(attunation);
 		audio_dev->setPosition(0.f, 0.f, 0.f);
-		audio_dev->setOrientation(0.f, 1.f, 0.f, 0.f, 0.f, 1.f);
+		audio_dev->setOrientation(0.f, 1.f, 0.f);
 
 		//clip_src->isLooping();
-		//playSoundClip("sci-fidrone");
-		//clip_src->setPosition(0.f, 5.f, 0.f);
-
-		//playTrack("TownTheme");
-		//track_src->setPosition(3.f, 5.f, 0.f);
-
+		//clip_src->setPosition(0.f, 0.f, 0.f);
 
 	}
 
@@ -113,7 +109,7 @@ namespace Engine {
 
 		//get default engine assets path
 		std::string path = FileModule::Instance()->get_internal_assets_path();
-		std::string file_path = path + "Audio\\" + name + ".ogg";
+		std::string file_path = path + "Audio/" + name + ".ogg";
 
 		ALuint clip = clip_buffer->loadSoundClip(file_path.c_str());
 		clip_src->play(clip);
@@ -159,7 +155,7 @@ namespace Engine {
 		//get default engine assets path
 		std::string path = FileModule::Instance()->get_internal_assets_path();
 
-		std::string file_path = path + "Audio\\" + name + ".wav";
+		std::string file_path = path + "Audio/" + name + ".wav";
 
 		track_src->loadTrack(file_path.c_str());
 		track_src->play();
@@ -203,25 +199,25 @@ namespace Engine {
 
 		if (Engine::Input::get_key_pressed(Q_KEY_W))
 		{
-			audio_dev->setOrientation(0.f, 1.f, 0.f, 0.f, 0.f, 1.f);
+			audio_dev->setOrientation(0.f, 1.f, 0.f);
 			pos.y += 1.f;
 		}
 
 		if (Engine::Input::get_key_released(Q_KEY_D))
 		{
-			audio_dev->setOrientation(1.f, 0.f, 0.f, 0.f, 0.f, 1.f);
+			audio_dev->setOrientation(1.f, 0.f, 0.f);
 			pos.x += 1.f;
 		}
 
 		if (Engine::Input::get_key_released(Q_KEY_A))
 		{
-			audio_dev->setOrientation(-1.f, 0.f, 0.f, 0.f, 0.f, 1.f);
+			audio_dev->setOrientation(-1.f, 0.f, 0.f);
 			pos.x -= 1.f;
 		}
 
 		if (Engine::Input::get_key_released(Q_KEY_S))
 		{
-			audio_dev->setOrientation(0.f, -1.f, 0.f, 0.f, 0.f, 1.f);
+			audio_dev->setOrientation(0.f, -1.f, 0.f);
 			pos.y -= 1.f;
 		}
 

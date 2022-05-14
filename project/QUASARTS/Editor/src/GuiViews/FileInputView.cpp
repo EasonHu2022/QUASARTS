@@ -153,7 +153,6 @@ void FileInputView::show_text()
             QDEBUG("File Saved: {0}", filePath.c_str());
             QDEBUG("Current Text: {0}", editor.GetText());
         }
-
         ImGui::End();
     }
 }

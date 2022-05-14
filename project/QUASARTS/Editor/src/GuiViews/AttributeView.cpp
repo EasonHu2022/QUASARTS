@@ -67,30 +67,30 @@ void AttributeView::on_gui()
 				{
 					ImGui::Text("Material");
 					Engine::MaterialComponent* componentM = Engine::ECSManager::Instance()->get_component<Engine::MaterialComponent>(current_entity_id, componentType);
-					ImGui::InputText("Material Path", componentM->path.data(), IM_ARRAYSIZE(componentM->path.data()));
+					ImGui::InputText("Material Path", componentM->path.data(), componentM->path.length()+1);
 					ImGui::Text(componentM->material->name.data());
-					ImGui::InputText("Vertex Shader", componentM->material->vShaderPath.data(), IM_ARRAYSIZE(componentM->material->vShaderPath.data()));
-					ImGui::InputText("Fragment Shader", componentM->material->fShaderPath.data(), IM_ARRAYSIZE(componentM->material->fShaderPath.data()));
-					ImGui::InputText("Geometry Shader", componentM->material->gShaderPath.data(), IM_ARRAYSIZE(componentM->material->gShaderPath.data()));
+					ImGui::InputText("Vertex Shader", componentM->material->vShaderPath.data(), componentM->material->vShaderPath.length()+1);
+					ImGui::InputText("Fragment Shader", componentM->material->fShaderPath.data(), componentM->material->fShaderPath.length() + 1);
+					ImGui::InputText("Geometry Shader", componentM->material->gShaderPath.data(), componentM->material->gShaderPath.length() + 1);
 					ImGui::ColorEdit3("ambient", glm::value_ptr(componentM->material->ambient));
 					ImGui::ColorEdit3("diffuse", glm::value_ptr(componentM->material->diffuse));
 					ImGui::ColorEdit3("specular", glm::value_ptr(componentM->material->specular));
 					ImGui::DragFloat("shininess", &componentM->material->shininess);
-					ImGui::InputText("texture", componentM->material->texturePath.data(), IM_ARRAYSIZE(componentM->material->texturePath.data()));
+					ImGui::InputText("texture", componentM->material->texturePath.data(), componentM->material->texturePath.length()+1);
 					break;
 				}					
 				case COMPONENT_MESH:
 				{
 					ImGui::Text("Mesh");
 					Engine::MeshComponent* componentMe = Engine::ECSManager::Instance()->get_component<Engine::MeshComponent>(current_entity_id, componentType);
-					ImGui::InputText("Mesh", componentMe->path.data(), IM_ARRAYSIZE(componentMe->path.data()));
+					ImGui::InputText("Mesh", componentMe->path.data(), componentMe->path.length() + 1);
 					break;
 				}					
 				case COMPONENT_SCRIPT:
 				{
 					ImGui::Text("Script");
 					Engine::ScriptComponent* componentS = Engine::ECSManager::Instance()->get_component<Engine::ScriptComponent>(current_entity_id, componentType);
-					ImGui::InputText("Script", componentS->script_path.data(), IM_ARRAYSIZE(componentS->script_path.data()));
+					ImGui::InputText("Script", componentS->script_path.data(), componentS->script_path.length()+1);
 					break;
 				}
 				case COMPONENT_PARTICLE:
@@ -114,49 +114,6 @@ void AttributeView::on_remove()
 	QDEBUG("on remove view : MenuBar");
 }
 
-//void AttributeView::show_transform() {
-//	ImGui::Separator();
-//	Engine::TransformComponent* transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_TRANSFORM);
-//	static float pos[3] = { transform->position.x ,transform->position.y, transform->position.z };
-//	static float rot[3] = { transform->rotation.x ,transform->rotation.y, transform->rotation.z };
-//	static float scal[3] = { transform->scale.x ,transform->scale.y, transform->scale.z };
-//
-//	static int mode = 0;
-//	ImGui::RadioButton("Translate", &mode, ImGuizmo::OPERATION::TRANSLATE); ImGui::SameLine();
-//	ImGui::RadioButton("Rotate", &mode, ImGuizmo::OPERATION::ROTATE); ImGui::SameLine();
-//	ImGui::RadioButton("Scale", &mode, ImGuizmo::OPERATION::SCALE);
-//	transform->operation = (ImGuizmo::OPERATION)mode;
-//
-//	ImGui::InputFloat3(" Position", pos);
-//	ImGui::InputFloat3(" Rotation", rot);
-//	ImGui::InputFloat3(" Scale", scal);
-//
-//	if (ImGui::IsWindowFocused()) {
-//		transform->position.x = pos[0];
-//		transform->position.y = pos[1];
-//		transform->position.z = pos[2];
-//
-//		transform->rotation.x = rot[0];
-//		transform->rotation.y = rot[1];
-//		transform->rotation.z = rot[2];
-//
-//		transform->scale.x = scal[0];
-//		transform->scale.y = scal[1];
-//		transform->scale.z = scal[2];
-//	}
-//	else {
-//		pos[0] = transform->position.x;
-//		pos[1] = transform->position.y;
-//		pos[2] = transform->position.z;
-//		rot[0] = transform->rotation.x;
-//		rot[1] = transform->rotation.y;
-//		rot[2] = transform->rotation.z;
-//		scal[0] = transform->scale.x;
-//		scal[1] = transform->scale.y;
-//		scal[2] = transform->scale.z;
-//	}
-//	
-//}
 
 void AttributeView::show_particle() {
 	
@@ -223,3 +180,28 @@ void AttributeView::show_particle() {
 	}
 	
 }
+
+void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {
+
+}
+
+
+void AttributeView::show_orbit()
+{
+	ImGui::Separator();
+	Engine::OrbitComponent* orbit = Engine::ECSManager::Instance()->get_component<Engine::OrbitComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_ORBIT);
+	static int primaryEntity = orbit->mPrimaryEntityId;
+	static float orbitPeriod = orbit->mOrbitPeriod;
+	static float normal[3] = { orbit->mAxisNormal.x, orbit->mAxisNormal.y, orbit->mAxisNormal.z };
+
+	ImGui::InputInt(" Primary", &primaryEntity);
+	ImGui::InputFloat(" Period", &orbitPeriod);
+	ImGui::InputFloat3(" Normal", normal);
+
+	orbit->mPrimaryEntityId = primaryEntity;
+	orbit->mOrbitPeriod = orbitPeriod;
+	orbit->mAxisNormal.x = normal[0];
+	orbit->mAxisNormal.y = normal[1];
+	orbit->mAxisNormal.z = normal[2];
+
+} // change_transform()

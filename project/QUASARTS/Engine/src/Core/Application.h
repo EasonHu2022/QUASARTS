@@ -18,8 +18,6 @@
 #include "Render/SkyboxRenderer.h"
 #include "ECS/System/ParticleSystem.h"
 #include "Core/Input.h"
-#include "ECS/System/CollisionSystem.h"
-#include "ECS/System/OrbitSystem.h"
 
 namespace Engine
 {
@@ -37,8 +35,6 @@ namespace Engine
 		miniECS* miniecs;
 		Scene* scene;
 		RenderSystem* renderSystem;
-		CollisionSystem* collisionSystem;
-		OrbitSystem* orbitSystem;
 		
 		/*******render*********/
 		RenderContext* renderContext;

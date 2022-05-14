@@ -42,9 +42,9 @@ namespace Engine {
 			Engine::AudioSystem::Instance()->playAllClips();
 		}
 
-		static void isClipLooping()
+		static void setLooping(const bool& loop_state)
 		{
-			Engine::AudioSystem::Instance()->getClipSource()->isLooping();
+			return Engine::AudioSystem::Instance()->getClipSource()->setLooping(loop_state);
 		}
 
 		//long track
@@ -68,16 +68,16 @@ namespace Engine {
 			Engine::AudioSystem::Instance()->resumeTrack();
 		}
 
-		static void isTrackLooping()
+		//3D effect
+		static void active3DEffect(const glm::vec3& pos)
 		{
-			Engine::AudioSystem::Instance()->getTrackSource()->isLooping();
+			auto src = Engine::AudioSystem::Instance()->getClipSource();
+			src->setPosition(pos);
 		}
 
-
 	};
-
-	//device
-	class Device
+	//device or listener
+	class Listener
 	{
 	public:
 
@@ -99,10 +99,16 @@ namespace Engine {
 			device->setPosition(v);
 		}
 
-		static void setOritentation(const float& x, const float& y, const float& z, const float& upX, const float& upY, const float& upZ)
+		static void setOritentation3f(const float& x, const float& y, const float& z)
 		{
 			auto device = Engine::AudioSystem::Instance()->getDevice();
-			device->setOrientation(x, y, z, upX, upY, upZ);
+			device->setOrientation(x, y, z);
+		}
+
+		static void setOritentationv(const glm::vec3& v)
+		{
+			auto device = Engine::AudioSystem::Instance()->getDevice();
+			device->setOrientation(v.x, v.y, v.z);
 		}
 
 	};

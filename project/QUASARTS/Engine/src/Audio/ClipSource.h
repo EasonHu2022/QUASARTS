@@ -16,7 +16,7 @@ namespace Engine {
 		void stop();
 		void pause();
 		void resume();
-		void isLooping();
+		void setLooping(const bool& looping_state);
 
 
 		void setPosition(const glm::vec3& pos);
@@ -28,10 +28,6 @@ namespace Engine {
 		ALuint source;
 		ALuint buffers = 0;
 		bool is_paused = false;
-		bool is_looping = true;
-
-		//glm::vec3 position = { 0,0,0 };
-		//glm::vec3	velocity = { 0,0,0 };
 	};
 }
 
