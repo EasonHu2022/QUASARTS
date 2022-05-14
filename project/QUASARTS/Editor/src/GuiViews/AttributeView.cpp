@@ -163,7 +163,7 @@ void AttributeView::show_particle() {
 	ImGui::Separator();
 	Engine::ParticleComponent* particle = Engine::ECSManager::Instance()->get_component<Engine::ParticleComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE);
 	
-	static bool is_on = particle->is_on;
+	/*static bool is_on = particle->is_on;
 	static bool randomRotation = particle->randomRotation;
 	static int mode = 1;
 	static float pps = particle->pps;
@@ -212,6 +212,14 @@ void AttributeView::show_particle() {
 	particle->direction.x = dir[0];
 	particle->direction.y = dir[1];
 	particle->direction.z = dir[2];
-	particle->directionDeviation = directionDeviation;
+	particle->directionDeviation = directionDeviation;*/
+
+	static char buf1[260] = "";
+
+	ImGui::PushItemWidth(-1);
+	if (ImGui::InputTextWithHint("##pname", "Project Name", buf1, 260))
+	{
+		particle->loadTex(buf1);
+	}
 	
 }

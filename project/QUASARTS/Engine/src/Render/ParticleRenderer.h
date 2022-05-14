@@ -17,7 +17,7 @@ namespace Engine
 
         int render() override;
 
-		int render(std::vector<Particle>);
+		int render(std::map<Texture2D*, std::vector<Particle>>);
 
 		int stop() override;
 
@@ -30,7 +30,8 @@ namespace Engine
         std::string fshPath;
         unsigned int particleVAO, particleVBO;
         float particleVertices[8] = {-0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f};
+        Texture2D* particleTexture;
         Shader* particleShader = NULL;
-        std::vector<std::string> paths;
+        std::string texPath;
 	};
 };

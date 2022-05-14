@@ -28,23 +28,32 @@ namespace Engine
 	}
 
 	void ParticleMaster::update() {
-		for (int i = 0; i < particles.size(); i++) {
-			bool alive = particles[i].update();
-			if (!alive)
-				particles.erase(particles.begin() + i);
+		for (auto& [key, value] : emitters) {
+			for (int i = 0; i < value.size(); i++) {
+				bool alive = value[i].update();
+				if (!alive)
+					value.erase(value.begin() + i);
+			}
+			if (emitters[key].empty()) {
+				emitters.erase(key);
+			}
 		}
 	}
 	
 	void ParticleMaster::render() {
-		renderer->render(particles);
+		renderer->render(emitters);
 	}
 
 	void ParticleMaster::release() {
 		renderer->release();
 	}
 
-	void ParticleMaster::addParticle(Particle particle) {
-		particles.push_back(particle);
+	void ParticleMaster::addParticle(Texture2D* tex, Particle particle) {
+		if (emitters.find(tex) == emitters.end()) {
+			std::vector<Particle> particles;
+			emitters.insert({ tex, particles });
+		}
+		emitters[tex].push_back(particle);
 	}
 };
 

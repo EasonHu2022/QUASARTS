@@ -11,6 +11,8 @@ namespace Engine
 		vshPath = path + "Shader\\Particle.vsh";
 		fshPath = path + "Shader\\Particle.fsh";
 
+		texPath = path + "Texture\\floor.jpg";
+
 	}
 	ParticleRenderer::~ParticleRenderer()
 	{
@@ -26,6 +28,7 @@ namespace Engine
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 		glBindVertexArray(0);
+		particleTexture = new Texture2D(texPath);
 		particleShader = new Shader(vshPath.data(), fshPath.data());
 		
 		return 0;
@@ -37,13 +40,14 @@ namespace Engine
 	}
 
 	//set skybox renderer at the last renderer to render
-	int ParticleRenderer::render(std::vector<Particle> particles)
+	int ParticleRenderer::render(std::map<Texture2D*, std::vector<Particle>> emitters)
 	{
 		if ( particleShader == NULL) return 0;
 		glBindFramebuffer(GL_FRAMEBUFFER, renderContext->frameBufferObject);
 		glEnable(GL_DEPTH_TEST);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glDepthMask(GL_FALSE);
 
 		//give a clear color of the window
@@ -54,15 +58,22 @@ namespace Engine
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		particleShader->use();
 		auto view = glm::mat4(glm::mat3(renderContext->cameraContext->get_view_matrix())); // remove translation from the view matrix
-		for (Particle particle : particles) {
-			glBindVertexArray(particleVAO);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
-			updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
-			glBindVertexArray(0);
+		for (auto [key, value] : emitters) {
+			key->use(GL_TEXTURE0);
+			GLint iTextureUniform = glGetUniformLocation(particleShader->ID, "particleTexture");
+			glUniform1i(iTextureUniform, 0);
+
+			for (Particle particle : value) {
+				glBindVertexArray(particleVAO);
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
+				updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
+				glBindVertexArray(0);
+			}
 		}
 		particleShader->setMat4("projection", renderContext->cameraContext->get_projection_matrix());
 		
 		glDepthMask(GL_TRUE);
+		glDisable(GL_BLEND);
 		glDepthFunc(GL_LESS); // set depth function back to default
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return 0;

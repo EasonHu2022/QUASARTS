@@ -152,14 +152,4 @@ void QEditor::poll_input()
 		}
 	}
 	
-	if (Engine::Input::get_key(Q_KEY_B))
-	{
-		if (Engine::ParticleMaster::Instance()->counter.sec() < 0) {
-			Engine::Particle particle(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.5f, 1.0f, 0.0f), -15, 2, 0, 0.1);
-			Engine::ParticleMaster::Instance()->addParticle(particle);
-			Engine::ParticleMaster::Instance()->counter += 1.0f / 5.0f;
-		}
-		Engine::ParticleMaster::Instance()->counter -= Engine::TimeModule::Instance()->get_frame_delta_time();
-	}
-	
 }

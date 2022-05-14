@@ -3,6 +3,8 @@
 #include <string>
 #include "glm/glm.hpp"
 #include "Time/TimeModule.h"
+#include "Texture2D.h"
+#include <map>
 
 namespace Engine
 {
@@ -17,8 +19,10 @@ namespace Engine
 		float scale;
 
 		float time = 0;
+
+		int numRows;
 	public:
-		Particle(glm::vec3 pos, glm::vec3 vel, float grav, float life, float rot, float scal);
+		Particle(int rows, glm::vec3 pos, glm::vec3 vel, float grav, float life, float rot, float scal);
 		~Particle();
 		
 		glm::vec3 getPosition() {
@@ -31,6 +35,10 @@ namespace Engine
 
 		float getScale() {
 			return scale;
+		}
+
+		int getRows() {
+			return numRows;
 		}
 
 		bool update() {

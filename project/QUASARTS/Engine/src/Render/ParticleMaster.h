@@ -1,7 +1,6 @@
 #pragma once
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-
 #include "Particle.h"
 #include "ParticleRenderer.h"
 #include "Time/TimeModule.h"
@@ -11,7 +10,7 @@ namespace Engine
     class QS_API ParticleMaster
     {
     private:
-        std::vector<Particle> particles;
+        std::map<Texture2D*, std::vector<Particle>> emitters;
         ParticleRenderer* renderer;
         static ParticleMaster* instance;
 
@@ -24,7 +23,7 @@ namespace Engine
         void update();
         void render();
         void release();
-        void addParticle(Particle particle);
+        void addParticle(Texture2D* tex, Particle particle);
 
     };
 

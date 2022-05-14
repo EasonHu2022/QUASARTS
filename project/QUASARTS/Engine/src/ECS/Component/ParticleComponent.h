@@ -7,6 +7,10 @@
 #include "ECS/ECS-Common.h"
 #include "glm/glm.hpp"
 #include "Render/ParticleMaster.h"
+#include <windows.h>
+#include <commdlg.h>
+#include <direct.h>
+#include <ShlObj_core.h>
 
 namespace Engine {
 	struct QS_API ParticleComponent
@@ -14,9 +18,12 @@ namespace Engine {
 		float pps, averageSpeed, gravity, averageLifeLength, averageScale;
 
 		float speedError, lifeError, scaleError = 0, posError;
-		bool randomRotation = false, is_on = false, cone = true;
+		bool randomRotation = false, is_on = true, cone = true;
 		glm::vec3 direction;
 		float directionDeviation = 0;
+		Texture2D* texture;
+		int numrows;
+		std::string old_path = "";
 		ParticleComponent() {
 			pps = 90.0f;
 			averageSpeed = 3.0f;
@@ -29,30 +36,21 @@ namespace Engine {
 			direction = glm::vec3(0.0f, 1.0f, 0.0f);
 			directionDeviation = 0.5f;
 			posError = 0.0f;
-		}
-		ParticleComponent(float particles, float speed, float grav, float life, float scal, float speedE, float lifeE, float scalE, glm::vec3 dir, float div) {
-			pps = particles;
-			averageSpeed = speed;
-			gravity = grav;
-			averageLifeLength = life;
-			averageScale = scal;
-			speedError = speedE;
-			lifeError = lifeE;
-			scaleError = scalE;
-			direction = dir;
-			directionDeviation = div;
+			numrows = 1;
 		}
 
 		void generateParticle(glm::vec3 center) {
-			float deltaT = TimeModule::Instance()->get_frame_delta_time().sec();
-			float particlesToCreate = pps * deltaT;
-			double count;
-			float partialParticle = modf(particlesToCreate, &count);
-			for (int i = 0; i < count; i++) {
-				emitParticle(center);
-			}
-			if ((float)rand() / (float)(RAND_MAX) < partialParticle) {
-				emitParticle(center);
+			if (texture != nullptr) {
+				float deltaT = TimeModule::Instance()->get_frame_delta_time().sec();
+				float particlesToCreate = pps * deltaT;
+				double count;
+				float partialParticle = modf(particlesToCreate, &count);
+				for (int i = 0; i < count; i++) {
+					emitParticle(center);
+				}
+				if ((float)rand() / (float)(RAND_MAX) < partialParticle) {
+					emitParticle(center);
+				}
 			}
 		}
 
@@ -68,18 +66,21 @@ namespace Engine {
 			velocity = velocity * generateFloat(averageSpeed, speedError);
 			float scale = generateFloat(averageScale, scaleError);
 			float lifeLength = generateFloat(averageLifeLength, lifeError);
-			Engine::Particle particle(center, velocity, gravity, lifeLength, generateRotation(), scale);
-			Engine::ParticleMaster::Instance()->addParticle(particle);
+			Engine::Particle particle(numrows, center, velocity, gravity, lifeLength, generateRotation(), scale);
+			Engine::ParticleMaster::Instance()->addParticle(texture, particle);
 		}
+
 		float generateFloat(float avg, float error) {
 			float offset = ((float)rand() / (float)(RAND_MAX)-0.5f) * 2.0f * error;
 			return avg + offset;
 		}
+
 		glm::vec3 generateVec(glm::vec3 avg, float error) {
 			float x = ((float)rand() / (float)(RAND_MAX)-0.5f) * 2.0f * error;
 			float z = ((float)rand() / (float)(RAND_MAX)-0.5f) * 2.0f * error;
 			return glm::vec3(avg.x + x, avg.y, avg.z + z);
 		}
+
 		float generateRotation() {
 			if (randomRotation) {
 				return (float)rand() / (float)(RAND_MAX) * 360.0f;
@@ -88,6 +89,7 @@ namespace Engine {
 				return 0;
 			}
 		}
+
 		glm::vec3 randVecCone(glm::vec3 dir, float angle) {
 			float cosAngle = cos(angle);
 			float theta = (float)((float)rand() / (float)(RAND_MAX) * 2.0f * 3.14159265358979323846);
@@ -110,6 +112,7 @@ namespace Engine {
 			}
 			return glm::vec3(direction.x, direction.y, direction.z);
 		}
+
 		glm::vec3 randVec() {
 			float theta = (float)((float)rand() / (float)(RAND_MAX) * 2.0f * 3.14159265358979323846);
 			float z = ((float)rand() / (float)(RAND_MAX) * 2.0f) - 1;
@@ -119,6 +122,14 @@ namespace Engine {
 			return glm::vec3(x, y, z);
 		}
 
+		void loadTex(std::string path) {
+			if (old_path.compare(path) != 0) {
+				if (texture != nullptr)
+					delete(texture);
+				texture = new Texture2D(path);
+				old_path = path;
+			}
+		}
 	};
 
 	// Input stream operator:
