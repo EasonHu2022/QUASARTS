@@ -280,8 +280,6 @@ namespace Engine {
 		}
 		collisionSpheres.clear();
 
-		collisionSpheres.clear();
-
 	} // reset_collision_world()
 
 
