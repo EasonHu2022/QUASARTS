@@ -27,6 +27,10 @@ namespace Engine {
 		//create new entity and add components
 		p_lua_state.set_function("createEntity", &createEntity);
 		p_lua_state.set_function("addComponent", &addComponent);
+
+		// Collisions
+		p_lua_state.set_function("getNumCollidedEntities", &getNumCollidedEntities);
+		p_lua_state.set_function("getCollidedEntity", &getCollidedEntity);
 	}
 
 
@@ -158,5 +162,27 @@ namespace Engine {
 
 		}
 	}
+
+
+	unsigned int getNumCollidedEntities(unsigned int id)
+	{
+		// Get collision component.
+		CollisionSphereComponent* sphere = ECSManager::Instance()->get_component<CollisionSphereComponent>(id, COMPONENT_COLLISION_SPHERE);
+		if (sphere == nullptr) return -1;
+
+		return sphere->mNumOverlaps;
+
+	} // getNumCollidedEntities()
+
+	unsigned int getCollidedEntity(unsigned int id, unsigned int collisionIndex)
+	{
+
+		// Get collision component.
+		CollisionSphereComponent* sphere = ECSManager::Instance()->get_component<CollisionSphereComponent>(id, COMPONENT_COLLISION_SPHERE);
+		if (sphere == nullptr) return -1;
+
+		return sphere->mOverlapEntityIds[collisionIndex];
+
+	} // getCollidedEntities()	
 
 }
