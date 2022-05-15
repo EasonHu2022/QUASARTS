@@ -164,17 +164,16 @@ namespace Engine {
 	}
 
 
-	unsigned int getNumCollidedEntities(unsigned int id)
+	int getNumCollidedEntities(unsigned int id)
 	{
 		// Get collision component.
 		CollisionSphereComponent* sphere = ECSManager::Instance()->get_component<CollisionSphereComponent>(id, COMPONENT_COLLISION_SPHERE);
 		if (sphere == nullptr) return -1;
-
 		return sphere->mNumOverlaps;
 
 	} // getNumCollidedEntities()
 
-	unsigned int getCollidedEntity(unsigned int id, unsigned int collisionIndex)
+	int getCollidedEntity(unsigned int id, unsigned int collisionIndex)
 	{
 
 		// Get collision component.

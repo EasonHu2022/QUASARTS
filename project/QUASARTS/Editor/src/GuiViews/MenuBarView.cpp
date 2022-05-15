@@ -627,4 +627,11 @@ void MenuBarView::load_object(std::string name, std::string file) {
     material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL, material);
 
+    //temp 
+    Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityID, COMPONENT_COLLISION_SPHERE);
+    Engine::CollisionSystem::Instance()->init_collision_component(entityID, COMPONENT_COLLISION_SPHERE);
+
+    Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityID, COMPONENT_HEALTH);
+    Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityID, COMPONENT_WEAPON);
+
 }

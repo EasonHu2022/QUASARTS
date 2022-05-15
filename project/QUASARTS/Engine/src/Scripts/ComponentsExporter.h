@@ -45,7 +45,7 @@ namespace Engine {
 	static void addComponent(unsigned int entity_id, const std::string& component_type);
 
 	// Collisions
-	static unsigned int getNumCollidedEntities(unsigned int id);
-	static unsigned int getCollidedEntity(unsigned int id, unsigned int collisionIndex);
+	static int getNumCollidedEntities(unsigned int id);
+	static int getCollidedEntity(unsigned int id, unsigned int collisionIndex);
 
 }
