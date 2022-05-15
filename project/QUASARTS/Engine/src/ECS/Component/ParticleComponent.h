@@ -7,10 +7,6 @@
 #include "ECS/ECS-Common.h"
 #include "glm/glm.hpp"
 #include "Render/ParticleMaster.h"
-#include <windows.h>
-#include <commdlg.h>
-#include <direct.h>
-#include <ShlObj_core.h>
 
 namespace Engine {
 	struct QS_API ParticleComponent
