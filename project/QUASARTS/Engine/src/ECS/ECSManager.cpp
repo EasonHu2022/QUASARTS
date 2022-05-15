@@ -51,7 +51,7 @@ namespace Engine {
         unsigned int entityID = get_free_entity_ID();
         // Check that the new ID is valid:
         if (entityID == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::create_entity(): Warning: unable to create new Entity. Maximum number of Entities reached.");
+            QERROR("Function ECSManager::create_entity(): Error: unable to create new Entity. Maximum number of Entities reached.");
             return entityID;
         }
 
@@ -152,7 +152,7 @@ namespace Engine {
     // Add an Entity group:
     void ECSManager::add_entity_group(std::string group_name) {
         if (scene->entity_groups.find(group_name) != scene->entity_groups.end()) {
-            QERROR("Function ECSManager::add_entity_group: Warning: group already exists!");
+            QERROR("Function ECSManager::add_entity_group: Error: group already exists!");
             return;
         }
         scene->entity_groups[group_name] = {};
@@ -206,22 +206,22 @@ namespace Engine {
         unsigned int parent_index = get_index_from_ID(parent);
         unsigned int child_index = get_index_from_ID(child);
         if (parent_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::add_child: Warning: no match was found for parent Entity {0}!", parent);
+            QERROR("Function ECSManager::add_child: Error: no match was found for parent Entity {0}!", parent);
             return;
         } else if (child_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::add_child: Warning: no match was found for child Entity {0}!", child);
+            QERROR("Function ECSManager::add_child: Error: no match was found for child Entity {0}!", child);
             return;
         }
 
         // Take into account the situation where a child already has a parent:
         if (has_parent(child_index) == true) {
-            QERROR("Function ECSManager::add_child: Warning: child Entity {0} already has a parent!", child);
+            QERROR("Function ECSManager::add_child: Error: child Entity {0} already has a parent!", child);
             return;
         }
 
         // Deal with the situation where the child is the parent of the parent:
         if (get_parent(parent_index) == child) {
-            QERROR("Function ECSManager::add_child: Warning: child Entity {0} is the parent of parent Entity {1}!", child, parent);
+            QERROR("Function ECSManager::add_child: Error: child Entity {0} is the parent of parent Entity {1}!", child, parent);
             return;
         }
 
@@ -236,10 +236,10 @@ namespace Engine {
         unsigned int parent_index = get_index_from_ID(parent);
         unsigned int child_index = get_index_from_ID(child);
         if (parent_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::remove_child: Warning: no match was found for parent Entity {0}!", parent);
+            QERROR("Function ECSManager::remove_child: Error: no match was found for parent Entity {0}!", parent);
             return;
         } else if (child_index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::remove_child: Warning: no match was found for child Entity {0}!", child);
+            QERROR("Function ECSManager::remove_child: Error: no match was found for child Entity {0}!", child);
             return;
         }
 
@@ -252,7 +252,7 @@ namespace Engine {
     std::set<unsigned int> ECSManager::get_children(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
         if (index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::get_children: Warning: no match was found for Entity {0}!", entityID);
+            QERROR("Function ECSManager::get_children: Error: no match was found for Entity {0}!", entityID);
             return {};
         }
         return scene->children[index];
@@ -262,7 +262,7 @@ namespace Engine {
     unsigned int ECSManager::get_parent(unsigned int entityID) {
         unsigned int index = get_index_from_ID(entityID);
         if (index == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::get_parent: Warning: no match was found for Entity {0}!", entityID);
+            QERROR("Function ECSManager::get_parent: Error: no match was found for Entity {0}!", entityID);
             return TOO_MANY_ENTITIES;
         }
         return scene->parents[index];
@@ -310,7 +310,7 @@ namespace Engine {
         // Create the camera:
         unsigned int cameraID = get_free_entity_ID();
         if (cameraID == TOO_MANY_ENTITIES) {
-            QERROR("Function ECSManager::create_camera(): Warning: unable to create new Entity. Maximum number of Entities reached.");
+            QERROR("Function ECSManager::create_camera(): Error: unable to create new Entity. Maximum number of Entities reached.");
             return;
         }
         scene->create_camera(cameraID);
@@ -354,6 +354,16 @@ namespace Engine {
 
         // Recreate the camera:
         create_camera();
+
+        // Reset the current entity:
+        set_current_entity(TOO_MANY_ENTITIES);
+
+        // Initialize appropriate Components:
+        for (const auto &[key, val] : systems) {
+                val->initialize_components();
+        }
+
+        QDEBUG("New scene created.");
     }
 
     // Create new blank scene with a name:
@@ -371,6 +381,16 @@ namespace Engine {
 
         // Recreate the camera:
         create_camera();
+
+        // Reset the current entity:
+        set_current_entity(TOO_MANY_ENTITIES);
+
+        // Initialize appropriate Components:
+        for (const auto &[key, val] : systems) {
+                val->initialize_components();
+        }
+
+        QDEBUG("New scene created.");
     }
 
     // Save the whole scene to file:
@@ -378,7 +398,7 @@ namespace Engine {
         std::ofstream sceneFile(filename);
         // Check if the file is open:
         if (!(sceneFile.good())) {
-            QERROR("Function ECSManager::save_scene: Warning: Cannot open file for writing!");
+            QERROR("Function ECSManager::save_scene: Error: Cannot open file for writing!");
             return false;
         }
 
@@ -386,7 +406,7 @@ namespace Engine {
         sceneFile << "# Quasarts Orbit Engine Scene" << std::endl;
         sceneFile << "# N = Name" << std::endl;
         sceneFile << "# E = Entity (followed by ID, a flag to indicate scene camera, and name)" << std::endl;
-        sceneFile << "# C = Component (followed by Component type, Entity ID and data)" << std::endl;
+        sceneFile << "# C = Component (followed by Entity ID, Component type and data)" << std::endl;
         sceneFile << "# P = Parent-child (entity ID of parent, then a list of children)" << std::endl;
 
         // Write the scene data. Start with the name:
@@ -498,7 +518,7 @@ namespace Engine {
         std::ifstream sceneFile(filename);
         // Check if the file is open:
         if (!(sceneFile.good())) {
-            QERROR("Function ECSManager::load_scene: Warning: Cannot open file for reading!");
+            QERROR("Function ECSManager::load_scene: Error: Cannot open file for reading!");
             return false;
         }
 
@@ -509,6 +529,9 @@ namespace Engine {
         for (const auto &[key, val] : systems) {
             val->clear_all_entity_masks();
         }
+
+        // Reset the current entity:
+        set_current_entity(TOO_MANY_ENTITIES);
 
         // Create a buffer for reading in lines:
         char lineBuffer[MAX_SCENE_LINE_LENGTH];
@@ -711,5 +734,41 @@ namespace Engine {
     // Print out Component array information:
     void ECSManager::print_componentArray_info(unsigned int componentType) {
         scene->componentArrays[componentType]->print_state();
+    }
+
+    // Print out System information:
+    void ECSManager::print_system_info(unsigned int systemType) {
+        // Define a map of strings to aid in debugging:
+        std::map<unsigned int, const char*> system_strings;
+        system_strings[SYSTEM_SCRIPT] = "Script System";
+        system_strings[SYSTEM_RENDER] = "Render System";
+        system_strings[SYSTEM_PHYSICS] = "Physics System";
+        system_strings[SYSTEM_COLLISION] = "Collision System";
+        system_strings[SYSTEM_AUDIO] = "Audio System";
+        system_strings[SYSTEM_ORBIT] = "Orbit System";
+        system_strings[SYSTEM_PARTICLE] = "Particle System";
+
+        // Check if the system is in the maps:
+        if (system_strings.find(systemType) == system_strings.end()) {
+            QDEBUG("Function ECSManager::print_(all_)system_info(): Warning: System type {0} not recognised!", systemType);
+            return;
+        }
+        if (systems.find(systemType) == systems.end()) {
+            QDEBUG("Function ECSManager::print_(all_)system_info(): Warning: {0} not registered!", system_strings[systemType]);
+            return;
+        }
+
+        // Print the system information:
+        QDEBUG("****************************************************************");
+        QDEBUG("Printing information for {0}", system_strings[systemType]);
+        systems[systemType]->print_masks();
+    }
+
+    // Print out all System information:
+    void ECSManager::print_all_system_info() {
+        for (const auto &[key, val] : systems) {
+            unsigned int systemType = key;
+            print_system_info(key);
+        }
     }
 }

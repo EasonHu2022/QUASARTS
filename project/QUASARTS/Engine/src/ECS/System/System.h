@@ -4,6 +4,8 @@
 #include <vector>
 
 // Local includes:
+#include "Core/Core.h"
+#include "Logger/LogModule.h"
 #include "Core/IManager.h"
 #include "ECS/ECS-Common.h"
 
@@ -98,8 +100,44 @@ namespace Engine {
             return &(entity_masks[index]);
         }
 
-        // Set up all the data required for the component to function:
+        // Set up all the data required for the Component to function:
         virtual void initialize_components() {}
+
+        // Print the entity information and component masks for the System:
+        void print_masks() {
+            QDEBUG("****************************************************************");
+            // Print Component and Entity masks:
+            for (int i = 0; i < component_masks.size(); i++) {
+                QDEBUG("Component mask {0} of system:", i);
+                quasarts_component_mask mask;
+                std::string componentMask = "";
+                for (int j = MAX_COMPONENT_TYPES - 1; j >= 0 ; j--) {
+                    mask.mask = (uint64_t)1 << j;
+                    if ((component_masks[i].mask & mask.mask) == mask.mask) {
+                        componentMask += "1";
+                    } else { componentMask += "0"; }
+                }
+                QDEBUG(componentMask);
+
+                QDEBUG("Entities valid for mask {0} of system:", i);
+                std::vector<unsigned int> valid_entities;
+                for (int j = 0; j < MAX_ENTITIES; j++) {
+                    if (entity_masks[i].mask[j] == 1) {
+                        valid_entities.push_back(j);
+                    }
+                }
+                if (valid_entities.size() > 0) {
+                    std::string entityMask = std::to_string(valid_entities[0]);
+                    for (int j = 1; j < valid_entities.size(); j++) {
+                        entityMask += ", " + std::to_string(valid_entities[j]);
+                    }
+                    QDEBUG(entityMask);
+                } else {
+                    QDEBUG("None");
+                }
+            }
+            QDEBUG("****************************************************************");
+        }
 
         private:
         // The manager responsible for this System:
