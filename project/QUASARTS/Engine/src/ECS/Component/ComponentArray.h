@@ -61,7 +61,7 @@ namespace Engine {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
-                QERROR("Function ComponentArray::get_data(): Warning: Entity {0} not found!", entityID);
+                QERROR("Function ComponentArray::get_data(): Error: Entity {0} not found!", entityID);
                 return nullptr;
             }
             return &(componentData[index]);
@@ -127,7 +127,7 @@ namespace Engine {
             unsigned int index = data_from_entityID(entityID);
             if (index == TOO_MANY_ENTITIES) {
                 // Print a warning:
-                QERROR("Function ComponentArray::replace_data(): Warning: Entity {0} not found!", entityID);
+                QERROR("Function ComponentArray::replace_data(): Error: Entity {0} not found!", entityID);
                 return;
             }
 
