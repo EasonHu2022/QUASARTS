@@ -1,11 +1,11 @@
 # Script System
 For Quasarts Engine, we select lua as our scripting language
 
-## How to bind and load a script
-1. create an entity first
-2. click the entity which you want to bind a script component in Asset Hierarchy window
-3. bind: select the menu bar: **Assets -> Add Script Component** and choose the lua file you want to use
-4. load and stop: select the menu bar: **Edit -> Play/Stop**
+## How to add and load a script
+1. Create an entity first
+2. Click the entity which you want to bind a script component in Asset Hierarchy window
+3. Add: select the menu bar: **Assets -> Add Script Component** and choose the lua file you want to use
+4. Load and Stop: select the menu bar: **Edit -> Play/Stop**
 
 ## Update tracking
 
@@ -37,7 +37,8 @@ end
   - Transform
   - Health 
   - Weapon
-  - camera
+  - Camera
+  - Collision
 - Time
 
 ## Input 
@@ -255,4 +256,25 @@ if Input.get_key_held(Key.Q_KEY_W) then
 	end
 	
 	updateRotation(camera, vec3(0,0.5,0)) --rotate the camera
+```
+
+### Collision
+
+Function | Argument1 | Argument2
+---------| --------- | ---------
+getNumCollidedEntities  | current_entity_id(unsigned int) | /
+getCollidedEntity       | current_entity_id(unsigned int) | collisionIndex(unsigned int)
+
+**Note** : current_entity_id is passed from C++ side, so just keep it as `thiz`. If you create a new entity in script, then just use the new entity id
+
+
+#### simple example
+
+``` lua
+num_collided_ent =  getNumCollidedEntities(thiz)  --total number
+--print(num_collided_ent)
+for i = 0, num_collided_ent-1 do 
+	collided_entity = getCollidedEntity(thiz, i)
+	--print("ent id : " .. collided_entity)
+end
 ```
