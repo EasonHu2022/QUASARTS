@@ -257,6 +257,8 @@ namespace Engine {
 			delete sphere;
 		}
 
+		collisionSpheres.clear();
+
 	} // reset_collision_world()
 
 

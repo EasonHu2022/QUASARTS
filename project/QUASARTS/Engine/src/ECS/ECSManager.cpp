@@ -358,6 +358,11 @@ namespace Engine {
         // Reset the current entity:
         set_current_entity(TOO_MANY_ENTITIES);
 
+        // Initialize appropriate Components:
+        for (const auto &[key, val] : systems) {
+                val->initialize_components();
+        }
+
         QDEBUG("New scene created.");
     }
 
@@ -379,6 +384,11 @@ namespace Engine {
 
         // Reset the current entity:
         set_current_entity(TOO_MANY_ENTITIES);
+
+        // Initialize appropriate Components:
+        for (const auto &[key, val] : systems) {
+                val->initialize_components();
+        }
 
         QDEBUG("New scene created.");
     }

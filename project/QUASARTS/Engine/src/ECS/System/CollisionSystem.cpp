@@ -114,6 +114,8 @@ namespace Engine
 
     // Set up all the data required for the component to function:
 	void CollisionSystem::initialize_components() {
+        mNumCollided = 0;
+
 		// Get the manager and entity mask:
 		ECSManager* active_manager = get_manager();
 		quasarts_entity_ID_mask *entitiesSpheres = get_entity_ID_mask(get_mask_index(COMPONENT_COLLISION_SPHERE));
