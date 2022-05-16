@@ -128,7 +128,7 @@ void AttributeView::show_particle() {
 	ImGui::Separator();
 	Engine::ParticleComponent* particle = Engine::ECSManager::Instance()->get_component<Engine::ParticleComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE);
 	
-	/*static bool is_on = particle->is_on;
+	static bool is_on = particle->is_on;
 	static bool randomRotation = particle->randomRotation;
 	static int mode = 1;
 	static float pps = particle->pps;
@@ -138,6 +138,8 @@ void AttributeView::show_particle() {
 	static float posError = particle->posError;
 	static float directionDeviation = particle->directionDeviation;
 	static float dir[3] = { particle->direction.x, particle->direction.y, particle->direction.z };
+
+	static int rows = particle->texture.rows;
 
 	if (ImGui::Button("Toggle On/Off")) {
 		is_on = !is_on;
@@ -162,6 +164,7 @@ void AttributeView::show_particle() {
 	ImGui::InputFloat(" Position Error", &posError);
 	ImGui::InputFloat3(" Direction", dir);
 	ImGui::InputFloat(" Direction Deviation", &directionDeviation);
+	ImGui::InputInt(" Rows", &rows);
 	
 	particle->is_on = is_on;
 	particle->randomRotation = randomRotation;
@@ -177,20 +180,20 @@ void AttributeView::show_particle() {
 	particle->direction.x = dir[0];
 	particle->direction.y = dir[1];
 	particle->direction.z = dir[2];
-	particle->directionDeviation = directionDeviation;*/
+	particle->directionDeviation = directionDeviation;
+	particle->texture.rows = rows;
 
 	static char buf1[260] = "";
 
 	ImGui::PushItemWidth(-1);
 	if (ImGui::Button("button"))
 	{
-		particle->loadtex("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\cosmic.png");
-		particle->texture.rows = 4;
+		particle->loadtex("C:\\Users\\Computer\\source\\repos\\EasonHu2022\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\fire.png");
 	}
 	
 	if (ImGui::Button("button2"))
 	{
-		particle->loadtex("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\particleStar.png");
+		particle->loadtex("C:\\Users\\Computer\\source\\repos\\EasonHu2022\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\particleStar.png");
 	}
 }
 
