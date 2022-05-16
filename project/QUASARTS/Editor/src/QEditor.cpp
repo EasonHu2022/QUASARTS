@@ -190,5 +190,22 @@ void QEditor::poll_input()
 			if (emitters.count("the first sone")) { std::cout << "we got it" << std::endl; }
 		}
 	}
+
+	if (Engine::Input::get_key(Q_KEY_LEFT_CONTROL))
+	{
+		auto gameScene = getGuiView<GameSceneView>();
+		if (Engine::Input::get_key_pressed(Q_KEY_W))
+		{
+			gameScene->opType = ImGuizmo::OPERATION::TRANSLATE;
+		}
+		if (Engine::Input::get_key_pressed(Q_KEY_E))
+		{
+			gameScene->opType = ImGuizmo::OPERATION::ROTATE;
+		}
+		if (Engine::Input::get_key_pressed(Q_KEY_R))
+		{
+			gameScene->opType = ImGuizmo::OPERATION::SCALE;
+		}
+	}
 	
 }
