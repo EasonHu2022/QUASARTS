@@ -75,7 +75,7 @@ void MenuBarView::on_gui()
                 #else
                     std::string file_name = OpenFileDialogue();
                 #endif
-                Engine::PhysicsSystem::Instance()->setup_collision_world();
+                Engine::CollisionSystem::Instance()->reset();
                 Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
@@ -429,7 +429,7 @@ void MenuBarView::newScene() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
-            Engine::PhysicsSystem::Instance()->setup_collision_world();
+            Engine::CollisionSystem::Instance()->reset();
             Engine::ECSManager::Instance()->new_scene(std::string(buf1));
             new_scene = false;
             show_window = true;
