@@ -172,6 +172,13 @@ namespace Engine {
 	}
 
 
+	void EventModule::clear_queue()
+	{
+		queue.clear();
+
+	} // clear_queue()
+
+
 	// debug //
 
 	void EventModule::log_queue()
