@@ -75,16 +75,7 @@ namespace Engine {
         /// <returns>0 if successful, non-0 otherwise.</returns>
         int set_orbit_primary(unsigned int const aEntityId, unsigned int const aPrimaryEntityId);
 
-        /// <summary>
-        /// Set the orbit period - how long it takes to complete a full orbit.
-        /// Uses absolute value of aOrbitPeriod.
-        /// </summary>
-        /// <param name="aEntityId"></param>
-        /// <param name="aOrbitPeriod"></param>
-        /// <returns></returns>
-        void set_orbit_period(unsigned int const aEntityId, double const aOrbitPeriod);
-
-        void set_orbit_normal(unsigned int const aEntityId, glm::vec3 const aNormal);
+        void initialise_orbit(unsigned int const aEntityId);
 
         /// <summary>
         /// Clears the entity's orbit component.

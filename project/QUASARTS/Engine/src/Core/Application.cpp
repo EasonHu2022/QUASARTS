@@ -98,7 +98,7 @@ namespace Engine
 		PhysicsSystem::Instance()->start();
 		EventModule::Instance()->start();
 		ScriptSystem::Instance()->start();
-		//orbitSystem->start();		// TODO : start when game starts, not in editor
+		OrbitSystem::Instance()->start();		// TODO : start when game starts, not in editor
 		/***************later start things*************************/
 
 		//main loop
@@ -159,7 +159,7 @@ namespace Engine
 		ParticleMaster::Instance()->update();
 		particleSystem->update();
 		CollisionSystem::Instance()->update();
-		//OrbitSystem::Instance()->update();
+		OrbitSystem::Instance()->update();
 		/***************logic update logic frame************************/
 	}
 

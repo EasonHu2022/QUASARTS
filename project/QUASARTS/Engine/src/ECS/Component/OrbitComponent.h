@@ -14,6 +14,9 @@ namespace Engine {
 
     struct QS_API OrbitComponent
     {
+        // True if this component should be included in orbit simulation updates, false otherwise.
+        bool mActive;
+
         // ID of the entity which this component's parent entity will orbit around.
         int mPrimaryEntityId;
 
@@ -30,6 +33,9 @@ namespace Engine {
         float mTrueAnom;            // True anomaly - the current shortest angle in the orbital plane between the satellite and the positive x-axis. Defines satellite's place in orbit.
         float mDistance;            // Current distance from primary to satellite.
         glm::vec3 mRelativePos;     // Current separation vector of satellite from primary - this entity's world position relative to the primary entity.
+        
+        // State reading.
+        float mTrueAnomDeg;
 
 
         //// Orbit parameters
@@ -51,8 +57,16 @@ namespace Engine {
 
 
         OrbitComponent() 
-            : mPrimaryEntityId(-1)
+            : mActive(false)
+            , mPrimaryEntityId(-1)
+            , mOrbitPeriod(0)
+            , mDistPeriapse(0)
             , mAxisNormal(defNormal)
+            , mAxisX(0,0,0)
+            , mAxisY(0,0,0)
+            , mTrueAnom(0)
+            , mDistance(0)
+            , mRelativePos(0,0,0)
         { }
 
 

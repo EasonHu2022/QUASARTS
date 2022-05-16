@@ -74,37 +74,7 @@ namespace Engine
 		{
 			if (entitiesOrbits->mask[i] == 1) // Entity [i] with orbit component.
 			{
-				orbit = active_manager->get_component<OrbitComponent>(i, COMPONENT_ORBIT);
-
-				// Start orbital motion.
-				if (orbit->mPrimaryEntityId != -1)
-				{
-					transf = active_manager->get_component<TransformComponent>(i, COMPONENT_TRANSFORM);
-					transfPrimary = active_manager->get_component<TransformComponent>(orbit->mPrimaryEntityId, COMPONENT_TRANSFORM);
-
-					// Initialise orbit parameters with current relative position.
-					relativePos = transf->position - transfPrimary->position;
-
-					orbit->mRelativePos = relativePos;
-					orbit->mDistPeriapse = glm::length(relativePos);
-					orbit->mDistance = orbit->mDistPeriapse;
-					orbit->mTrueAnom = 0;
-
-					// Define the basis around the relative position vector.
-					// Keeps to the existing normal as closely as possible.
-					orbit->mAxisX = glm::normalize(relativePos);
-					if (orbit->mAxisY = glm::cross(orbit->mAxisNormal, orbit->mRelativePos);
-						glm::length(orbit->mAxisY) == 0)
-					{
-						// Existing normal lies on the relative position axis.
-						orbit->mAxisY = OrbitComponent::altY;
-					}
-					else
-					{
-						orbit->mAxisY = glm::normalize(orbit->mAxisY);
-					}
-					orbit->mAxisNormal = glm::normalize(glm::cross(orbit->mAxisX, orbit->mAxisY));
-				}
+				initialise_orbit(i);
 
 				QDEBUG("Entity {0} orbit: {1}", i, orbit->to_string());
 			}
@@ -163,10 +133,14 @@ namespace Engine
 			}
 
 			// debug
-			OrbitTracker* tracker = &orbitTrackers[node->mEntityId];
+			//OrbitTracker* tracker = &orbitTrackers[node->mEntityId];
 
 			// Update node entity position. //
 			orbit = active_manager->get_component<OrbitComponent>(node->mEntityId, COMPONENT_ORBIT);
+
+			// Skip inactive orbits.
+			if (!orbit->mActive) continue;
+			QDEBUG("updating orbit on entity {0}", node->mEntityId);
 
 			// Get new true anomaly.
 			deltaTheta = (orbit->mOrbitPeriod > 0) ? dtPi2 / orbit->mOrbitPeriod : 0;
@@ -178,6 +152,7 @@ namespace Engine
 				//tracker->tick = true;
 			}
 			orbit->mTrueAnom = trueAnom;
+			orbit->mTrueAnomDeg = trueAnom * (360. / Pi2);
 
 			// Get new relative position.
 			orbit->mRelativePos = orbit->mDistPeriapse * ((glm::cos(trueAnom) * orbit->mAxisX) + (glm::sin(trueAnom) * orbit->mAxisY));
@@ -288,6 +263,14 @@ namespace Engine
 			return -1;
 		}
 
+		// Check primary is a different entity.
+		if (aEntityId == aPrimaryEntityId)
+		{
+			// If primary is invalid, clear existing orbit (removes node from tree).
+			clear_orbit(aEntityId);
+			QERROR("Cannot set orbit primary for entity {0}: primary must be a different entity. Orbit cleared.", aEntityId);
+			return -1;
+		}
 		// Check primary exists.
 		if (nullptr == active_manager->get_entity(aPrimaryEntityId))
 		{
@@ -296,7 +279,6 @@ namespace Engine
 			QERROR("Cannot set orbit primary for entity {0}: could not find primary entity: {1}. Orbit cleared.", aEntityId, aPrimaryEntityId);
 			return -1;
 		}
-
 
 		// Adding this entity to the orbit tree //
 		std::shared_ptr<OrbitNode> orbitNode;
@@ -361,36 +343,42 @@ namespace Engine
 	} // set_orbit_primary()
 
 
-	void OrbitSystem::set_orbit_period(unsigned int const aEntityId, double const aOrbitPeriod)
+	void OrbitSystem::initialise_orbit(unsigned int const aEntityId)
 	{
 		ECSManager* active_manager = get_manager();
-
-		// Get the entity's orbit component.
 		OrbitComponent* orbit = active_manager->get_component<OrbitComponent>(aEntityId, COMPONENT_ORBIT);
-		if (nullptr == orbit)
+
+		// Start orbital motion.
+		if (orbit->mPrimaryEntityId != -1)
 		{
-			QERROR("Cannot set orbit period for entity {0}: could not find orbit component.", aEntityId);
-			return;
+			TransformComponent* transf = active_manager->get_component<TransformComponent>(aEntityId, COMPONENT_TRANSFORM);
+			TransformComponent* transfPrimary = active_manager->get_component<TransformComponent>(orbit->mPrimaryEntityId, COMPONENT_TRANSFORM);
+
+			// Initialise orbit parameters with current relative position.
+			glm::vec3 relativePos = transf->position - transfPrimary->position;
+
+			orbit->mRelativePos = relativePos;
+			orbit->mDistPeriapse = glm::length(relativePos);
+			orbit->mDistance = orbit->mDistPeriapse;
+			orbit->mTrueAnom = 0;
+
+			// Define the basis around the relative position vector.
+			// Keeps to the existing normal as closely as possible.
+			orbit->mAxisX = glm::normalize(relativePos);
+			if (orbit->mAxisY = glm::cross(orbit->mAxisNormal, orbit->mRelativePos);
+				glm::length(orbit->mAxisY) == 0)
+			{
+				// Existing normal lies on the relative position axis.
+				orbit->mAxisY = OrbitComponent::altY;
+			}
+			else
+			{
+				orbit->mAxisY = glm::normalize(orbit->mAxisY);
+			}
+			orbit->mAxisNormal = glm::normalize(glm::cross(orbit->mAxisX, orbit->mAxisY));
 		}
-		orbit->mOrbitPeriod = abs(aOrbitPeriod);
 
-	} // set_orbit_period()
-
-
-	void OrbitSystem::set_orbit_normal(unsigned int const aEntityId, glm::vec3 const aNormal)
-	{
-		ECSManager* active_manager = get_manager();
-
-		// Get the entity's orbit component.
-		OrbitComponent* orbit = active_manager->get_component<OrbitComponent>(aEntityId, COMPONENT_ORBIT);
-		if (nullptr == orbit)
-		{
-			QERROR("Cannot set orbit normal for entity {0}: could not find orbit component.", aEntityId);
-			return;
-		}
-		orbit->mAxisNormal = glm::normalize(aNormal);
-
-	} // set_orbit_normal()
+	} // activate_orbit()
 
 
 	void OrbitSystem::clear_orbit(unsigned int const aEntityId)
@@ -403,27 +391,29 @@ namespace Engine
 		if (auto nodeIt = mAllOrbitNodes.find(aEntityId); nodeIt != mAllOrbitNodes.end())
 		{
 			orbitNode = nodeIt->second;
-
-			orbitNode->mPrimaryId = -1;
-			orbitNode->pPrimaryNode->mSatelliteNodes.erase(orbitNode);
-			orbitNode->pPrimaryNode = nullptr;
-
-			// Set children's parent to the root.
-			// Children do not inherit the node's parent because they
-			// still orbit this entity.
-			for (auto child : orbitNode->mSatelliteNodes)
+			if (orbitNode->mPrimaryId != -1)
 			{
-				child->pPrimaryNode = mOrbitRoot;
-				mOrbitRoot->mSatelliteNodes.insert(child);
+				orbitNode->mPrimaryId = -1;
+				orbitNode->pPrimaryNode->mSatelliteNodes.erase(orbitNode);
+				orbitNode->pPrimaryNode = nullptr;
+
+				// Set children's parent to the root.
+				// Children do not inherit the node's parent because they
+				// still orbit this entity.
+				for (auto child : orbitNode->mSatelliteNodes)
+				{
+					child->pPrimaryNode = mOrbitRoot;
+					mOrbitRoot->mSatelliteNodes.insert(child);
+				}
+				orbitNode->mSatelliteNodes.clear();
 			}
-			orbitNode->mSatelliteNodes.clear();
 		}
 
 		// Clear orbit component.
 		OrbitComponent* orbit = active_manager->get_component<OrbitComponent>(aEntityId, COMPONENT_ORBIT);
 		if (nullptr == orbit)
 		{
-			QERROR("Cannot clear orbit component belonging to entity {0}: could not find orbit component.", aEntityId);
+			QERROR("clear_orbit(): could not find orbit component belonging to entity {0}.", aEntityId);
 			return;
 		}
 		orbit->clear();
@@ -571,15 +561,15 @@ namespace Engine
 		
 		// Set orbit periods.
 		QDEBUG("Setting orbit periods...");
-		set_orbit_period(entity0Id, 60.f);
+		orbit0->mOrbitPeriod = 60.f;
 		QDEBUG("Entity {0} new orbit period: {1}", entity0Id, orbit0->mOrbitPeriod);
-		set_orbit_period(entity2Id, 5.f);
+		orbit2->mOrbitPeriod = 5.f;
 		QDEBUG("Entity {0} new orbit period: {1}", entity2Id, orbit2->mOrbitPeriod);
 
 
 		// Set orbit normal.
 		QDEBUG("Setting orbit normal...");
-		set_orbit_normal(entity0Id, glm::vec3(1,2,-1));
+		orbit0->mAxisNormal = glm::vec3(1,2,-1);
 		QDEBUG("Entity {0} new orbit normal: ({1} {2} {3})", entity0Id, orbit0->mAxisNormal.x, orbit0->mAxisNormal.y, orbit0->mAxisNormal.z);
 
 

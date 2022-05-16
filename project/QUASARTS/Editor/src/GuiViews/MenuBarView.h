@@ -26,20 +26,7 @@ public:
 	void newScript();
 	void newEntity();
 	void newChild();
-	void newAttribute();
-	const char* components[11] = {
-		"Transform",
-		"Mesh",
-		"Colision Sphere",
-		"Material",
-		"Lighting",
-		"Script",
-		"Camera",
-		"Orbit",
-		"Health",
-		"Weapon",
-		"Particle"
-	};
+	void newAttribute(const int componentType);
 public:
 	void on_add() override;
 	void on_gui() override;

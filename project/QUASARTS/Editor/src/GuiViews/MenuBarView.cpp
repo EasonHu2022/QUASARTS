@@ -180,6 +180,40 @@ void MenuBarView::on_gui()
                 if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
                     new_attribute = true;
             }
+            if (ImGui::BeginMenu("Add Attribute"))
+            {
+                if (ImGui::MenuItem("Mesh")) {
+                    newAttribute(COMPONENT_MESH);
+                }
+                if (ImGui::MenuItem("Collision Sphere")) {
+                    newAttribute(COMPONENT_COLLISION_SPHERE);
+                }
+                if (ImGui::MenuItem("Material")) {
+                    newAttribute(COMPONENT_MATERIAL);
+                }
+                if (ImGui::MenuItem("Lighting")) {
+                    newAttribute(COMPONENT_LIGHTING);
+                }
+                if (ImGui::MenuItem("Script")) {
+                    newAttribute(COMPONENT_SCRIPT);
+                }
+                if (ImGui::MenuItem("Camera")) {
+                    newAttribute(COMPONENT_CAMERA);
+                }
+                if (ImGui::MenuItem("Orbit")) {
+                    newAttribute(COMPONENT_ORBIT);
+                }
+                if (ImGui::MenuItem("Health")) {
+                    newAttribute(COMPONENT_HEALTH);
+                }
+                if (ImGui::MenuItem("Weapon")) {
+                    newAttribute(COMPONENT_WEAPON);
+                }
+                if (ImGui::MenuItem("Particle")) {
+                    newAttribute(COMPONENT_PARTICLE);
+                }
+                ImGui::EndMenu();
+            }
             if (ImGui::MenuItem("Delete Attribute")) {
 
             }
@@ -260,8 +294,6 @@ void MenuBarView::on_gui()
         newEntity();
     if (new_child)
         newChild();
-    if (new_attribute)
-        newAttribute();
 }
 
 void MenuBarView::on_remove()
@@ -559,53 +591,52 @@ void MenuBarView::newChild() {
 
 }
 
-void MenuBarView::newAttribute() {
+void MenuBarView::newAttribute(const int componentType)
+{
+    unsigned int entityId = Engine::ECSManager::Instance()->get_current_entity();
 
-    ImGui::SetWindowFocus("Choose Attribute Type");
-
-    ImGui::SetNextWindowSize(ImVec2(300, 100));
-    ImGui::Begin("Choose Attribute Type", &new_attribute, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    
-    static int item_current_idx = 0; // Here we store our selection data as an index.
-    const char* combo_preview_value = components[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
-    
-    if (ImGui::BeginCombo("Attributes", combo_preview_value))
+    if (entityId == TOO_MANY_ENTITIES)
     {
-        for (int n = 0; n < NUM_COMPONENT_TYPES; n++)
-        {
-            if (ImGui::Selectable(components[n]))
-                item_current_idx = n;
-        }
-        ImGui::EndCombo();
+        WARN("Could not add attribute: selected entity is invalid.");
+        return;
     }
 
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
-    if (ImGui::Button("Confirm")) {
-        unsigned int entityId = Engine::ECSManager::Instance()->get_current_entity();
-
-        if      (item_current_idx == COMPONENT_TRANSFORM)
-            Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityId, item_current_idx);
-        else if (item_current_idx == COMPONENT_MESH)
-            Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityId, item_current_idx);
-        else if (item_current_idx == COMPONENT_COLLISION_SPHERE)
-        {
-            Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityId, item_current_idx);
-            Engine::CollisionSystem::Instance()->init_collision_component(entityId, COMPONENT_COLLISION_SPHERE);
-        }
-        else if (item_current_idx == COMPONENT_ORBIT)
-        {
-            Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, item_current_idx);
-        }
-        new_attribute = false;
+    switch (componentType)
+    {
+    case COMPONENT_MESH:
+        Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityId, componentType);
+        break;
+    case COMPONENT_COLLISION_SPHERE:
+        Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityId, componentType);
+        Engine::CollisionSystem::Instance()->init_collision_component(entityId, COMPONENT_COLLISION_SPHERE);
+        break;
+    case COMPONENT_MATERIAL:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_MATERIAL");
+        break;
+    case COMPONENT_LIGHTING:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_LIGHTING");
+        break;
+    case COMPONENT_SCRIPT:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_SCRIPT");
+        break;
+    case COMPONENT_CAMERA:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_CAMERA");
+        break;
+    case COMPONENT_ORBIT:
+        Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, componentType);
+        break;
+    case COMPONENT_HEALTH:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_HEALTH");
+        break;
+    case COMPONENT_WEAPON:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_WEAPON");
+        break;
+    case COMPONENT_PARTICLE:
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_PARTICLE");
+        break;    
     }
-    ImGui::SameLine(ImGui::GetWindowWidth() - 59);
-    if (ImGui::Button("Cancel")) {
-        new_attribute = false;
-    }
 
-    ImGui::End();
-
-}
+} // newAttribute()
 
 void MenuBarView::load_object(std::string name, std::string file) {
     

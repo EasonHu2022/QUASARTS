@@ -97,9 +97,44 @@ void AttributeView::on_gui()
 					show_particle();
 					break;
 				case COMPONENT_COLLISION_SPHERE:
+				{
+					ImGui::Text("Collision Sphere");
+					Engine::CollisionSystem* collisionSys = Engine::CollisionSystem::Instance();
+					Engine::CollisionSphereComponent* componentSp = Engine::ECSManager::Instance()->get_component<Engine::CollisionSphereComponent>(current_entity_id, componentType);
+					if (ImGui::DragFloat3("offset", glm::value_ptr(componentSp->mLocalOffset), 0.1f, -10000.0f, 10000.0f, "%.3f", ImGuiInputTextFlags_::ImGuiInputTextFlags_AutoSelectAll))
+						collisionSys->move_collision_component(current_entity_id, COMPONENT_COLLISION_SPHERE, componentSp->mLocalOffset);
+					if (ImGui::DragFloat("radius", &componentSp->mRadius))
+						collisionSys->set_collision_sphere_radius(current_entity_id, componentSp->mRadius);
 					break;
+				}
 				case COMPONENT_ORBIT:
+				{
+					ImGui::Text("Orbit");
+					Engine::OrbitSystem* orbitSys = Engine::OrbitSystem::Instance();
+					Engine::OrbitComponent* componentO = Engine::ECSManager::Instance()->get_component<Engine::OrbitComponent>(current_entity_id, componentType);
+
+					if (ImGui::InputInt("primary", &componentO->mPrimaryEntityId))
+						orbitSys->set_orbit_primary(current_entity_id, componentO->mPrimaryEntityId);
+					ImGui::InputFloat("period", &componentO->mOrbitPeriod);
+					ImGui::DragFloat3("normal", glm::value_ptr(componentO->mAxisNormal), 0.1f, -10000.0f, 10000.0f, "%.3f", ImGuiInputTextFlags_::ImGuiInputTextFlags_AutoSelectAll);					
+					if (ImGui::Button("Activate"))
+					{
+						if (componentO->mPrimaryEntityId != -1) {
+							orbitSys->initialise_orbit(current_entity_id);
+							componentO->mActive = true;
+						}
+					}
+					if (ImGui::Button("Deactivate"))
+					{
+						componentO->mActive = false;
+					}
+					ImGui::Text("Orbit: Computed Parameters");
+					ImGui::InputFloat("radius", &componentO->mDistPeriapse, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+					ImGui::InputFloat3("X-axis", glm::value_ptr(componentO->mAxisX), "%.3f", ImGuiInputTextFlags_ReadOnly);
+					ImGui::InputFloat3("Y-axis", glm::value_ptr(componentO->mAxisY), "%.3f", ImGuiInputTextFlags_ReadOnly);
+					ImGui::InputFloat("true anomaly", &componentO->mTrueAnomDeg, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
 					break;
+				}
 				case COMPONENT_HEALTH:
 					break;
 				case COMPONENT_WEAPON:
