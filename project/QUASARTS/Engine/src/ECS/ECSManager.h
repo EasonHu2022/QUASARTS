@@ -61,7 +61,7 @@ namespace Engine {
             // Update the component mask of the Entity:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                QERROR("Function ECSManager::create_component(): Warning: no match was found for Entity {0}!", entityID);
+                QERROR("Function ECSManager::create_component(): Error: no match was found for Entity {0}!", entityID);
                 return;
             }
             scene->entities[index].add_component_type(componentType);
@@ -82,7 +82,7 @@ namespace Engine {
             // Update the component mask of the Entity:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                QERROR("Function ECSManager::create_component(): Warning: no match was found for Entity {0}!", entityID);
+                QERROR("Function ECSManager::create_component(): Error: no match was found for Entity {0}!", entityID);
                 return;
             }
             scene->entities[index].add_component_type(componentType);
@@ -103,7 +103,7 @@ namespace Engine {
             // Check that the Entity exists:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                QERROR("Function ECSManager::replace_component(): Warning: no match was found for Entity {0}!", entityID);
+                QERROR("Function ECSManager::replace_component(): Error: no match was found for Entity {0}!", entityID);
                 return;
             }
 
@@ -141,7 +141,7 @@ namespace Engine {
             // Update the component mask of the entity:
             unsigned int index = get_index_from_ID(entityID);
             if (index == TOO_MANY_ENTITIES) {
-                QERROR("Function ECSManager::destroy_component(): Warning: no match was found for Entity {0}!", entityID);
+                QERROR("Function ECSManager::destroy_component(): Error: no match was found for Entity {0}!", entityID);
                 return;
             }
             scene->entities[index].remove_component_type(componentType);
@@ -257,6 +257,12 @@ namespace Engine {
 
         // Print out Component array information:
         void print_componentArray_info(unsigned int componentType);
+
+        // Print out System information:
+        void print_system_info(unsigned int systemType);
+
+        // Print out all System information:
+        void print_all_system_info();
 
         private:
         // Currently loaded scene:

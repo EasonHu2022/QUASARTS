@@ -126,7 +126,7 @@ namespace Engine {
 		/// </summary>
 		/// <param name="obj">Pointer to a collision object.</param>
 		/// <returns>Index of the given collision object in the collision object array, or -1 if the object could not be found.</returns>
-		int get_object_index(btCollisionObject* obj);
+		int get_object_index(const btCollisionObject* obj);
 
 		/// <summary>
 		/// Get index of an object in the collision object array which is not assigned to a component.

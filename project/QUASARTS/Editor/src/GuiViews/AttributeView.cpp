@@ -96,6 +96,14 @@ void AttributeView::on_gui()
 				case COMPONENT_PARTICLE:
 					show_particle();
 					break;
+				case COMPONENT_COLLISION_SPHERE:
+					break;
+				case COMPONENT_ORBIT:
+					break;
+				case COMPONENT_HEALTH:
+					break;
+				case COMPONENT_WEAPON:
+					break;
 				default:
 					QERROR("unknown type : {0}", componentType);
 					break;

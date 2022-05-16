@@ -36,6 +36,8 @@ namespace Engine {
         // Set up all the data required for the component to function:
 		void initialize_components() override;
 
+        void reset();
+
 
         // Usage //
     public:
@@ -87,6 +89,8 @@ namespace Engine {
         QTime oscillationTimer, updateTimer;
         glm::vec3 movement_per_second;
         bool oneshot;
+        bool oneshot2;
+        void script_test();
 
     };
 }

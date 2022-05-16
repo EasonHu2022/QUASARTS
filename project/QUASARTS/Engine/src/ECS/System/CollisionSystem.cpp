@@ -1,5 +1,8 @@
 #include "CollisionSystem.h"
 
+#include "Core/Input.h"
+#include "ResourceManager/FileModule.h"
+
 
 namespace Engine
 {
@@ -40,6 +43,7 @@ namespace Engine
     void CollisionSystem::init()
     {
         //component_tests_init();
+        oneshot2 = true;
 
     } // init()
 
@@ -97,6 +101,23 @@ namespace Engine
             }
         }
 
+        /*if (Input::get_key_pressed(Q_KEY_P))
+        {
+            if (oneshot2)
+            {
+                script_test();
+                oneshot2 = false;
+            }
+        }*/
+
+        /*if (Input::get_key_pressed(Q_KEY_7))
+        {
+            QDEBUG("Resetting collision system...");
+            reset();
+            initialize_components();
+            QDEBUG("Collision system reset.");
+        }*/
+
     } // update()
 
 
@@ -114,6 +135,7 @@ namespace Engine
 
     // Set up all the data required for the component to function:
 	void CollisionSystem::initialize_components() {
+
 		// Get the manager and entity mask:
 		ECSManager* active_manager = get_manager();
 		quasarts_entity_ID_mask *entitiesSpheres = get_entity_ID_mask(get_mask_index(COMPONENT_COLLISION_SPHERE));
@@ -136,6 +158,29 @@ namespace Engine
 		}
 		*/
     }
+
+
+    void CollisionSystem::reset()
+    {
+        // Get the manager and entity mask:
+        ECSManager* active_manager = get_manager();
+        quasarts_entity_ID_mask* entitiesSpheres = get_entity_ID_mask(get_mask_index(COMPONENT_COLLISION_SPHERE));
+
+        // Loop through entities and release collision components.
+        for (int i = 0; i < MAX_ENTITIES; i++)
+        {
+            if (entitiesSpheres->mask[i] == 1) // Entity [i] with orbit component.
+            {
+                release_collision_component(i, COMPONENT_COLLISION_SPHERE);
+            }
+        }
+
+        // Reset collision world.
+        PhysicsSystem::Instance()->setup_collision_world();
+        mNumCollided = 0;
+
+    } // reset()
+
 
     // Usage //
 
@@ -429,4 +474,111 @@ namespace Engine
         updateTimer -= dT;
 
     } // component_tests_running()
+
+
+    void CollisionSystem::script_test()
+    {
+        ECSManager* active_manager = get_manager();
+
+        unsigned int e0id = active_manager->create_entity();
+        unsigned int e1id = active_manager->create_entity();
+
+        active_manager->set_entityName(e0id, "e0");
+        active_manager->set_entityName(e1id, "e1");
+
+        TransformComponent* transform0 = active_manager->get_component<TransformComponent>(e0id, COMPONENT_TRANSFORM);
+        TransformComponent* transform1 = active_manager->get_component<TransformComponent>(e1id, COMPONENT_TRANSFORM);
+
+        transform0->position.x = 3;
+        transform0->scale = glm::vec3(1, 1, 1);
+
+        transform1->position.x = -3;
+        transform1->scale = glm::vec3(1, 1, 1);
+
+
+        auto path = FileModule::Instance()->get_internal_assets_path();
+        auto spherePath = path + "DefaultObjects/sphere20x20.obj";
+        // 0
+        active_manager->create_component<Engine::MeshComponent>(e0id, COMPONENT_MESH);
+        MeshComponent* mesh0 = active_manager->get_component<MeshComponent>(e0id, COMPONENT_MESH);
+        if (mesh0 == nullptr) {
+            QDEBUG("Failed to create/retrieve mesh component for entity: {0}", e0id);
+            return;
+        }
+        mesh0->path = spherePath;
+        // 1
+        active_manager->create_component<Engine::MeshComponent>(e1id, COMPONENT_MESH);
+        MeshComponent* mesh1 = active_manager->get_component<MeshComponent>(e1id, COMPONENT_MESH);
+        if (mesh1 == nullptr) {
+            QDEBUG("Failed to create/retrieve mesh component for entity: {0}", e1id);
+            return;
+        }
+        mesh1->path = spherePath;
+
+
+        std::string vshPath = path + "Shader/DefaultShader.vsh";
+        std::string fshPath = path + "Shader/DefaultShader.fsh";
+        std::string gshPth = "";
+        std::string texturePath = path + "Texture/floor.jpg";
+        Material* material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+        // 0
+        active_manager->create_component<Engine::MaterialComponent>(e0id, COMPONENT_MATERIAL);
+        MaterialComponent* mat0 = active_manager->get_component<MaterialComponent>(e0id, COMPONENT_MATERIAL);
+        if (mat0 == nullptr) {
+            QDEBUG("Failed to create/retrieve material component for entity: {0}", e0id);
+            return;
+        }
+        mat0->material = material;
+        // 1
+        active_manager->create_component<Engine::MaterialComponent>(e1id, COMPONENT_MATERIAL);
+        MaterialComponent* mat1 = active_manager->get_component<MaterialComponent>(e1id, COMPONENT_MATERIAL);
+        if (mat1 == nullptr) {
+            QDEBUG("Failed to create/retrieve material component for entity: {0}", e1id);
+            return;
+        }
+        mat1->material = material;
+
+
+        // 0
+        active_manager->create_component<CollisionSphereComponent>(e0id, COMPONENT_COLLISION_SPHERE);
+        CollisionSphereComponent* sphere0 = active_manager->get_component<CollisionSphereComponent>(e0id, COMPONENT_COLLISION_SPHERE);
+        if (sphere0 == nullptr) {
+            QDEBUG("Failed to create/retrieve collision component for entity: {0}", e0id);
+            return;
+        }
+        // 1
+        active_manager->create_component<CollisionSphereComponent>(e1id, COMPONENT_COLLISION_SPHERE);
+        CollisionSphereComponent* sphere1 = active_manager->get_component<CollisionSphereComponent>(e1id, COMPONENT_COLLISION_SPHERE);
+        if (sphere1 == nullptr) {
+            QDEBUG("Failed to create/retrieve collision component for entity: {0}", e1id);
+            return;
+        }
+
+        CollisionSystem* collisionSystem = CollisionSystem::Instance();
+        collisionSystem->init_collision_component(e0id, COMPONENT_COLLISION_SPHERE);
+        collisionSystem->init_collision_component(e1id, COMPONENT_COLLISION_SPHERE);
+
+        collisionSystem->set_collision_sphere_radius(e0id, 1.f);
+        collisionSystem->set_collision_sphere_radius(e1id, 1.f);
+
+
+        // 0
+        active_manager->create_component<HealthComponent>(e0id, COMPONENT_HEALTH);
+        HealthComponent* health0 = active_manager->get_component<HealthComponent>(e0id, COMPONENT_HEALTH);
+        if (health0 == nullptr) {
+            QDEBUG("Failed to create/retrieve collision component for entity: {0}", e0id);
+            return;
+        }
+        // 1
+        active_manager->create_component<HealthComponent>(e1id, COMPONENT_HEALTH);
+        HealthComponent* health1 = active_manager->get_component<HealthComponent>(e1id, COMPONENT_HEALTH);
+        if (health1 == nullptr) {
+            QDEBUG("Failed to create/retrieve collision component for entity: {0}", e1id);
+            return;
+        }
+
+
+
+
+    } // script_test()
 }

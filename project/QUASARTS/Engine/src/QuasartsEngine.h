@@ -13,6 +13,7 @@
 	Physics Manager
 */
 #include "Scene/PhysicsSystem.h"
+#include "ECS/System/CollisionSystem.h"
 
 
 /*

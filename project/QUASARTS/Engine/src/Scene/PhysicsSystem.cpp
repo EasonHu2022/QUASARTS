@@ -60,32 +60,54 @@ namespace Engine {
 	{
 		// Get all overlaps in this frame.
 		collisionWorld->performDiscreteCollisionDetection();
-		auto* pairCache = overlappingPairCache->getOverlappingPairCache();
-		auto& pairs = pairCache->getOverlappingPairArray();
+		int numManifolds = dispatcher->getNumManifolds();
 
-		// Dispatch a collision event for each pair.
-		for (int i = 0; i < pairCache->getNumOverlappingPairs(); ++i)
+		btPersistentManifold* contactManifold;
+		btCollisionObject* obA, * obB;
+
+		int numContacts;
+		int objId0, objId1;
+		CollisionObjectInfo* objInfo0, * objInfo1;
+
+		// Create exactly 1 collision event for each unique pair of colliding objects:
+		// Iterate over potential collisions.
+		for (int i = 0; i < numManifolds; ++i)
 		{
-			auto pair = pairs[i];
+			contactManifold = dispatcher->getManifoldByIndexInternal(i);
+			obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+			obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
 
-			// Get the colliding entities' information.
-			int objId0 = get_object_index((btCollisionObject*)pairs[i].m_pProxy0->m_clientObject);
-			CollisionObjectInfo* objInfo0 = &collisionObjectArrayInfo[objId0];
-
-			int objId1 = get_object_index((btCollisionObject*)pairs[i].m_pProxy1->m_clientObject);
-			CollisionObjectInfo* objInfo1 = &collisionObjectArrayInfo[objId1];
-
-			// Create the event.
-			EventModule::Instance()->create_event(
-				"Collision", EventModule::EventPriority::Medium,
+			// Test contact points for a collision.
+			numContacts = (contactManifold->getNumContacts() > 0) ? 1 : 0;
+			for (int j = 0; j < numContacts; j++)
+			{
+				btManifoldPoint& pt = contactManifold->getContactPoint(0);
+				if (pt.getDistance() < 0.f)
 				{
-					{ "entity0", EV_ARG_INT(objInfo0->mEntityId) },	// while entities are limited to 1 of each type of component, entity ID = component ID
-					{ "componentType0", EV_ARG_INT(objInfo0->mUsage) },
+					QDEBUG("manifold: {0}, contact: {1}, distance: {2}", i, j, pt.getDistance());
 
-					{ "entity1", EV_ARG_INT(objInfo1->mEntityId) },
-					{ "componentType1", EV_ARG_INT(objInfo1->mUsage) },	// while entities are limited to 1 of each type of component, entity ID = component ID
+					// Get the colliding entities' information.
+					objId0 = get_object_index(obA);
+					objInfo0 = &collisionObjectArrayInfo[objId0];
+
+					objId1 = get_object_index(obB);
+					objInfo1 = &collisionObjectArrayInfo[objId1];
+
+					// Create the event.
+					EventModule::Instance()->create_event(
+						"Collision", EventModule::EventPriority::Medium,
+						{
+							{ "entity0", EV_ARG_INT(objInfo0->mEntityId) },	// while entities are limited to 1 of each type of component, entity ID = component ID
+							{ "componentType0", EV_ARG_INT(objInfo0->mUsage) },
+
+							{ "entity1", EV_ARG_INT(objInfo1->mEntityId) },
+							{ "componentType1", EV_ARG_INT(objInfo1->mUsage) },	// while entities are limited to 1 of each type of component, entity ID = component ID
+						}
+					);
+
+					break; // Only create an event for the first collision of this pair.
 				}
-			);
+			}
 		}
 
 
@@ -253,14 +275,15 @@ namespace Engine {
 		for (int i = 0; i < collisionSpheres.size(); ++i)
 		{
 			btSphereShape* sphere = collisionSpheres[i];
-			collisionSpheres[i] = 0; // Remove pointer from array.
+			collisionSpheres[i] = nullptr; // Remove pointer from array.
 			delete sphere;
 		}
+		collisionSpheres.clear();
 
 	} // reset_collision_world()
 
 
-	int PhysicsSystem::get_object_index(btCollisionObject* obj)
+	int PhysicsSystem::get_object_index(const btCollisionObject* obj)
 	{
 		if (obj == nullptr)
 		{
@@ -429,7 +452,7 @@ namespace Engine {
 		QTime deltaT = TimeModule::Instance()->get_frame_delta_time();
 		if (timeCounter.sec() < 0)
 		{
-			QDEBUG("engine time: {0}, deltaT: {1}, FPS: {2}",				
+			QDEBUG("engine time: {0}, deltaT: {1}, FPS: {2}",
 				TimeModule::Instance()->get_time().sec(),
 				deltaT.sec(),
 				(1.f / deltaT.sec())
@@ -644,7 +667,7 @@ namespace Engine {
 			snprintf(msg, 512, "  - object 2: %s", object_to_string(obj, true).c_str());
 			QDEBUG(msg);
 		}*/
-		
+
 
 	} // runTests_init()
 

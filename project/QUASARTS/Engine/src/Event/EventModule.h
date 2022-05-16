@@ -129,6 +129,8 @@ namespace Engine {
 		static VarArg stringArg(const std::string aStr);
 		static VarArg doubleArg(const double aDouble);
 
+		void clear_queue();
+
 
 		// debug //
 	public:
