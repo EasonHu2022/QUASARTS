@@ -151,11 +151,13 @@ namespace Engine
 		EventModule::Instance()->update();
 		ScriptSystem::Instance()->update();
 		PhysicsSystem::Instance()->update();
-		particleSystem->update();
-		ParticleMaster::Instance()->update();
+		
+		
 		renderSystem->update();
 		AudioSystem::Instance()->update();
 		on_gui();
+		ParticleMaster::Instance()->update();
+		particleSystem->update();
 		CollisionSystem::Instance()->update();
 		//OrbitSystem::Instance()->update();
 		/***************logic update logic frame************************/

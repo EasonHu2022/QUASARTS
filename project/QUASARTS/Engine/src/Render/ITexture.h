@@ -23,7 +23,9 @@ namespace Engine
 			nrChannels = ResourceManager::Instance()->get_resource<TextureResource>(handle)->nrChannels;
 			
 		};
-		~ITexture() {};
+		~ITexture() {
+		
+		};
 		virtual void use(GLenum texture) = 0;
 		virtual void set_up() = 0;
 	public:

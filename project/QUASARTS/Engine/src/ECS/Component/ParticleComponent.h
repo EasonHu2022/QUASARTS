@@ -126,6 +126,7 @@ namespace Engine {
 			else {
 				delete texture.texture;
 				texture.texture = new Texture2D(texPath);
+				path = texPath;
 			}
 		}
 	};
