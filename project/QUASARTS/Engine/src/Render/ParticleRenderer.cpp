@@ -63,12 +63,18 @@ namespace Engine
 				
 				value.first.texture->use(GL_TEXTURE0);
 				GLint iTextureUniform = glGetUniformLocation(particleShader->ID, "particleTexture");
+				GLint texoffset1 = glGetUniformLocation(particleShader->ID, "texOffset1");
+				GLint texoffset2 = glGetUniformLocation(particleShader->ID, "texOffset2");
+				GLint texinfo = glGetUniformLocation(particleShader->ID, "texCoordInfo");
 				glUniform1i(iTextureUniform, 0);
 
 				for (Particle particle : value.second) {
 					glBindVertexArray(particleVAO);
-					glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
 					updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
+					glUniform2f(texoffset1, particle.texOffset1.x, particle.texOffset1.y);
+					glUniform2f(texoffset2, particle.texOffset2.x, particle.texOffset2.y);
+					glUniform2f(texinfo, (float)particle.getRows(), particle.blend);
+					glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
 					glBindVertexArray(0);
 				}
 
