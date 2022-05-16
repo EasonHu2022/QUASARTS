@@ -55,8 +55,30 @@ namespace Engine
 		}
 
 		void updateTexCoords() {
+
 			float blendFactor = time / lifetime;
 			int stages = numRows * numRows;
+			float progress = blendFactor * (float)stages;
+			double second;
+			float first = modf(progress, &second);
+			int index1 = (int)first;
+			int index2 = index1 < stages - 1 ? index1 + 1 : index1;
+			blend = second;
+			setOffest1(index1);
+			setOffest2(index2);
+		}
+
+		void setOffest1(int index) {
+			int column = index % numRows;
+			int row = index / numRows;
+			texOffset1.x = (float)column / numRows;
+			texOffset1.y = (float)row / numRows;
+		}
+		void setOffest2(int index) {
+			int column = index % numRows;
+			int row = index / numRows;
+			texOffset2.x = (float)column / numRows;
+			texOffset2.y = (float)row / numRows;
 		}
 	};
 };

@@ -184,7 +184,8 @@ void AttributeView::show_particle() {
 	ImGui::PushItemWidth(-1);
 	if (ImGui::Button("button"))
 	{
-		particle->loadtex("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\floor.jpg");
+		particle->loadtex("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\cosmic.png");
+		particle->texture.rows = 4;
 	}
 	
 	if (ImGui::Button("button2"))
