@@ -174,11 +174,15 @@ void AttributeView::show_particle() {
 	static char buf1[260] = "";
 
 	ImGui::PushItemWidth(-1);
-	if (ImGui::InputTextWithHint("##pname", "Project Name", buf1, 260))
+	if (ImGui::Button("button"))
 	{
-		particle->loadTex(buf1);
+		particle->loadtex("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\floor.jpg");
 	}
 	
+	if (ImGui::Button("button2"))
+	{
+		particle->loadtex("D:\\Q6\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\particleStar.png");
+	}
 }
 
 void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {

@@ -21,9 +21,8 @@ namespace Engine {
 		bool randomRotation = false, is_on = true, cone = true;
 		glm::vec3 direction;
 		float directionDeviation = 0;
-		Texture2D* texture;
-		int numrows;
-		std::string old_path = "";
+		ParticleTexture texture;
+		std::string path = "";
 		ParticleComponent() {
 			pps = 90.0f;
 			averageSpeed = 3.0f;
@@ -36,11 +35,10 @@ namespace Engine {
 			direction = glm::vec3(0.0f, 1.0f, 0.0f);
 			directionDeviation = 0.5f;
 			posError = 0.0f;
-			numrows = 1;
 		}
 
 		void generateParticle(glm::vec3 center) {
-			if (texture != nullptr) {
+			if (texture.rows > 0) {
 				float deltaT = TimeModule::Instance()->get_frame_delta_time().sec();
 				float particlesToCreate = pps * deltaT;
 				double count;
@@ -66,8 +64,9 @@ namespace Engine {
 			velocity = velocity * generateFloat(averageSpeed, speedError);
 			float scale = generateFloat(averageScale, scaleError);
 			float lifeLength = generateFloat(averageLifeLength, lifeError);
-			Engine::Particle particle(numrows, center, velocity, gravity, lifeLength, generateRotation(), scale);
-			Engine::ParticleMaster::Instance()->addParticle(texture, particle);
+			Engine::Particle particle(texture.rows, center, velocity, gravity, lifeLength, generateRotation(), scale);
+			//Texture2D to_add = *texture;
+			Engine::ParticleMaster::Instance()->addParticle(path, texture, particle);
 		}
 
 		float generateFloat(float avg, float error) {
@@ -122,12 +121,15 @@ namespace Engine {
 			return glm::vec3(x, y, z);
 		}
 
-		void loadTex(std::string path) {
-			if (old_path.compare(path) != 0) {
-				if (texture != nullptr)
-					delete(texture);
-				texture = new Texture2D(path);
-				old_path = path;
+		void loadtex(std::string texPath) {
+			if (texture.rows == -1) {
+				texture.rows = 1;
+				texture.texture = new Texture2D(texPath);
+				path = texPath;
+			}
+			else {
+				delete texture.texture;
+				texture.texture = new Texture2D(texPath);
 			}
 		}
 	};

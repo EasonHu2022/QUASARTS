@@ -22,6 +22,9 @@ namespace Engine
 
 		int numRows;
 	public:
+		glm::vec2 texOffset1 = glm::vec2(0.0f, 0.0f);
+		glm::vec2 texOffset2 = glm::vec2(0.0f, 0.0f);
+		float blend;
 		Particle(int rows, glm::vec3 pos, glm::vec3 vel, float grav, float life, float rot, float scal);
 		~Particle();
 		
@@ -46,8 +49,14 @@ namespace Engine
 			glm::vec3 change = velocity;
 			change = (float)TimeModule::Instance()->get_frame_delta_time().sec() * change;
 			position = position + change;
+			updateTexCoords();
 			time += TimeModule::Instance()->get_frame_delta_time().sec();
 			return time < lifetime;
+		}
+
+		void updateTexCoords() {
+			float blendFactor = time / lifetime;
+			int stages = numRows * numRows;
 		}
 	};
 };

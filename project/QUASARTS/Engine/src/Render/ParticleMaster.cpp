@@ -29,13 +29,10 @@ namespace Engine
 
 	void ParticleMaster::update() {
 		for (auto& [key, value] : emitters) {
-			for (int i = 0; i < value.size(); i++) {
-				bool alive = value[i].update();
+			for (int i = 0; i < value.second.size(); i++) {
+				bool alive = value.second[i].update();
 				if (!alive)
-					value.erase(value.begin() + i);
-			}
-			if (emitters[key].empty()) {
-				emitters.erase(key);
+					value.second.erase(value.second.begin() + i);
 			}
 		}
 	}
@@ -48,12 +45,15 @@ namespace Engine
 		renderer->release();
 	}
 
-	void ParticleMaster::addParticle(Texture2D* tex, Particle particle) {
-		if (emitters.find(tex) == emitters.end()) {
+	void ParticleMaster::addParticle(std::string texName, ParticleTexture tex, Particle particle) {
+		if (!(emitters.count(texName))) {
+			std::pair<ParticleTexture, std::vector<Particle>> pair;
 			std::vector<Particle> particles;
-			emitters.insert({ tex, particles });
+			pair.first = tex;
+			pair.second = particles;
+			emitters.insert(std::make_pair(texName, pair));
 		}
-		emitters[tex].push_back(particle);
+		emitters[texName].second.push_back(particle);
 	}
 };
 

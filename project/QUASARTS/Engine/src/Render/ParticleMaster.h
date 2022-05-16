@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "Particle.h"
 #include "ParticleRenderer.h"
+#include "ParticleTexture.h"
 #include "Time/TimeModule.h"
 
 namespace Engine
@@ -10,7 +11,7 @@ namespace Engine
     class QS_API ParticleMaster
     {
     private:
-        std::map<Texture2D*, std::vector<Particle>> emitters;
+        std::map<std::string, std::pair<ParticleTexture, std::vector<Particle>>> emitters;
         ParticleRenderer* renderer;
         static ParticleMaster* instance;
 
@@ -23,7 +24,7 @@ namespace Engine
         void update();
         void render();
         void release();
-        void addParticle(Texture2D* tex, Particle particle);
+        void addParticle(std::string texName, ParticleTexture tex, Particle particle);
 
     };
 

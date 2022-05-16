@@ -4,6 +4,7 @@
 #include <vector>
 #include "Shader.h"
 #include "Particle.h"
+#include "ParticleTexture.h"
 namespace Engine
 {
 
@@ -17,7 +18,7 @@ namespace Engine
 
         int render() override;
 
-		int render(std::map<Texture2D*, std::vector<Particle>>);
+		int render(std::map<std::string, std::pair<ParticleTexture, std::vector<Particle>>>);
 
 		int stop() override;
 

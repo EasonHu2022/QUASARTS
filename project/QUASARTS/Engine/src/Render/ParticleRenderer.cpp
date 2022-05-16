@@ -40,7 +40,7 @@ namespace Engine
 	}
 
 	//set skybox renderer at the last renderer to render
-	int ParticleRenderer::render(std::map<Texture2D*, std::vector<Particle>> emitters)
+	int ParticleRenderer::render(std::map<std::string, std::pair<ParticleTexture, std::vector<Particle>>> emitters)
 	{
 		if ( particleShader == NULL) return 0;
 		glBindFramebuffer(GL_FRAMEBUFFER, renderContext->frameBufferObject);
@@ -58,16 +58,21 @@ namespace Engine
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		particleShader->use();
 		auto view = glm::mat4(glm::mat3(renderContext->cameraContext->get_view_matrix())); // remove translation from the view matrix
-		for (auto [key, value] : emitters) {
-			key->use(GL_TEXTURE0);
-			GLint iTextureUniform = glGetUniformLocation(particleShader->ID, "particleTexture");
-			glUniform1i(iTextureUniform, 0);
+		if (!emitters.empty()) {
+			for (auto& [key, value] : emitters) {
+				
+				value.first.texture->use(GL_TEXTURE0);
+				GLint iTextureUniform = glGetUniformLocation(particleShader->ID, "particleTexture");
+				glUniform1i(iTextureUniform, 0);
 
-			for (Particle particle : value) {
-				glBindVertexArray(particleVAO);
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
-				updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
-				glBindVertexArray(0);
+				for (Particle particle : value.second) {
+					glBindVertexArray(particleVAO);
+					glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
+					updateModelView(view, particle.getPosition(), particle.getRotation(), particle.getScale());
+					glBindVertexArray(0);
+				}
+
+				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 		}
 		particleShader->setMat4("projection", renderContext->cameraContext->get_projection_matrix());
