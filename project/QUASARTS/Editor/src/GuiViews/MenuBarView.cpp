@@ -76,6 +76,7 @@ void MenuBarView::on_gui()
                     std::string file_name = OpenFileDialogue();
                 #endif
                 Engine::CollisionSystem::Instance()->reset();
+                Engine::EventModule::Instance()->clear_queue();
                 Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
@@ -430,6 +431,7 @@ void MenuBarView::newScene() {
     if (ImGui::Button("Confirm")) {
         if (strlen(buf1) != 0) {
             Engine::CollisionSystem::Instance()->reset();
+            Engine::EventModule::Instance()->clear_queue();
             Engine::ECSManager::Instance()->new_scene(std::string(buf1));
             new_scene = false;
             show_window = true;
