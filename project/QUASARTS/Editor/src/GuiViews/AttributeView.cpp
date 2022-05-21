@@ -103,7 +103,7 @@ void AttributeView::on_gui()
 					Engine::CollisionSphereComponent* componentSp = Engine::ECSManager::Instance()->get_component<Engine::CollisionSphereComponent>(current_entity_id, componentType);
 					if (ImGui::DragFloat3("offset", glm::value_ptr(componentSp->mLocalOffset), 0.1f, -10000.0f, 10000.0f, "%.3f", ImGuiInputTextFlags_::ImGuiInputTextFlags_AutoSelectAll))
 						collisionSys->move_collision_component(current_entity_id, COMPONENT_COLLISION_SPHERE, componentSp->mLocalOffset);
-					if (ImGui::DragFloat("radius", &componentSp->mRadius))
+					if (ImGui::DragFloat("collision radius", &componentSp->mRadius))
 						collisionSys->set_collision_sphere_radius(current_entity_id, componentSp->mRadius);
 					break;
 				}
@@ -133,15 +133,18 @@ void AttributeView::on_gui()
 						componentO->mActive = false;
 					}
 					ImGui::Text("Orbit: Computed Parameters");
-					ImGui::InputFloat("radius", &componentO->mDistPeriapse, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+					ImGui::InputFloat("orbit radius", &componentO->mDistPeriapse, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
 					ImGui::InputFloat3("X-axis", glm::value_ptr(componentO->mAxisX), "%.3f", ImGuiInputTextFlags_ReadOnly);
 					ImGui::InputFloat3("Y-axis", glm::value_ptr(componentO->mAxisY), "%.3f", ImGuiInputTextFlags_ReadOnly);
 					ImGui::InputFloat("true anomaly", &componentO->mTrueAnomDeg, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
 					break;
 				}
 				case COMPONENT_HEALTH:
+					ImGui::Text("Health");
+					//Engine::HealthComponent* componentH = Engine::ECSManager::Instance()->get_component<Engine::HealthComponent>(current_entity_id, componentType);
 					break;
 				case COMPONENT_WEAPON:
+					ImGui::Text("Weapon");
 					break;
 				default:
 					QERROR("unknown type : {0}", componentType);
