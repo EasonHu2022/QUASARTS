@@ -11,10 +11,12 @@ namespace Engine
 	public:
 		Texture2D* texture;
 		int rows;
+		bool is_set;
 
 		ParticleTexture(Texture2D* tex, int numrows, std::string name);
 		ParticleTexture() {
-			rows = -1;
+			rows = 1;
+			is_set = false;
 		}
 		~ParticleTexture() {}
 		

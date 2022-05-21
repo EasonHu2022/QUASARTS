@@ -176,7 +176,7 @@ void AttributeView::show_particle() {
 
 	static int rows = particle->texture.rows;
 
-	if (ImGui::Button("Toggle On/Off")) {
+	/*if (ImGui::Button("Toggle On/Off")) {
 		is_on = !is_on;
 	}
 	if (ImGui::Button("Toggle Particle Rotation")) {
@@ -217,19 +217,51 @@ void AttributeView::show_particle() {
 	particle->direction.z = dir[2];
 	particle->directionDeviation = directionDeviation;
 	particle->texture.rows = rows;
-
+	*/
 	static char buf1[260] = "";
 
-	ImGui::PushItemWidth(-1);
-	if (ImGui::Button("button"))
+	ImGui::InputText("Texture Path", &buf1[0], IM_ARRAYSIZE(buf1));
+
+	ImGui::SameLine();
+	if (ImGui::Button("Load"))
 	{
-		particle->loadtex("C:\\Users\\Computer\\source\\repos\\EasonHu2022\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\fire.png");
+		bool randomRotation = particle->randomRotation;
+		bool mode = particle->cone;
+		bool is_on = particle->is_on;
+		float pps = particle->pps;
+		float gravity = particle->gravity;
+		float averageSpeed = particle->averageSpeed, averageLifeLength = particle->averageLifeLength, averageScale = particle->averageScale;
+		float speedError = particle->speedError, lifeError = particle->lifeError, scaleError = particle->scaleError;
+		float posError = particle->posError;
+		float directionDeviation = particle->directionDeviation;
+		float dir[3] = { particle->direction.x, particle->direction.y, particle->direction.z };
+		int rows = particle->texture.rows;
+
+		Engine::ECSManager::Instance()->destroy_component<Engine::ParticleComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE);
+		Engine::ECSManager::Instance()->create_component<Engine::ParticleComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE);
+		Engine::ParticleComponent* particle2 = Engine::ECSManager::Instance()->get_component<Engine::ParticleComponent>(Engine::ECSManager::Instance()->get_current_entity(), COMPONENT_PARTICLE);
+
+		particle2->is_on = is_on;
+		particle2->randomRotation = randomRotation;
+		particle2->pps = pps;
+		particle->gravity = gravity;
+		particle2->averageSpeed = averageSpeed;
+		particle2->averageLifeLength = averageLifeLength;
+		particle2->averageScale = averageScale;
+		particle2->speedError = speedError;
+		particle2->lifeError = lifeError;
+		particle2->scaleError = scaleError;
+		particle2->posError = posError;
+		particle2->direction.x = dir[0];
+		particle2->direction.y = dir[1];
+		particle2->direction.z = dir[2];
+		particle2->directionDeviation = directionDeviation;
+		particle2->texture.rows = rows;
+		particle2->cone = mode;
+
+		particle2->loadtex(buf1);
 	}
 	
-	if (ImGui::Button("button2"))
-	{
-		particle->loadtex("C:\\Users\\Computer\\source\\repos\\EasonHu2022\\QUASARTS\\project\\QUASARTS\\Assets\\Texture\\particleStar.png");
-	}
 }
 
 void AttributeView::change_transform(Engine::TransformComponent* transform, float* pos, float* rot, float* scal) {
