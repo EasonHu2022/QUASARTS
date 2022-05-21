@@ -124,7 +124,8 @@ void AttributeView::on_gui()
 					{
 						if (componentO->mPrimaryEntityId != -1) {
 							componentO->mActive = true;
-							orbitSys->initialise_orbit(current_entity_id);
+							if (-1 == orbitSys->initialise_orbit(current_entity_id))
+								componentO->mActive = false;
 						}
 					}
 					if (ImGui::Button("Deactivate"))

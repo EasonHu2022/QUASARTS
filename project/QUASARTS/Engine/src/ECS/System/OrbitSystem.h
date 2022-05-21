@@ -76,7 +76,7 @@ namespace Engine {
         /// <returns>0 if successful, non-0 otherwise.</returns>
         int set_orbit_primary(unsigned int const aEntityId, unsigned int const aPrimaryEntityId);
 
-        void initialise_orbit(unsigned int const aEntityId);
+        int initialise_orbit(unsigned int const aEntityId);
 
         /// <summary>
         /// Clears the entity's orbit component.

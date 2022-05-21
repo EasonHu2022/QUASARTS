@@ -340,16 +340,16 @@ namespace Engine
 	} // set_orbit_primary()
 
 
-	void OrbitSystem::initialise_orbit(unsigned int const aEntityId)
+	int OrbitSystem::initialise_orbit(unsigned int const aEntityId)
 	{
 		ECSManager* active_manager = get_manager();
 		OrbitComponent* orbit = active_manager->get_component<OrbitComponent>(aEntityId, COMPONENT_ORBIT);
 
 		if (orbit->mAxisNormal.x == nanf(""))
 		{
-			QDEBUG("nand normal");
+			QERROR("nand normal");
 			orbit->mActive = false;
-			return;
+			return -1;
 		}
 
 		// Start orbital motion.
@@ -360,6 +360,11 @@ namespace Engine
 
 			// Initialise orbit parameters with current relative position.
 			glm::vec3 relativePos = transf->position - transfPrimary->position;
+			if (glm::length(relativePos) == 0)
+			{
+				WARN("Orbit distance cannot be zero.");
+				return -1;
+			}
 
 			orbit->mRelativePos = relativePos;
 			orbit->mDistPeriapse = glm::length(relativePos);
@@ -381,6 +386,7 @@ namespace Engine
 			}
 			orbit->mAxisNormal = glm::normalize(glm::cross(orbit->mAxisX, orbit->mAxisY));
 		}
+		return 0;
 
 	} // activate_orbit()
 
