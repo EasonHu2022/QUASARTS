@@ -176,7 +176,7 @@ void AttributeView::show_particle() {
 
 	static int rows = particle->texture.rows;
 
-	/*if (ImGui::Button("Toggle On/Off")) {
+	if (ImGui::Button("Toggle On/Off")) {
 		is_on = !is_on;
 	}
 	if (ImGui::Button("Toggle Particle Rotation")) {
@@ -217,12 +217,12 @@ void AttributeView::show_particle() {
 	particle->direction.z = dir[2];
 	particle->directionDeviation = directionDeviation;
 	particle->texture.rows = rows;
-	*/
+	
 	static char buf1[260] = "";
 
 	ImGui::InputText("Texture Path", &buf1[0], IM_ARRAYSIZE(buf1));
 
-	ImGui::SameLine();
+	ImGui::SameLine;
 	if (ImGui::Button("Load"))
 	{
 		bool randomRotation = particle->randomRotation;
