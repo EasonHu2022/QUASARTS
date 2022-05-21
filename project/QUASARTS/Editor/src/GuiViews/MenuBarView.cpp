@@ -176,10 +176,6 @@ void MenuBarView::on_gui()
 
                 //Engine::ScriptSystem::Instance()->deleteScript();
             }
-            if (ImGui::MenuItem("Add Attribute")) {
-                if (Engine::ECSManager::Instance()->get_current_entity() != TOO_MANY_ENTITIES)
-                    new_attribute = true;
-            }
             if (ImGui::BeginMenu("Add Attribute"))
             {
                 if (ImGui::MenuItem("Mesh")) {
@@ -626,10 +622,10 @@ void MenuBarView::newAttribute(const int componentType)
         Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, componentType);
         break;
     case COMPONENT_HEALTH:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_HEALTH");
+        Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityId, COMPONENT_HEALTH);
         break;
     case COMPONENT_WEAPON:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_WEAPON");
+        Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityId, COMPONENT_WEAPON);
         break;
     case COMPONENT_PARTICLE:
         WARN("Component creator not implemented in newAttribute(): COMPONENT_PARTICLE");
@@ -663,10 +659,10 @@ void MenuBarView::load_object(std::string name, std::string file) {
     Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL, material);
 
     //temp 
-    Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityID, COMPONENT_COLLISION_SPHERE);
-    Engine::CollisionSystem::Instance()->init_collision_component(entityID, COMPONENT_COLLISION_SPHERE);
+    //Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityID, COMPONENT_COLLISION_SPHERE);
+    //Engine::CollisionSystem::Instance()->init_collision_component(entityID, COMPONENT_COLLISION_SPHERE);
 
-    Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityID, COMPONENT_HEALTH);
-    Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityID, COMPONENT_WEAPON);
+    //Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityID, COMPONENT_HEALTH);
+    //Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityID, COMPONENT_WEAPON);
 
 }

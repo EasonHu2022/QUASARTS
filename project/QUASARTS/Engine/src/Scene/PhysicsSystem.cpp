@@ -84,8 +84,6 @@ namespace Engine {
 				btManifoldPoint& pt = contactManifold->getContactPoint(0);
 				if (pt.getDistance() < 0.f)
 				{
-					QDEBUG("manifold: {0}, contact: {1}, distance: {2}", i, j, pt.getDistance());
-
 					// Get the colliding entities' information.
 					objId0 = get_object_index(obA);
 					objInfo0 = &collisionObjectArrayInfo[objId0];
