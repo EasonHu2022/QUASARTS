@@ -49,6 +49,8 @@ namespace Engine
 		if (!(emitters.count(texName))) {
 			std::pair<ParticleTexture, std::vector<Particle>> pair;
 			std::vector<Particle> particles;
+			tex.is_set = true;
+			tex.texture = new Texture2D(texName);
 			pair.first = tex;
 			pair.second = particles;
 			emitters.insert(std::make_pair(texName, pair));

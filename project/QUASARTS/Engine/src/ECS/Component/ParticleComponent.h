@@ -34,7 +34,7 @@ namespace Engine {
 		}
 
 		void generateParticle(glm::vec3 center) {
-			if (texture.rows > 0) {
+			if (texture.is_set) {
 				float deltaT = TimeModule::Instance()->get_frame_delta_time().sec();
 				float particlesToCreate = pps * deltaT;
 				double count;
@@ -118,15 +118,9 @@ namespace Engine {
 		}
 
 		void loadtex(std::string texPath) {
-			if (texture.rows == -1) {
-				texture.rows = 1;
-				texture.texture = new Texture2D(texPath);
+			if (!texture.is_set) {
 				path = texPath;
-			}
-			else {
-				delete texture.texture;
-				texture.texture = new Texture2D(texPath);
-				path = texPath;
+				texture.is_set = true;
 			}
 		}
 	};
