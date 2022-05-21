@@ -27,7 +27,7 @@ namespace Engine {
         std::string vshPath = path + "Shader/DefaultShader.vsh";
         std::string fshPath = path + "Shader/DefaultShader.fsh";
         std::string gshPth = "";
-        std::string texturePath = path + "Texture/floor.jpg";
+        std::string texturePath = path + "Texture/white.png";
         material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
 
         return inStream;

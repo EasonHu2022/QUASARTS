@@ -43,6 +43,7 @@ namespace Engine {
             std::shared_ptr<OrbitNode> pPrimaryNode;    // This node's Parent - if the primary entity lacks an orbit node, this points to the tree root.
             std::set<std::shared_ptr<OrbitNode>> mSatelliteNodes;    // This node's Children - list of all nodes which have this node as their primary.
             std::string tostring();
+            OrbitNode() : mEntityId(-1), mPrimaryId(-1) {}
         };
         // Access point for the tree - does NOT represent an entity.
         std::shared_ptr<OrbitNode> mOrbitRoot;

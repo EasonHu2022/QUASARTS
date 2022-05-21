@@ -67,6 +67,7 @@ namespace Engine {
             , mTrueAnom(0)
             , mDistance(0)
             , mRelativePos(0,0,0)
+            , mTrueAnomDeg(0)
         { }
 
 
@@ -74,6 +75,7 @@ namespace Engine {
 
         void clear()
         {
+            mActive = false;
             mPrimaryEntityId = -1;
             mDistance = mTrueAnom = mDistPeriapse = mOrbitPeriod = 0;
             mRelativePos = mAxisY = mAxisX = glm::vec3(0, 0, 0);

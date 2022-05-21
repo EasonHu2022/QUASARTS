@@ -30,24 +30,16 @@ namespace Engine
 
 	OrbitSystem::~OrbitSystem()
 	{
-		// Delete orbit tree.
+		// Destroy all nodes.
 		clear_tree();
+		mOrbitRoot.reset();
 
 	} // ~OrbitSystem()
 	
 
 	void OrbitSystem::init()
 	{
-		mOrbitRoot->mEntityId = -1;
-		mOrbitRoot->mPrimaryId = -1;
-		mOrbitRoot->pPrimaryNode = nullptr;
-		for (auto node : mAllOrbitNodes)
-		{
-			node.second->pPrimaryNode = nullptr;
-			node.second->mSatelliteNodes.clear();
-		}
-		mAllOrbitNodes.clear();
-
+		clear_tree();
 
 		//tree_tests();
 		//component_tests();
@@ -225,6 +217,10 @@ namespace Engine
 
 	// Set up all the data required for the component to function:
 	void OrbitSystem::initialize_components() {
+
+		// Destroy all existing nodes (except root).
+		clear_tree();
+
 		// Get the manager and entity mask:
 		ECSManager* active_manager = get_manager();
 		quasarts_entity_ID_mask *entitiesOrbits = get_entity_ID_mask(0);
@@ -236,6 +232,7 @@ namespace Engine
 			if (entitiesOrbits->mask[i] == 1) // Entity [i] with orbit component.
 			{
 				orbit = active_manager->get_component<OrbitComponent>(i, COMPONENT_ORBIT);
+				set_orbit_primary(i, orbit->mPrimaryEntityId);
 			}
 		}
 		/* Alternative method (slower, but you can ignore the mask if you need):
@@ -348,6 +345,13 @@ namespace Engine
 		ECSManager* active_manager = get_manager();
 		OrbitComponent* orbit = active_manager->get_component<OrbitComponent>(aEntityId, COMPONENT_ORBIT);
 
+		if (orbit->mAxisNormal.x == nanf(""))
+		{
+			QDEBUG("nand normal");
+			orbit->mActive = false;
+			return;
+		}
+
 		// Start orbital motion.
 		if (orbit->mPrimaryEntityId != -1)
 		{
@@ -451,7 +455,7 @@ namespace Engine
 			node.second->mSatelliteNodes.clear();
 		}
 
-		// Assert tree is clear.
+		// Assert that all nodes are disconnected.
 		assert(mOrbitRoot.unique());
 		for (auto node : mAllOrbitNodes)
 		{

@@ -113,15 +113,18 @@ void AttributeView::on_gui()
 					Engine::OrbitSystem* orbitSys = Engine::OrbitSystem::Instance();
 					Engine::OrbitComponent* componentO = Engine::ECSManager::Instance()->get_component<Engine::OrbitComponent>(current_entity_id, componentType);
 
-					if (ImGui::InputInt("primary", &componentO->mPrimaryEntityId))
-						orbitSys->set_orbit_primary(current_entity_id, componentO->mPrimaryEntityId);
+					if (ImGui::InputInt("primary", &componentO->mPrimaryEntityId, 0, 0))
+					{
+						if (-1 == orbitSys->set_orbit_primary(current_entity_id, componentO->mPrimaryEntityId))
+							componentO->mActive = false;
+					}
 					ImGui::InputFloat("period", &componentO->mOrbitPeriod);
 					ImGui::DragFloat3("normal", glm::value_ptr(componentO->mAxisNormal), 0.1f, -10000.0f, 10000.0f, "%.3f", ImGuiInputTextFlags_::ImGuiInputTextFlags_AutoSelectAll);					
 					if (ImGui::Button("Activate"))
 					{
 						if (componentO->mPrimaryEntityId != -1) {
-							orbitSys->initialise_orbit(current_entity_id);
 							componentO->mActive = true;
+							orbitSys->initialise_orbit(current_entity_id);
 						}
 					}
 					if (ImGui::Button("Deactivate"))
