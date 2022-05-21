@@ -360,7 +360,7 @@ namespace Engine
 
 			// Initialise orbit parameters with current relative position.
 			glm::vec3 relativePos = transf->position - transfPrimary->position;
-			if (glm::length(relativePos) == 0)
+			if (1e-5 - glm::length(relativePos) < 0)
 			{
 				WARN("Orbit distance cannot be zero.");
 				return -1;
