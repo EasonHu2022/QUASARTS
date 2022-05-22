@@ -359,7 +359,7 @@ namespace Engine
         MaterialComponent material;
         std::string texturePath;
         if (shootAtPlanet == true) { texturePath = path + "Texture/red.png"; }
-        else { texturePath = path + "Texture/green.png" }
+        else { texturePath = path + "Texture/green.png"; }
         std::string vshPath = path + "Shader/DefaultShader.vsh";
         std::string fshPath = path + "Shader/DefaultShader.fsh";
         std::string gshPth = "";
