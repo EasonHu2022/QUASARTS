@@ -26,6 +26,7 @@ namespace Engine
 	{
 		glViewport(0, 0, renderContext->SHADOW_WIDTH, renderContext->SHADOW_HEIGHT);
 		glEnable(GL_DEPTH_TEST);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		//ConfigureShaderAndMatrices();
 		auto lightCount = renderContext->lightingContext->countLight;
 		auto lightingdatas = renderContext->lightingContext->lights;

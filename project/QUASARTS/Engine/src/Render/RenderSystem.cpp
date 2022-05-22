@@ -91,16 +91,19 @@ namespace Engine
 						auto mat = ResourceManager::Instance()->get_resource<Material>(resId);
 
 						material->material = mat.get();
-						p->shader_program = mat->shader;
-						p->texture2d = mat->texture;
+						
 					}
 				}
-				else
-				{
+				p->shader_program = material->material->shader;
+				p->texture2d = material->material->texture;
+				p->ka = material->material->ambient;
+				p->kd = material->material->diffuse;
+				p->ks = material->material->specular;
+				p->ke = material->material->emission;
+				p->emissiveRange = material->material->emissiveRange;
+				p->shininess = material->material->shininess;
+		
 
-					p->shader_program = material->material->shader;
-					p->texture2d = material->material->texture;
-				}
 				//push p into renderQueue
 				Application::Instance->renderContext->renderQueue->push(p);
 			}

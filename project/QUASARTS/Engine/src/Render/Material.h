@@ -21,7 +21,9 @@ namespace Engine
 		glm::vec3 ambient = { 0.2f,0.2f,0.2f };
 		glm::vec3 diffuse = { 0.2f,0.2f,0.2f };
 		glm::vec3 specular = { 0.2f,0.2f,0.2f };
-		float shininess = 0.4f;
+		glm::vec3 emission = { 0.0f,0.0f,0.0f };
+		float emissiveRange = 0.0f;
+		float shininess = 32.0f;
 		Texture2D* texture;
 		std::string texturePath = "";
 		void reload() override {}

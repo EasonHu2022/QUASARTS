@@ -75,6 +75,8 @@ void AttributeView::on_gui()
 					ImGui::ColorEdit3("ambient", glm::value_ptr(componentM->material->ambient));
 					ImGui::ColorEdit3("diffuse", glm::value_ptr(componentM->material->diffuse));
 					ImGui::ColorEdit3("specular", glm::value_ptr(componentM->material->specular));
+					ImGui::ColorEdit3("emission", glm::value_ptr(componentM->material->emission));
+					ImGui::DragFloat("Blur Range", &componentM->material->emissiveRange);
 					ImGui::DragFloat("shininess", &componentM->material->shininess);
 					ImGui::InputText("texture", componentM->material->texturePath.data(), componentM->material->texturePath.length()+1);
 					break;

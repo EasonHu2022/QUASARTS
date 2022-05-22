@@ -127,6 +127,7 @@ namespace Engine
 
 		/***************************** for scene ********************************/
 		//texture object for scene window
+		unsigned int finalBufferObject;
 		unsigned int textureBufferObject;
 		unsigned int get_renderTexture()
 		{
@@ -134,6 +135,16 @@ namespace Engine
 		}
 		//frameBuffer object of scene window
 		unsigned int frameBufferObject;
+		//final frameBuffer object
+
+		unsigned int emissionTeture;
+		unsigned int colorTexture;
+
+		//frameBuffer object and texture for postProcessing
+
+		unsigned int screenTexture[2];
+		unsigned int postBufferObject[2];
+		unsigned int screenCoordsInfo;
 
 		//depth and stencil buffer of scene window
 		unsigned int renderBufferObject;

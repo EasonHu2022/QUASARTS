@@ -45,6 +45,7 @@ namespace Engine
 		shadowRenderer = new ShadowRenderer(renderContext);
 		meshRenderer = new MeshRenderer(renderContext);
 		skyboxRenderer = new SkyBoxRenderer(renderContext);
+		postProcessing = new PostProcessing(renderContext);
 		CollisionSystem* collisionSystem = CollisionSystem::Instance();
 		ECSManager::Instance()->register_system(SYSTEM_COLLISION, collisionSystem);
 		OrbitSystem* orbitSystem = OrbitSystem::Instance();
@@ -75,6 +76,7 @@ namespace Engine
 		shadowRenderer->init();
 		meshRenderer->init();
 		skyboxRenderer->init();
+		postProcessing->init();
 		ParticleMaster::Instance()->init(renderContext);
 		//particleMaster.init(renderContext);
 		renderSystem->init();
@@ -133,9 +135,19 @@ namespace Engine
 
 		meshRenderer->render();
 
-		skyboxRenderer->render();
+		
 
 		ParticleMaster::Instance()->render();
+		
+
+
+		//do all of the postProcessing before final render
+		postProcessing->gaussianBlur();
+
+
+
+		skyboxRenderer->render();
+		postProcessing->render();
 		//particleMaster.render();
 		/**************render update render frame***********************/
 	}
@@ -185,6 +197,7 @@ namespace Engine
 		meshRenderer->release();
 		shadowRenderer->release();
 		skyboxRenderer->release();
+		postProcessing->release();
 		//particleMaster.release();
 		/*********************release things**********************************/
 	}

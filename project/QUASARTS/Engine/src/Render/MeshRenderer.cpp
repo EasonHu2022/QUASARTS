@@ -38,13 +38,15 @@ namespace Engine
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
 		//give a clear color of the window
-		glClearColor(0.45f, 0.55f, 0.6f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		glViewport(0, 0, renderContext->RT_WIDTH, renderContext->RT_HEIGHT);
 
 		renderContext->commit_camera_data();
 		renderContext->commit_lighting_data();
-
+		GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2 };
+		glDrawBuffers(3, attachments);
+		
 
 		while (renderContext->renderQueue->get_size() != 0)
 		{
@@ -63,6 +65,12 @@ namespace Engine
 			buffer->shader_program->setMat4("model", model);
 			buffer->shader_program->setMat4("normalM", normalM);
 			buffer->shader_program->setVec3("viewPos", renderContext->cameraContext->pos);
+			buffer->shader_program->setVec3("ka",buffer->ka);
+			buffer->shader_program->setVec3("kd", buffer->kd);
+			buffer->shader_program->setVec3("ks", buffer->ks);
+			buffer->shader_program->setVec3("ke", buffer->ke);
+			buffer->shader_program->setFloat("emRange", buffer->emissiveRange);
+			buffer->shader_program->setFloat("shininess", buffer->shininess);
 			//buffer->shader_program->setMat4("lightSpaceMatrix", renderContext->lightingContext->lights[0].lightSpaceMatrix);
 			//buffer->shader_program->setInt("shadowMap", depthTextureArray);
 			glActiveTexture(GL_TEXTURE0);

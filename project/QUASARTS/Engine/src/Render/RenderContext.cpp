@@ -31,14 +31,48 @@ namespace Engine
 		
 		*/
 		/*****************RenderTexture************************/
-		glGenFramebuffers(1, &frameBufferObject);
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+		glGenFramebuffers(1, &finalBufferObject);
+		glBindFramebuffer(GL_FRAMEBUFFER, finalBufferObject);
+
 		glGenTextures(1, &textureBufferObject);
 		glBindTexture(GL_TEXTURE_2D, textureBufferObject);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RT_WIDTH, RT_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBufferObject, 0);
+
+		/**********for gaussian blur************/
+		glGenFramebuffers(2, postBufferObject);
+		glGenTextures(2, screenTexture);
+		for (unsigned int i = 0; i < 2; i++)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, postBufferObject[i]);
+			glBindTexture(GL_TEXTURE_2D, screenTexture[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, RT_WIDTH, RT_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture[i], 0);
+		}
+
+
+		glGenFramebuffers(1, &frameBufferObject);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+
+		glGenTextures(1, &colorTexture);
+		glBindTexture(GL_TEXTURE_2D, colorTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RT_WIDTH, RT_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
+
+		glGenTextures(1, &emissionTeture);
+		glBindTexture(GL_TEXTURE_2D, emissionTeture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RT_WIDTH, RT_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, emissionTeture, 0);
 
 		glGenRenderbuffers(1, &renderBufferObject);
 		glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);

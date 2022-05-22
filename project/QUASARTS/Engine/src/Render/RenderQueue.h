@@ -15,6 +15,13 @@ public:
 	Engine::Texture2D* texture2d = NULL;
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 normalM = glm::mat4(1.0f);
+	glm::vec3 ka = { 0.2f,0.2f,0.2f };
+	glm::vec3 kd = { 0.2f,0.2f,0.2f };
+	glm::vec3 ks = { 0.2f,0.2f,0.2f };
+	glm::vec3 ke = { 0.0f,0.0f,0.0f };
+	float emissiveRange = 0.0f;
+	float shininess = 0.4f;
+
 
 	inline void set_model(glm::vec3 offset, glm::vec3 rotation, glm::vec3 scale)
 	{

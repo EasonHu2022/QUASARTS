@@ -11,7 +11,8 @@ layout(location = 4) in vec3 aTangent;
 uniform mat4 model;
 uniform mat4 normalM;
 uniform mat4 lightSpaceMatrix;
-
+uniform float emRange;
+uniform vec3 ke;
 
 out VS_OUT{
     vec3 FragPos;

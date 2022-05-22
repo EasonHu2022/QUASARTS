@@ -14,5 +14,5 @@ void main(void){
 	vec4 color2 = texture(particleTexture, textureCoords2);
 	
 	out_colour = mix(color1, color2, blend);
-
+	out_colour.w = 1.0f;
 }

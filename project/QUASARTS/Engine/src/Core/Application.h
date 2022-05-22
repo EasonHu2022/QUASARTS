@@ -14,6 +14,7 @@
 #include "Render/RenderSystem.h"
 #include "Render/RenderContext.h"
 #include "Render/MeshRenderer.h"
+#include "Render/PostProcessing.h"
 #include "Render/ShadowRenderer.h"
 #include "Render/SkyboxRenderer.h"
 #include "ECS/System/ParticleSystem.h"
@@ -41,6 +42,7 @@ namespace Engine
 		MeshRenderer* meshRenderer;
 		ShadowRenderer* shadowRenderer;
 		SkyBoxRenderer* skyboxRenderer;
+		PostProcessing* postProcessing;
 		ParticleMaster particleMaster;
 		ParticleSystem* particleSystem;
 
