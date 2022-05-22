@@ -517,6 +517,12 @@ namespace Engine {
                                                 (entityID, COMPONENT_PROJECTILE);
                 sceneFile << COMPONENT_PROJECTILE << " " << *projectile << std::endl;
             }
+            if (has_component(entityID, COMPONENT_AUDIO) == true) {
+                sceneFile << "C " << entityID << " ";
+                AudioComponent *audio = get_component<AudioComponent>
+                                                (entityID, COMPONENT_AUDIO);
+                sceneFile << COMPONENT_AUDIO << " " << *audio << std::endl;
+            }
         }
 
         // Parent-child relationships:
@@ -661,6 +667,10 @@ namespace Engine {
                     ProjectileComponent projectile{};
                     parser >> projectile;
                     create_component(entityID, componentType, projectile);
+                } else if (componentType = COMPONENT_AUDIO) {
+                    AudioComponent audio{};
+                    parser >> audio;
+                    create_component(entityID, componentType, audio);
                 }
             // PARENT-CHILD //
             } else if (line[0] == 'P') {
