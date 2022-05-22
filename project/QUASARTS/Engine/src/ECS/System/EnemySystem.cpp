@@ -141,7 +141,8 @@ namespace Engine
                 glm::vec3 targetDirection = targetTransform->position - transform->position;
                 float targetDistance = glm::length(targetDirection);
                 float directionMult;
-                if (targetDistance <= 4.0) { directionMult = -1.0; }
+                if (targetDistance <= 3.5) { directionMult = -1.0; }
+                else if (targetDistance <= 4.0) { directionMult = 0.0; }
                 else { directionMult = 1.0; }
 
                 transform->position += glm::normalize(targetDirection) * float(deltaT)
@@ -153,7 +154,7 @@ namespace Engine
                 if (targetDistance <= 5.0)
                 {
                     // Fire a projectile at the target:
-                    shoot(i, enemy->targetID);
+                    shoot(i, enemy->targetID, true);
                     weapon->lastFire = 0.0;
                 }
             }
@@ -212,7 +213,7 @@ namespace Engine
                             if (distance <= 5.0)
                             {
                                 // Fire a projectile at the enemy:
-                                shoot(i, j);
+                                shoot(i, j, false);
                                 weapon->lastFire = 0.0;
                                 break;
                             }
@@ -276,7 +277,7 @@ namespace Engine
         TransformComponent *spawnerTransform = active_manager->get_component<TransformComponent>(spawnerID, COMPONENT_TRANSFORM);
         TransformComponent *enemyTransform = active_manager->get_component<TransformComponent>(enemyID, COMPONENT_TRANSFORM);
         enemyTransform->position = spawnerTransform->position;
-        enemyTransform->scale = glm::vec3(0.2, 0.2, 0.2);
+        enemyTransform->scale = glm::vec3(0.15, 0.15, 0.15);
 
         // Add the enemy Component with move speed and spawner information:
         EnemyComponent enemy { moveSpeedMult, spawnerID, TOO_MANY_ENTITIES };
@@ -308,7 +309,7 @@ namespace Engine
 
         // Create the material Component:
         MaterialComponent material;
-        std::string texturePath = path + "Texture/hubble.jpg";
+        std::string texturePath = path + "Texture/metal.png";
         std::string vshPath = path + "Shader/DefaultShader.vsh";
         std::string fshPath = path + "Shader/DefaultShader.fsh";
         std::string gshPth = "";
@@ -326,7 +327,7 @@ namespace Engine
         enemySpawner->lastSpawn = 0.0;
     }
 
-    void EnemySystem::shoot(unsigned int origin, unsigned int target)
+    void EnemySystem::shoot(unsigned int origin, unsigned int target, bool shootAtPlanet)
     {
         // Get the assets path:
         auto path = FileModule::Instance()->get_internal_assets_path();
@@ -356,7 +357,9 @@ namespace Engine
 
         // Create the material Component:
         MaterialComponent material;
-        std::string texturePath = path + "Texture/white.png";
+        std::string texturePath;
+        if (shootAtPlanet == true) { texturePath = path + "Texture/red.png"; }
+        else { texturePath = path + "Texture/green.png" }
         std::string vshPath = path + "Shader/DefaultShader.vsh";
         std::string fshPath = path + "Shader/DefaultShader.fsh";
         std::string gshPth = "";

@@ -35,7 +35,7 @@ namespace Engine {
         void spawn_enemy(EnemySpawnComponent *enemySpawner, unsigned int spawnerID,
                                                                 float moveSpeedMult);
         
-        void shoot(unsigned int origin, unsigned int target);
+        void shoot(unsigned int origin, unsigned int target, bool shootAtPlanet);
 
         void kill_planet(unsigned int planetID);
     };
