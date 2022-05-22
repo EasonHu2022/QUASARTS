@@ -35,6 +35,7 @@ namespace Engine
 		ECSManager::Instance()->register_system(SYSTEM_SCRIPT, ScriptSystem::Instance());
 		ResourceManager::Instance();
 		AudioSystem::Instance()->init();
+		ECSManager::Instance()->register_system(SYSTEM_AUDIO, AudioSystem::Instance());
 		ECSManager::Instance()->init();
 		ResourceManager::Instance()->init();
 		//create window for app

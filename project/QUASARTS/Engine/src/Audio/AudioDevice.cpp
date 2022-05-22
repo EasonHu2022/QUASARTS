@@ -59,6 +59,11 @@ namespace Engine {
 		alDistanceModel(model_val);
 	}
 
+	void AudioDevice::setGain(float val)
+	{
+		alListenerf(AL_GAIN, (ALfloat)val);
+	}
+
 
 }
 

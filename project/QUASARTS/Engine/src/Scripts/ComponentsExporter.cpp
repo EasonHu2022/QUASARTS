@@ -122,8 +122,36 @@ namespace Engine {
 	static unsigned int createEntity(const std::string& entity_name)
 	{
 		unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-		Engine::ECSManager::Instance()->set_entityName(entityID, entity_name);
 
+			Engine::ECSManager::Instance()->set_entityName(entityID, entity_name);
+			Engine::TransformComponent transform;
+			transform.position = { 0.0f,0.0f, 0.0f };
+			transform.rotation = { 0.0f,0.0f, 0.0f };
+			transform.scale = { 1.0f,1.0f, 1.0f };
+			Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM, transform);
+
+			Engine::MeshComponent mesh;
+			auto path = FileModule::Instance()->get_internal_assets_path();
+			if ("sphere" == entity_name)
+			{
+				mesh.path = path + "DefaultObjects/sphere20x20.obj";
+			}
+
+			if ("triangle" == entity_name)
+			{
+				mesh.path = path + "DefaultObjects/triangle.obj";
+			}
+
+			Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH, mesh);
+
+			Engine::MaterialComponent material;
+			//get default engine assets path
+			std::string vshPath = path + "Shader/DefaultShader.vsh";
+			std::string fshPath = path + "Shader/DefaultShader.fsh";
+			std::string gshPth = "";
+			std::string texturePath = path + "Texture/white.png";
+			material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+			Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>(entityID, COMPONENT_MATERIAL, material);
 		return entityID;
 	}
 

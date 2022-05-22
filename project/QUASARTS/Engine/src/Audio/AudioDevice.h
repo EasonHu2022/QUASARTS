@@ -27,6 +27,8 @@ namespace Engine {
 		//#define AL_EXPONENT_DISTANCE                     0xD005
 		//#define AL_EXPONENT_DISTANCE_CLAMPED             0xD006
 		void setAttunation(ALint model_val);
+
+		void setGain(float val);
 		
 	private:
 		ALCdevice* device;

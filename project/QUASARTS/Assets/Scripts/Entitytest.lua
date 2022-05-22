@@ -1,7 +1,7 @@
 --init here
 -- thiz: current entity id
 function onInit(thiz)
-	id = createEntity("entity")
+	id = createEntity("sphere")
 	Qwarn("id: ".. id)
 	addComponent(id, "Health")
 	initHealth = 100

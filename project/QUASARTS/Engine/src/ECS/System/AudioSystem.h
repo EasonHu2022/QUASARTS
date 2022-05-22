@@ -7,6 +7,7 @@
 #include "Audio/ClipBuffer.h"
 #include "Audio/ClipSource.h"
 #include "Audio/TrackSource.h"
+#include "ECS/Component/AudioComponent.h"
 #include <string>
 
 namespace Engine {
@@ -55,6 +56,12 @@ namespace Engine {
 		TrackSource* getTrackSource();
 		//--------------------------
 
+		//Component 
+		void playCompClip(AudioComponent* audio);
+		void initAudioComponent(AudioComponent* audio);
+
+		//get all audio components from existing entities
+		std::vector<AudioComponent*> getExistingComponents();
 		//get device
 		AudioDevice* getDevice();
 

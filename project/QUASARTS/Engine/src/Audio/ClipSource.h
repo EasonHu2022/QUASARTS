@@ -21,6 +21,7 @@ namespace Engine {
 
 		void setPosition(const glm::vec3& pos);
 		void setPosition(const float& x, const float& y, const float& z);
+		void setGain(float val);
 
 
 

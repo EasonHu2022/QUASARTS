@@ -59,4 +59,8 @@ namespace Engine {
 	{
 		alSource3f(source, AL_POSITION, x, y, z);
 	}
+	void ClipSource::setGain(float val)
+	{
+		alSourcef(source, AL_GAIN, (ALfloat)val);
+	}
 }

@@ -13,7 +13,7 @@ namespace Engine {
 
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
-    #define NUM_COMPONENT_TYPES 14
+    #define NUM_COMPONENT_TYPES 15
 
     // Maximum number of entities allowed:
     #define MAX_ENTITIES 1024
@@ -34,6 +34,7 @@ namespace Engine {
     #define COMPONENT_ENEMY             11
     #define COMPONENT_ENEMY_SPAWNER     12
     #define COMPONENT_PROJECTILE        13
+    #define COMPONENT_AUDIO             14
 
     // System types:
     #define SYSTEM_SCRIPT       0
