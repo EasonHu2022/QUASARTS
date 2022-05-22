@@ -35,6 +35,9 @@ namespace Engine {
             ComponentArray<HealthComponent>* array_health = new ComponentArray<HealthComponent>;
             ComponentArray<WeaponComponent>* array_weapon = new ComponentArray<WeaponComponent>;
             ComponentArray<ParticleComponent>* array_particle = new ComponentArray<ParticleComponent>;
+            ComponentArray<EnemyComponent>* array_enemy = new ComponentArray<EnemyComponent>;
+            ComponentArray<EnemySpawnComponent>* array_enemy_spawner = new ComponentArray<EnemySpawnComponent>;
+            ComponentArray<ProjectileComponent>* array_projectile = new ComponentArray<ProjectileComponent>;
 
             componentArrays.push_back(array_transform);
             componentArrays.push_back(array_mesh);
@@ -47,6 +50,9 @@ namespace Engine {
             componentArrays.push_back(array_health);
             componentArrays.push_back(array_weapon);
             componentArrays.push_back(array_particle);
+            componentArrays.push_back(array_enemy);
+            componentArrays.push_back(array_enemy_spawner);
+            componentArrays.push_back(array_projectile);
         }
 
         // Destructor:

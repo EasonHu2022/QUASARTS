@@ -16,6 +16,9 @@
 #include "ECS/System/System.h"
 #include "ECS/Scene.h"
 
+// Extras:
+#include "Entity-Stress-Test.h"
+
 namespace Engine {
     class QS_API ECSManager : public IManager {
         private:
@@ -251,6 +254,9 @@ namespace Engine {
 
         // Get the value of game_running:
         bool get_game_running();
+
+        // Get the number of entities in the scene:
+        unsigned int get_num_entities();
 
         // Print Entity information for debugging purposes:
         void print_entities();

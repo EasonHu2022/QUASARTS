@@ -126,6 +126,11 @@ namespace Engine {
         return game_running;
     }
 
+    // Get the number of entities in the scene:
+    unsigned int ECSManager::get_num_entities() {
+        return (unsigned int)(scene->entities.size());
+    }
+
     // Check if an Entity has a particular type of Component:
     bool ECSManager::has_component(unsigned int entityID, unsigned int componentType) {
         Entity *entity = get_entity(entityID);

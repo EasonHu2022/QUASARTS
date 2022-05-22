@@ -143,6 +143,10 @@ void AttributeView::on_gui()
 					break;
 				case COMPONENT_WEAPON:
 					break;
+				case COMPONENT_ENEMY:
+					break;
+				case COMPONENT_ENEMY_SPAWNER:
+					break;
 				default:
 					QERROR("unknown type : {0}", componentType);
 					break;

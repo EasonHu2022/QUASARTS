@@ -9,6 +9,7 @@
 #include "Time/TimeModule.h"
 #include "ECS/System/CollisionSystem.h"
 #include "ECS/System/OrbitSystem.h"
+#include "ECS/System/EnemySystem.h"
 
 namespace Engine
 {
@@ -50,6 +51,8 @@ namespace Engine
 		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
 		particleSystem = new ParticleSystem();
 		ECSManager::Instance()->register_system(SYSTEM_PARTICLE, particleSystem);
+		EnemySystem::Instance()->init();
+		ECSManager::Instance()->register_system(SYSTEM_ENEMY, EnemySystem::Instance());
 		/*************************Create and Init********************************/
 
 	}
@@ -160,6 +163,7 @@ namespace Engine
 		particleSystem->update();
 		CollisionSystem::Instance()->update();
 		OrbitSystem::Instance()->update();
+		EnemySystem::Instance()->update();
 		/***************logic update logic frame************************/
 	}
 
