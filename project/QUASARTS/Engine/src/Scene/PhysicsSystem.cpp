@@ -285,9 +285,7 @@ namespace Engine {
 	{
 		if (obj == nullptr)
 		{
-			char msg[128];
-			snprintf(msg, 128, "get_object_index() was passed a null pointer");
-			QERROR(msg);
+			QERROR("get_object_index() was passed a null pointer");
 			return -1;
 		}
 		for (int i = 0; i < collisionWorld->getNumCollisionObjects(); ++i)

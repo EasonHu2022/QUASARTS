@@ -132,7 +132,6 @@ namespace Engine
 
 			// Skip inactive orbits.
 			if (!orbit->mActive) continue;
-			QDEBUG("updating orbit on entity {0}", node->mEntityId);
 
 			// Get new true anomaly.
 			deltaTheta = (orbit->mOrbitPeriod > 0) ? dtPi2 / orbit->mOrbitPeriod : 0;
