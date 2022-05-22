@@ -89,6 +89,7 @@ namespace Engine
                     QDEBUG("Enemy {0} died.", i);
                     unsigned int numEntities = active_manager->get_num_entities();
                     active_manager->destroy_entity(i);
+                    //AudioSystem::Instance()->playSoundClip("Test/Explosion");
                     enemySpawner->currentSpawns--;
                     // Remove all projectiles that reference this Entity:
                     for (int j = 0; j < MAX_ENTITIES; j++)
@@ -348,7 +349,7 @@ namespace Engine
         TransformComponent *projectileTransform = ECSManager::Instance()->get_component<TransformComponent>
                                                                 (projectileID, COMPONENT_TRANSFORM);
         projectileTransform->position = originTransform->position;
-        projectileTransform->scale = glm::vec3(0.05, 0.05, 0.05);
+        projectileTransform->scale = glm::vec3(0.04, 0.04, 0.04);
 
         // Create the mesh Component:
         MeshComponent mesh;
@@ -364,12 +365,20 @@ namespace Engine
         std::string fshPath = path + "Shader/DefaultShader.fsh";
         std::string gshPth = "";
         material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+        if (shootAtPlanet == true) { material.material->emission = glm::vec3(1.0, 0.2, 0.2); }
+        else { material.material->emission = glm::vec3(0.2, 1.0, 0.2); }
         ECSManager::Instance()->create_component<MaterialComponent>(projectileID, COMPONENT_MATERIAL, material);
+
+        // Play a laser noise:
+        AudioSystem::Instance()->playSoundClip("laser1");
     }
 
     void EnemySystem::kill_planet(unsigned int planetID)
     {
         HealthComponent *health = ECSManager::Instance()->get_component<HealthComponent>(planetID, COMPONENT_HEALTH);
         health->current_health = 0.0;
+
+        // Play an explosion noise:
+        //AudioSystem::Instance()->playSoundClip("Test/Explosion");
     }
 }

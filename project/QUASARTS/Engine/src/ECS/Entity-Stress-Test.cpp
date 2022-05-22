@@ -70,7 +70,11 @@ namespace Engine
         {
             unsigned int lightID = ECSManager::Instance()->create_entity();
             ECSManager::Instance()->set_entityName(lightID, "Light");
-            ECSManager::Instance()->create_component<LightComponent>(lightID, COMPONENT_LIGHTING);
+            LightComponent light;
+            light.ambient = glm::vec3(1.0, 1.0, 1.0);
+            light.diffuse = glm::vec3(1.0, 1.0, 1.0);
+            light.specular = glm::vec3(0.0, 0.0, 0.0);
+            ECSManager::Instance()->create_component(lightID, COMPONENT_LIGHTING, light);
 
             TransformComponent *lightTransform = ECSManager::Instance()->get_component
                                             <TransformComponent>(lightID, COMPONENT_TRANSFORM);
@@ -128,6 +132,19 @@ namespace Engine
                 MaterialComponent material;
                 std::string texturePath = textureDirPath + planetNames[i] + ".jpg";
                 material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+
+                // Add emissive light to the planets:
+                if (i == 0) { material.material->emission = glm::vec3(0.7, 0.5, 0.2); }         // Sun.
+                else if (i == 1) { material.material->emission = glm::vec3(0.1, 0.1, 0.1); }    // Mercury.
+                else if (i == 2) { material.material->emission = glm::vec3(0.2, 0.1, 0.0); }    // Venus.
+                else if (i == 3) { material.material->emission = glm::vec3(0.1, 0.1, 0.2); }    // Earth.
+                else if (i == 4) { material.material->emission = glm::vec3(0.1, 0.0, 0.0); }    // Mars.
+                else if (i == 5) { material.material->emission = glm::vec3(0.1, 0.1, 0.1); }    // Jupiter.
+                else if (i == 6) { material.material->emission = glm::vec3(0.1, 0.1, 0.1); }    // Saturn.
+                else if (i == 7) { material.material->emission = glm::vec3(0.0, 0.1, 0.1); }    // Uranus.
+                else if (i == 8) { material.material->emission = glm::vec3(0.0, 0.0, 0.1); }    // Neptune.
+                else if (i == 9) { material.material->emission = glm::vec3(0.1, 0.1, 0.1); }    // Moon.
+
                 ECSManager::Instance()->create_component<MaterialComponent>(solarSystemIDs[i],
                                                                     COMPONENT_MATERIAL, material);
 
@@ -202,16 +219,21 @@ namespace Engine
         unsigned int group3ID = ECSManager::Instance()->create_entity();
         unsigned int group4ID = ECSManager::Instance()->create_entity();
 
+        ECSManager::Instance()->set_entityName(group1ID, "Enemy Spawner");
+        ECSManager::Instance()->set_entityName(group2ID, "Enemy Spawner");
+        ECSManager::Instance()->set_entityName(group3ID, "Enemy Spawner");
+        ECSManager::Instance()->set_entityName(group4ID, "Enemy Spawner");
+/*
         EnemySpawnComponent enemySpawn1 { 0.1, 0.0, group1, 0 };
         EnemySpawnComponent enemySpawn2 { 0.1, 0.0, group2, 0 };
         EnemySpawnComponent enemySpawn3 { 0.1, 0.0, group3, 0 };
         EnemySpawnComponent enemySpawn4 { 0.1, 0.0, group4, 0 };
-/*
-        EnemySpawnComponent enemySpawn1 { 0.1, 0.0, 10, 0 };
-        EnemySpawnComponent enemySpawn2 { 0.1, 0.0, 10, 0 };
-        EnemySpawnComponent enemySpawn3 { 0.1, 0.0, 10, 0 };
-        EnemySpawnComponent enemySpawn4 { 0.1, 0.0, 10, 0 };
 */
+        EnemySpawnComponent enemySpawn1 { 0.1, 0.0, 5, 0 };
+        EnemySpawnComponent enemySpawn2 { 0.1, 0.0, 5, 0 };
+        EnemySpawnComponent enemySpawn3 { 0.1, 0.0, 5, 0 };
+        EnemySpawnComponent enemySpawn4 { 0.1, 0.0, 5, 0 };
+
         ECSManager::Instance()->create_component(group1ID, COMPONENT_ENEMY_SPAWNER, enemySpawn1);
         ECSManager::Instance()->create_component(group2ID, COMPONENT_ENEMY_SPAWNER, enemySpawn2);
         ECSManager::Instance()->create_component(group3ID, COMPONENT_ENEMY_SPAWNER, enemySpawn3);
@@ -230,6 +252,8 @@ namespace Engine
         transform2->position = group2Spawn;
         transform3->position = group3Spawn;
         transform4->position = group4Spawn;
+
+        //AudioSystem::Instance()->playSoundClip("Test/Music.mp3");
 
         QDEBUG("Finished setting up Entity stress test.");
     }

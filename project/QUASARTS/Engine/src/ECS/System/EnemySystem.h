@@ -8,6 +8,7 @@
 #include "ECS/ECSManager.h"
 #include "System.h"
 #include "CollisionSystem.h"
+#include "AudioSystem.h"
 #include "Time/TimeModule.h"
 
 namespace Engine {
