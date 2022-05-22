@@ -499,6 +499,24 @@ namespace Engine {
                                                 (entityID, COMPONENT_PARTICLE);
                 sceneFile << COMPONENT_PARTICLE << " " << *particle << std::endl;
             }
+            if (has_component(entityID, COMPONENT_ENEMY) == true) {
+                sceneFile << "C " << entityID << " ";
+                EnemyComponent *enemy = get_component<EnemyComponent>
+                                                (entityID, COMPONENT_ENEMY);
+                sceneFile << COMPONENT_ENEMY << " " << *enemy << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_ENEMY_SPAWNER) == true) {
+                sceneFile << "C " << entityID << " ";
+                EnemySpawnComponent *enemySpawner = get_component<EnemySpawnComponent>
+                                                (entityID, COMPONENT_ENEMY_SPAWNER);
+                sceneFile << COMPONENT_ENEMY_SPAWNER << " " << *enemySpawner << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_PROJECTILE) == true) {
+                sceneFile << "C " << entityID << " ";
+                ProjectileComponent *projectile = get_component<ProjectileComponent>
+                                                (entityID, COMPONENT_PROJECTILE);
+                sceneFile << COMPONENT_PROJECTILE << " " << *projectile << std::endl;
+            }
         }
 
         // Parent-child relationships:
@@ -631,6 +649,18 @@ namespace Engine {
                     ParticleComponent particle{};
                     parser >> particle;
                     create_component(entityID, componentType, particle);
+                } else if (componentType = COMPONENT_ENEMY) {
+                    EnemyComponent enemy{};
+                    parser >> enemy;
+                    create_component(entityID, componentType, enemy);
+                } else if (componentType = COMPONENT_ENEMY_SPAWNER) {
+                    EnemySpawnComponent enemySpawner{};
+                    parser >> enemySpawner;
+                    create_component(entityID, componentType, enemySpawner);
+                } else if (componentType = COMPONENT_PROJECTILE) {
+                    ProjectileComponent projectile{};
+                    parser >> projectile;
+                    create_component(entityID, componentType, projectile);
                 }
             // PARENT-CHILD //
             } else if (line[0] == 'P') {
