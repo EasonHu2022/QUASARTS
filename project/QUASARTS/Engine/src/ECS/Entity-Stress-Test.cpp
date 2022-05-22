@@ -201,17 +201,17 @@ namespace Engine
         unsigned int group2ID = ECSManager::Instance()->create_entity();
         unsigned int group3ID = ECSManager::Instance()->create_entity();
         unsigned int group4ID = ECSManager::Instance()->create_entity();
-/*
+
         EnemySpawnComponent enemySpawn1 { 0.1, 0.0, group1, 0 };
         EnemySpawnComponent enemySpawn2 { 0.1, 0.0, group2, 0 };
         EnemySpawnComponent enemySpawn3 { 0.1, 0.0, group3, 0 };
         EnemySpawnComponent enemySpawn4 { 0.1, 0.0, group4, 0 };
-*/
+/*
         EnemySpawnComponent enemySpawn1 { 0.1, 0.0, 10, 0 };
         EnemySpawnComponent enemySpawn2 { 0.1, 0.0, 10, 0 };
         EnemySpawnComponent enemySpawn3 { 0.1, 0.0, 10, 0 };
         EnemySpawnComponent enemySpawn4 { 0.1, 0.0, 10, 0 };
-
+*/
         ECSManager::Instance()->create_component(group1ID, COMPONENT_ENEMY_SPAWNER, enemySpawn1);
         ECSManager::Instance()->create_component(group2ID, COMPONENT_ENEMY_SPAWNER, enemySpawn2);
         ECSManager::Instance()->create_component(group3ID, COMPONENT_ENEMY_SPAWNER, enemySpawn3);
