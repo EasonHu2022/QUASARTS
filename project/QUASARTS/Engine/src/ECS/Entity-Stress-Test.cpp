@@ -223,17 +223,17 @@ namespace Engine
         ECSManager::Instance()->set_entityName(group2ID, "Enemy Spawner");
         ECSManager::Instance()->set_entityName(group3ID, "Enemy Spawner");
         ECSManager::Instance()->set_entityName(group4ID, "Enemy Spawner");
-/*
+
         EnemySpawnComponent enemySpawn1 { 0.1, 0.0, group1, 0 };
         EnemySpawnComponent enemySpawn2 { 0.1, 0.0, group2, 0 };
         EnemySpawnComponent enemySpawn3 { 0.1, 0.0, group3, 0 };
         EnemySpawnComponent enemySpawn4 { 0.1, 0.0, group4, 0 };
-*/
+/*
         EnemySpawnComponent enemySpawn1 { 0.1, 0.0, 5, 0 };
         EnemySpawnComponent enemySpawn2 { 0.1, 0.0, 5, 0 };
         EnemySpawnComponent enemySpawn3 { 0.1, 0.0, 5, 0 };
         EnemySpawnComponent enemySpawn4 { 0.1, 0.0, 5, 0 };
-
+*/
         ECSManager::Instance()->create_component(group1ID, COMPONENT_ENEMY_SPAWNER, enemySpawn1);
         ECSManager::Instance()->create_component(group2ID, COMPONENT_ENEMY_SPAWNER, enemySpawn2);
         ECSManager::Instance()->create_component(group3ID, COMPONENT_ENEMY_SPAWNER, enemySpawn3);

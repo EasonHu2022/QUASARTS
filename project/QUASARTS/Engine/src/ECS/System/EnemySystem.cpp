@@ -83,13 +83,23 @@ namespace Engine
                 health = active_manager->get_component<HealthComponent>(i, COMPONENT_HEALTH);
                 weapon = active_manager->get_component<WeaponComponent>(i, COMPONENT_WEAPON);
 
+                MaterialComponent *material = active_manager->get_component<MaterialComponent>
+                                                                    (i, COMPONENT_MATERIAL);
+                material->material->emission = glm::vec3(
+                                    1.0 - (health->current_health / health->max_health),
+                                    (1.0 - (health->current_health / health->max_health)) * 0.2,
+                                    (1.0 - (health->current_health / health->max_health)) * 0.2
+                                    );
+
                 // Check health:
                 if (health->current_health <= 0.0)
                 {
                     QDEBUG("Enemy {0} died.", i);
+                    QDEBUG("Number of entities present: {0}", active_manager->get_num_entities());
+                    QDEBUG("Framerate: {0}", 1.0 / deltaT);
                     unsigned int numEntities = active_manager->get_num_entities();
                     active_manager->destroy_entity(i);
-                    //AudioSystem::Instance()->playSoundClip("Test/Explosion");
+                    AudioSystem::Instance()->playSoundClip("explosion4quiet");
                     enemySpawner->currentSpawns--;
                     // Remove all projectiles that reference this Entity:
                     for (int j = 0; j < MAX_ENTITIES; j++)
@@ -370,15 +380,12 @@ namespace Engine
         ECSManager::Instance()->create_component<MaterialComponent>(projectileID, COMPONENT_MATERIAL, material);
 
         // Play a laser noise:
-        AudioSystem::Instance()->playSoundClip("laser1");
+        //AudioSystem::Instance()->playSoundClip("laser5");
     }
 
     void EnemySystem::kill_planet(unsigned int planetID)
     {
         HealthComponent *health = ECSManager::Instance()->get_component<HealthComponent>(planetID, COMPONENT_HEALTH);
         health->current_health = 0.0;
-
-        // Play an explosion noise:
-        //AudioSystem::Instance()->playSoundClip("Test/Explosion");
     }
 }
