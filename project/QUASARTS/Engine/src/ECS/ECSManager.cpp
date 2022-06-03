@@ -683,7 +683,6 @@ namespace Engine {
                     scene->children[parent].emplace(child);
                 }
             }
-            QDEBUG("Scene \"{0}\" loaded.", scene->name);
         }
 
         // Update all the Systems:
@@ -699,6 +698,7 @@ namespace Engine {
                 val->initialize_components();
         }
 
+        QDEBUG("Scene \"{0}\" loaded.", scene->name);
         return true;
     }
 
