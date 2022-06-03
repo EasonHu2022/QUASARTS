@@ -655,19 +655,19 @@ namespace Engine {
                     ParticleComponent particle{};
                     parser >> particle;
                     create_component(entityID, componentType, particle);
-                } else if (componentType = COMPONENT_ENEMY) {
+                } else if (componentType == COMPONENT_ENEMY) {
                     EnemyComponent enemy{};
                     parser >> enemy;
                     create_component(entityID, componentType, enemy);
-                } else if (componentType = COMPONENT_ENEMY_SPAWNER) {
+                } else if (componentType == COMPONENT_ENEMY_SPAWNER) {
                     EnemySpawnComponent enemySpawner{};
                     parser >> enemySpawner;
                     create_component(entityID, componentType, enemySpawner);
-                } else if (componentType = COMPONENT_PROJECTILE) {
+                } else if (componentType == COMPONENT_PROJECTILE) {
                     ProjectileComponent projectile{};
                     parser >> projectile;
                     create_component(entityID, componentType, projectile);
-                } else if (componentType = COMPONENT_AUDIO) {
+                } else if (componentType == COMPONENT_AUDIO) {
                     AudioComponent audio{};
                     parser >> audio;
                     create_component(entityID, componentType, audio);
@@ -792,6 +792,7 @@ namespace Engine {
         system_strings[SYSTEM_AUDIO] = "Audio System";
         system_strings[SYSTEM_ORBIT] = "Orbit System";
         system_strings[SYSTEM_PARTICLE] = "Particle System";
+        system_strings[SYSTEM_ENEMY] = "Enemy System";
 
         // Check if the system is in the maps:
         if (system_strings.find(systemType) == system_strings.end()) {
