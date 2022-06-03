@@ -95,8 +95,8 @@ namespace Engine
                 if (health->current_health <= 0.0)
                 {
                     QDEBUG("Enemy {0} died.", i);
-                    QDEBUG("Number of entities present: {0}", active_manager->get_num_entities());
-                    QDEBUG("Framerate: {0}", 1.0 / deltaT);
+                    //QDEBUG("Number of entities present: {0}", active_manager->get_num_entities());
+                    //QDEBUG("Framerate: {0}", 1.0 / deltaT);
                     unsigned int numEntities = active_manager->get_num_entities();
                     active_manager->destroy_entity(i);
                     AudioSystem::Instance()->playSoundClip("explosion4quiet");
