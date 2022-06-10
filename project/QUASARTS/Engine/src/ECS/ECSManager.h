@@ -100,30 +100,6 @@ namespace Engine {
             compArray->add_data(entityID);
         }
 
-        // Replace Component data in the Component array:
-        template <typename T>
-        void replace_component(unsigned int entityID, unsigned int componentType, T data) {
-            // Check that the Entity exists:
-            unsigned int index = get_index_from_ID(entityID);
-            if (index == TOO_MANY_ENTITIES) {
-                QERROR("Function ECSManager::replace_component(): Error: no match was found for Entity {0}!", entityID);
-                return;
-            }
-
-            // Check the Component mask of the Entity:
-            quasarts_component_mask mask = {0};
-            mask.mask = (uint64_t)1 << componentType;
-            if ((scene->entities[index].get_componentMask()->mask & mask.mask) != mask.mask) {
-                // Add the data instead of replacing it:
-                create_component<T>(entityID, componentType, data);
-                return;
-            }
-
-            // If the Component exists for the Entity, replace the data:
-            ComponentArray<T> *compArray = (ComponentArray<T> *)scene->componentArrays[componentType];
-            compArray->replace_data(entityID, data);
-        }
-
         // Get a Component from the Component array:
         template <typename T>
         T *get_component(unsigned int entityID, unsigned int componentType) {

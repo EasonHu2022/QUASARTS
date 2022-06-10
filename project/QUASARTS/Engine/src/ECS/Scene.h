@@ -38,6 +38,7 @@ namespace Engine {
             ComponentArray<EnemyComponent>* array_enemy = new ComponentArray<EnemyComponent>;
             ComponentArray<EnemySpawnComponent>* array_enemy_spawner = new ComponentArray<EnemySpawnComponent>;
             ComponentArray<ProjectileComponent>* array_projectile = new ComponentArray<ProjectileComponent>;
+            ComponentArray<AudioComponent>* array_audio = new ComponentArray<AudioComponent>;
 
             componentArrays.push_back(array_transform);
             componentArrays.push_back(array_mesh);
@@ -53,6 +54,7 @@ namespace Engine {
             componentArrays.push_back(array_enemy);
             componentArrays.push_back(array_enemy_spawner);
             componentArrays.push_back(array_projectile);
+            componentArrays.push_back(array_audio);
         }
 
         // Destructor:

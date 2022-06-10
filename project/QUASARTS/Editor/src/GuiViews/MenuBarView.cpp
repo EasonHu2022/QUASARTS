@@ -96,6 +96,7 @@ void MenuBarView::on_gui()
             }
             if (ImGui::MenuItem("Deselect All", "Ctrl+Shift+D")) {
                 // Entity stress test:
+                Engine::AudioSystem::Instance()->playTrack("b423b42");
                 Engine::entity_stress_test();
             }
             if (ImGui::MenuItem("Select Children", "Shift+C")) {

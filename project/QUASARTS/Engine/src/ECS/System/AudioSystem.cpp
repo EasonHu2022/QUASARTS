@@ -2,6 +2,7 @@
 #include "ResourceManager/FileModule.h"
 #include <AL/al.h>
 #include "QuasartsEngine.h"
+#include "ECS/ECSManager.h"
 
 namespace Engine {
 
@@ -25,6 +26,13 @@ namespace Engine {
 	/// </summary>
 	void AudioSystem::init()
 	{
+
+		//add script component mask
+		quasarts_component_mask temp;
+		temp.mask = 0;
+		temp.mask += (uint64_t)1 << COMPONENT_AUDIO;
+		add_component_mask(temp);
+
 		audio_dev = new AudioDevice(); // init the audio device
 		clip_buffer = new ClipBuffer();
 		clip_src = new ClipSource();
@@ -35,7 +43,9 @@ namespace Engine {
 		audio_dev->setAttunation(attunation);
 		audio_dev->setPosition(0.f, 0.f, 0.f);
 		audio_dev->setOrientation(0.f, 1.f, 0.f);
-
+		//audio_dev->setGain(0.5f);
+		//clip_src->setGain(0.5f);
+	
 		//clip_src->isLooping();
 		//clip_src->setPosition(0.f, 0.f, 0.f);
 
@@ -185,6 +195,43 @@ namespace Engine {
 	TrackSource* AudioSystem::getTrackSource()
 	{
 		return track_src;
+	}
+
+	void AudioSystem::playCompClip(AudioComponent* audio)
+	{
+		
+	}
+
+	void AudioSystem::initAudioComponent(AudioComponent* audio)
+	{
+		std::string path = FileModule::Instance()->get_internal_assets_path();
+		std::string file_path = path + "Audio/laser1.ogg";
+		audio->sound_path = file_path;
+		audio->audio_src = clip_buffer->loadSoundClip(sound_path.c_str());
+	}
+
+	std::vector<AudioComponent*> AudioSystem::getExistingComponents()
+	{
+		//store current entities which have script component
+		std::vector<AudioComponent*> current;
+
+		//get manager
+		ECSManager* mgr = get_manager();
+
+		//get entity mask
+		quasarts_entity_ID_mask* ent = get_entity_ID_mask(0);
+
+
+		for (int i = 0; i < MAX_ENTITIES; i++)
+		{
+			AudioComponent* audio;
+			if (ent->mask[i] == 1)
+			{
+				audio = mgr->get_component<AudioComponent>(i, COMPONENT_AUDIO);
+				current.push_back(audio);
+			}
+		}
+		return current;
 	}
 
 	AudioDevice* AudioSystem::getDevice()

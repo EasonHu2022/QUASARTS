@@ -29,7 +29,6 @@ void SceneCameraController::on_update()
 				y += MouseSensitivity * mouseMotion.x;
 				//QDEBUG("rot camera");
 				transform->rotation = { x,y,0.0f };
-				Engine::ECSManager::Instance()->replace_component(camera, COMPONENT_TRANSFORM, *transform);
 			}
 		}		
 	}
