@@ -90,11 +90,11 @@ void MenuBarView::on_gui()
 
         if (ImGui::BeginMenu("Edit"))
         {
-            if (ImGui::MenuItem("Select All", "Ctrl+A")) {
+            if (ImGui::MenuItem("Construct Solar System", "Ctrl+A")) {
                 // Create solar system:
 		        Engine::construct_solar_system();
             }
-            if (ImGui::MenuItem("Deselect All", "Ctrl+Shift+D")) {
+            if (ImGui::MenuItem("Run Entity Stress Test", "Ctrl+Shift+D")) {
                 // Entity stress test:
                 Engine::AudioSystem::Instance()->playTrack("b423b42");
                 Engine::entity_stress_test();
