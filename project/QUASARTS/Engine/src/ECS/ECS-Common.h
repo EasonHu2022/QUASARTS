@@ -55,9 +55,4 @@ namespace Engine {
     struct quasarts_entity_ID_mask {
         unsigned short mask[MAX_ENTITIES];
     };
-
-    // Struct to hold component indices:
-    struct quasarts_component_indices {
-        unsigned int indices[MAX_COMPONENT_TYPES];
-    };
 }
