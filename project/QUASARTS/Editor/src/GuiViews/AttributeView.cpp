@@ -235,7 +235,7 @@ void AttributeView::show_particle() {
 
 	ImGui::InputText("Texture Path", &buf1[0], IM_ARRAYSIZE(buf1));
 
-	ImGui::SameLine;
+	ImGui::SameLine();
 	if (ImGui::Button("Load"))
 	{
 		bool randomRotation = particle->randomRotation;
