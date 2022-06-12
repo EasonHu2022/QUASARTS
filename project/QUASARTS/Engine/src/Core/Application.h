@@ -26,7 +26,7 @@ namespace Engine
 	class QS_API Application
 	{
 	private:
-		std::string name = "Quarsart Editor V1.0";
+		std::string name = "Orbit Editor V1.0";
 		Window* m_window = NULL;
 		bool bIs_Running;
 
