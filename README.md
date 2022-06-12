@@ -5,3 +5,7 @@
 # Documentation #
 ## [Script System](./project/QUASARTS/Engine/src/Scripts/README.md) 
 ## [Event System](./project/QUASARTS/Engine/src/Event/README.md)
+
+# Installation #
+## Windows
+## Linux
