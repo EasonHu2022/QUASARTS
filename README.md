@@ -13,11 +13,14 @@ Open a terminal and cd into project/QUASARTS directory.
 
 ### To compile:
 `./premake5 vs*`
+
 where * is your Visual Studio version, e.g., `./premake5 vs2022`.
+
 Build the generated QUASARTS solution.
 
 ### To run:
 Open the QUASARTS solution.
+
 Set the Editor project as the startup project and run.
 
 ## Linux
