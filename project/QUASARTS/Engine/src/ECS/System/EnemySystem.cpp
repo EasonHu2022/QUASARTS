@@ -95,8 +95,8 @@ namespace Engine
                 if (health->current_health <= 0.0)
                 {
                     QDEBUG("Enemy {0} died.", i);
-                    //QDEBUG("Number of entities present: {0}", active_manager->get_num_entities());
-                    //QDEBUG("Framerate: {0}", 1.0 / deltaT);
+                    QDEBUG("Number of entities present: {0}", active_manager->get_num_entities());
+                    QDEBUG("Framerate: {0}", 1.0 / deltaT);
                     unsigned int numEntities = active_manager->get_num_entities();
                     active_manager->destroy_entity(i);
                     AudioSystem::Instance()->playSoundClip("explosion4quiet");
@@ -378,9 +378,6 @@ namespace Engine
         if (shootAtPlanet == true) { material.material->emission = glm::vec3(1.0, 0.2, 0.2); }
         else { material.material->emission = glm::vec3(0.2, 1.0, 0.2); }
         ECSManager::Instance()->create_component<MaterialComponent>(projectileID, COMPONENT_MATERIAL, material);
-
-        // Play a laser noise:
-        //AudioSystem::Instance()->playSoundClip("laser5");
     }
 
     void EnemySystem::kill_planet(unsigned int planetID)
