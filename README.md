@@ -8,7 +8,11 @@
 
 # Installation #
 ## Windows
+
+
+
 ## Linux
+
 Open a terminal and cd into the project/QUASARTS directory.
 
 Be sure to add permission to execute the premake5 program:\
@@ -20,6 +24,10 @@ make
 
 ### To run:
 ./bin/Debug-linux-x86_64/Editor/Editor
+
+### Version:
+
+Tested on Linux Mint 20.1 and 20.3.
 
 ### The libraries required by the Linux version of the project are:
 
