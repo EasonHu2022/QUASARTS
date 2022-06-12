@@ -35,6 +35,10 @@ libsndfile1-dev\
 libopus-dev\
 libopenal-dev
 
+### You can install all of these libraries with:
+
+sudo apt install g++ libc6-dev libxi-dev libxcursor-dev libxrandr-dev libxinerama-dev libsndfile1-dev libopus-dev libopenal-dev
+
 ### This library *may* be required:
 
 libx11-dev
@@ -44,7 +48,3 @@ libx11-dev
 libflac-dev\
 libogg-dev\
 libvorbis-dev
-
-### You can install all of these libraries with:
-
-sudo apt install g++ libc6-dev libxi-dev libxcursor-dev libxrandr-dev libxinerama-dev libsndfile1-dev libopus-dev libopenal-dev
