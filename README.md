@@ -12,6 +12,7 @@
 Open a terminal and cd into the project/QUASARTS directory.
 
 Be sure to add permission to execute the premake5 program:
+
 (sudo) chmod +x ./premake5
 
 ### To compile:
