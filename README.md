@@ -9,17 +9,21 @@
 # Installation #
 ## Windows
 
-Open a terminal and cd into project/QUASARTS directory.
+Open the project folder in Visual Studio.
+
+In Visual Studio, open the Terminal/PowerShell view and cd to the QUASARTS/project/QUASARTS directory.
 
 ### To compile:
+In the Terminal/PowerShell prompt:
+
 `./premake5 vs*`
 
 where * is your Visual Studio version, e.g., `./premake5 vs2022`.
 
-Build the generated QUASARTS solution.
+Build the resulting QUASARTS solution.
 
 ### To run:
-Open the QUASARTS solution.
+Open the QUASARTS solution in Visual Studio.
 
 Set the Editor project as the startup project and run.
 
