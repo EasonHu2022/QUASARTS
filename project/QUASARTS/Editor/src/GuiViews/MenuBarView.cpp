@@ -39,8 +39,7 @@ void MenuBarView::on_gui()
                 #ifdef QS_WINDOWS
                     proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
                 #else
-                    //proj_file = OpenFileDialogue("\"\"*.q\"\"");
-                    proj_file = "/home/nell/University/COMP5530M-Group-Project/QUASARTS/project/QUASARTS/Projects/Quasarts-Project/Quasarts-Project.q";
+                    proj_file = OpenFileDialogue("\"\"*.q\"\"");
                 #endif
                 if(proj_file.compare("N/A")!=0) {
                     // Get project name and folder path:
