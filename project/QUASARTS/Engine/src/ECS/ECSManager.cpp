@@ -114,6 +114,10 @@ namespace Engine {
             }
             scene->children[i].erase(entityID);
         }
+
+        // If this Entity was the camera or current GUI Entity, reset the variable:
+        if (entityID == scene->camera) { scene->camera = TOO_MANY_ENTITIES; }
+        if (entityID == current_entity) { current_entity = TOO_MANY_ENTITIES; }
     }
 
     // Set the value of game_running:
@@ -127,8 +131,8 @@ namespace Engine {
     }
 
     // Get the number of entities in the scene:
-    unsigned int ECSManager::get_num_entities() {
-        return (unsigned int)(scene->entities.size());
+    int ECSManager::get_num_entities() {
+        return (int)(scene->entities.size());
     }
 
     // Check if an Entity has a particular type of Component:
@@ -523,6 +527,24 @@ namespace Engine {
                                                 (entityID, COMPONENT_AUDIO);
                 sceneFile << COMPONENT_AUDIO << " " << *audio << std::endl;
             }
+            if (has_component(entityID, COMPONENT_LIFESPAN) == true) {
+                sceneFile << "C " << entityID << " ";
+                LifeSpanComponent *life = get_component<LifeSpanComponent>
+                                                (entityID, COMPONENT_LIFESPAN);
+                sceneFile << COMPONENT_LIFESPAN << " " << *life << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_ARMOUR) == true) {
+                sceneFile << "C " << entityID << " ";
+                ArmourComponent *armour = get_component<ArmourComponent>
+                                                (entityID, COMPONENT_ARMOUR);
+                sceneFile << COMPONENT_ARMOUR << " " << *armour << std::endl;
+            }
+            if (has_component(entityID, COMPONENT_UI_ELEMENT) == true) {
+                sceneFile << "C " << entityID << " ";
+                UIElementComponent *uiElement = get_component<UIElementComponent>
+                                                (entityID, COMPONENT_UI_ELEMENT);
+                sceneFile << COMPONENT_UI_ELEMENT << " " << *uiElement << std::endl;
+            }
         }
 
         // Parent-child relationships:
@@ -671,6 +693,18 @@ namespace Engine {
                     AudioComponent audio{};
                     parser >> audio;
                     create_component(entityID, componentType, audio);
+                } else if (componentType == COMPONENT_LIFESPAN) {
+                    LifeSpanComponent life{};
+                    parser >> life;
+                    create_component(entityID, componentType, life);
+                } else if (componentType == COMPONENT_ARMOUR) {
+                    ArmourComponent armour{};
+                    parser >> armour;
+                    create_component(entityID, componentType, armour);
+                } else if (componentType == COMPONENT_UI_ELEMENT) {
+                    UIElementComponent uiElement{};
+                    parser >> uiElement;
+                    create_component(entityID, componentType, uiElement);
                 }
             // PARENT-CHILD //
             } else if (line[0] == 'P') {
@@ -792,7 +826,9 @@ namespace Engine {
         system_strings[SYSTEM_AUDIO] = "Audio System";
         system_strings[SYSTEM_ORBIT] = "Orbit System";
         system_strings[SYSTEM_PARTICLE] = "Particle System";
-        system_strings[SYSTEM_ENEMY] = "Enemy System";
+        system_strings[SYSTEM_COMBAT] = "Combat System";
+        system_strings[SYSTEM_CAMERA] = "Camera System";
+        system_strings[SYSTEM_UI] = "UI System";
 
         // Check if the system is in the maps:
         if (system_strings.find(systemType) == system_strings.end()) {

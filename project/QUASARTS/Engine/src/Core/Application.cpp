@@ -9,7 +9,11 @@
 #include "Time/TimeModule.h"
 #include "ECS/System/CollisionSystem.h"
 #include "ECS/System/OrbitSystem.h"
-#include "ECS/System/EnemySystem.h"
+#include "ECS/System/CombatSystem.h"
+#include "ECS/System/CameraSystem.h"
+#include "ECS/System/UISystem.h"
+
+#include "ECS/Showcase-Video.h"
 
 namespace Engine
 {
@@ -53,8 +57,10 @@ namespace Engine
 		ECSManager::Instance()->register_system(SYSTEM_ORBIT, orbitSystem);
 		particleSystem = new ParticleSystem();
 		ECSManager::Instance()->register_system(SYSTEM_PARTICLE, particleSystem);
-		EnemySystem::Instance()->init();
-		ECSManager::Instance()->register_system(SYSTEM_ENEMY, EnemySystem::Instance());
+		CombatSystem::Instance()->init();
+		ECSManager::Instance()->register_system(SYSTEM_COMBAT, CombatSystem::Instance());
+		CameraSystem::Instance()->init();
+		ECSManager::Instance()->register_system(SYSTEM_CAMERA, CameraSystem::Instance());
 		/*************************Create and Init********************************/
 
 	}
@@ -87,6 +93,8 @@ namespace Engine
 		ECSManager::Instance()->register_system(SYSTEM_RENDER, renderSystem);
 		CollisionSystem::Instance()->init();
 		OrbitSystem::Instance()->init();
+		UISystem::Instance()->init(renderContext);
+		ECSManager::Instance()->register_system(SYSTEM_UI, UISystem::Instance());
 		/***************later init things*************************/
 
 
@@ -136,20 +144,17 @@ namespace Engine
 
 		meshRenderer->render();
 
-		
-
-		ParticleMaster::Instance()->render();
-		
-
-
 		//do all of the postProcessing before final render
 		postProcessing->gaussianBlur();
 
-
-
 		skyboxRenderer->render();
 		postProcessing->render();
-		//particleMaster.render();
+
+		// Render particles last:
+		ParticleMaster::Instance()->render();
+
+		// Render UI super last:
+		UISystem::Instance()->render();
 		/**************render update render frame***********************/
 	}
 
@@ -176,7 +181,10 @@ namespace Engine
 		particleSystem->update();
 		CollisionSystem::Instance()->update();
 		OrbitSystem::Instance()->update();
-		EnemySystem::Instance()->update();
+		CombatSystem::Instance()->update();
+		CameraSystem::Instance()->update();
+
+		ShowcaseVideo::Instance()->update();
 		/***************logic update logic frame************************/
 	}
 

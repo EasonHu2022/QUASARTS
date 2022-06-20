@@ -11,7 +11,7 @@ namespace Engine
 		vshPath = path + "Shader/Particle.vsh";
 		fshPath = path + "Shader/Particle.fsh";
 
-		texPath = path + "Texture\\floor.jpg";
+		texPath = path + "Texture/floor.jpg";
 
 	}
 	ParticleRenderer::~ParticleRenderer()
@@ -43,7 +43,7 @@ namespace Engine
 	int ParticleRenderer::render(std::map<std::string, std::pair<ParticleTexture, std::vector<Particle>>> emitters)
 	{
 		if ( particleShader == NULL) return 0;
-		glBindFramebuffer(GL_FRAMEBUFFER, renderContext->frameBufferObject);
+		glBindFramebuffer(GL_FRAMEBUFFER, renderContext->finalBufferObject);
 		glEnable(GL_DEPTH_TEST);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_BLEND);
@@ -57,7 +57,8 @@ namespace Engine
 
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		particleShader->use();
-		auto view = glm::mat4(glm::mat3(renderContext->cameraContext->get_view_matrix())); // remove translation from the view matrix
+		auto view = renderContext->cameraContext->get_view_matrix(); // remove translation from the view matrix
+
 		if (!emitters.empty()) {
 			for (auto& [key, value] : emitters) {
 				

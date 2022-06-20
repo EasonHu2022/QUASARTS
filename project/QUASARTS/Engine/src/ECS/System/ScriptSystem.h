@@ -46,6 +46,9 @@ namespace Engine {
 		//load all entities' script components
 		void loadScripts();
 
+		// Load one script component:
+		void loadScript(ScriptComponent* component);
+
 		//--------delete lua file 
 		void deleteScript();
 		void deleteAllScripts();

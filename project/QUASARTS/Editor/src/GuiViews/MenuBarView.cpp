@@ -10,6 +10,7 @@
 
 // engine
 #include "ECS/System/CollisionSystem.h"
+#include "ECS/Showcase-Video.h"
 
 void MenuBarView::on_add()
 {
@@ -38,7 +39,8 @@ void MenuBarView::on_gui()
                 #ifdef QS_WINDOWS
                     proj_file = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
                 #else
-                    proj_file = OpenFileDialogue();
+                    //proj_file = OpenFileDialogue("\"\"*.q\"\"");
+                    proj_file = "/home/nell/University/COMP5530M-Group-Project/QUASARTS/project/QUASARTS/Projects/Quasarts-Project/Quasarts-Project.q";
                 #endif
                 if(proj_file.compare("N/A")!=0) {
                     // Get project name and folder path:
@@ -73,11 +75,13 @@ void MenuBarView::on_gui()
                 #ifdef QS_WINDOWS
                     std::string file_name = OpenFileDialogue(L"All Files (*.*)\0*.q\0");
                 #else
-                    std::string file_name = OpenFileDialogue();
+                    std::string file_name = OpenFileDialogue("\"\"*.scn\"\"");
                 #endif
-                Engine::CollisionSystem::Instance()->reset();
-                Engine::EventModule::Instance()->clear_queue();
-                Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
+                if(file_name.compare("N/A")!=0) {
+                    Engine::CollisionSystem::Instance()->reset();
+                    Engine::EventModule::Instance()->clear_queue();
+                    Engine::ECSManager::Instance()->load_scene((char*)file_name.c_str());
+                }
             }
             if (ImGui::MenuItem("Save Scene", "Ctrl+Shift+S")) {
                 std::string scene_name = Engine::ECSManager::Instance()->get_scene_name();
@@ -90,14 +94,11 @@ void MenuBarView::on_gui()
 
         if (ImGui::BeginMenu("Edit"))
         {
-            if (ImGui::MenuItem("Construct Solar System", "Ctrl+A")) {
-                // Create solar system:
-		        Engine::construct_solar_system();
+            if (ImGui::MenuItem("Select All", "Ctrl+A")) {
+
             }
-            if (ImGui::MenuItem("Run Entity Stress Test", "Ctrl+Shift+D")) {
-                // Entity stress test:
-                Engine::AudioSystem::Instance()->playTrack("b423b42");
-                Engine::entity_stress_test();
+            if (ImGui::MenuItem("Deselect All", "Ctrl+Shift+D")) {
+
             }
             if (ImGui::MenuItem("Select Children", "Shift+C")) {
 
@@ -165,13 +166,14 @@ void MenuBarView::on_gui()
                     #ifdef QS_WINDOWS
                         script_file = OpenFileDialogue(L"All Files (*.*)\0*.lua\0");
                     #else
-                        script_file = OpenFileDialogue();
+                        script_file = OpenFileDialogue("\"\"*.lua\"\"");
                     #endif
                     //std::cout << script_file << std::endl;
                     QDEBUG("Successfully added script component to entity:{0}, path: {1}", entityID, script_file);
 
                     //init
                     Engine::ScriptSystem::Instance()->initComponent(script, script_file, entityID);
+                    Engine::ScriptSystem::Instance()->loadScript(script);
                 }
 
             }
@@ -210,6 +212,9 @@ void MenuBarView::on_gui()
                 }
                 if (ImGui::MenuItem("Particle")) {
                     newAttribute(COMPONENT_PARTICLE);
+                }
+                if (ImGui::MenuItem("Enemy Spawner")) {
+                    newAttribute(COMPONENT_ENEMY_SPAWNER);
                 }
                 ImGui::EndMenu();
             }
@@ -253,17 +258,15 @@ void MenuBarView::on_gui()
             if (ImGui::MenuItem("Light")) {
 
                 unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
-                Engine::ECSManager::Instance()->set_entityName(entityID, "light");
+                Engine::ECSManager::Instance()->set_entityName(entityID, "Light");
                 Engine::ECSManager::Instance()->create_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
                 Engine::LightComponent *light = Engine::ECSManager::Instance()->get_component<Engine::LightComponent>(entityID, COMPONENT_LIGHTING);
-                light->ambient = { 1.0f,0.0f, 0.0f };
+                light->ambient = { 1.0f, 1.0f, 1.0f };
                 light->type = Engine::LightType::parallel;
-               
 
                 Engine::ECSManager::Instance()->create_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
                 Engine::TransformComponent *transform = Engine::ECSManager::Instance()->get_component<Engine::TransformComponent>(entityID, COMPONENT_TRANSFORM);
                 transform->position = { 1.0f,2.5f, 0.0f };
-                
             }
             if (ImGui::MenuItem("Particle Emitter")) {
                 unsigned int entityID = Engine::ECSManager::Instance()->create_entity();
@@ -275,9 +278,35 @@ void MenuBarView::on_gui()
             ImGui::EndMenu();
         }
 
+        if (ImGui::BeginMenu("Game"))
+        {
+            if (ImGui::MenuItem("Construct Solar System")) {
+		        Engine::construct_solar_system();
+            }
+            if (ImGui::MenuItem("Place Four Enemy Spawners")) {
+                Engine::entity_stress_test();
+            }
+            if (ImGui::MenuItem("Start Showcase Intro")) {
+                Engine::ShowcaseVideo::Instance()->create_video_intro();
+            }
+            if (ImGui::MenuItem("Start Script Test")) {
+                Engine::ShowcaseVideo::Instance()->create_script_test(0);
+            }
+            if (ImGui::MenuItem("Start Script Test Closeup")) {
+                Engine::ShowcaseVideo::Instance()->create_script_test(1);
+            }
+            if (ImGui::MenuItem("Give the Player a Weapon")) {
+                Engine::ShowcaseVideo::Instance()->give_player_weapon();
+            }
+            if (ImGui::MenuItem("Start Level Demo"))
+            {
+                Engine::ShowcaseVideo::Instance()->start_level_demo();
+            }
+            ImGui::EndMenu();
+        }
+
         if (ImGui::BeginMenu("Help"))
         {
-
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
@@ -347,9 +376,11 @@ std::string MenuBarView::OpenFolderDialogue() {
         return "N/A";
 }
 #else
-std::string MenuBarView::OpenFileDialogue() {
+std::string MenuBarView::OpenFileDialogue(std::string filter) {
+    std::string command = "zenity --file-selection --file-filter=";
+    command += filter;
     char filename[1024];
-    FILE* f = popen("zenity --file-selection --file-filter=\"\"*.q\" \"*.scn\"\"", "r");
+    FILE* f = popen(command.c_str(), "r");
     if (f == nullptr)
         return "N/A";
     else {
@@ -433,7 +464,6 @@ void MenuBarView::newProject() {
             show_window = true;
            
         }
-
     }
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
     if (ImGui::Button("Cancel")) {
@@ -441,7 +471,6 @@ void MenuBarView::newProject() {
     }
 
     ImGui::End();
-
 }
 
 void MenuBarView::newScene() {
@@ -452,11 +481,9 @@ void MenuBarView::newScene() {
     ImGui::Begin("Choose Scene Name", &new_scene, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
-
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Scene Name", buf1, 64);
     ImGui::PopItemWidth();
-
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
@@ -475,7 +502,6 @@ void MenuBarView::newScene() {
     }
 
     ImGui::End();
-
 }
 
 void MenuBarView::newScript() {
@@ -486,11 +512,9 @@ void MenuBarView::newScript() {
     ImGui::Begin("Choose Script Name", &new_script, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
-
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Script Name", buf1, 64);
     ImGui::PopItemWidth();
-
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
@@ -516,7 +540,6 @@ void MenuBarView::newScript() {
     }
 
     ImGui::End();
-
 }
 
 void MenuBarView::newEntity() {
@@ -527,11 +550,9 @@ void MenuBarView::newEntity() {
     ImGui::Begin("Choose Entity Name", &new_entity, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
-
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Entity Name", buf1, 64);
     ImGui::PopItemWidth();
-
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
@@ -550,7 +571,6 @@ void MenuBarView::newEntity() {
     }
 
     ImGui::End();
-
 }
 
 void MenuBarView::newChild() {
@@ -561,11 +581,9 @@ void MenuBarView::newChild() {
     ImGui::Begin("Choose Child Name", &new_child, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     static char buf1[64] = "";
 
-
     ImGui::PushItemWidth(-1);
     ImGui::InputTextWithHint("##pname", "Entity Name", buf1, 64);
     ImGui::PopItemWidth();
-
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 130);
     if (ImGui::Button("Confirm")) {
@@ -579,7 +597,6 @@ void MenuBarView::newChild() {
             buf1[0] = '\0';
 
         }
-
     }
     ImGui::SameLine(ImGui::GetWindowWidth() - 59);
     if (ImGui::Button("Cancel")) {
@@ -587,7 +604,6 @@ void MenuBarView::newChild() {
     }
 
     ImGui::End();
-
 }
 
 void MenuBarView::newAttribute(const int componentType)
@@ -600,41 +616,54 @@ void MenuBarView::newAttribute(const int componentType)
         return;
     }
 
-    switch (componentType)
+    if (componentType == COMPONENT_MESH)
     {
-    case COMPONENT_MESH:
-        Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityId, componentType);
-        break;
-    case COMPONENT_COLLISION_SPHERE:
+        createMesh(entityId);
+        createMaterial(entityId);
+    }
+    else if (componentType == COMPONENT_COLLISION_SPHERE)
+    {
         Engine::ECSManager::Instance()->create_component<Engine::CollisionSphereComponent>(entityId, componentType);
         Engine::CollisionSystem::Instance()->init_collision_component(entityId, COMPONENT_COLLISION_SPHERE);
-        break;
-    case COMPONENT_MATERIAL:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_MATERIAL");
-        break;
-    case COMPONENT_LIGHTING:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_LIGHTING");
-        break;
-    case COMPONENT_SCRIPT:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_SCRIPT");
-        break;
-    case COMPONENT_CAMERA:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_CAMERA");
-        break;
-    case COMPONENT_ORBIT:
-        Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, componentType);
-        break;
-    case COMPONENT_HEALTH:
-        Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityId, COMPONENT_HEALTH);
-        break;
-    case COMPONENT_WEAPON:
-        Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityId, COMPONENT_WEAPON);
-        break;
-    case COMPONENT_PARTICLE:
-        WARN("Component creator not implemented in newAttribute(): COMPONENT_PARTICLE");
-        break;    
     }
-
+    else if (componentType == COMPONENT_MATERIAL)
+    {
+		createMaterial(entityId);
+    }
+    else if (componentType == COMPONENT_LIGHTING)
+    {
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_LIGHTING");
+    }
+    else if (componentType == COMPONENT_SCRIPT)
+    {
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_SCRIPT");
+    }
+    else if (componentType == COMPONENT_CAMERA)
+    {
+        WARN("Component creator not implemented in newAttribute(): COMPONENT_CAMERA");
+    }
+    else if (componentType == COMPONENT_ORBIT)
+    {
+        Engine::ECSManager::Instance()->create_component<Engine::OrbitComponent>(entityId, componentType);
+    }
+    else if (componentType == COMPONENT_HEALTH)
+    {
+        Engine::HealthComponent health{100.f, 100.f};
+        Engine::ECSManager::Instance()->create_component(entityId, COMPONENT_HEALTH, health);
+    }
+    else if (componentType == COMPONENT_WEAPON)
+    {
+        Engine::WeaponComponent weapon{10.f, 7.5, 0.25, 0.f};
+        Engine::ECSManager::Instance()->create_component(entityId, COMPONENT_WEAPON, weapon);
+    }
+    else if (componentType == COMPONENT_PARTICLE)
+    {
+        Engine::ECSManager::Instance()->create_component<Engine::ParticleComponent>(entityId, COMPONENT_PARTICLE);
+    }
+    else if (componentType == COMPONENT_ENEMY_SPAWNER)
+    {
+        Engine::ECSManager::Instance()->create_component<Engine::EnemySpawnComponent>(entityId, COMPONENT_ENEMY_SPAWNER);
+    }
 } // newAttribute()
 
 void MenuBarView::load_object(std::string name, std::string file) {
@@ -667,5 +696,27 @@ void MenuBarView::load_object(std::string name, std::string file) {
 
     //Engine::ECSManager::Instance()->create_component<Engine::HealthComponent>(entityID, COMPONENT_HEALTH);
     //Engine::ECSManager::Instance()->create_component<Engine::WeaponComponent>(entityID, COMPONENT_WEAPON);
+}
 
+void MenuBarView::createMaterial(unsigned int entityID)
+{
+if (Engine::ECSManager::Instance()->has_component(entityID, COMPONENT_MATERIAL)) { return; }
+    Engine::MaterialComponent material;
+    auto path = FileModule::Instance()->get_internal_assets_path();
+    std::string vshPath = path + "Shader/DefaultShader.vsh";
+    std::string fshPath = path + "Shader/DefaultShader.fsh";
+    std::string gshPth = "";
+    std::string texturePath = path + "Texture/white.png";
+    material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
+    Engine::ECSManager::Instance()->create_component<Engine::MaterialComponent>
+                                        (entityID, COMPONENT_MATERIAL, material);
+}
+
+void MenuBarView::createMesh(unsigned int entityID)
+{
+    if (Engine::ECSManager::Instance()->has_component(entityID, COMPONENT_MESH)) { return; }
+    Engine::MeshComponent mesh;
+    auto path = FileModule::Instance()->get_internal_assets_path();
+    mesh.path = path + "DefaultObjects/triangle_groundplane.obj";
+    Engine::ECSManager::Instance()->create_component<Engine::MeshComponent>(entityID, COMPONENT_MESH, mesh);
 }

@@ -17,7 +17,7 @@ public:
 	#ifdef QS_WINDOWS
 		static std::string OpenFileDialogue(const wchar_t*);
 	#else
-		static std::string OpenFileDialogue();
+		static std::string OpenFileDialogue(std::string);
 	#endif
 	static std::string OpenFolderDialogue();
 	void load_object(std::string, std::string);
@@ -27,6 +27,8 @@ public:
 	void newEntity();
 	void newChild();
 	void newAttribute(const int componentType);
+	void createMaterial(unsigned int entityID);
+	void createMesh(unsigned int entityID);
 public:
 	void on_add() override;
 	void on_gui() override;

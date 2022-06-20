@@ -13,7 +13,7 @@ namespace Engine {
 
     // Maximum number of component types allowed:
     #define MAX_COMPONENT_TYPES 64
-    #define NUM_COMPONENT_TYPES 15
+    #define NUM_COMPONENT_TYPES 18
 
     // Maximum number of entities allowed:
     #define MAX_ENTITIES 1024
@@ -35,6 +35,9 @@ namespace Engine {
     #define COMPONENT_ENEMY_SPAWNER     12
     #define COMPONENT_PROJECTILE        13
     #define COMPONENT_AUDIO             14
+    #define COMPONENT_LIFESPAN          15
+    #define COMPONENT_ARMOUR            16
+    #define COMPONENT_UI_ELEMENT        17
 
     // System types:
     #define SYSTEM_SCRIPT       0
@@ -44,7 +47,9 @@ namespace Engine {
     #define SYSTEM_AUDIO        4
     #define SYSTEM_ORBIT        5
     #define SYSTEM_PARTICLE     6
-    #define SYSTEM_ENEMY        7
+    #define SYSTEM_COMBAT       7
+    #define SYSTEM_CAMERA       8
+    #define SYSTEM_UI           9
 
     // Bit field structure for component types:
     struct quasarts_component_mask {

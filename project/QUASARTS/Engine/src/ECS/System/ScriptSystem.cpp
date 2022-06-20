@@ -138,6 +138,19 @@ namespace Engine {
 		}
 	}
 
+	void ScriptSystem::loadScript(ScriptComponent* component)
+	{
+		if(isScriptExists(component->script_path))
+		{
+			lua_state->script_file(component->script_path);
+			registerFunction(component);
+			onInit(component);
+		}
+		else
+		{
+			QWARN("failed to run the script, check if the script exists");
+		}
+	}
 
 	void ScriptSystem::deleteScript()
 	{

@@ -232,7 +232,7 @@ namespace Engine {
         bool get_game_running();
 
         // Get the number of entities in the scene:
-        unsigned int get_num_entities();
+        int get_num_entities();
 
         // Print Entity information for debugging purposes:
         void print_entities();

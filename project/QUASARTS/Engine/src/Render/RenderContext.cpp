@@ -41,6 +41,11 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBufferObject, 0);
 
+		glGenRenderbuffers(1, &renderBufferObject);
+		glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, RT_WIDTH, RT_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject); // now actually attach it
+
 		/**********for gaussian blur************/
 		glGenFramebuffers(2, postBufferObject);
 		glGenTextures(2, screenTexture);
@@ -74,9 +79,6 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, emissionTeture, 0);
 
-		glGenRenderbuffers(1, &renderBufferObject);
-		glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, RT_WIDTH, RT_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject); // now actually attach it
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		/*****************RenderTexture************************/

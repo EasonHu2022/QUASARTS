@@ -65,6 +65,9 @@ namespace Engine
             7.5     // Moon.
         };
 
+        // Get internal assets path:
+        auto path = FileModule::Instance()->get_internal_assets_path();
+
         // Add a light:
         QDEBUG("---> Adding light.");
         {
@@ -81,18 +84,6 @@ namespace Engine
             lightTransform->position = planetPositions[0];
         }
 
-        QDEBUG("---> Transforming camera.");
-        // Transform the camera to be looking top-down:
-        {
-            unsigned int cameraID = ECSManager::Instance()->get_camera();
-            TransformComponent *cameraTransform = ECSManager::Instance()->get_component
-                                            <TransformComponent>(cameraID, COMPONENT_TRANSFORM);
-            cameraTransform->position = planetPositions[0];
-            cameraTransform->position.y += 13.0;
-            cameraTransform->position.z += 16.0;
-            cameraTransform->rotation = glm::vec3(-40.0, -90.0, 0.0);
-        }
-
         // Create Entity IDs:
         QDEBUG("---> Creating new Entity IDs for solar system.");
         for (int i = 0; i < 10; i++)
@@ -104,7 +95,6 @@ namespace Engine
         // Add Mesh, Material and Orbit Components, and set the scale of the planets:
         QDEBUG("---> Creating Components for solar system Entities.");
         {
-            auto path = FileModule::Instance()->get_internal_assets_path();
             std::string vshPath = path + "Shader/DefaultShader.vsh";
             std::string fshPath = path + "Shader/DefaultShader.fsh";
             std::string gshPth = "";
@@ -134,7 +124,7 @@ namespace Engine
                 material.material = new Engine::Material(vshPath, fshPath, gshPth, texturePath);
 
                 // Add emissive light to the planets:
-                if (i == 0) { material.material->emission = glm::vec3(0.7, 0.5, 0.2); }         // Sun.
+                if (i == 0) { material.material->emission = glm::vec3(0.15, 0.1, 0.0); }        // Sun.
                 else if (i == 1) { material.material->emission = glm::vec3(0.1, 0.1, 0.1); }    // Mercury.
                 else if (i == 2) { material.material->emission = glm::vec3(0.2, 0.1, 0.0); }    // Venus.
                 else if (i == 3) { material.material->emission = glm::vec3(0.1, 0.1, 0.2); }    // Earth.
@@ -148,7 +138,15 @@ namespace Engine
                 ECSManager::Instance()->create_component<MaterialComponent>(solarSystemIDs[i],
                                                                     COMPONENT_MATERIAL, material);
 
-                // Don't add orbit to the Sun:
+                // Health:
+                HealthComponent health { 500.0, 500.0 };
+                if (i == 0) {
+                    health.max_health = 1000.0;
+                    health.current_health = 1000.0;
+                }
+                ECSManager::Instance()->create_component(solarSystemIDs[i], COMPONENT_HEALTH, health);
+
+                // Don't add orbit or weapon to the Sun:
                 if (i == 0) { continue; }
 
                 // Orbit:
@@ -165,15 +163,43 @@ namespace Engine
                 OrbitSystem::Instance()->set_orbit_primary(solarSystemIDs[i], orbit->mPrimaryEntityId);
                 OrbitSystem::Instance()->initialise_orbit(solarSystemIDs[i]);
 
-                // Health:
-                HealthComponent health { 100.0, 100.0 };
-                ECSManager::Instance()->create_component(solarSystemIDs[i], COMPONENT_HEALTH, health);
-
                 // Weapon:
-                WeaponComponent weapon { 10.0, 1.5, 0.25, 0.0 };
+                WeaponComponent weapon { 10.0, 7.5, 0.25, 0.0 };
                 ECSManager::Instance()->create_component(solarSystemIDs[i], COMPONENT_WEAPON, weapon);
             }
         }
+
+        // Add particle emitter to the sun:
+        {
+            ParticleComponent particle;
+            particle.randomRotation = false;
+            particle.is_on = true;
+            particle.cone = false;
+            particle.pps = 150.f;
+            particle.gravity = 0.f;
+            particle.averageSpeed = 1.3f;
+            particle.averageLifeLength = 2.f;
+            particle.averageScale = 3.f;
+            particle.speedError = 0.f;
+            particle.lifeError = 0.2f;
+            particle.scaleError = 0.01f;
+            particle.posError = 0.f;
+            particle.direction = glm::vec3(0.f, 1.f, 0.f);
+            particle.directionDeviation = 0.5f;
+            particle.texture.rows = 8;
+
+            ECSManager::Instance()->create_component(solarSystemIDs[0], COMPONENT_PARTICLE, particle);
+        }
+
+        ParticleComponent *particle2 = ECSManager::Instance()->get_component<ParticleComponent>(solarSystemIDs[0], COMPONENT_PARTICLE);
+        std::string particleTex = path + "Texture/fire.png";
+        particle2->path = particleTex;
+        particle2->loadtex(particleTex.c_str());
+
+        // Add armour to the Sun:
+        ArmourComponent armour{20.f};
+        ECSManager::Instance()->create_component(solarSystemIDs[0], COMPONENT_ARMOUR, armour);
+
         QDEBUG("Solar system constructed.");
     }
 
@@ -182,7 +208,7 @@ namespace Engine
         QDEBUG("Setting up Entity stress test.");
 
         // Test how many entities there are:
-        unsigned int numEntities = ECSManager::Instance()->get_num_entities();
+        int numEntities = ECSManager::Instance()->get_num_entities();
         QDEBUG("---> Start number of Entities: {0}", numEntities);
 
         // Work out how many entities need creating:
@@ -198,62 +224,99 @@ namespace Engine
         }
 
         // Split into four groups:
-        unsigned int group1 = (unsigned int)(numEntities / 4);
-        unsigned int group2 = group1;
-        unsigned int group3 = group1;
-        unsigned int group4 = numEntities - group1 - group2 - group3;
-        QDEBUG("---> Group 1: {0} Entities.", group1);
-        QDEBUG("---> Group 2: {0} Entities.", group2);
-        QDEBUG("---> Group 3: {0} Entities.", group3);
-        QDEBUG("---> Group 4: {0} Entities.", group4);
+        int groups[] = {
+            numEntities / 4,
+            numEntities / 4,
+            numEntities / 4,
+            numEntities
+        };
+        groups[3] -= groups[2] + groups[1] + groups[0];
+
+        QDEBUG("---> Group 1: {0} Entities.", groups[0]);
+        QDEBUG("---> Group 2: {0} Entities.", groups[1]);
+        QDEBUG("---> Group 3: {0} Entities.", groups[2]);
+        QDEBUG("---> Group 4: {0} Entities.", groups[3]);
 
         // Set group spawn points:
-        glm::vec3 group1Spawn = glm::vec3(-15.0, 0.0, -25.0);
-        glm::vec3 group2Spawn = glm::vec3( 15.0, 0.0, -25.0);
-        glm::vec3 group3Spawn = glm::vec3( 15.0, 0.0,  25.0);
-        glm::vec3 group4Spawn = glm::vec3(-15.0, 0.0,  25.0);
+        glm::vec3 groupSpawns[] = {
+            glm::vec3( 20.f, 0.f, -30.f),
+            glm::vec3( 20.f, 0.f,  10.f),
+            glm::vec3(-20.f, 0.f, -30.f),
+            glm::vec3(-20.f, 0.f,  10.f)
+        };
+
+        // Set spawner rotations:
+        glm::vec3 spawnerRotations[] = {
+            glm::vec3(0.f, -45.f, 0.f),
+            glm::vec3(0.f,  45.f, 0.f),
+            glm::vec3(0.f,  45.f, 0.f),
+            glm::vec3(0.f, -45.f, 0.f)
+        };
 
         // Set up the spawners:
-        unsigned int group1ID = ECSManager::Instance()->create_entity();
-        unsigned int group2ID = ECSManager::Instance()->create_entity();
-        unsigned int group3ID = ECSManager::Instance()->create_entity();
-        unsigned int group4ID = ECSManager::Instance()->create_entity();
+        for (int i = 0; i < 4; i++)
+        {
+            // Create the spawner and name it:
+            unsigned int spawnerID = ECSManager::Instance()->create_entity();
+            ECSManager::Instance()->set_entityName(spawnerID, "Enemy Spawner");
 
-        ECSManager::Instance()->set_entityName(group1ID, "Enemy Spawner");
-        ECSManager::Instance()->set_entityName(group2ID, "Enemy Spawner");
-        ECSManager::Instance()->set_entityName(group3ID, "Enemy Spawner");
-        ECSManager::Instance()->set_entityName(group4ID, "Enemy Spawner");
+            // Define up the spawner settings:
+            //EnemySpawnComponent enemySpawner { 0.1, 0.0, groups[i], 0, true, false };
+            EnemySpawnComponent enemySpawner { 0.1f, 0.f, 10, 0, true, false };
+            ECSManager::Instance()->create_component(spawnerID, COMPONENT_ENEMY_SPAWNER, enemySpawner);
 
-        EnemySpawnComponent enemySpawn1 { 0.1, 0.0, group1, 0 };
-        EnemySpawnComponent enemySpawn2 { 0.1, 0.0, group2, 0 };
-        EnemySpawnComponent enemySpawn3 { 0.1, 0.0, group3, 0 };
-        EnemySpawnComponent enemySpawn4 { 0.1, 0.0, group4, 0 };
-/*
-        EnemySpawnComponent enemySpawn1 { 0.1, 0.0, 5, 0 };
-        EnemySpawnComponent enemySpawn2 { 0.1, 0.0, 5, 0 };
-        EnemySpawnComponent enemySpawn3 { 0.1, 0.0, 5, 0 };
-        EnemySpawnComponent enemySpawn4 { 0.1, 0.0, 5, 0 };
-*/
-        ECSManager::Instance()->create_component(group1ID, COMPONENT_ENEMY_SPAWNER, enemySpawn1);
-        ECSManager::Instance()->create_component(group2ID, COMPONENT_ENEMY_SPAWNER, enemySpawn2);
-        ECSManager::Instance()->create_component(group3ID, COMPONENT_ENEMY_SPAWNER, enemySpawn3);
-        ECSManager::Instance()->create_component(group4ID, COMPONENT_ENEMY_SPAWNER, enemySpawn4);
+            // Define the spawner transform:
+            TransformComponent *transform = ECSManager::Instance()->get_component<TransformComponent>
+                                                                    (spawnerID, COMPONENT_TRANSFORM);
+            transform->position = groupSpawns[i];
+            transform->rotation = spawnerRotations[i];
+            transform->scale = glm::vec3(0.5f, 0.5f, 1.f);
 
-        TransformComponent *transform1 = ECSManager::Instance()->get_component<TransformComponent>
-                                                                (group1ID, COMPONENT_TRANSFORM);
-        TransformComponent *transform2 = ECSManager::Instance()->get_component<TransformComponent>
-                                                                (group2ID, COMPONENT_TRANSFORM);
-        TransformComponent *transform3 = ECSManager::Instance()->get_component<TransformComponent>
-                                                                (group3ID, COMPONENT_TRANSFORM);
-        TransformComponent *transform4 = ECSManager::Instance()->get_component<TransformComponent>
-                                                                (group4ID, COMPONENT_TRANSFORM);
+            // Add a mesh:
+            auto path = FileModule::Instance()->get_internal_assets_path();
+            MeshComponent mesh;
+            mesh.path = path + "Meshes/Portal.obj";
+            ECSManager::Instance()->create_component(spawnerID, COMPONENT_MESH, mesh);
 
-        transform1->position = group1Spawn;
-        transform2->position = group2Spawn;
-        transform3->position = group3Spawn;
-        transform4->position = group4Spawn;
+            // Add a material:
+            MaterialComponent material;
+            std::string texturePath = path + "Texture/Portal.png";
+            std::string vshPath = path + "Shader/DefaultShader.vsh";
+            std::string fshPath = path + "Shader/DefaultShader.fsh";
+            std::string gshPath = "";
+            material.material = new Material(vshPath, fshPath, gshPath, texturePath);
+            material.material->emission = glm::vec3(20.f / 255.f, 0.f, 20.f / 255.f);
+            ECSManager::Instance()->create_component(spawnerID, COMPONENT_MATERIAL, material);
 
-        //AudioSystem::Instance()->playSoundClip("Test/Music.mp3");
+            // Add a particle emitter:
+            {
+                ParticleComponent particle;
+                particle.randomRotation = false;
+                particle.is_on = true;
+                particle.cone = false;
+                particle.pps = 90.f;
+                particle.gravity = 0.f;
+                particle.averageSpeed = 2.f;
+                particle.averageLifeLength = 2.f;
+                particle.averageScale = 0.1f;
+                particle.speedError = 0.3f;
+                particle.lifeError = 0.2f;
+                particle.scaleError = 0.01f;
+                particle.posError = 0.f;
+                particle.direction = glm::vec3(0.f, 1.f, 0.f);
+                particle.directionDeviation = 0.5f;
+                particle.texture.rows = 4;
+
+                ECSManager::Instance()->create_component(spawnerID, COMPONENT_PARTICLE, particle);
+            }
+
+            ParticleComponent *particle2 = ECSManager::Instance()->get_component
+                            <ParticleComponent>(spawnerID, COMPONENT_PARTICLE);
+
+            std::string particleTex = path + "Texture/cosmic.png";
+            particle2->path = particleTex;
+            particle2->loadtex(particleTex.c_str());
+        }
 
         QDEBUG("Finished setting up Entity stress test.");
     }

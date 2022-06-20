@@ -112,7 +112,7 @@ namespace Engine
 			keyPressed[keycode] = true;
 			keyHeld[keycode] = true;
 			++numKeysHeld;
-			QDEBUG("key pressed");
+			//QDEBUG("key pressed");
 		}
 		
 	}
@@ -130,7 +130,7 @@ namespace Engine
 		keyReleased[keycode] = true;
 		keyHeld[keycode] = false;
 		--numKeysHeld;
-		QDEBUG("key released");
+		//QDEBUG("key released");
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonPressed)
 	{
@@ -149,7 +149,7 @@ namespace Engine
 			mouseHeld[button] = true;
 			++numButtonsHeld;
 		}
-		QDEBUG("mouse pressed");
+		//QDEBUG("mouse pressed");
 	}
 	void Input::EV_CALLBACK_SIGNATURE(MouseButtonReleased)
 	{
@@ -165,7 +165,7 @@ namespace Engine
 		mouseReleased[button] = true;
 		mouseHeld[button] = false;
 		--numButtonsHeld;
-		QDEBUG("mouse released");
+		//QDEBUG("mouse released");
 	}
 
 	void Input::EV_CALLBACK_SIGNATURE(MouseMoved)

@@ -7,8 +7,10 @@ namespace Engine {
     struct QS_API EnemySpawnComponent {
         float spawnRate = 1.0;
         float lastSpawn = 0.0;
-        unsigned int maxSpawns = 1;
-        unsigned int currentSpawns = 0;
+        int maxSpawns = 1;
+        int currentSpawns = 0;
+        bool isActive = false;
+        bool oneShot = true;
     };
 
     // Input stream operator:

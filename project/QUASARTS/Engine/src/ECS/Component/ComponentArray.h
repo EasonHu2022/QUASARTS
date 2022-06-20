@@ -22,6 +22,9 @@
 #include "ECS/Component/EnemySpawnComponent.h"
 #include "ECS/Component/ProjectileComponent.h"
 #include "ECS/Component/AudioComponent.h"
+#include "ECS/Component/LifeSpanComponent.h"
+#include "ECS/Component/ArmourComponent.h"
+#include "ECS/Component/UIElementComponent.h"
 
 /* Process for adding new Component types:
  * #include the source file here.
@@ -213,4 +216,7 @@ namespace Engine {
     template class QS_API ComponentArray<EnemySpawnComponent>;
     template class QS_API ComponentArray<ProjectileComponent>;
     template class QS_API ComponentArray<AudioComponent>;
+    template class QS_API ComponentArray<LifeSpanComponent>;
+    template class QS_API ComponentArray<ArmourComponent>;
+    template class QS_API ComponentArray<UIElementComponent>;
 }

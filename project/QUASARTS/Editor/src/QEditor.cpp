@@ -138,7 +138,7 @@ void QEditor::poll_input()
 #if defined(_WIN32)
 			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue(L"All Files (*.*)\0*.q\0");
 #else
-			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue();
+			proj_file = getGuiView<MenuBarView>()->OpenFileDialogue("\"\"*.q\"\"");
 #endif
 			if (proj_file.compare("N/A") != 0)
 				FileModule::Instance()->open_root(proj_file);
@@ -185,7 +185,7 @@ void QEditor::poll_input()
 			//emitters.insert(std::make_pair(tex2, particles2));
 			//emitters.insert(std::make_pair(tex3, particles2));
 			for (auto& [key, value] : emitters) {
-				std::cout << key << std::endl;
+				//std::cout << key << std::endl;
 			}
 			if (emitters.count("the first sone")) { std::cout << "we got it" << std::endl; }
 		}

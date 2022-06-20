@@ -60,6 +60,7 @@ void GameSceneView::on_gui()
                     matrixScale[0] = transform->scale.x;
                     matrixScale[1] = transform->scale.y;
                     matrixScale[2] = transform->scale.z;
+                    opType = (ImGuizmo::OPERATION)(transform->operation);
                     ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
                     ImGuizmo::Manipulate(view, projection, opType, ImGuizmo::LOCAL, matrix);
                     ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
@@ -77,9 +78,18 @@ void GameSceneView::on_gui()
                 ImGui::EndTabItem();
              
             }
-            if (ImGui::BeginTabItem("Game"))
+            if (ImGui::BeginTabItem("Text Editor"))
             {
-              
+                static TextEditor editor;
+
+                editor.SetShowWhitespaces(false);
+                editor.SetReadOnly(false);
+
+                editor.SetPalette(TextEditor::GetDarkPalette());
+                editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+                editor.Render("##EditorWindow", ImVec2(1120, 630));
+
+                ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
         }
@@ -99,10 +109,10 @@ void GameSceneView::get_drag()
         if (io.MouseDelta.x != 0 || io.MouseDelta.y != 0)
         {
             if (Engine::Input::get_mouse_combination({ Q_MOUSE_BUTTON_1 })) {
-                std::cout << io.MouseDelta.x << "" << io.MouseDelta.y << std::endl;
+                //std::cout << io.MouseDelta.x << "" << io.MouseDelta.y << std::endl;
             }
             else if (Engine::Input::get_mouse_combination({ Q_MOUSE_BUTTON_2 })) {
-                std::cout << "left" << std::endl;
+                //std::cout << "left" << std::endl;
             }
         }
     }
