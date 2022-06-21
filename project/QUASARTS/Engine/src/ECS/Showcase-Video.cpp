@@ -552,7 +552,7 @@ namespace Engine
         }
         else if ((timeElapsed > thirdSpawner) && (spawnersSpawned == 2))
         {
-            spawn_enemy_spawner(spawnerSpawns[2], spawnerRotations[2], 125);
+            spawn_enemy_spawner(spawnerSpawns[2], spawnerRotations[2], 150);
             spawnersSpawned = 3;
             std::string uiTexPath = "Texture/UI/Level-1/Portal-3.png";
             create_UI_element(uiTexPath, false, 1, 10.f);
@@ -560,7 +560,7 @@ namespace Engine
         }
         else if ((timeElapsed > fourthSpawner) && (spawnersSpawned == 3))
         {
-            spawn_enemy_spawner(spawnerSpawns[3], spawnerRotations[3], 175);
+            spawn_enemy_spawner(spawnerSpawns[3], spawnerRotations[3], 225);
             spawnersSpawned = 4;
             std::string uiTexPath = "Texture/UI/Level-1/Portal-4.png";
             create_UI_element(uiTexPath, false, 1, 10.f);

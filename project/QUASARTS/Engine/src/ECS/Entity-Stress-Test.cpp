@@ -71,26 +71,26 @@ namespace Engine
             250.f,      // Mercury.
             300.f,      // Venus.
             350.f,      // Earth.
-            250.f,      // Mars.
+            350.f,      // Mars.
             750.f,      // Jupiter.
             600.f,      // Saturn.
             500.f,      // Uranus.
             500.f,      // Neptune.
-            100.f       // Moon.
+            150.f       // Moon.
         };
 
         // Damage of each planet:
         std::vector<float> planetDamage = {
             0.f,    // Sun. Placeholder.
-            5.f,    // Mercury.
-            7.5f,   // Venus.
-            10.f,   // Earth.
-            10.f,   // Mars.
+            7.5f,   // Mercury.
+            10.f,   // Venus.
+            12.5f,  // Earth.
+            12.5f,  // Mars.
             20.f,   // Jupiter.
             15.f,   // Saturn.
             12.5f,  // Uranus.
             12.5f,  // Neptune.
-            2.5f    // Moon.
+            5.f     // Moon.
         };
 
         // Get internal assets path:
