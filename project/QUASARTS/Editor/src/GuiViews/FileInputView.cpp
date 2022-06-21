@@ -1,4 +1,3 @@
-#pragma once
 #include "GuiViews/FileInputView.h"
 #include "TextEditor.h"
 #include "QuasartsEngine.h"

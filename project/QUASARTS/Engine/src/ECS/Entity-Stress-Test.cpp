@@ -53,16 +53,44 @@ namespace Engine
 
         // Planet orbit periods (not accurate):
         std::vector<float> orbitPeriods = {
-            0.0,    // Sun (no orbit, just here for indexing purposes).
-            10.0,   // Mercury.
-            12.5,   // Venus.
-            15.0,   // Earth.
-            17.5,   // Mars.
-            25.0,   // Jupiter.
-            35.0,   // Saturn.
-            50.0,   // Uranus.
-            70.0,   // Neptune.
-            7.5     // Moon.
+            0.f,    // Sun (no orbit, just here for indexing purposes).
+            10.f,   // Mercury.
+            12.5f,  // Venus.
+            15.f,   // Earth.
+            17.5f,  // Mars.
+            25.f,   // Jupiter.
+            35.f,   // Saturn.
+            50.f,   // Uranus.
+            70.f,   // Neptune.
+            7.5f    // Moon.
+        };
+
+        // Health of each planet. Smaller planets are harder to hit so balance:
+        std::vector<float> planetHealth = {
+            1500.f,     // Sun.
+            250.f,      // Mercury.
+            300.f,      // Venus.
+            350.f,      // Earth.
+            250.f,      // Mars.
+            750.f,      // Jupiter.
+            600.f,      // Saturn.
+            500.f,      // Uranus.
+            500.f,      // Neptune.
+            100.f       // Moon.
+        };
+
+        // Damage of each planet:
+        std::vector<float> planetDamage = {
+            0.f,    // Sun. Placeholder.
+            5.f,    // Mercury.
+            7.5f,   // Venus.
+            10.f,   // Earth.
+            10.f,   // Mars.
+            20.f,   // Jupiter.
+            15.f,   // Saturn.
+            12.5f,  // Uranus.
+            12.5f,  // Neptune.
+            2.5f    // Moon.
         };
 
         // Get internal assets path:
@@ -139,11 +167,7 @@ namespace Engine
                                                                     COMPONENT_MATERIAL, material);
 
                 // Health:
-                HealthComponent health { 500.0, 500.0 };
-                if (i == 0) {
-                    health.max_health = 1000.0;
-                    health.current_health = 1000.0;
-                }
+                HealthComponent health { planetHealth[i], planetHealth[i] };
                 ECSManager::Instance()->create_component(solarSystemIDs[i], COMPONENT_HEALTH, health);
 
                 // Don't add orbit or weapon to the Sun:
@@ -164,7 +188,7 @@ namespace Engine
                 OrbitSystem::Instance()->initialise_orbit(solarSystemIDs[i]);
 
                 // Weapon:
-                WeaponComponent weapon { 10.0, 7.5, 0.25, 0.0 };
+                WeaponComponent weapon { planetDamage[i], 7.5, 0.25, 0.0 };
                 ECSManager::Instance()->create_component(solarSystemIDs[i], COMPONENT_WEAPON, weapon);
             }
         }

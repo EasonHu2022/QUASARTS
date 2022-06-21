@@ -1,7 +1,7 @@
 #include "Mesh.h"
 #include "glfw3.h"
 #include "glad.h"
-#pragma once
+
 namespace Engine {
 
 

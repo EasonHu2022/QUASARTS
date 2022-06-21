@@ -644,11 +644,7 @@ namespace Engine
 
     void CombatSystem::destroy_sun(unsigned int sunID)
     {
-        QWARN("GAME OVER");
         AudioSystem::Instance()->playTrack("Sun-Explosion");
-
-        std::string gameOverTexPath = "Texture/UI/Game-Over.png";
-        ShowcaseVideo::Instance()->create_UI_element(gameOverTexPath, true, 5, 10.f);
 
         ECSManager *active_manager = get_manager();
 

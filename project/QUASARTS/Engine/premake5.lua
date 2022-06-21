@@ -128,21 +128,6 @@ project "Engine"
 			"pthread",
 			"X11"
 		}
-		libdirs
-		{
-			"../ThirdParty/OpenAL/libs/Linux",
-			"../ThirdParty/sndfile/libs/Linux"
-		}
-		postbuildcommands {
-			"cp -rf '"..rootdir.."/ThirdParty/OpenAL/libs/Linux/OpenAL.so' '"..dir.."/Engine/OpenAL.so'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbisenc.a' '"..dir.."/Engine/vorbisenc.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/FLAC.a' '"..dir.."/Engine/FLAC.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/ogg.a' '"..dir.."/Engine/ogg.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/opus.a' '"..dir.."/Engine/opus.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbis.a' '"..dir.."/Engine/vorbis.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/sndfile.a' '"..dir.."/Engine/sndfile.a'"
-		}
-		postbuildmessage "copying thirdparty"
 	
 	filter "configurations:Debug"
 		runtime "Debug"

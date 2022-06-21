@@ -5,7 +5,6 @@
 #include "imgui_impl_opengl3.h"
 #include "Core/Application.h"
 #include "Logger/LogModule.h"
-#pragma once
 
 namespace Engine
 {

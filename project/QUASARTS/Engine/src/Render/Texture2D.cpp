@@ -1,6 +1,5 @@
-#pragma once
-
 #include "Texture2D.h"
+
 namespace Engine
 {
 	Texture2D::Texture2D(std::string path, int _width, int _height): ITexture(path)

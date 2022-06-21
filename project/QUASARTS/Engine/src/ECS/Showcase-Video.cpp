@@ -509,8 +509,8 @@ namespace Engine
     {
         static float timeElapsed = 0.f;
         float firstSpawner = 10.f;
-        float secondSpawner = 30.f;
-        float thirdSpawner = 60.f;
+        float secondSpawner = 40.f;
+        float thirdSpawner = 80.f;
         float fourthSpawner = 120.f;
         float gameEnd = 135.f;
         static int spawnersSpawned = 0;
@@ -536,36 +536,32 @@ namespace Engine
 
         if ((timeElapsed > firstSpawner) && (spawnersSpawned == 0))
         {
-            spawn_enemy_spawner(spawnerSpawns[0], spawnerRotations[0], 25);
+            spawn_enemy_spawner(spawnerSpawns[0], spawnerRotations[0], 50);
             spawnersSpawned = 1;
-            QWARN("First portal active!");
             std::string uiTexPath = "Texture/UI/Level-1/Portal-1.png";
             create_UI_element(uiTexPath, false, 1, 10.f);
             AudioSystem::Instance()->playSoundClip("message1");
         }
         else if ((timeElapsed > secondSpawner) && (spawnersSpawned == 1))
         {
-            spawn_enemy_spawner(spawnerSpawns[1], spawnerRotations[1], 50);
+            spawn_enemy_spawner(spawnerSpawns[1], spawnerRotations[1], 75);
             spawnersSpawned = 2;
-            QWARN("Second portal active!");
             std::string uiTexPath = "Texture/UI/Level-1/Portal-2.png";
             create_UI_element(uiTexPath, false, 1, 10.f);
             AudioSystem::Instance()->playSoundClip("message1");
         }
         else if ((timeElapsed > thirdSpawner) && (spawnersSpawned == 2))
         {
-            spawn_enemy_spawner(spawnerSpawns[2], spawnerRotations[2], 100);
+            spawn_enemy_spawner(spawnerSpawns[2], spawnerRotations[2], 125);
             spawnersSpawned = 3;
-            QWARN("Third portal active!");
             std::string uiTexPath = "Texture/UI/Level-1/Portal-3.png";
             create_UI_element(uiTexPath, false, 1, 10.f);
             AudioSystem::Instance()->playSoundClip("message1");
         }
         else if ((timeElapsed > fourthSpawner) && (spawnersSpawned == 3))
         {
-            spawn_enemy_spawner(spawnerSpawns[3], spawnerRotations[3], 150);
+            spawn_enemy_spawner(spawnerSpawns[3], spawnerRotations[3], 175);
             spawnersSpawned = 4;
-            QWARN("Final portal active!");
             std::string uiTexPath = "Texture/UI/Level-1/Portal-4.png";
             create_UI_element(uiTexPath, false, 1, 10.f);
             AudioSystem::Instance()->playSoundClip("message1");
@@ -631,7 +627,7 @@ namespace Engine
         ECSManager::Instance()->set_entityName(spawnerID, "Enemy Spawner");
 
         // Define up the spawner settings:
-        EnemySpawnComponent enemySpawner { 0.1f, 0.f, maxSpawns, 0, true, true };
+        EnemySpawnComponent enemySpawner { 0.25f, 0.f, maxSpawns, 0, true, true };
         ECSManager::Instance()->create_component(spawnerID, COMPONENT_ENEMY_SPAWNER, enemySpawner);
 
         // Define the spawner transform:

@@ -94,21 +94,6 @@ project "Editor"
 		{
 			"openal"
 		}
-		libdirs
-		{
-			"../ThirdParty/OpenAL/libs/Linux",
-			"../ThirdParty/sndfile/libs/Linux"
-		}
-		postbuildcommands { 
-			"cp -rf '"..rootdir.."/ThirdParty/OpenAL/libs/Linux/OpenAL.so' '"..dir.."/Editor/OpenAL.so'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbisenc.a' '"..dir.."/Editor/vorbisenc.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/FLAC.a' '"..dir.."/Editor/FLAC.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/ogg.a' '"..dir.."/Editor/ogg.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/opus.a' '"..dir.."/Editor/opus.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/vorbis.a' '"..dir.."/Editor/vorbis.a'",
-			"cp -rf '"..rootdir.."/ThirdParty/sndfile/libs/Linux/sndfile.a' '"..dir.."/Editor/sndfile.a'"
-		}
-		postbuildmessage "copying thirdparty"	
 	
 	filter "configurations:Debug"
 		runtime "Debug"

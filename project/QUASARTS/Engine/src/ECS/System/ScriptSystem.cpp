@@ -320,8 +320,8 @@ namespace Engine {
 		}
 		else 
 		{
-
 			QWARN("failed to get the script path");
+			return "";
 		}
 	}
 	std::string ScriptSystem::getScriptName()
@@ -332,8 +332,8 @@ namespace Engine {
 		}
 		else
 		{
-
 			QWARN("failed to get the script name");
+			return "";
 		}
 	}
 
